@@ -25,7 +25,7 @@
             <img src="~/images/download1.svg">
         </div>
         <div class="login-content">
-            <form action="index.html">
+            <form action="javascript:register()">
                 <img src="~/images/download2.svg">
                 <h2 class="title">Welcome</h2>
                 <div class="input-div one">
@@ -34,7 +34,7 @@
                     </div>
                     <div class="div">
                         <h5>Username</h5>
-                        <input type="text" class="input">
+                        <input id="txtUsername" required type="text" class="input">
                     </div>
                 </div>
                 <div class="input-div one">
@@ -43,7 +43,7 @@
                     </div>
                     <div class="div">
                         <h5>Email</h5>
-                        <input type="email" class="input">
+                        <input id="txtEmail" required type="email" class="input">
                     </div>
                 </div>
                 <div class="input-div pass">
@@ -52,7 +52,7 @@
                     </div>
                     <div class="div">
                         <h5>Password</h5>
-                        <input type="password" class="input">
+                        <input id="txtPassword" required type="password" class="input">
                     </div>
                 </div>
                 <a href="#">Forgot Password?</a>
@@ -61,6 +61,51 @@
         </div>
     </div>
     <script src="~/js/main.js"></script>
+    <script>
+        function register() {
 
+            const xhr = new XMLHttpRequest();
+
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 || this.status == 200) {
+
+                    var t = this.responseText;
+                    var obj = JSON.parse(t);
+
+                    var statusCode = obj.StatusCode;
+
+
+                    if (statusCode == 0) {
+                        window.location = 'index';
+                    }
+                    else if (statusCode == 102) {
+                        // Username already exists
+
+                    } else if (statusCode == 103) {
+                        // Internal error
+                    } else if (statusCode == 104) {
+                        // Email exists
+                    }
+
+
+                }
+            }
+
+            xhr.open('POST', 'api/Authorization/Register', true);
+
+            const formData = new FormData();
+
+
+            var email = document.getElementById('txtEmail').value;
+            var username = document.getElementById('txtUsername').value;
+            var password = document.getElementById('txtPassword').value;
+
+            formData.append('Email', email);
+            formData.append('Username', username);
+            formData.append('Password', password);
+
+            xhr.send(formData);
+        }
+    </script>
 </body>
 </html>

@@ -59,8 +59,23 @@
             const xhr = new XMLHttpRequest();
 
             xhr.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    window.location = 'index';
+                if (this.readyState == 4 || this.status == 200) {
+
+                    var t = this.responseText;
+                    var obj = JSON.parse(t);
+
+                    var statusCode = obj.StatusCode;
+
+
+                    if (statusCode == 0) {
+                        window.location = 'index';
+                    }
+                    else if (statusCode == 101) {
+                        // Wrong username or password
+                    } else if (statusCode = 103) {
+                        // Internal error
+                    }
+
                 }
             }
 
