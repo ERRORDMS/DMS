@@ -40,12 +40,20 @@ namespace DMS.Database
             {
                 Dictionary<string, string> wheres = new Dictionary<string, string>();
 
-                wheres.Add("Email", username);
-                wheres.Add("Password", password);
+                wheres.Add("Email", email);
 
-                if (sqlHelper.ExistsOR(Tables.Users, wheres))
+                if (sqlHelper.Exists(Tables.Users, wheres))
                 {
-                    return (int)ErrorCodes.ALREADY_EXISTS;
+                    return (int)ErrorCodes.EMAIL_EXISTS;
+                }
+
+                wheres = new Dictionary<string, string>();
+
+                wheres.Add("Username", username);
+
+                if (sqlHelper.Exists(Tables.Users, wheres))
+                {
+                    return (int)ErrorCodes.USERNAME_EXISTS;
                 }
 
 
