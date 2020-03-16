@@ -81,12 +81,17 @@
                     else if (statusCode == 102) {
                         // Username already exists
                         $(document).ready(function () {
-                            $("#txtUsername").css("borderBottom","1px solid rgb(255,254,253)")
+                            $("#txtUsername").css("borderBottom", "1px solid rgb(255,254,253)");
                         })
+                        console.log(102)
                     } else if (statusCode == 103) {
                         // Internal error
+                        $("#txtUsername, #txtEmail,#txtPassword").css("borderBottom", "1px solid rgb(255,254,253)");
+                        console.log(103)
                     } else if (statusCode == 104) {
                         // Email exists
+                        $("#txtEmail").css("borderBottom", "1px solid rgb(255,254,253)");
+                        console.log(104)
                     }
 
 

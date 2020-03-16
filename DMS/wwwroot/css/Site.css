@@ -367,5 +367,8 @@ a {
         justify-content: center;
     }
 }
+#txtUsername, #txtEmail, #txtPassword {
+    transition: all 300ms ease-in-out;
+}
 /* end */
 /**********/
