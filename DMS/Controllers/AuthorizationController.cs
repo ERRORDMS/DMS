@@ -21,7 +21,7 @@ namespace DMS.Controllers
         public IActionResult Login(string Username, string Password)
         {
             if (DataManager.Login(Username, Password))
-                return RedirectToAction("Index");
+                return Ok();
 
             return BadRequest();
         }
