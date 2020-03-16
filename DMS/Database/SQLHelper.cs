@@ -120,7 +120,7 @@ namespace DMS.Database
 
                 if(i != whereValues.Keys.Count)
                 {
-                    query += ", ";
+                    query += " and ";
                 }
             }
 
@@ -137,6 +137,42 @@ namespace DMS.Database
 
             return list;
         }
+
+        /// <summary>
+        /// Check if a row exists in a table.
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="whereValues"></param>
+        /// <returns></returns>
+        public bool Exists(string table, Dictionary<string, string> whereValues)
+        {
+            if (sqlConnection.State != System.Data.ConnectionState.Open)
+                sqlConnection.Open();
+
+            string query = "SELECT 1 FROM " + table + " WHERE ";
+
+            int i = 0;
+            foreach (string where in whereValues.Keys)
+            {
+                i++;
+                query += where + " = '" + whereValues[where] + "'";
+
+                if (i != whereValues.Keys.Count)
+                {
+                    query += " and ";
+                }
+            }
+
+            sqlCommand.CommandText = query;
+
+            var reader = sqlCommand.ExecuteReader();
+
+            bool hasRows = reader.HasRows;
+            if (sqlConnection.State == System.Data.ConnectionState.Open)
+                sqlConnection.Close();
+            return hasRows;
+        }
+
         public List<T> DataReaderMapToList<T>(IDataReader dr)
         {
             List<T> list = new List<T>();

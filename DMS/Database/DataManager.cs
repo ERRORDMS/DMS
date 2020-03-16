@@ -8,10 +8,20 @@ namespace DMS.Database
 {
     public class DataManager
     {
-        private SQLHelper sqlHelper;
+        private static SQLHelper sqlHelper;
         public DataManager()
         {
             sqlHelper = new SQLHelper(GetConnectionString());
+        }
+
+        public static bool Login(string username, string password)
+        {
+            Dictionary<string, string> wheres = new Dictionary<string, string>();
+
+            wheres.Add("Username", username);
+            wheres.Add("Password", password);
+
+            return sqlHelper.Exists(Tables.Users, wheres);
         }
 
         public string GetConnectionString()
