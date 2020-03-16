@@ -5,3 +5,5 @@
 /.vs
 /DMS/.vs/DMS/v16
 /DMS/obj
+/DMS/.vs/DMS
+/DMS/bin/Debug/netcoreapp2.1

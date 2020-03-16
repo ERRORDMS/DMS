@@ -1,7 +1,27 @@
 @page
 @using DMS.Models
 
-<h2 class="content-block">Home</h2>
+<h2 class="content-block">My Data</h2>
+
+@(Html.DevExtreme().TextBox()
+
+    .Name("txtSearch")
+    .Width(600)
+    .ShowClearButton(true)
+    .ElementAttr("class", "content-block")
+     .Buttons(buttons => {
+         buttons.Add()
+             .Name("btnSearch")
+             .Location(TextEditorButtonLocation.Before)
+             .Widget(w => w.Button()
+                 .Type(ButtonType.Default)
+                 .Icon(Url.Content("~/images/icons/search.png")));
+     })
+    .Placeholder("Search")
+
+    )
+
+<br />
 
 @(Html.DevExtreme().DataGrid<Order>()
     .ElementAttr(new { @class = "dx-card wide-card" })
