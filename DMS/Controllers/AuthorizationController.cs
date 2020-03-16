@@ -20,10 +20,35 @@ namespace DMS.Controllers
         [HttpPost]
         public IActionResult Login(string Username, string Password)
         {
-            if (DataManager.Login(Username, Password))
-                return RedirectToAction("Index");
 
-            return BadRequest();
+            int i = DataManager.Login(Username, Password);
+
+            Result result = new Result();
+            result.StatusName = ((ErrorCodes)i).ToString();
+            result.StatusCode = i;
+
+            return new JsonResult(result);
+        }
+
+        [Route("Register")]
+        [HttpPost]
+        public JsonResult Register(string Email, string Username, string Password)
+        {
+
+            int i = DataManager.Register(Email, Username, Password);
+
+            Result result = new Result();
+            result.StatusName = ((ErrorCodes)i).ToString();
+            result.StatusCode = i;
+
+            return new JsonResult(result);
+        }
+
+        public class Result
+        {
+            public string StatusName { get; set; }
+            public int StatusCode { get; set; }
+            public string Extra { get; set; }
         }
     }
 }

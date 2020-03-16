@@ -172,6 +172,40 @@ namespace DMS.Database
                 sqlConnection.Close();
             return hasRows;
         }
+        /// <summary>
+        /// Check if a row exists in a table but using OR instead of AND.
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="whereValues"></param>
+        /// <returns></returns>
+        public bool ExistsOR(string table, Dictionary<string, string> whereValues)
+        {
+            if (sqlConnection.State != System.Data.ConnectionState.Open)
+                sqlConnection.Open();
+
+            string query = "SELECT 1 FROM " + table + " WHERE ";
+
+            int i = 0;
+            foreach (string where in whereValues.Keys)
+            {
+                i++;
+                query += where + " = '" + whereValues[where] + "'";
+
+                if (i != whereValues.Keys.Count)
+                {
+                    query += " OR ";
+                }
+            }
+
+            sqlCommand.CommandText = query;
+
+            var reader = sqlCommand.ExecuteReader();
+
+            bool hasRows = reader.HasRows;
+            if (sqlConnection.State == System.Data.ConnectionState.Open)
+                sqlConnection.Close();
+            return hasRows;
+        }
 
         public List<T> DataReaderMapToList<T>(IDataReader dr)
         {
