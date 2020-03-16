@@ -75,7 +75,7 @@ namespace DMS.Database
         {
             return new SqlConnectionStringBuilder()
             {
-                DataSource = @".\ALSAHL",
+                DataSource = @"192.168.1.235\ALSAHL",
                 UserID = "test",
                 Password = "test_2008",
                 InitialCatalog = "DMS"
