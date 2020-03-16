@@ -80,7 +80,9 @@
                     }
                     else if (statusCode == 102) {
                         // Username already exists
-
+                        $(document).ready(function () {
+                            $("#txtUsername").css("borderBottom","1px solid rgb(255,254,253)")
+                        })
                     } else if (statusCode == 103) {
                         // Internal error
                     } else if (statusCode == 104) {
