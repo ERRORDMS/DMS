@@ -42,30 +42,30 @@
             })
         )
     </div>-->
-        <div class="layout-body">
-            @(Html.DevExtreme().Drawer()
-                .ID("layout-drawer")
-                .Position(DrawerPosition.Left)
-                .Opened(new JS("DMS.restoreDrawerOpened()"))
-                .Content(@<text>
-                            <div id="layout-drawer-scrollview" class="with-footer">
-                                <div class="content">
-                                    @RenderBody()
-                                </div>
-                                <div class="content-block">
-                                    <div class="content-footer">
-                                        <div id="footer">
-                                            Copyright (c) 2000-2019 Developer Express Inc.
-                                            <br />
-                                            All trademarks or registered trademarks are property of their respective owners.
+            <div class="layout-body">
+                @(Html.DevExtreme().Drawer()
+                    .ID("layout-drawer")
+                    .Position(DrawerPosition.Left)
+                    .Opened(new JS("DMS.restoreDrawerOpened()"))
+                    .Content(@<text>
+                                <div id="layout-drawer-scrollview" class="with-footer">
+                                    <div class="content">
+                                        @RenderBody()
+                                    </div>
+                                    <div class="content-block">
+                                        <div class="content-footer">
+                                            <div id="footer">
+                                                Copyright (c) 2000-2019 Developer Express Inc.
+                                                <br />
+                                                All trademarks or registered trademarks are property of their respective owners.
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                </text>)
-  .Template(new TemplateName("navigation-menu"))
-            )
-        </div>
+                    </text>)
+                )
+            </div>
+        
     </div>
 
     <nav class="navbar">

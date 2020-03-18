@@ -1,0 +1,93 @@
+﻿@page
+@{
+    ViewData["Title"] = "Uploadfiles";
+}
+
+<style>
+    .file-uploader-block {
+        width: 350px;
+        float: left;
+    }
+
+    .note {
+        font-size: 10pt;
+        color: #484848;
+        margin-left: 9px;
+    }
+
+        .note > span {
+            font-weight: 700
+        }
+
+    .main-block {
+        max-width: 900px;
+        min-width: 700px;
+        margin-left: 5rem;
+    }
+
+    .savebutton {
+        float: left;
+    }
+</style>
+
+<div class="main-block">
+    <h2>Uploadfiles</h2>
+    <div class="file-uploader-block">
+        @(Html.DevExtreme().FileUploader()
+            .Name("imageFile")
+            .Accept("*")
+            .Multiple(true)
+            .AllowedFileExtensions(new[] { ".jpg", ".jpeg", ".gif", ".png" })
+            .MaxFileSize(4000000)
+            //.UploadMode(FileUploadMode.UseButtons)
+            //.UploadUrl(Url.Action("UploadImage", "Upload"))
+        )
+    </div>
+
+    <div class="savebutton">
+        @(Html.DevExtreme().Button()
+            .Text("Save")
+            .OnClick("upload")
+        )
+    </div>
+    <div class="dx-field">
+        <div class="dx-field-value">
+            @(Html.DevExtreme().TagBox()
+         .DataSource(d => d.Mvc()
+                    .Controller("Categories")
+                    .LoadAction("Get")
+                    .Key("AutoKey")
+                )
+         .DisplayExpr("Name")
+         .ValueExpr("AutoKey")
+         .SearchExpr("Name")
+                   .SearchEnabled(true)
+            )
+            <div id="treeBox"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.dx-fileuploader-input').change(function (e) {
+            console.log(e.target.files);
+                var fileName = e.target.files[0];
+                alert('The file "' + fileName + '" has been selected.');
+         });
+    })
+    function upload() {
+        //const xhr = new XMLHttpRequest();
+        //xhr.onreadystatechange = function () {
+           // if (this.readyState == 4 && this.status == 200) {
+         //       console.log("Upload!")
+         //   }
+       // }
+       // const fd = new FormData();
+        
+        console.log(document.getElementById('imageFile'));
+        //fd.append("")
+        //xhr.open("POST", "", true);
+
+    }
+</script>

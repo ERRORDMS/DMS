@@ -13,5 +13,6 @@ namespace DMS.Database
     public class Tables
     {
         public const string Users = "users";
+        public const string Categories = "Categories";
     }
 }

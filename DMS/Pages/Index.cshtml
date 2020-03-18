@@ -6,6 +6,36 @@
        margin-left: 5rem;
        padding: 1rem;
     }
+    #treeList {
+    max-height: 440px;
+}
+
+.dx-sortable-dragging {
+    opacity: 0.9
+}
+
+.options {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: rgba(191, 191, 191, 0.15);
+    position: relative;
+}
+
+.caption {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.option {
+    margin-top: 10px;
+    margin-right: 40px;
+    display: inline-block;
+}
+
+    .option:last-child {
+        margin-right: 0;
+    }
+
 </style>
 <div class="tree">
     <h2 class="content-block">My Data</h2>
@@ -30,6 +60,92 @@
     )
 
     <br />
+    <div id="treeListDemo">
+        @(Html.DevExtreme().TreeList()
+            .ID("treeList")
+            .DataSource(new JS("employees"))
+            .KeyExpr("ID")
+            .ParentIdExpr("Head_ID")
+            .ExpandedRowKeys(new[] { 1 })
+            .ShowRowLines(true)
+            .ShowBorders(true)
+            .ColumnAutoWidth(true)
+            /*.RowDragging(rd => rd
+                .AllowDropInsideItem(true)
+                .AllowReordering(true)
+                .OnDragChange("onDragChange")
+                .OnReorder("onReorder")
+                .ShowDragIcons(true)
+            )*/
+            .Columns(columns =>
+                    {
+                columns.Add().DataField("Title")
+                    .Caption("Position");
 
-  
+                columns.Add().DataField("Full_Name");
+
+                columns.Add().DataField("City");
+
+                columns.Add().DataField("State");
+
+                columns.Add().DataField("Mobile_Phone");
+
+                columns.Add().DataField("Hire_Date")
+                    .DataType(GridColumnDataType.Date);
+            })
+        )
+
+        
+    </div>
+
+    <script>
+    function onDragChange(e) {
+        var treeList = e.component,
+            visibleRows = treeList.getVisibleRows(),
+            sourceNode = treeList.getNodeByKey(e.itemData.ID),
+            targetNode = visibleRows[e.toIndex].node;
+
+        while(targetNode && targetNode.data) {
+            if(targetNode.data.ID === sourceNode.data.ID) {
+                e.cancel = true;
+                break;
+            }
+            targetNode = targetNode.parent;
+        }
+    }
+
+    function onReorder(e) {
+        var treeList = e.component,
+            visibleRows = treeList.getVisibleRows(),
+            sourceData = e.itemData,
+            targetData = visibleRows[e.toIndex].data;
+
+        if (e.dropInsideItem) {
+            e.itemData.Head_ID = targetData.ID;
+        } else {
+            var sourceIndex = employees.indexOf(sourceData),
+                targetIndex = employees.indexOf(targetData);
+
+            if (sourceData.Head_ID !== targetData.Head_ID) {
+                sourceData.Head_ID = targetData.Head_ID;
+                if (e.toIndex > e.fromIndex) {
+                    targetIndex++;
+                }
+            }
+
+            employees.splice(sourceIndex, 1);
+            employees.splice(targetIndex, 0, sourceData);
+        }
+
+        treeList.refresh();
+    }
+
+    function getTreeList() {
+        return $("#treeList").dxTreeList("instance");
+    }
+    </script>
+
+    <script src="~/js/employees.js"></script>
+
+
 </div>

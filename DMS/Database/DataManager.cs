@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DMS.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -14,6 +15,10 @@ namespace DMS.Database
             sqlHelper = new SQLHelper(GetConnectionString());
         }
 
+        public static IEnumerable<Category> GetCategories()
+        {
+            return sqlHelper.Select<Category>(Tables.Categories, new string[] { "*" });
+        }
         public static int Login(string username, string password)
         {
             try
