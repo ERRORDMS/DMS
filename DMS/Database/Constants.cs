@@ -14,5 +14,6 @@ namespace DMS.Database
     {
         public const string Users = "users";
         public const string Categories = "Categories";
+        public const string Contacts = "Contacts";
     }
 }

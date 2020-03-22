@@ -19,6 +19,10 @@ namespace DMS.Database
         {
             return sqlHelper.Select<Category>(Tables.Categories, new string[] { "*" });
         }
+        public static IEnumerable<Contacts> GetContacts()
+        {
+            return sqlHelper.Select<Contacts>(Tables.Contacts, new string[] { "*" });
+        }
         public static int Login(string username, string password)
         {
             try

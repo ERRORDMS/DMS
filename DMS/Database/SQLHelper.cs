@@ -11,12 +11,9 @@ namespace DMS.Database
     public class SQLHelper : IDisposable
     {
         private SqlConnection sqlConnection;
-        private SqlCommand sqlCommand;
         public SQLHelper(String conString)
         {
             sqlConnection = new SqlConnection(conString);
-            sqlCommand = sqlConnection.CreateCommand();
-            sqlCommand.CommandType = System.Data.CommandType.Text;
         }
 
         /// <summary>
@@ -30,6 +27,9 @@ namespace DMS.Database
         {
             if (sqlConnection.State != System.Data.ConnectionState.Open)
                 sqlConnection.Open();
+
+            var sqlCommand = sqlConnection.CreateCommand();
+            sqlCommand.CommandType = System.Data.CommandType.Text;
 
             String query = "INSERT INTO " + table + " (";
 
@@ -59,6 +59,7 @@ namespace DMS.Database
 
             if (sqlConnection.State == System.Data.ConnectionState.Open)
                 sqlConnection.Close();
+            sqlCommand.Dispose();
 
             return rv > 1;
         }
@@ -78,6 +79,9 @@ namespace DMS.Database
             if (sqlConnection.State != System.Data.ConnectionState.Open)
                 sqlConnection.Open();
 
+            var sqlCommand = sqlConnection.CreateCommand();
+            sqlCommand.CommandType = System.Data.CommandType.Text;
+
             string query = "SELECT " + String.Join(',', columns) + " FROM " + table;
 
             sqlCommand.CommandText = query;
@@ -91,6 +95,8 @@ namespace DMS.Database
              if (sqlConnection.State == System.Data.ConnectionState.Open)
                     sqlConnection.Close();
 
+            sqlCommand.Dispose();
+            
             return list;
         }
         /// <summary>
@@ -107,6 +113,9 @@ namespace DMS.Database
 
             if (sqlConnection.State != System.Data.ConnectionState.Open)
                 sqlConnection.Open();
+
+            var sqlCommand = sqlConnection.CreateCommand();
+            sqlCommand.CommandType = System.Data.CommandType.Text;
 
             string query = "SELECT " + String.Join(',', columns) + " FROM " + table;
 
@@ -135,6 +144,8 @@ namespace DMS.Database
             if (sqlConnection.State == System.Data.ConnectionState.Open)
                 sqlConnection.Close();
 
+            sqlCommand.Dispose();
+
             return list;
         }
 
@@ -149,6 +160,8 @@ namespace DMS.Database
             if (sqlConnection.State != System.Data.ConnectionState.Open)
                 sqlConnection.Open();
 
+            var sqlCommand = sqlConnection.CreateCommand();
+            sqlCommand.CommandType = System.Data.CommandType.Text;
             string query = "SELECT 1 FROM " + table + " WHERE ";
 
             int i = 0;
@@ -170,6 +183,9 @@ namespace DMS.Database
             bool hasRows = reader.HasRows;
             if (sqlConnection.State == System.Data.ConnectionState.Open)
                 sqlConnection.Close();
+
+            sqlCommand.Dispose();
+
             return hasRows;
         }
         /// <summary>
@@ -183,6 +199,8 @@ namespace DMS.Database
             if (sqlConnection.State != System.Data.ConnectionState.Open)
                 sqlConnection.Open();
 
+            var sqlCommand = sqlConnection.CreateCommand();
+            sqlCommand.CommandType = System.Data.CommandType.Text;
             string query = "SELECT 1 FROM " + table + " WHERE ";
 
             int i = 0;
@@ -204,6 +222,9 @@ namespace DMS.Database
             bool hasRows = reader.HasRows;
             if (sqlConnection.State == System.Data.ConnectionState.Open)
                 sqlConnection.Close();
+
+            sqlCommand.Dispose();
+
             return hasRows;
         }
 
@@ -233,8 +254,6 @@ namespace DMS.Database
                 sqlConnection.Close();
                 sqlConnection.Dispose();
             }
-
-            sqlCommand.Dispose();
         }
 
     }
