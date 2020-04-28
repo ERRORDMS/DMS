@@ -25,43 +25,50 @@ namespace DMS.Database
         /// <returns>Success or failure</returns>
         public bool Insert(string table, string[] columns, string[] values)
         {
-            if (sqlConnection.State != System.Data.ConnectionState.Open)
-                sqlConnection.Open();
-
-            var sqlCommand = sqlConnection.CreateCommand();
-            sqlCommand.CommandType = System.Data.CommandType.Text;
-
-            String query = "INSERT INTO " + table + " (";
-
-            query += String.Join(',', columns);
-
-            query += ")";
-
-            query += " VALUES (";
-
-            for (int i = 0; i < values.Length; i++)
+            int rv = 0;
+            try
             {
-                string val = values[i];
+                if (sqlConnection.State != System.Data.ConnectionState.Open)
+                    sqlConnection.Open();
 
-                query += "'" + val + "'";
+                var sqlCommand = sqlConnection.CreateCommand();
+                sqlCommand.CommandType = System.Data.CommandType.Text;
 
-                if (i != values.Length - 1)
+                String query = "INSERT INTO " + table + " (";
+
+                query += String.Join(',', columns);
+
+                query += ")";
+
+                query += " VALUES (";
+
+                for (int i = 0; i < values.Length; i++)
                 {
-                    query += ",";
+                    string val = values[i];
+
+                    query += "'" + val + "'";
+
+                    if (i != values.Length - 1)
+                    {
+                        query += ",";
+                    }
                 }
+
+                query += ")";
+
+                sqlCommand.CommandText = query;
+
+                rv = sqlCommand.ExecuteNonQuery();
+
+                if (sqlConnection.State == System.Data.ConnectionState.Open)
+                    sqlConnection.Close();
+                sqlCommand.Dispose();
             }
-
-            query += ")";
-
-            sqlCommand.CommandText = query;
-
-            int rv = sqlCommand.ExecuteNonQuery();
-
-            if (sqlConnection.State == System.Data.ConnectionState.Open)
-                sqlConnection.Close();
-            sqlCommand.Dispose();
-
-            return rv > 1;
+            catch(Exception ex)
+            {
+                var msg = ex.Message;
+            }
+            return rv >= 1;
         }
 
 

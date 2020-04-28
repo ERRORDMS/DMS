@@ -23,49 +23,49 @@
 <body>
     <div id="app-side-nav-outer-toolbar">
         <!--
-    <div class="layout-header">
-        @(Html.DevExtreme().Toolbar()
-            .Items(items =>
-                    {
-                items.Add()
-                    .Widget(w => w
-                        .Button()
-                        .Icon("menu")
-                        .OnClick("DMS.onMenuButtonClick")
-                    )
-                    .Location(ToolbarItemLocation.Before)
-                    .CssClass("menu-button");
-                items.Add()
-                    .Html("<div>DMS</div>")
-                    .Location(ToolbarItemLocation.Before)
-                    .CssClass("header-title");
-            })
-        )
-    </div>-->
-            <div class="layout-body">
-                @(Html.DevExtreme().Drawer()
-                    .ID("layout-drawer")
-                    .Position(DrawerPosition.Left)
-                    .Opened(new JS("DMS.restoreDrawerOpened()"))
-                    .Content(@<text>
-                                <div id="layout-drawer-scrollview" class="with-footer">
-                                    <div class="content">
-                                        @RenderBody()
-                                    </div>
-                                    <div class="content-block">
-                                        <div class="content-footer">
-                                            <div id="footer">
-                                                Copyright (c) 2000-2019 Developer Express Inc.
-                                                <br />
-                                                All trademarks or registered trademarks are property of their respective owners.
-                                            </div>
+        <div class="layout-header">
+            @(Html.DevExtreme().Toolbar()
+                .Items(items =>
+                        {
+                    items.Add()
+                        .Widget(w => w
+                            .Button()
+                            .Icon("menu")
+                            .OnClick("DMS.onMenuButtonClick")
+                        )
+                        .Location(ToolbarItemLocation.Before)
+                        .CssClass("menu-button");
+                    items.Add()
+                        .Html("<div>DMS</div>")
+                        .Location(ToolbarItemLocation.Before)
+                        .CssClass("header-title");
+                })
+            )
+        </div>-->
+        <div class="layout-body">
+            @(Html.DevExtreme().Drawer()
+                .ID("layout-drawer")
+                .Position(DrawerPosition.Left)
+                .Opened(new JS("DMS.restoreDrawerOpened()"))
+                .Content(@<text>
+                            <div id="layout-drawer-scrollview" class="with-footer">
+                                <div class="content">
+                                    @RenderBody()
+                                </div>
+                                <div class="content-block">
+                                    <div class="content-footer">
+                                        <div id="footer">
+                                            Copyright (c) 2000-2019 Developer Express Inc.
+                                            <br />
+                                            All trademarks or registered trademarks are property of their respective owners.
                                         </div>
                                     </div>
                                 </div>
-                    </text>)
-                )
-            </div>
-        
+                            </div>
+                </text>)
+            )
+        </div>
+
     </div>
 
     <nav class="navbar">
@@ -109,6 +109,9 @@
                     <i class="fas fa-sign-in-alt"></i>
                     <span class="link-text">Logout</span>
                 </a>
+            </li>
+            <li>
+                <partial name="_LoginPartial" />
             </li>
         </ul>
     </nav>
@@ -212,6 +215,9 @@
             DMS.init();
         });
     </script>
+
+    @RenderSection("Scripts", required: false)
+
 </body>
 
 </html>

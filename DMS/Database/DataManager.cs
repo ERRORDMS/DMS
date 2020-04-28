@@ -1,7 +1,10 @@
 ﻿using DMS.Models;
+using Microsoft.AspNetCore.Http;
+using ServiceReference1;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,11 +13,22 @@ namespace DMS.Database
     public class DataManager
     {
         private static SQLHelper sqlHelper;
+        private static ServiceReference1.AlSahlServiceClient client;
         public DataManager()
         {
             sqlHelper = new SQLHelper(GetConnectionString());
+            client = new ServiceReference1.AlSahlServiceClient();
         }
 
+        public static bool AddFile(List<Category> categories, List<Contacts> contacts, IFormFile file)
+        {
+            DMSDocument doc = new DMSDocument();
+
+            DMScot
+
+            doc.ContactsList = 
+            client.InsertDMSDocumentLineAsync(file.GetBytes(), Path.GetExtension(file.FileName), )
+        }
         public static IEnumerable<Category> GetCategories()
         {
             return sqlHelper.Select<Category>(Tables.Categories, new string[] { "*" });
@@ -99,5 +113,17 @@ namespace DMS.Database
         USERNAME_EXISTS = 102,
         INTERNAL_ERROR = 103,
         EMAIL_EXISTS = 104,
+    }
+
+    public static class FormFileExtensions
+    {
+        public static async Task<byte[]> GetBytes(this IFormFile formFile)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                await formFile.CopyToAsync(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
     }
 }

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <RazorPage_SelectedScaffolderID>Microsoft.WebTools.Scaffolding.Core.RazorPageScaffolder</RazorPage_SelectedScaffolderID>
     <RazorPage_SelectedScaffolderCategoryPath>root/RazorPage</RazorPage_SelectedScaffolderCategoryPath>
-    <WebStackScaffolding_ViewDialogWidth>600</WebStackScaffolding_ViewDialogWidth>
+    <WebStackScaffolding_ViewDialogWidth>740</WebStackScaffolding_ViewDialogWidth>
     <WebStackScaffolding_IsLayoutPageSelected>True</WebStackScaffolding_IsLayoutPageSelected>
     <WebStackScaffolding_IsPartialViewSelected>False</WebStackScaffolding_IsPartialViewSelected>
     <WebStackScaffolding_IsReferencingScriptLibrariesSelected>True</WebStackScaffolding_IsReferencingScriptLibrariesSelected>
@@ -11,6 +11,10 @@
     <Controller_SelectedScaffolderCategoryPath>root/Controller</Controller_SelectedScaffolderCategoryPath>
     <WebStackScaffolding_ControllerDialogWidth>600</WebStackScaffolding_ControllerDialogWidth>
     <WebStackScaffolding_IsAsyncSelected>False</WebStackScaffolding_IsAsyncSelected>
-    <WebStackScaffolding_LayoutPageFile />
+    <WebStackScaffolding_LayoutPageFile>~/Pages/_Layout.cshtml</WebStackScaffolding_LayoutPageFile>
+    <_SelectedScaffolderID>IdentityScaffolder</_SelectedScaffolderID>
+    <_SelectedScaffolderCategoryPath>root/Identity</_SelectedScaffolderCategoryPath>
+    <WebStackScaffolding_DbContextDialogWidth>600</WebStackScaffolding_DbContextDialogWidth>
+    <WebStackScaffolding_UserClassDialogWidth>600</WebStackScaffolding_UserClassDialogWidth>
   </PropertyGroup>
 </Project>

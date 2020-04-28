@@ -109,10 +109,11 @@
     var contacts;
     function onValueChanged(e) {
         categories = e.component._selectedItems;
-        //console.log(e.component._selectedItems);
+        console.log(categories);
     }
     function getContacts(e) {
         contacts = e.component._selectedItems;
+        console.log(contacts);
     }
 
     $(document).ready(function () {
@@ -122,7 +123,6 @@
         })
     })
     function upload() {
-
         const xhr = new XMLHttpRequest();
 
         xhr.onreadystatechange = function () {
@@ -136,5 +136,12 @@
         fd.append('contacts', JSON.stringify(contacts));
         xhr.open("POST", "api/upload", true);
         xhr.send(fd);
+        /*
+        $.post("api/upload", {
+            photo: file,
+            categories: categories,
+            contacts: contacts
+        })
+        */
     }
 </script>

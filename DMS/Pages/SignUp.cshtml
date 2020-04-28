@@ -89,6 +89,7 @@
 
                     if (statusCode == 0) {
                         window.location = 'index';
+                        localStorage.setItem('loggedIn', 'true');
                     }
                     if (statusCode == 102) {
                         // Username already exists
