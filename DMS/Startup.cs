@@ -105,7 +105,7 @@ namespace DMS
 
             //Register GleamTech to the ASP.NET Core HTTP request pipeline.
             //----------------------
-            app.UseGleamTech();
+         //   app.UseGleamTech();
             //----------------------
 
 
