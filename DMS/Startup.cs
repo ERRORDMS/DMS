@@ -103,10 +103,10 @@ namespace DMS
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            //Register GleamTech to the ASP.NET Core HTTP request pipeline.
+             //Register GleamTech to the ASP.NET Core HTTP request pipeline.
             //----------------------
-         //   app.UseGleamTech();
-            //----------------------
+           // app.UseGleamTech();
+          //----------------------
 
 
             app.UseStaticFiles();
