@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace DMS.Models
 {
-    public class Contacts
+    public class Contact
     {
         public long AutoKey { get; set; }
         public string Name { get; set; }

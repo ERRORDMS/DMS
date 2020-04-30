@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using DMS.Areas.Identity.Data;
 using DMS.Database;
 using DMS.Models;
+using GleamTech;
+using GleamTech.AspNet.Core;
+using GleamTech.DocumentUltimate.AspNet;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -42,8 +45,9 @@ namespace DMS
 
             services.AddDefaultIdentity<DMSUser>()
                 .AddEntityFrameworkStores<DMSContext>();
-                
-            /*
+                */
+            //////
+
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = $"/Identity/Account/Login";
@@ -98,6 +102,12 @@ namespace DMS
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            //Register GleamTech to the ASP.NET Core HTTP request pipeline.
+            //----------------------
+            app.UseGleamTech();
+            //----------------------
+
 
             app.UseStaticFiles();
             app.UseAuthentication();
