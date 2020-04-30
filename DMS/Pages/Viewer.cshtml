@@ -1,0 +1,20 @@
+﻿@page
+@model DMS.Pages.ViewerModel
+@{
+    ViewData["Title"] = "Document Viewer";
+    Layout = "~/Pages/_Layout.cshtml";
+}
+@using GleamTech.AspNet.Core
+@using GleamTech.DocumentUltimate
+@using GleamTech.DocumentUltimate.AspNet
+@using GleamTech.DocumentUltimate.AspNet.UI
+
+
+<h2>Viewer</h2>
+
+@{
+    var documentViewer = new DocumentViewer
+    {
+        Document = "http://www.orimi.com/pdf-test.pdf"
+    };
+}

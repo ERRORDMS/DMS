@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using ServiceReference1;
 
 namespace DMS.Controllers
 {
@@ -29,10 +30,19 @@ namespace DMS.Controllers
             
             if (photo != null)
             {
-                var cats = JsonConvert.DeserializeObject<List<Category>>(categories);   
-                var cons = JsonConvert.DeserializeObject<List<Contacts>>(contacts);
+                var cats = JsonConvert.DeserializeObject<List<DMSCategory>>(categories);   
+                var cons = JsonConvert.DeserializeObject<List<DMSContact>>(contacts);
 
-                DataManager.AddFile(cats, cons, photo);
+                int result = DataManager.AddFile(cats, cons, photo);
+
+                if(result == (int)ErrorCodes.SUCCESS)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest();
+                }
         //        SaveFile(photo);
             }
 

@@ -20,22 +20,46 @@ namespace DMS.Database
             client = new ServiceReference1.AlSahlServiceClient();
         }
 
-        public static bool AddFile(List<Category> categories, List<Contacts> contacts, IFormFile file)
+        public static int AddFile(List<DMSCategory> categories, List<DMSContact> contacts, IFormFile file)
         {
             DMSDocument doc = new DMSDocument();
 
-            DMScot
+            doc.ContactsList = contacts.ToArray();
+            doc.DMSCategoriesList = categories.ToArray();
+            doc.UserID = "0";
+            doc.ManualFileNo = "";
+            doc.BarCode = "";
+            doc.LinesList = new DMSDocumentLine[]
+            {
+                new DMSDocumentLine() { Pages = 1 }
+            };
+            doc.SearchKeysList = new DMSSearchKeys[0];
+            
+            doc.DateTimeCreated = DateTime.Now;
+            doc.DateTimeAdded = DateTime.Now;
 
-            doc.ContactsList = 
-            client.InsertDMSDocumentLineAsync(file.GetBytes(), Path.GetExtension(file.FileName), )
+            byte[] arr = file.GetBytes().Result;
+
+            var ret = client.InsertDMSDocumentLineAsync(arr, Path.GetExtension(file.FileName), doc).Result;
+
+            if (ret.Success)
+            {
+                return (int)ErrorCodes.SUCCESS;
+            }
+            else
+            {
+                return (int)ErrorCodes.INTERNAL_ERROR;
+            }
+
+
         }
         public static IEnumerable<Category> GetCategories()
         {
             return sqlHelper.Select<Category>(Tables.Categories, new string[] { "*" });
         }
-        public static IEnumerable<Contacts> GetContacts()
+        public static IEnumerable<Contact> GetContacts()
         {
-            return sqlHelper.Select<Contacts>(Tables.Contacts, new string[] { "*" });
+            return sqlHelper.Select<Contact>(Tables.Contacts, new string[] { "*" });
         }
         public static int Login(string username, string password)
         {
