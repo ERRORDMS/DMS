@@ -63,10 +63,33 @@
     <div id="treeListDemo">
         @(Html.DevExtreme().TreeList()
             .ID("treeList")
-            .DataSource(new JS("employees"))
-            .KeyExpr("ID")
-            .ParentIdExpr("Head_ID")
+.DataSource(d => d.Mvc()
+        .Controller("Categories")
+        .LoadAction("Get")
+        .Key("AutoKey")
+    ).KeyExpr("AutoKey")
+            .ParentIdExpr("FatherID")
             .ExpandedRowKeys(new[] { 1 })
+            .ShowRowLines(true)
+    .Selection(s => s.Mode(SelectionMode.Single))
+            .ShowBorders(true)
+            .ColumnAutoWidth(true)
+            /*.RowDragging(rd => rd
+                .AllowDropInsideItem(true)
+                .AllowReordering(true)
+                .OnDragChange("onDragChange")
+                .OnReorder("onReorder")
+                .ShowDragIcons(true)
+            )*/
+            .Columns(columns =>
+            {
+                columns.Add().DataField("Name")
+                    .Caption("Category Name");
+
+            })
+        )
+        @(Html.DevExtreme().DataGrid()
+            .ID("gridView")
             .ShowRowLines(true)
             .ShowBorders(true)
             .ColumnAutoWidth(true)
@@ -78,9 +101,15 @@
                 .ShowDragIcons(true)
             )*/
             .Columns(columns =>
-                    {
-                columns.Add().DataField("Title")
-                    .Caption("Category Name");
+            {
+                columns.Add().DataField("Name")
+                    .Caption("Name");
+
+                columns.Add().DataField("DateCreated")
+                    .Caption("Date Created");
+
+                columns.Add().DataField("DateAdded")
+                    .Caption("Date Added");
 
             })
         )
