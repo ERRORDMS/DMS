@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DMS.Areas.Identity.Pages.Account
 {
-    [AllowAnonymous]
+    [Authorize]
     public class LogoutModel : PageModel
     {
         private readonly SignInManager<DMSUser> _signInManager;

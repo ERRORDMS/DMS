@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DMS.Database;
 using DMS.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ using Newtonsoft.Json;
 
 namespace DMS.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class UploadController : Controller
     {
@@ -32,7 +34,7 @@ namespace DMS.Controllers
                 var cats = JsonConvert.DeserializeObject<List<Category>>(categories);   
                 var cons = JsonConvert.DeserializeObject<List<Contacts>>(contacts);
 
-                DataManager.AddFile(cats, cons, photo);
+           //     DataManager.AddFile(cats, cons, photo);
         //        SaveFile(photo);
             }
 

@@ -34,31 +34,24 @@ namespace DMS
             services
                 .AddMvc()
                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
-            // services.AddIdentity<IdentityUser, IdentityRole>();
-            // services.AddDefaultIdentity<IdentityUser>()
-            //  .AddEntityFrameworkStores<DMSContext>()
-            //  .AddDefaultTokenProviders();
-
-            ///////
-            /*
+           
+            
             services.AddDbContext<DMSContext>(options =>
                   options.UseSqlServer(
                        Configuration.GetConnectionString("DMSContextConnection")));
 
             services.AddDefaultIdentity<DMSUser>()
                 .AddEntityFrameworkStores<DMSContext>();
-                */
-            //////
-
+                
+            /*
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = $"/Identity/Account/Login";
                 options.LogoutPath = $"/Identity/Account/Logout";
                 options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
             });
+            */
 
-            // using Microsoft.AspNetCore.Identity.UI.Services;
-            //services.AddSingleton<IEmailSender, EmailSender>();
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
@@ -79,7 +72,7 @@ namespace DMS
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = false;
             });
-
+            /*
             services.ConfigureApplicationCookie(options =>
             {
                 // Cookie settings
@@ -90,6 +83,7 @@ namespace DMS
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 options.SlidingExpiration = true;
             });
+            */
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -107,7 +101,7 @@ namespace DMS
 
             app.UseStaticFiles();
             app.UseAuthentication();
-           //  app.UseAuthorization();
+          //  app.UseAuthorization();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
