@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DMS.Database;
 using DMS.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ using ServiceReference1;
 namespace DMS.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     public class UploadController : Controller
     {
         

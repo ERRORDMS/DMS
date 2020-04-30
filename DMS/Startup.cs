@@ -45,7 +45,7 @@ namespace DMS
 
             services.AddDefaultIdentity<DMSUser>()
                 .AddEntityFrameworkStores<DMSContext>();
-                */
+               
             //////
 
             services.ConfigureApplicationCookie(options =>
@@ -54,7 +54,7 @@ namespace DMS
                 options.LogoutPath = $"/Identity/Account/Logout";
                 options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
             });
-            */
+            
 
             services.Configure<IdentityOptions>(options =>
             {

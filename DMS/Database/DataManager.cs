@@ -20,7 +20,7 @@ namespace DMS.Database
             client = new ServiceReference1.AlSahlServiceClient();
         }
 
-        public static bool AddFile(List<Category> categories, List<Contacts> contacts, IFormFile file)
+        public static int AddFile(List<DMSCategory> categories, List<DMSContact> contacts, IFormFile file)
         {
             DMSDocument doc = new DMSDocument();
 
@@ -53,7 +53,7 @@ namespace DMS.Database
 
 
         }
-        */
+        
         public static IEnumerable<Category> GetCategories()
         {
             return sqlHelper.Select<Category>(Tables.Categories, new string[] { "*" });
