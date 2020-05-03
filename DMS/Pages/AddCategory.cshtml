@@ -5,7 +5,7 @@
 
 <head>
     <style>
-        .submit{
+        .submit {
             margin-left: 8rem;
         }
     </style>
@@ -19,11 +19,85 @@
                 .Placeholder("Category Name")
                 .HoverStateEnabled(true)
             )
+            @(Html.DevExtreme().DropDownBox()
+                .ValueExpr("AutoKey")
+                .DisplayExpr("Name")
+                .DropDownOptions(o => o.Height(350))
+                .DataSource(d => d.Mvc()
+                    .Controller("Categories")
+                    .LoadAction("Get")
+                    .Key("AutoKey")
+                )
+                .Placeholder("Select parent category")
+                .ShowClearButton(true)
+                .ContentTemplate(new TemplateName("EmbeddedTreeViewSingle"))
+            )
+
+
+            @using (Html.DevExtreme().NamedTemplate("EmbeddedTreeViewSingle"))
+            {
+                @(Html.DevExtreme().TreeView()
+        .DataSource(new JS(@"component.option(""dataSource"")"))
+        .KeyExpr("AutoKey")
+        .DisplayExpr("Name")
+        .ItemsExpr("Items")
+        .ExpandedExpr("Expanded")
+        .ParentIdExpr("FatherID")
+        .DataStructure(TreeViewDataStructure.Plain)
+        .SelectionMode(NavSelectionMode.Single)
+        .SelectByClick(true)
+        .Height(235)
+        .OnItemSelectionChanged(@<text>
+            function(args) {
+                var nodes = args.component.getNodes(),
+                    value = getSelectedItemsKeys(nodes);
+
+                component.option("value", value);
+            }
+        </text>)
+        .OnContentReady(@<text>
+            function(args) {
+                syncTreeViewSelection(args.component, component.option("value"));
+            }
+        </text>)
+    )
+            }
+
         </div>
         <br />
         <br />
-        <input type="submit" value="Add Category" class="submit"/>
+        <input type="submit" value="Add Category" class="submit" />
     </form>
+
 </div>
 
+<script>
+    function syncTreeViewSelection(treeView, value) {
+        if (!value) {
+            treeView.unselectAll();
+        } else {
+            treeView.selectItem(value);
+        }
+    }
 
+    function getSelectedItemsKeys(items) {
+        var result = [];
+        items.forEach(function (item) {
+            if (item.selected) {
+                result.push(item.key);
+            }
+            if (item.items.length) {
+                result = result.concat(getSelectedItemsKeys(item.items));
+            }
+        });
+        return result;
+    }
+
+    function treeBox_valueChanged(e) {
+        var $treeView = e.component.content().find(".dx-treeview");
+        if ($treeView.length) {
+            syncTreeViewSelection($treeView.dxTreeView("instance"), e.value);
+        }
+    }
+
+</script>
