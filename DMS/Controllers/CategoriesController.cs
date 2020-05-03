@@ -20,5 +20,23 @@ namespace DMS.Controllers
         {
             return DataSourceLoader.Load(DataManager.GetCategories(), new DataSourceLoadOptionsBase());
         }
+
+        [Route("addCategory")]
+        [HttpPost]
+        public IActionResult addCategory(Category category)
+        {
+            DataManager.
+            string Connection = GetConnString();
+            using (SqlConnection sqlconnect = new SqlConnection(Connection))
+            {
+                string sqlQuery = 
+                using (SqlCommand sqlcomm = new SqlCommand(sqlQuery, sqlconnect))
+                {
+                    sqlconnect.Open();
+                    sqlcomm.ExecuteNonQuery();
+                    return Ok();
+                }
+            }
+        }
     }
 }

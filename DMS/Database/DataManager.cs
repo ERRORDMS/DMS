@@ -20,6 +20,25 @@ namespace DMS.Database
             client = new ServiceReference1.AlSahlServiceClient();
         }
 
+        public static int AddCategory(Category category)
+        {
+            Dictionary<String, string> existDic = new Dictionary<string, string>();
+            existDic.Add("Name", category.Name);
+
+            if (sqlHelper.Exists("Categories", existDic))
+                return (int)ErrorCodes.CATEGORY_EXISTS;
+
+            if(sqlHelper.Insert("Categories",
+                new string[] { "Name", "FatherID" },
+                new string[] { category.Name, category.FatherID.ToString() }))
+            {
+                return (int)ErrorCodes.SUCCESS;
+            }
+            else
+            {
+                return (int)ErrorCodes.INTERNAL_ERROR;
+            }
+        }
         public static int AddFile(List<DMSCategory> categories, List<DMSContact> contacts, IFormFile file)
         {
             DMSDocument doc = new DMSDocument();
@@ -138,6 +157,7 @@ namespace DMS.Database
         USERNAME_EXISTS = 102,
         INTERNAL_ERROR = 103,
         EMAIL_EXISTS = 104,
+        CATEGORY_EXISTS = 105
     }
 
     public static class FormFileExtensions
