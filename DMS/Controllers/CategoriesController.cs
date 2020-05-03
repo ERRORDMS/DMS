@@ -5,10 +5,13 @@ using System.Threading.Tasks;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Data.ResponseModel;
 using DMS.Database;
+using DMS.Models;
 using Microsoft.AspNetCore.Mvc;
+using static DMS.Controllers.AuthorizationController;
 
 namespace DMS.Controllers
 {
+    [Route("api/[controller]")]
     public class CategoriesController : Controller
     {
         public IActionResult Index()
@@ -25,18 +28,13 @@ namespace DMS.Controllers
         [HttpPost]
         public IActionResult addCategory(Category category)
         {
-            DataManager.
-            string Connection = GetConnString();
-            using (SqlConnection sqlconnect = new SqlConnection(Connection))
-            {
-                string sqlQuery = 
-                using (SqlCommand sqlcomm = new SqlCommand(sqlQuery, sqlconnect))
-                {
-                    sqlconnect.Open();
-                    sqlcomm.ExecuteNonQuery();
-                    return Ok();
-                }
-            }
+            int i =DataManager.AddCategory(category);
+
+            Result result = new Result();
+            result.StatusName = ((ErrorCodes)i).ToString();
+            result.StatusCode = i;
+
+            return new JsonResult(result);
         }
     }
 }

@@ -111,17 +111,14 @@
     var contacts;
     function onValueChanged(e) {
         categories = e.component._selectedItems;
-        console.log(categories);
     }
     function getContacts(e) {
         contacts = e.component._selectedItems;
-        console.log(contacts);
     }
 
     $(document).ready(function () {
         $("#File").change(function (e) {
             file = e.target.files[0];
-            console.log(file)
         })
     })
     function upload() {
