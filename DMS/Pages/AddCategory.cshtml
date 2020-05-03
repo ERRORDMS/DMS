@@ -9,6 +9,25 @@
             margin-left: 8rem;
         }
     </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </head>
 
 <div>
@@ -16,12 +35,13 @@
         <div class="dx-field-value">
             @(Html.DevExtreme().TextBox()
                 .Mode(TextBoxMode.Text)
+                .Name("CategoryName")
                 .Placeholder("Category Name")
                 .HoverStateEnabled(true)
             )
             @(Html.DevExtreme().DropDownBox()
                 .ValueExpr("AutoKey")
-                .DisplayExpr("Name")
+                .DisplayExpr("Text")
                 .DropDownOptions(o => o.Height(350))
                 .DataSource(d => d.Mvc()
                     .Controller("Categories")
@@ -29,6 +49,7 @@
                     .Key("AutoKey")
                 )
                 .Placeholder("Select parent category")
+                .OnValueChanged("getparent")
                 .ShowClearButton(true)
                 .ContentTemplate(new TemplateName("EmbeddedTreeViewSingle"))
             )
@@ -48,19 +69,19 @@
         .SelectByClick(true)
         .Height(235)
         .OnItemSelectionChanged(@<text>
-            function(args) {
-                var nodes = args.component.getNodes(),
+                    function(args) {
+                    var nodes = args.component.getNodes(),
                     value = getSelectedItemsKeys(nodes);
 
-                component.option("value", value);
-            }
+                    component.option("value", value);
+                    }
         </text>)
-        .OnContentReady(@<text>
+.OnContentReady(@<text>
             function(args) {
-                syncTreeViewSelection(args.component, component.option("value"));
+            syncTreeViewSelection(args.component, component.option("value"));
             }
-        </text>)
-    )
+</text>)
+                )
             }
 
         </div>
@@ -93,11 +114,55 @@
         return result;
     }
 
+    var parent;
+
+    function getparent(e) {
+        console.log(e);
+        parent = e.value;
+        console.log(parent);
+    }
+
     function treeBox_valueChanged(e) {
         var $treeView = e.component.content().find(".dx-treeview");
         if ($treeView.length) {
             syncTreeViewSelection($treeView.dxTreeView("instance"), e.value);
         }
+    }
+
+    function addCategory() {
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var t = this.response;
+                console.log(t);
+                var obj = JSON.parse(t);
+                console.log(obj);
+
+                var statusCode = obj.StatusCode;
+                if (statusCode == 0) {
+                    cosnole.log('good');
+                } else {
+                    console.log('bad');
+                }
+                if (statusCode == 103) {
+                    console.log('bad2')
+                } else {
+                    console.log('good1')
+                }
+                if (statusCode == 105) {
+                    console.log('bad3')
+                } else {
+                    console.log('good3')
+                }
+            }
+        }
+        var category = CategoryName.value;
+        const fd = new FormData();
+        fd.append("Name", category);
+        fd.append("FatherID", parent);
+        xhr.open("post", "api/Categories/addCategory", true);
+        xhr.send(fd);
+
     }
 
 </script>
