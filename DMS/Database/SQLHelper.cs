@@ -70,6 +70,60 @@ namespace DMS.Database
             }
             return rv >= 1;
         }
+        /// <summary>
+        /// Insert into a table returning the ID.
+        /// </summary>
+        /// <param name="table">Table to insert into</param>
+        /// <param name="columns">Columns to insert values into</param>
+        /// <param name="values">Values to insert into specified columns</param>
+        /// <returns>Success or failure</returns>
+        public string InsertWithID(string table, string[] columns, string[] values)
+        {
+            object rv = null;
+            try
+            {
+                if (sqlConnection.State != System.Data.ConnectionState.Open)
+                    sqlConnection.Open();
+
+                var sqlCommand = sqlConnection.CreateCommand();
+                sqlCommand.CommandType = System.Data.CommandType.Text;
+
+                String query = "INSERT INTO " + table + " (";
+
+                query += String.Join(',', columns);
+
+                query += ")";
+
+                query += " VALUES (";
+
+                for (int i = 0; i < values.Length; i++)
+                {
+                    string val = values[i];
+
+                    query += "'" + val + "'";
+
+                    if (i != values.Length - 1)
+                    {
+                        query += ",";
+                    }
+                }
+
+                query += ") SELECT SCOPE_IDENTITY()";
+
+                sqlCommand.CommandText = query;
+
+                rv = sqlCommand.ExecuteScalar();
+
+                if (sqlConnection.State == System.Data.ConnectionState.Open)
+                    sqlConnection.Close();
+                sqlCommand.Dispose();
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+            return Convert.ToString(rv);
+        }
 
 
         /// <summary>

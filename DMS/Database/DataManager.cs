@@ -40,7 +40,7 @@ namespace DMS.Database
             }
         }
         public static int AddFile(List<DMSCategory> categories, List<DMSContact> contacts, IFormFile file)
-        {
+        {/*
             DMSDocument doc = new DMSDocument();
 
             doc.ContactsList = contacts.ToArray();
@@ -60,8 +60,18 @@ namespace DMS.Database
             byte[] arr = file.GetBytes().Result;
 
             var ret = client.InsertDMSDocumentLineAsync(arr, Path.GetExtension(file.FileName), doc).Result;
+*/
 
-            if (ret.Success)
+            string infoAutoKey= sqlHelper.InsertWithID("DocumentInfo",
+                new string[] { "AddedBy", "DateTimeAdded", "IsDeleted" },
+                new string[] { "0", DateTime.Now.ToLongDateString(), "0" });
+
+            bool success = sqlHelper.Insert("DocumentLines",
+                new string[] { "InfoAutoKey", "Ext", "Name" },
+                new string[] { infoAutoKey, Path.GetExtension(file.FileName), Path.GetFileNameWithoutExtension(file.FileName) });
+
+
+            if (success)
             {
                 return (int)ErrorCodes.SUCCESS;
             }
