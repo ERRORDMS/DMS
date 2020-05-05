@@ -17,12 +17,9 @@
 </style>
 @if (SignInManager.IsSignedIn(User))
 {
-    <div class="not_allowed">
-        <div>
-            <h3>You are already logged In</h3>
-        </div>
-    </div>
-
+<script>
+        window.location = 'http://localhost:59609/'
+</script>
 }
 else
 {

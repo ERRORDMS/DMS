@@ -14,8 +14,8 @@ body::-webkit-scrollbar-thumb {
 .navbar {
     position: fixed;
     background-color: #23232e;
-    transition: width 600ms ease;
-    overflow: hidden;
+    /*transition:  600ms ease;
+    overflow: hidden;*/
 }
 
 .navbar-nav {
@@ -40,12 +40,13 @@ body::-webkit-scrollbar-thumb {
     display: flex;
     align-items: center;
     height: 5rem;
-    color: #b6b6b6;
     text-decoration: none;
     filter: grayscale(100%) opacity(0.7);
     transition: 600ms;
+    border: none;
+    background: #23232e;
 }
-
+    /* 
     .nav-link:hover {
         margin: 1rem;
     }
@@ -55,7 +56,7 @@ body::-webkit-scrollbar-thumb {
         background: #141418;
         color: #38d39f;
     }
-
+    */
     .nav-link i {
         width: 1.5rem;
         min-width: 2rem;
@@ -72,7 +73,21 @@ body::-webkit-scrollbar-thumb {
     letter-spacing: 0.3ch;
     width: 100%;
 }
-
+.nav-item-01 {
+    width: 100%;
+}
+.navbar-nav-1 {
+    list-style-type: none;
+    margin-left: 2rem;
+}
+.nav-nestd-item {
+    width: 100%;
+}
+#button-for-logout {
+    width: 100%;
+    background: #23232e;
+    width: 100%;
+}
 .logo-text {
     display: inline;
     position: absolute;
@@ -80,50 +95,3 @@ body::-webkit-scrollbar-thumb {
     transform: translateY(-50%);
     transition: 600ms;
 }
-
-@media only screen and (max-width: 600px) {
-    .navbar {
-        bottom: 0;
-        width: 100vw;
-        height: 5rem;
-    }
-
-    .navbar-nav {
-        flex-direction: row;
-    }
-
-    .nav-link {
-        justify-content: center;
-    }
-
-    main {
-        margin: 0;
-    }
-}
-
-@media only screen and (min-width: 600px) {
-    .navbar {
-        top: 0;
-        width: 5rem;
-        height: 100vh;
-    }
-
-        .navbar:hover {
-            width: 16rem;
-        }
-
-            .navbar:hover .link-text {
-                display: inline;
-            }
-
-            .navbar:hover .logo svg {
-                margin-left: 11rem;
-            }
-
-            .navbar:hover .logo-text {
-                left: 20%;
-                top: 50%;
-                transform: translateY(-50%);
-            }
-}
-/* Navbar */
