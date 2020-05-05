@@ -17,6 +17,37 @@ namespace DMS.Database
         }
 
         /// <summary>
+        /// Execute reader query
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public List<T> ExecuteReader<T>(string query)
+        {
+            if (sqlConnection.State != System.Data.ConnectionState.Open)
+                sqlConnection.Open();
+
+            var sqlCommand = sqlConnection.CreateCommand();
+            sqlCommand.CommandType = System.Data.CommandType.Text;
+
+            sqlCommand.CommandText = query;
+
+            List<T> list;
+
+            using (var reader = sqlCommand.ExecuteReader())
+            {
+                list = DataReaderMapToList<T>(reader);
+            }
+
+
+            if (sqlConnection.State == System.Data.ConnectionState.Open)
+                sqlConnection.Close();
+
+            sqlCommand.Dispose();
+
+            return list;
+        }
+
+        /// <summary>
         /// Insert into a table.
         /// </summary>
         /// <param name="table">Table to insert into</param>
@@ -46,7 +77,7 @@ namespace DMS.Database
                 {
                     string val = values[i];
 
-                    query += "'" + val + "'";
+                    query += "N'" + val + "'";
 
                     if (i != values.Length - 1)
                     {
@@ -80,8 +111,6 @@ namespace DMS.Database
         public string InsertWithID(string table, string[] columns, string[] values)
         {
             object rv = null;
-            try
-            {
                 if (sqlConnection.State != System.Data.ConnectionState.Open)
                     sqlConnection.Open();
 
@@ -100,7 +129,7 @@ namespace DMS.Database
                 {
                     string val = values[i];
 
-                    query += "'" + val + "'";
+                    query += "N'" + val + "'";
 
                     if (i != values.Length - 1)
                     {
@@ -117,11 +146,6 @@ namespace DMS.Database
                 if (sqlConnection.State == System.Data.ConnectionState.Open)
                     sqlConnection.Close();
                 sqlCommand.Dispose();
-            }
-            catch (Exception ex)
-            {
-                var msg = ex.Message;
-            }
             return Convert.ToString(rv);
         }
 

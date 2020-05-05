@@ -39,6 +39,36 @@ namespace DMS.Database
                 return (int)ErrorCodes.INTERNAL_ERROR;
             }
         }
+
+        public static List<Document> GetCatDocuments(long CatID)
+        {
+            List<Document> documents = new List<Document>();
+
+            string query = "select InfoAutoKey,";
+            query += " (select DateTimeAdded from DocumentInfo where AutoKey = DCR.InfoAutoKey) as DateTimeAdded,";
+            query += " (select Name from DocumentLines where InfoAutoKey = DCR.InfoAutoKey) as Name,";
+            query += " (select Ext from DocumentLines where InfoAutoKey = DCR.InfoAutoKey) as Ext";
+            query += " from DocumentCategoryRel as DCR";
+            query += " where CategoryAutoKey = " + CatID;
+
+            /*
+            var reader = sqlHelper.ExecuteReader(query);
+
+            while (reader.Read())
+            {
+                Document document = new Document();
+
+                document.InfoAutoKey = Convert.ToInt64(reader["InfoAutoKey"]);
+                document.Name = Convert.ToString(reader["Name"]);
+                document.Ext = Convert.ToString(reader["Ext"]);
+                document.DateTimeAdded = Convert.ToDateTime(reader["DateTimeAdded"]);
+
+                documents.Add(document);
+            }
+            */
+            documents = sqlHelper.ExecuteReader<Document>(query);
+            return documents;
+        }
         public static int AddFile(List<DMSCategory> categories, List<DMSContact> contacts, IFormFile file)
         {/*
             DMSDocument doc = new DMSDocument();
@@ -64,12 +94,25 @@ namespace DMS.Database
 
             string infoAutoKey= sqlHelper.InsertWithID("DocumentInfo",
                 new string[] { "AddedBy", "DateTimeAdded", "IsDeleted" },
-                new string[] { "0", DateTime.Now.ToLongDateString(), "0" });
+                new string[] { "0", DateTime.Now.ToString(), "0" });
 
             bool success = sqlHelper.Insert("DocumentLines",
                 new string[] { "InfoAutoKey", "Ext", "Name" },
                 new string[] { infoAutoKey, Path.GetExtension(file.FileName), Path.GetFileNameWithoutExtension(file.FileName) });
 
+            foreach(var category in categories)
+            {
+                sqlHelper.Insert("DocumentCategoryRel",
+                    new string[] { "InfoAutoKey", "CategoryAutoKey" },
+                    new string[] { infoAutoKey, category.AutoKey.ToString() });
+            }
+
+            foreach (var contact in contacts)
+            {
+                sqlHelper.Insert("DocumentContactRel",
+                    new string[] { "InfoAutoKey", "ContactAutoKey" },
+                    new string[] { infoAutoKey, contact.AutoKey.ToString() });
+            }
 
             if (success)
             {

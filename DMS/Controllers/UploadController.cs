@@ -53,6 +53,13 @@ namespace DMS.Controllers
             return Ok();
         }
 
+        [Route("GetDocuments")]
+        [HttpGet]
+        public List<Document> GetCatDocuments(long CatID)
+        {
+            return DataManager.GetCatDocuments(CatID);
+        }
+
         void SaveFile(IFormFile file)
         {
             try
