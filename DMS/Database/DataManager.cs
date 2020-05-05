@@ -5,8 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
+using System.Security.Principal;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace DMS.Database
 {
@@ -16,23 +19,41 @@ namespace DMS.Database
         private static ServiceReference1.AlSahlServiceClient client;
         public DataManager()
         {
-            sqlHelper = new SQLHelper(GetConnectionString());
+        sqlHelper = new SQLHelper(GetConnectionString());
             client = new ServiceReference1.AlSahlServiceClient();
+
         }
-
-        public static int AddCategory(Category category)
+        
+        public static int AddCategory(Category category,string userId)
         {
-            Dictionary<String, string> existDic = new Dictionary<string, string>();
-            existDic.Add("Name", category.Name);
+            string query = "select top 1 UserID ";
+            query += " from CategoryUserRel as CUR";
+            query += " where UserID = '" + userId + "'";
+            query += " and";
+            query += " EXISTS(SELECT Name from Categories where AutoKey = CUR.CategoryAutoKey and Name = '" + category.Name +  "')";
 
-            if (sqlHelper.Exists("Categories", existDic))
+            if (sqlHelper.ExecuteReader<object>(query).Count > 0)
                 return (int)ErrorCodes.CATEGORY_EXISTS;
 
-            if(sqlHelper.Insert("Categories",
+            string autoKey = sqlHelper.InsertWithID(Tables.Categories,
                 new string[] { "Name", "FatherID" },
-                new string[] { category.Name, category.FatherID.ToString() }))
+                new string[] { category.Name, category.FatherID.ToString() });
+            if (!string.IsNullOrEmpty(autoKey))
             {
+
+
+                if(sqlHelper.Insert(Tables.CategoryUserRel,
+                    new string[] { "CategoryAutoKey", "UserID" },
+                    new string[] { autoKey, userId }))
+                {
+
                 return (int)ErrorCodes.SUCCESS;
+                }
+
+                else
+                {
+                    return (int)ErrorCodes.INTERNAL_ERROR;
+                }
             }
             else
             {
@@ -45,10 +66,10 @@ namespace DMS.Database
             List<Document> documents = new List<Document>();
 
             string query = "select InfoAutoKey,";
-            query += " (select DateTimeAdded from DocumentInfo where AutoKey = DCR.InfoAutoKey) as DateTimeAdded,";
-            query += " (select Name from DocumentLines where InfoAutoKey = DCR.InfoAutoKey) as Name,";
-            query += " (select Ext from DocumentLines where InfoAutoKey = DCR.InfoAutoKey) as Ext";
-            query += " from DocumentCategoryRel as DCR";
+            query += " (select DateTimeAdded from " + Tables.DocumentInfo + " where AutoKey = DCR.InfoAutoKey) as DateTimeAdded,";
+            query += " (select Name from " + Tables.DocumentLines + " where InfoAutoKey = DCR.InfoAutoKey) as Name,";
+            query += " (select Ext from " + Tables.DocumentLines + " where InfoAutoKey = DCR.InfoAutoKey) as Ext";
+            query += " from " + Tables.DocumentCategoryRel + " as DCR";
             query += " where CategoryAutoKey = " + CatID;
 
             /*
@@ -92,24 +113,24 @@ namespace DMS.Database
             var ret = client.InsertDMSDocumentLineAsync(arr, Path.GetExtension(file.FileName), doc).Result;
 */
 
-            string infoAutoKey= sqlHelper.InsertWithID("DocumentInfo",
+            string infoAutoKey = sqlHelper.InsertWithID(Tables.DocumentInfo,
                 new string[] { "AddedBy", "DateTimeAdded", "IsDeleted" },
                 new string[] { "0", DateTime.Now.ToString(), "0" });
 
-            bool success = sqlHelper.Insert("DocumentLines",
+            bool success = sqlHelper.Insert(Tables.DocumentLines,
                 new string[] { "InfoAutoKey", "Ext", "Name" },
                 new string[] { infoAutoKey, Path.GetExtension(file.FileName), Path.GetFileNameWithoutExtension(file.FileName) });
 
-            foreach(var category in categories)
+            foreach (var category in categories)
             {
-                sqlHelper.Insert("DocumentCategoryRel",
+                sqlHelper.Insert(Tables.DocumentCategoryRel,
                     new string[] { "InfoAutoKey", "CategoryAutoKey" },
                     new string[] { infoAutoKey, category.AutoKey.ToString() });
             }
 
             foreach (var contact in contacts)
             {
-                sqlHelper.Insert("DocumentContactRel",
+                sqlHelper.Insert(Tables.DocumentContactRel,
                     new string[] { "InfoAutoKey", "ContactAutoKey" },
                     new string[] { infoAutoKey, contact.AutoKey.ToString() });
             }
@@ -125,10 +146,20 @@ namespace DMS.Database
 
 
         }
-        
-        public static IEnumerable<Category> GetCategories()
+
+        public static IEnumerable<Category> GetCategories(string userID)
         {
-            return sqlHelper.Select<Category>(Tables.Categories, new string[] { "*" });
+            //return sqlHelper.Select<Category>(Tables.Categories, new string[] { "*" });
+
+            string query = "select ";
+            query += " (select Name from " + Tables.Categories + " where AutoKey = CUR.CategoryAutoKey) as Name,";
+            query += " (select AutoKey from " + Tables.Categories + " where AutoKey = CUR.CategoryAutoKey) as AutoKey,";
+            query += "(select FatherID from " + Tables.Categories + " where AutoKey = CUR.CategoryAutoKey) as FatherID";
+            query += " from " + Tables.CategoryUserRel + " as CUR";
+            query += " where UserID = '" + userID + "'";
+
+                
+            return sqlHelper.ExecuteReader<Category>(query);
         }
         public static IEnumerable<Contact> GetContacts()
         {
@@ -148,7 +179,8 @@ namespace DMS.Database
                 else
                     return (int)ErrorCodes.WRONG_CREDENTIALS;
 
-            }catch(Exception)
+            }
+            catch (Exception)
             {
                 return (int)ErrorCodes.INTERNAL_ERROR;
             }
@@ -200,13 +232,13 @@ namespace DMS.Database
                 Password = "test_2008",
                 InitialCatalog = "DMS"
             }.ConnectionString;
-        } 
+        }
     }
 
     public enum ErrorCodes
     {
         SUCCESS = 0,
-        WRONG_CREDENTIALS  = 101,
+        WRONG_CREDENTIALS = 101,
         USERNAME_EXISTS = 102,
         INTERNAL_ERROR = 103,
         EMAIL_EXISTS = 104,
@@ -223,5 +255,45 @@ namespace DMS.Database
                 return memoryStream.ToArray();
             }
         }
+    }
+}
+
+public static class ExtensionMethods
+{
+    public static T GetLoggedInUserId<T>(this ClaimsPrincipal principal)
+    {
+        if (principal == null)
+            throw new ArgumentNullException(nameof(principal));
+
+        var loggedInUserId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (typeof(T) == typeof(string))
+        {
+            return (T)Convert.ChangeType(loggedInUserId, typeof(T));
+        }
+        else if (typeof(T) == typeof(int) || typeof(T) == typeof(long))
+        {
+            return loggedInUserId != null ? (T)Convert.ChangeType(loggedInUserId, typeof(T)) : (T)Convert.ChangeType(0, typeof(T));
+        }
+        else
+        {
+            throw new Exception("Invalid type provided");
+        }
+    }
+
+    public static string GetLoggedInUserName(this ClaimsPrincipal principal)
+    {
+        if (principal == null)
+            throw new ArgumentNullException(nameof(principal));
+
+        return principal.FindFirstValue(ClaimTypes.Name);
+    }
+
+    public static string GetLoggedInUserEmail(this ClaimsPrincipal principal)
+    {
+        if (principal == null)
+            throw new ArgumentNullException(nameof(principal));
+
+        return principal.FindFirstValue(ClaimTypes.Email);
     }
 }

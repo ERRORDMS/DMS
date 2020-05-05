@@ -45,7 +45,9 @@ namespace DMS
 
             services.AddDefaultIdentity<DMSUser>()
                 .AddEntityFrameworkStores<DMSContext>();
-               
+
+            services.AddHttpContextAccessor();
+
             //////
 
             services.ConfigureApplicationCookie(options =>
