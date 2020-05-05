@@ -1,5 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using DMS.Areas.Identity.Data
+@inject SignInManager<DMSUser> SignInManager
+@inject UserManager<DMSUser> UserManager
 
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,7 +21,7 @@
           crossorigin="anonymous" />
     <link rel="stylesheet" href="~/css/vendor.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Site.css" />
-    <link rel="stylesheet" href="~/css/navbar.css"/>
+    <link rel="stylesheet" href="~/css/navbar.css" />
     <script src="~/js/vendor.js" asp-append-version="true"></script>
 </head>
 
@@ -75,44 +80,84 @@
                     <span class="link-text logo-text">DMS</span>
                 </a>
             </li>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <li class="nav-item" style="display: none">
+                    <a href="/Identity/Account/Register" class="nav-link">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span class="link-text">Sign up</span>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="nav-item">
+                    <a href="/Identity/Account/Register" class="nav-link">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span class="link-text">Sign up</span>
+                    </a>
+                </li>
+            }
 
-            <li class="nav-item">
-                <a href="/SignUp" class="nav-link">
-                    <i class="fas fa-sign-in-alt"></i>
-                    <span class="link-text">Sign up</span>
-                </a>
-            </li>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <li class="nav-item" style="display: none">
+                    <a href="/Identity/Account/Login" class="nav-link">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span class="link-text">Login</span>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="nav-item">
+                    <a href="/Identity/Account/Login" class="nav-link">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span class="link-text">Login</span>
+                    </a>
+                </li>
+            }
 
-            <li class="nav-item">
-                <a href="/login" class="nav-link">
-                    <i class="fas fa-sign-in-alt"></i>
-                    <span class="link-text">Login</span>
-                </a>
-            </li>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span class="link-text">Dashboard</span>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="nav-item" style="display: none">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span class="link-text">Dashboard</span>
+                    </a>
+                </li>
+            }
 
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-sign-in-alt"></i>
-                    <span class="link-text">Dashboard</span>
-                </a>
-            </li>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <li class="nav-item">
+                    <a href="/Identity/Account/Manage" class="nav-link">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span class="link-text">Profile</span>
+                    </a>
+                </li>
+            }
 
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-sign-in-alt"></i>
-                    <span class="link-text">Profile</span>
-                </a>
-            </li>
 
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-sign-in-alt"></i>
-                    <span class="link-text">Logout</span>
-                </a>
-            </li>
             <li>
-                <partial name="_LoginPartial" />
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
+                        <button type="submit" class="nav-item">Logout</button>
+                    </form>
+                }
             </li>
+
+
         </ul>
     </nav>
 
