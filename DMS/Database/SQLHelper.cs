@@ -17,6 +17,37 @@ namespace DMS.Database
         }
 
         /// <summary>
+        /// Execute reader query
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public List<T> ExecuteReader<T>(string query)
+        {
+            if (sqlConnection.State != System.Data.ConnectionState.Open)
+                sqlConnection.Open();
+
+            var sqlCommand = sqlConnection.CreateCommand();
+            sqlCommand.CommandType = System.Data.CommandType.Text;
+
+            sqlCommand.CommandText = query;
+
+            List<T> list;
+
+            using (var reader = sqlCommand.ExecuteReader())
+            {
+                list = DataReaderMapToList<T>(reader);
+            }
+
+
+            if (sqlConnection.State == System.Data.ConnectionState.Open)
+                sqlConnection.Close();
+
+            sqlCommand.Dispose();
+
+            return list;
+        }
+
+        /// <summary>
         /// Insert into a table.
         /// </summary>
         /// <param name="table">Table to insert into</param>
@@ -46,7 +77,7 @@ namespace DMS.Database
                 {
                     string val = values[i];
 
-                    query += "'" + val + "'";
+                    query += "N'" + val + "'";
 
                     if (i != values.Length - 1)
                     {
@@ -69,6 +100,53 @@ namespace DMS.Database
                 var msg = ex.Message;
             }
             return rv >= 1;
+        }
+        /// <summary>
+        /// Insert into a table returning the ID.
+        /// </summary>
+        /// <param name="table">Table to insert into</param>
+        /// <param name="columns">Columns to insert values into</param>
+        /// <param name="values">Values to insert into specified columns</param>
+        /// <returns>Success or failure</returns>
+        public string InsertWithID(string table, string[] columns, string[] values)
+        {
+            object rv = null;
+                if (sqlConnection.State != System.Data.ConnectionState.Open)
+                    sqlConnection.Open();
+
+                var sqlCommand = sqlConnection.CreateCommand();
+                sqlCommand.CommandType = System.Data.CommandType.Text;
+
+                String query = "INSERT INTO " + table + " (";
+
+                query += String.Join(',', columns);
+
+                query += ")";
+
+                query += " VALUES (";
+
+                for (int i = 0; i < values.Length; i++)
+                {
+                    string val = values[i];
+
+                    query += "N'" + val + "'";
+
+                    if (i != values.Length - 1)
+                    {
+                        query += ",";
+                    }
+                }
+
+                query += ") SELECT SCOPE_IDENTITY()";
+
+                sqlCommand.CommandText = query;
+
+                rv = sqlCommand.ExecuteScalar();
+
+                if (sqlConnection.State == System.Data.ConnectionState.Open)
+                    sqlConnection.Close();
+                sqlCommand.Dispose();
+            return Convert.ToString(rv);
         }
 
 

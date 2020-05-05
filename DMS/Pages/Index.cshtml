@@ -62,12 +62,15 @@
     <br />
     <div id="treeListDemo">
         @(Html.DevExtreme().TreeList()
-            .ID("treeList")
+        .ID("treeList")
+
 .DataSource(d => d.Mvc()
-        .Controller("Categories")
-        .LoadAction("Get")
-        .Key("AutoKey")
-    ).KeyExpr("AutoKey")
+    .Controller("Categories")
+    .LoadAction("Get")
+    .Key("AutoKey")
+).KeyExpr("AutoKey")
+.OnSelectionChanged("onValueChangedTree")
+.SelectedRowKeys(new[] { 1 })
             .ParentIdExpr("FatherID")
             .ExpandedRowKeys(new[] { 1 })
             .ShowRowLines(true)
@@ -89,7 +92,18 @@
             })
         )
         @(Html.DevExtreme().DataGrid()
-            .ID("gridView")
+            .ID("gridContainer")
+                .OnContentReady("contentReady")
+                /*
+            .DataSource(d => d.Mvc()
+        .Controller("api/Upload")
+        .LoadMethod("GET")
+        .LoadParams(new { CatID = new JS("selectedID") })
+        .LoadAction("GetDocuments")
+        .Key("InfoAutoKey")
+    ).KeyExpr("InfoAutoKey")*/
+     .DataSourceOptions(o => o.ReshapeOnPush(true))
+    .RepaintChangesOnly(true)
             .ShowRowLines(true)
             .ShowBorders(true)
             .ColumnAutoWidth(true)
@@ -105,10 +119,10 @@
                 columns.Add().DataField("Name")
                     .Caption("Name");
 
-                columns.Add().DataField("DateCreated")
-                    .Caption("Date Created");
+                columns.Add().DataField("Ext")
+                .Caption("Type");
 
-                columns.Add().DataField("DateAdded")
+                columns.Add().DataField("DateTimeAdded")
                     .Caption("Date Added");
 
             })
@@ -118,6 +132,9 @@
     </div>
 
     <script>
+
+        var selectedID = -1;
+        var grid;
         function onDragChange(e) {
             var treeList = e.component,
                 visibleRows = treeList.getVisibleRows(),
@@ -131,6 +148,22 @@
                 }
                 targetNode = targetNode.parent;
             }
+        }
+
+        function contentReady(e) {
+            grid = e;
+        }
+        function onValueChangedTree(e) {
+            selectedID = e.selectedRowKeys[0];
+
+
+            console.log(grid);
+
+            $("#gridContainer").dxDataGrid({
+                dataSource: "api/Upload/GetDocuments?CatID=" + selectedID,
+            });
+
+
         }
 
         function onReorder(e) {

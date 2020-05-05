@@ -32,6 +32,8 @@ namespace DMS.Controllers
             
             if (photo != null)
             {
+                SaveFile(photo);
+
                 var cats = JsonConvert.DeserializeObject<List<DMSCategory>>(categories);   
                 var cons = JsonConvert.DeserializeObject<List<DMSContact>>(contacts);
 
@@ -45,11 +47,17 @@ namespace DMS.Controllers
                 {
                     return BadRequest();
                 }
-        //        SaveFile(photo);
             }
 
 
             return Ok();
+        }
+
+        [Route("GetDocuments")]
+        [HttpGet]
+        public List<Document> GetCatDocuments(long CatID)
+        {
+            return DataManager.GetCatDocuments(CatID);
         }
 
         void SaveFile(IFormFile file)
