@@ -20,14 +20,13 @@
           integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
           crossorigin="anonymous" />
     <link rel="stylesheet" href="~/css/vendor.css" asp-append-version="true" />
-   <!-- --> <link rel="stylesheet" href="~/css/Site.css" />
+    <link rel="stylesheet" href="~/css/Site.css" />
     <link rel="stylesheet" href="~/css/navbar.css"/>
     <script src="~/js/vendor.js" asp-append-version="true"></script>
 </head>
 
 <body>
     <div id="app-side-nav-outer-toolbar">
-        <!--
         <div class="layout-header">
             @(Html.DevExtreme().Toolbar()
                 .Items(items =>
@@ -46,7 +45,7 @@
                         .CssClass("header-title");
                 })
             )
-        </div>-->
+        </div>
         <div class="layout-body">
             @(Html.DevExtreme().Drawer()
                 .ID("layout-drawer")
@@ -74,122 +73,7 @@
     </div>
 
 
-    <nav class="navbar">
-        <ul class="navbar-nav">
-            <li class="logo">
-                <a href="#" class="nav-link">
-                    <span class="link-text logo-text">DMS</span>
-                </a>
-            </li>
-            @if (SignInManager.IsSignedIn(User))
-            {
-                <li class="nav-item" style="display: none">
-                    <a href="/Identity/Account/Register" class="nav-link">
-                        <i class="fas fa-sign-in-alt"></i>
-                        <span class="link-text">Sign up</span>
-                    </a>
-                </li>
-            }
-            else
-            {
-                <li class="nav-item">
-                    <a href="/Identity/Account/Register" class="nav-link">
-                        <i class="fas fa-sign-in-alt"></i>
-                        <span class="link-text">Sign up</span>
-                    </a>
-                </li>
-            }
-
-            @if (SignInManager.IsSignedIn(User))
-            {
-                <li class="nav-item" style="display: none">
-                    <a href="/Identity/Account/Login" class="nav-link">
-                        <i class="fas fa-sign-in-alt"></i>
-                        <span class="link-text">Login</span>
-                    </a>
-                </li>
-            }
-            else
-            {
-                <li class="nav-item">
-                    <a href="/Identity/Account/Login" class="nav-link">
-                        <i class="fas fa-sign-in-alt"></i>
-                        <span class="link-text">Login</span>
-                    </a>
-                </li>
-            }
-
-            @if (SignInManager.IsSignedIn(User))
-            {
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-sign-in-alt"></i>
-                        <span class="link-text">Dashboard</span>
-                    </a>
-                </li>
-            }
-            else
-            {
-                <li class="nav-item" style="display: none">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-sign-in-alt"></i>
-                        <span class="link-text">Dashboard</span>
-                    </a>
-                </li>
-            }
-            <li class="nav-item">
-                <span class="nav-link show-childs"><i class="fas fa-sign-in-alt"></i>Categories</span>
-                <ul class="navbar-nav-1">
-                    <li class="nav-item child-one" style="display: none">
-                        <a href="/addCategory" class="nav-link">
-                            <i class="fas fa-sign-in-alt"></i>
-                            <span class="link-text">Add Categories</span>
-                        </a>
-                    </li>
-                    <li class="nav-item child-two" style="display: none">
-                        <a href="" class="nav-link">
-                            <i class="fas fa-sign-in-alt"></i>
-                            <span class="link-text">Manage Categoris</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            @if (SignInManager.IsSignedIn(User))
-            {
-                <li class="nav-item">
-                    <a href="/Identity/Account/Manage" class="nav-link">
-                        <i class="fas fa-sign-in-alt"></i>
-                        <span class="link-text">Profile</span>
-                    </a>
-                </li>
-            }
-            else
-            {
-                <li class="nav-item" style="display: none">
-                    <a href="/Identity/Account/Manage" class="nav-link">
-                        <i class="fas fa-sign-in-alt"></i>
-                        <span class="link-text">Profile</span>
-                    </a>
-                </li>
-            }
-
-            <li class="nav-item">
-                @if (SignInManager.IsSignedIn(User))
-                {
-                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Home", new { area = "" })" method="post">
-                        <button type="submit" class="nav-link"><span class="link-text">Logout</span></button>
-                    </form>
-                }
-                else
-                {
-                    <div>
-                        <h4>Hello</h4>
-                    </div>
-                }
-            </li>
-
-        </ul>
-    </nav>
+    
 
     <script>
 
@@ -284,13 +168,7 @@
                 onTreeViewItemClick: onTreeViewItemClick
             };
         })();
-        $(document).ready(function () {
-            $(".show-childs").click(function () {
-                $('.child-one').fadeIn(100, function () {
-                    $('.child-two').fadeIn(100);
-                })
-            })
-        })
+       
         document.addEventListener("DOMContentLoaded", function documentReady() {
             this.removeEventListener("DOMContentLoaded", documentReady);
             DMS.init();
