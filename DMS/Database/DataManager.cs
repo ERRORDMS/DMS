@@ -28,7 +28,11 @@ namespace DMS.Database
         {
             if(sqlHelper.Delete(Tables.Categories, "AutoKey = '" + autoKey+ "'"))
             {
-                return (int)ErrorCodes.SUCCESS;
+
+                if(sqlHelper.Delete(Tables.CategoryUserRel, "CategoryAutoKey = '" + autoKey + "'"))     
+                    return (int)ErrorCodes.SUCCESS;
+                else
+                    return (int)ErrorCodes.INTERNAL_ERROR;
             }
             else
             {

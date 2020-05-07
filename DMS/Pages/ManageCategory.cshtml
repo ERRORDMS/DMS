@@ -28,9 +28,11 @@
 
         $(document).ready(function () {
 
-            if (@AutoKey != 0) {
-                    txtName.text = getVal();
-                }
+
+            $('#txtName').val(getVal());
+            $('#txtName').focus();
+            $('#txtName').blur();
+                
             });
 
         function getVal()
@@ -43,7 +45,7 @@
 
         function saveCat() {
 
-            if (txtName.text == null) {
+            if (txtName.value == null) {
                 alert('Enter name');
                 return;
             }
@@ -60,12 +62,13 @@
             const fd = new FormData();
 
             fd.append('AutoKey', @AutoKey);
-            fd.append('Name', txtName.Text);
+            fd.append('Name', txtName.value);
             xhr.send(fd);
         }
 
 
         function deleteCat() {
+            const xhr = new XMLHttpRequest();
 
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
