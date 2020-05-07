@@ -1,0 +1,169 @@
+﻿@page
+@model DMS.Pages.ManageCategoryModel
+@{
+    ViewData["Title"] = "ManageCategory";
+    Layout = "~/Pages/_Layout.cshtml";
+
+    long AutoKey = 0;
+
+    AutoKey = Convert.ToInt64(Request.Query["AutoKey"]);
+
+
+}
+
+
+<!-- Syncfusion Essential JS 2 Styles -->
+<link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/material.css" />
+
+<!-- Syncfusion Essential JS 2 Scripts -->
+<script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js"></script>
+
+<h2 class="content-block">Manage Category</h2>
+
+
+@if (AutoKey != 0)
+{
+
+    <script>
+
+        $(document).ready(function () {
+
+            if (@AutoKey != 0) {
+                    txtName.text = getVal();
+                }
+            });
+
+        function getVal()
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("GET", "api/Categories/Name?AutoKey=" + @AutoKey, false );
+    xmlHttp.send();
+    return xmlHttp.responseText;
+        }
+
+        function saveCat() {
+
+            if (txtName.text == null) {
+                alert('Enter name');
+                return;
+            }
+               const xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+            window.location = "Index";
+            }
+        }
+
+        xhr.open("POST", 'api/Categories/Save', true);
+
+            const fd = new FormData();
+
+            fd.append('AutoKey', @AutoKey);
+            fd.append('Name', txtName.Text);
+            xhr.send(fd);
+        }
+
+
+        function deleteCat() {
+
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+            window.location = "Index";
+            }
+        }
+
+        xhr.open("POST", 'api/Categories/Delete', true);
+
+            const fd = new FormData();
+
+            fd.append('AutoKey', @AutoKey);
+            xhr.send(fd);
+
+        }
+
+    </script>
+
+
+    @(Html.DevExtreme().TextBox()
+
+                .Placeholder("Category Name")
+                        .ElementAttr("class", "content-block")
+                        .Name("txtName")
+    )
+
+    <br />
+    @(Html.DevExtreme().Button()
+        .Icon("save")
+        .Text("Save")
+        .OnClick("saveCat")
+        .ElementAttr("class", "content-block")
+
+    )
+    @(Html.DevExtreme().Button()
+        .Icon("trash")
+        .Text("Delete Category")
+        .OnClick("deleteCat")
+        .ElementAttr("class", "content-block")
+
+    )
+}
+else
+{
+    @(Html.DevExtreme().TreeList()
+        .ID("treeList")
+
+.DataSource(d => d.Mvc()
+    .Controller("Categories")
+    .LoadAction("Get")
+    .Key("AutoKey")
+).KeyExpr("AutoKey")
+            .ParentIdExpr("FatherID")
+            .ExpandedRowKeys(new[] { 1 })
+            .ShowRowLines(true)
+            .ShowBorders(true)
+            .ColumnAutoWidth(true)
+                    /*.RowDragging(rd => rd
+                        .AllowDropInsideItem(true)
+                        .AllowReordering(true)
+                        .OnDragChange("onDragChange")
+                        .OnReorder("onReorder")
+                        .ShowDragIcons(true)
+                    )*/
+                    .ElementAttr("class", "content-block")
+
+            .Columns(columns =>
+            {
+                columns.Add().DataField("Name")
+                    .Caption("Category Name");
+                columns.Add()
+               .Caption("Manage")
+               .Width(100)
+               .Alignment(HorizontalAlignment.Center)
+               .AllowFiltering(false)
+               .AllowSorting(false)
+               .CellTemplate(new JS("cellTemplate"));
+
+
+            })
+        )
+}
+
+<script>
+
+    //<![CDATA[
+    function cellTemplate(element, cellInfo) {
+        $('<a/>')
+            .text("Manage")
+            .click(function () {
+                onEdit(element, cellInfo);
+            })
+            .appendTo(element);
+    }
+
+    function onEdit(element, cellinfo) {
+        var autokey = cellinfo.data.AutoKey;
+
+        window.location.href = 'ManageCategory?AutoKey=' + autokey;
+    }
+</script>

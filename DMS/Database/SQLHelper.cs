@@ -148,7 +148,92 @@ namespace DMS.Database
                 sqlCommand.Dispose();
             return Convert.ToString(rv);
         }
+        /// <summary>
+        /// Delete from a table
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="condition"></param>
+        /// <returns></returns>
 
+        public bool Delete(string table, string condition)
+        {
+            int rv = 0;
+            try
+            {
+                if (sqlConnection.State != System.Data.ConnectionState.Open)
+                    sqlConnection.Open();
+
+                var sqlCommand = sqlConnection.CreateCommand();
+                sqlCommand.CommandType = System.Data.CommandType.Text;
+
+                String query = "DELETE from " + table + " WHERE " + condition;
+
+
+                sqlCommand.CommandText = query;
+
+                rv = sqlCommand.ExecuteNonQuery();
+
+                if (sqlConnection.State == System.Data.ConnectionState.Open)
+                    sqlConnection.Close();
+                sqlCommand.Dispose();
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+            return rv >= 1;
+        }
+
+        /// <summary>
+        /// Update rows in a table
+        /// </summary>
+        /// <param name="table">Table to insert into</param>
+        /// <param name="columns">Columns to insert values into</param>
+        /// <param name="values">Values to insert into specified columns</param>
+        /// <returns>Success or failure</returns>
+        public bool Update(string table, string[] columns, string[] values, string condition)
+        {
+            int rv = 0;
+            try
+            {
+                if (sqlConnection.State != System.Data.ConnectionState.Open)
+                    sqlConnection.Open();
+
+                var sqlCommand = sqlConnection.CreateCommand();
+                sqlCommand.CommandType = System.Data.CommandType.Text;
+
+                String query = "UPDATE " + table + " SET ";
+
+                for (int i = 0; i < values.Length; i++)
+                {
+                    string val = values[i];
+                    string col = columns[i];
+
+                    query += col + " = N'" + val + "'";
+
+                    if (i != values.Length - 1)
+                    {
+                        query += ",";
+                    }
+                }
+
+                if(!string.IsNullOrEmpty(condition))
+                query += " WHERE " + condition ;
+
+                sqlCommand.CommandText = query;
+
+                rv = sqlCommand.ExecuteNonQuery();
+
+                if (sqlConnection.State == System.Data.ConnectionState.Open)
+                    sqlConnection.Close();
+                sqlCommand.Dispose();
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+            return rv >= 1;
+        }
 
         /// <summary>
         /// Select specified columns from a table
@@ -183,6 +268,67 @@ namespace DMS.Database
             sqlCommand.Dispose();
             
             return list;
+        }
+
+        /// <summary>
+        /// Select specified columns from a table
+        /// </summary>
+        /// <typeparam name="T">Which DataType should it select into</typeparam>
+        /// <param name="table">Table to select from</param>
+        /// <param name="column">Columns to be selected</param>
+        /// <returns></returns>
+        public string Select(string table, string column)
+        {
+            string rv;
+
+            if (sqlConnection.State != System.Data.ConnectionState.Open)
+                sqlConnection.Open();
+
+            var sqlCommand = sqlConnection.CreateCommand();
+            sqlCommand.CommandType = System.Data.CommandType.Text;
+
+            string query = "SELECT " + column + " FROM " + table;
+
+            sqlCommand.CommandText = query;
+
+            rv = Convert.ToString(sqlCommand.ExecuteScalar());
+
+            if (sqlConnection.State == System.Data.ConnectionState.Open)
+                sqlConnection.Close();
+
+            sqlCommand.Dispose();
+
+            return rv;
+        }
+
+        /// <summary>
+        /// Select specified columns from a table
+        /// </summary>
+        /// <param name="table">Table to select from</param>
+        /// <param name="column">Columns to be selected</param>
+        /// <returns></returns>
+        public string SelectWithWhere(string table, string column, string where)
+        {
+            string rv;
+
+            if (sqlConnection.State != System.Data.ConnectionState.Open)
+                sqlConnection.Open();
+
+            var sqlCommand = sqlConnection.CreateCommand();
+            sqlCommand.CommandType = System.Data.CommandType.Text;
+
+            string query = "SELECT " + column + " FROM " + table + " WHERE " + where;
+
+            sqlCommand.CommandText = query;
+
+            rv = Convert.ToString(sqlCommand.ExecuteScalar());
+
+            if (sqlConnection.State == System.Data.ConnectionState.Open)
+                sqlConnection.Close();
+
+            sqlCommand.Dispose();
+
+            return rv;
         }
         /// <summary>
         /// Select specified columns from a table with conditions
@@ -320,6 +466,7 @@ namespace DMS.Database
             while (dr.Read())
             {
                 obj = Activator.CreateInstance<T>();
+         
                 foreach (PropertyInfo prop in obj.GetType().GetProperties())
                 {
                     if (!object.Equals(dr[prop.Name], DBNull.Value))

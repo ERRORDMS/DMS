@@ -29,6 +29,37 @@ namespace DMS.Controllers
             return DataSourceLoader.Load(DataManager.GetCategories(userId), new DataSourceLoadOptionsBase());
         }
 
+        [Route("Save")]
+        [HttpPost]
+        public IActionResult saveCat(Category cat)
+        {
+            int i = DataManager.SaveCategory(cat);
+
+            Result result = new Result();
+            result.StatusName = ((ErrorCodes)i).ToString();
+            result.StatusCode = i;
+
+            return new JsonResult(result);
+        }
+
+        [Route("Name")]
+        public string GetName(long autokey)
+        {
+            return DataManager.GetName(autokey);
+        }
+
+        [Route("Delete")]
+        [HttpPost]
+        public IActionResult saveCat(long autokey)
+        {
+            int i = DataManager.DeleteCategory(autokey);
+
+            Result result = new Result();
+            result.StatusName = ((ErrorCodes)i).ToString();
+            result.StatusCode = i;
+
+            return new JsonResult(result);
+        }
         [Route("addCategory")]
         [HttpPost]
         public IActionResult addCategory(Category category)

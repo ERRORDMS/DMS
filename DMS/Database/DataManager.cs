@@ -23,7 +23,43 @@ namespace DMS.Database
             client = new ServiceReference1.AlSahlServiceClient();
 
         }
+
+        public static int DeleteCategory(long autoKey)
+        {
+            if(sqlHelper.Delete(Tables.Categories, "AutoKey = '" + autoKey+ "'"))
+            {
+                return (int)ErrorCodes.SUCCESS;
+            }
+            else
+            {
+                return (int)ErrorCodes.INTERNAL_ERROR;
+            }
+        }
         
+        public static int SaveCategory(Category cat)
+        {
+            if (sqlHelper.Update(Tables.Categories,
+                new string[] { "Name" },
+                new string[] { cat.Name },
+                "AutoKey = '" + cat.AutoKey + "'"))
+              {
+
+                return (int)ErrorCodes.SUCCESS;
+            }
+
+            else
+            {
+                return (int)ErrorCodes.INTERNAL_ERROR;
+            }
+
+        }
+
+        public static string GetName(long autokey)
+        {
+            return sqlHelper.SelectWithWhere(Tables.Categories,
+                "Name",
+                "AutoKey = '" + autokey + "'");
+        }
         public static int AddCategory(Category category,string userId)
         {
             string query = "select top 1 UserID ";
