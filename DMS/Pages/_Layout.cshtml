@@ -87,37 +87,78 @@
 
             @(Html.DevExtreme().TreeView()
                 .Items(items =>
-                        {
+                {
                     items.Add()
                         .Text("Devices")
                         .Icon("home")
                         .Option("path", Url.Page("Index"))
                         .Selected(IsCurrentPage("Index"));
+
+
                     items.Add()
                        .Text("Categories")
                        .Icon("tags")
                        .Option("path", Url.Page("Categories"))
                        .Selected(IsCurrentPage("Categories"));
 
-                    items.Add()
+                    if(SignInManager.IsSignedIn(User))
+                    {
+                        items.Add()
                    .Text("Add Category")
                    .Icon("plus")
                    .Option("path", Url.Page("AddCategory"))
                    .Selected(IsCurrentPage("AddCategory"));
+                    } else
+                    {
+
+                    }
 
 
-                    items.Add()
-                   .Text("Currencies")
-                   .Icon("money")
-                   .Option("path", Url.Page("Currencies"))
-                   .Selected(IsCurrentPage("Currencies"));
+                    if(SignInManager.IsSignedIn(User))
+                    {
 
-                              items.Add()
-                   .Text("Add Currency")
-                   .Icon("plus")
-                   .Option("path", Url.Page("AddCurrency"))
-                   .Selected(IsCurrentPage("AddCurrency"));
+                    } else
+                    {
+                        items.Add()
+                        .Text("Register")
+                        .Icon("plus")
+                        .Option("path", Url.Page("identity/Account/Register"))
+                        .Selected(IsCurrentPage("register"));
+                    }
 
+
+                    if(SignInManager.IsSignedIn(User))
+                    {
+
+                    } else
+                    {
+                        items.Add()
+                  .Text("Login")
+                  .Icon("user")
+                  .Option("path", Url.Page("Identity/Account/Login"))
+                  .Selected(IsCurrentPage("Login"));
+                    }
+
+                    if(SignInManager.IsSignedIn(User))
+                    {
+                        items.Add()
+                   .Text("Profile")
+                   .Icon("user")
+                   .Option("path", Url.Page("Identity/Account/Manage"))
+                   .Selected(IsCurrentPage("/Areas/Identity/Pages/Account/Index"));
+                    } else
+                    {
+
+                    }
+
+                    if(SignInManager.IsSignedIn(User))
+                    {
+                         items.Add()
+                   .Text("Logout")
+                   .Icon("user")
+                   .Option("path", Url.Page("Identity/Account/Logout"))
+                   .Selected(IsCurrentPage("Logout"));
+                    }
                     items.Add()
                         .Text("Settings")
                         .Icon("preferences")
