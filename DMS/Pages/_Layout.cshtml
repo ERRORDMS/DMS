@@ -40,7 +40,7 @@
                         .Location(ToolbarItemLocation.Before)
                         .CssClass("menu-button");
                     items.Add()
-                        .Html("<div>DMS</div>")
+                        .Html("<div>Document Management System</div>")
                         .Location(ToolbarItemLocation.Before)
                         .CssClass("header-title");
                 })
@@ -59,7 +59,7 @@
                                 <div class="content-block">
                                     <div class="content-footer">
                                         <div id="footer">
-                                            Copyright (c) 2000-2019 Developer Express Inc.
+                                            Copyright (C) Zimam Solutions
                                             <br />
                                             All trademarks or registered trademarks are property of their respective owners.
                                         </div>
@@ -67,13 +67,76 @@
                                 </div>
                             </div>
                 </text>)
+         .Template(new TemplateName("navigation-menu"))
             )
         </div>
-
     </div>
 
+    @using (Html.DevExtreme().NamedTemplate("navigation-menu"))
+    {
+        <div class="menu-container dx-swatch-additional">
 
-    
+            @functions{
+                bool IsCurrentPage(string pageName)
+                {
+                    var pageUrl = Url.Page(pageName);
+                    var currentPageUrl = Url.Page(ViewContext.RouteData.Values["page"].ToString());
+                    return pageUrl == currentPageUrl;
+                }
+            }
+
+            @(Html.DevExtreme().TreeView()
+                .Items(items =>
+                        {
+                    items.Add()
+                        .Text("Devices")
+                        .Icon("home")
+                        .Option("path", Url.Page("Index"))
+                        .Selected(IsCurrentPage("Index"));
+                    items.Add()
+                       .Text("Categories")
+                       .Icon("tags")
+                       .Option("path", Url.Page("Categories"))
+                       .Selected(IsCurrentPage("Categories"));
+
+                    items.Add()
+                   .Text("Add Category")
+                   .Icon("plus")
+                   .Option("path", Url.Page("AddCategory"))
+                   .Selected(IsCurrentPage("AddCategory"));
+
+
+                    items.Add()
+                   .Text("Currencies")
+                   .Icon("money")
+                   .Option("path", Url.Page("Currencies"))
+                   .Selected(IsCurrentPage("Currencies"));
+
+                              items.Add()
+                   .Text("Add Currency")
+                   .Icon("plus")
+                   .Option("path", Url.Page("AddCurrency"))
+                   .Selected(IsCurrentPage("AddCurrency"));
+
+                    items.Add()
+                        .Text("Settings")
+                        .Icon("preferences")
+                        .Option("path", Url.Page("Settings"))
+            .Visible(false)
+                        .Selected(IsCurrentPage("Settings"));
+                })
+                .DataStructure(TreeViewDataStructure.Plain)
+                .SelectionMode(NavSelectionMode.Single)
+                .SelectedExpr("selected")
+                .FocusStateEnabled(false)
+                .Width(250)
+                .OnItemClick("DMS.onTreeViewItemClick")
+            )
+        </div>
+    }
+
+
+
 
     <script>
 
@@ -168,7 +231,7 @@
                 onTreeViewItemClick: onTreeViewItemClick
             };
         })();
-       
+
         document.addEventListener("DOMContentLoaded", function documentReady() {
             this.removeEventListener("DOMContentLoaded", documentReady);
             DMS.init();
