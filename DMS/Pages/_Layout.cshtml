@@ -28,24 +28,24 @@
 <body>
     <div id="app-side-nav-outer-toolbar">
         <div class="layout-header">
-                @(Html.DevExtreme().Toolbar()
-                    .Items(items =>
-                            {
-                        items.Add()
-                            .Widget(w => w
-                                .Button()
-                                .Icon("menu")
-                                .OnClick("DMS.onMenuButtonClick")
-                            )
-                            .Location(ToolbarItemLocation.Before)
-                            .CssClass("menu-button");
-                        items.Add()
-                            .Html("<div>Document Management System</div>")
-                            .Location(ToolbarItemLocation.Before)
-                            .CssClass("header-title");
-                    })
-                )
-                <partial name="_LoginPartial" />
+            @(Html.DevExtreme().Toolbar()
+                .Items(items =>
+                        {
+                    items.Add()
+                        .Widget(w => w
+                            .Button()
+                            .Icon("menu")
+                            .OnClick("DMS.onMenuButtonClick")
+                        )
+                        .Location(ToolbarItemLocation.Before)
+                        .CssClass("menu-button");
+                    items.Add()
+                        .Html("<div>Document Management System</div>")
+                        .Location(ToolbarItemLocation.Before)
+                        .CssClass("header-title");
+                })
+            )
+            <partial name="_LoginPartial" /> 
         </div>
         <div class="layout-body">
             @(Html.DevExtreme().Drawer()

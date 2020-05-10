@@ -7,15 +7,16 @@
     <style>
         #logoutForm {
             position: relative;
-            left: 60%;
-            top: -20%;
+            left: 70%;
+            top: -70%;
+            height: 1px;
         }
     </style>
 </head>
 @if (SignInManager.IsSignedIn(User))
 {
     <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
-        <div class="nav navbar-nav navbar-right">
+        <div class="nav navbar-nav navbar-right insideform">
                 <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
             
                 <button type="submit" class="btn btn-link navbar-btn navbar-link">Logout</button>
