@@ -28,23 +28,24 @@
 <body>
     <div id="app-side-nav-outer-toolbar">
         <div class="layout-header">
-            @(Html.DevExtreme().Toolbar()
-                .Items(items =>
-                        {
-                    items.Add()
-                        .Widget(w => w
-                            .Button()
-                            .Icon("menu")
-                            .OnClick("DMS.onMenuButtonClick")
-                        )
-                        .Location(ToolbarItemLocation.Before)
-                        .CssClass("menu-button");
-                    items.Add()
-                        .Html("<div>Document Management System</div>")
-                        .Location(ToolbarItemLocation.Before)
-                        .CssClass("header-title");
-                })
-            )
+                @(Html.DevExtreme().Toolbar()
+                    .Items(items =>
+                            {
+                        items.Add()
+                            .Widget(w => w
+                                .Button()
+                                .Icon("menu")
+                                .OnClick("DMS.onMenuButtonClick")
+                            )
+                            .Location(ToolbarItemLocation.Before)
+                            .CssClass("menu-button");
+                        items.Add()
+                            .Html("<div>Document Management System</div>")
+                            .Location(ToolbarItemLocation.Before)
+                            .CssClass("header-title");
+                    })
+                )
+                <partial name="_LoginPartial" />
         </div>
         <div class="layout-body">
             @(Html.DevExtreme().Drawer()
@@ -88,18 +89,22 @@
             @(Html.DevExtreme().TreeView()
                 .Items(items =>
                 {
-                    items.Add()
-                        .Text("Devices")
+
+                    if(SignInManager.IsSignedIn(User))
+                    {
+                        items.Add()
+                        .Text("Home")
                         .Icon("home")
                         .Option("path", Url.Page("Index"))
                         .Selected(IsCurrentPage("Index"));
-
-
-                    items.Add()
-                       .Text("Categories")
-                       .Icon("tags")
-                       .Option("path", Url.Page("Categories"))
-                       .Selected(IsCurrentPage("Categories"));
+                    } else
+                    {
+                        items.Add()
+                        .Text("Home")
+                        .Icon("home")
+                        .Option("path", Url.Page("Home"))
+                        .Selected(IsCurrentPage("Home"));
+                    }
 
                     if(SignInManager.IsSignedIn(User))
                     {
@@ -122,7 +127,7 @@
                         items.Add()
                         .Text("Register")
                         .Icon("plus")
-                        .Option("path", Url.Page("identity/Account/Register"))
+                        .Option("path", "identity/Account/Register")
                         .Selected(IsCurrentPage("register"));
                     }
 
@@ -135,7 +140,7 @@
                         items.Add()
                   .Text("Login")
                   .Icon("user")
-                  .Option("path", Url.Page("Identity/Account/Login"))
+                  .Option("path", "Identity/Account/Login")
                   .Selected(IsCurrentPage("Login"));
                     }
 
@@ -144,8 +149,8 @@
                         items.Add()
                    .Text("Profile")
                    .Icon("user")
-                   .Option("path", Url.Page("Identity/Account/Manage"))
-                   .Selected(IsCurrentPage("/Areas/Identity/Pages/Account/Index"));
+                   .Option("path", "Identity/Account/Manage");
+
                     } else
                     {
 
@@ -153,11 +158,11 @@
 
                     if(SignInManager.IsSignedIn(User))
                     {
-                         items.Add()
-                   .Text("Logout")
-                   .Icon("user")
-                   .Option("path", Url.Page("Identity/Account/Logout"))
-                   .Selected(IsCurrentPage("Logout"));
+                        items.Add()
+                  .Text("Logout")
+                  .Icon("user")
+                  .Option("path", Url.Page("Identity/Account/Logout"))
+                  .Selected(IsCurrentPage("Logout"));
                     }
                     items.Add()
                         .Text("Settings")
@@ -277,6 +282,9 @@
             this.removeEventListener("DOMContentLoaded", documentReady);
             DMS.init();
         });
+        $(document).ready(function () {
+            $('')
+        })
     </script>
 
     @RenderSection("Scripts", required: false)
