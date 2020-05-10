@@ -1,0 +1,170 @@
+﻿@page
+@model DMS.Pages.ManageCategoryModel
+@{
+    ViewData["Title"] = "ManageContact";
+    Layout = "~/Pages/_Layout.cshtml";
+
+    long AutoKey = 0;
+
+    AutoKey = Convert.ToInt64(Request.Query["AutoKey"]);
+
+
+}
+
+
+<!-- Syncfusion Essential JS 2 Styles -->
+<link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/material.css" />
+
+<!-- Syncfusion Essential JS 2 Scripts -->
+<script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js"></script>
+
+<h2 class="content-block">Manage Contact</h2>
+
+
+@if (AutoKey != 0)
+{
+
+    <script>
+
+        $(document).ready(function () {
+
+
+            $('#txtName').val(getVal());
+            $('#txtName').focus();
+            $('#txtName').blur();
+
+            });
+
+        function getVal()
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("GET", "api/Contacts/Name?AutoKey=" + @AutoKey, false );
+    xmlHttp.send();
+    return xmlHttp.responseText;
+        }
+
+        function saveCon() {
+
+            if (txtName.value == null) {
+                alert('Enter name');
+                return;
+            }
+               const xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+            window.location = "Index";
+            }
+        }
+
+        xhr.open("POST", 'api/Contacts/Save', true);
+
+            const fd = new FormData();
+
+            fd.append('AutoKey', @AutoKey);
+            fd.append('Name', txtName.value);
+            xhr.send(fd);
+        }
+
+
+        function deleteCon() {
+            const xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+            window.location = "Index";
+            }
+        }
+
+        xhr.open("POST", 'api/Contacts/Delete', true);
+
+            const fd = new FormData();
+
+            fd.append('AutoKey', @AutoKey);
+            xhr.send(fd);
+
+        }
+
+    </script>
+
+
+    @(Html.DevExtreme().TextBox()
+
+                .Placeholder("Contact Name")
+                        .ElementAttr("class", "content-block")
+                        .Name("txtName")
+    )
+
+    <br />
+    @(Html.DevExtreme().Button()
+        .Icon("save")
+        .Text("Save")
+        .OnClick("saveCon")
+        .ElementAttr("class", "content-block")
+
+    )
+    @(Html.DevExtreme().Button()
+        .Icon("trash")
+        .Text("Delete Contact")
+        .OnClick("deleteCon")
+        .ElementAttr("class", "content-block")
+
+    )
+}
+else
+{
+    @(Html.DevExtreme().DataGrid()
+        .ID("contactsList")
+
+.DataSource(d => d.Mvc()
+    .Controller("Contacts")
+    .LoadAction("Get")
+    .Key("AutoKey")
+).KeyExpr("AutoKey")
+            .ShowRowLines(true)
+            .ShowBorders(true)
+            .ColumnAutoWidth(true)
+                    /*.RowDragging(rd => rd
+                        .AllowDropInsideItem(true)
+                        .AllowReordering(true)
+                        .OnDragChange("onDragChange")
+                        .OnReorder("onReorder")
+                        .ShowDragIcons(true)
+                    )*/
+                    .ElementAttr("class", "content-block")
+
+            .Columns(columns =>
+            {
+                columns.Add().DataField("Name")
+                    .Caption("Contact Name");
+                columns.Add()
+               .Caption("Manage")
+               .Width(100)
+               .Alignment(HorizontalAlignment.Center)
+               .AllowFiltering(false)
+               .AllowSorting(false)
+               .CellTemplate(new JS("cellTemplate"));
+
+
+            })
+        )
+}
+
+<script>
+
+    //<![CDATA[
+    function cellTemplate(element, cellInfo) {
+        $('<a/>')
+            .text("Manage")
+            .click(function () {
+                onEdit(element, cellInfo);
+            })
+            .appendTo(element);
+    }
+
+    function onEdit(element, cellinfo) {
+        var autokey = cellinfo.data.AutoKey;
+
+        window.location.href = 'ManageContact?AutoKey=' + autokey;
+    }
+</script>

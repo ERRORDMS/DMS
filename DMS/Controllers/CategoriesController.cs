@@ -45,7 +45,7 @@ namespace DMS.Controllers
         [Route("Name")]
         public string GetName(long autokey)
         {
-            return DataManager.GetName(autokey);
+            return DataManager.GetCatName(autokey);
         }
 
         [Route("Delete")]

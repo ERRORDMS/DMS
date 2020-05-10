@@ -1,0 +1,63 @@
+﻿@page
+@model DMS.Pages.AddContactModel
+@{
+    ViewData["Title"] = "AddContact";
+    Layout = "~/Pages/_Layout.cshtml";
+}
+
+<h2 class="content-block">Add Contact</h2>
+<div>
+    <form action="javascript:addContact()">
+        <div class="dx-field-value">
+            @(Html.DevExtreme().TextBox()
+                .Mode(TextBoxMode.Text)
+                .Name("ContactName")
+                .Placeholder("Contact Name")
+                .HoverStateEnabled(true)
+            )
+          
+
+        </div>
+        <br />
+        <br />
+        <input type="submit" value="Add Contact" class="submit" />
+    </form>
+
+</div>
+
+<script>
+    function addContact() {
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var t = this.response;
+                console.log(t);
+                var obj = JSON.parse(t);
+                console.log(obj);
+
+                var statusCode = obj.StatusCode;
+                if (statusCode == 0) {
+                    cosnole.log('good');
+                } else {
+                    console.log('bad');
+                }
+                if (statusCode == 103) {
+                    console.log('bad2')
+                } else {
+                    console.log('good1')
+                }
+                if (statusCode == 105) {
+                    console.log('bad3')
+                } else {
+                    console.log('good3')
+                }
+            }
+        }
+        var contact = ContactName.value;
+        const fd = new FormData();
+        fd.append("Name", contact);
+        xhr.open("POST", "api/Contacts/addContact", true);
+        xhr.send(fd);
+    }
+</script>
+

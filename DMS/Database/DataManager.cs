@@ -58,7 +58,7 @@ namespace DMS.Database
 
         }
 
-        public static string GetName(long autokey)
+        public static string GetCatName(long autokey)
         {
             return sqlHelper.SelectWithWhere(Tables.Categories,
                 "Name",
@@ -101,6 +101,68 @@ namespace DMS.Database
             }
         }
 
+
+        public static int DeleteContact(long autoKey)
+        {
+            if (sqlHelper.Delete(Tables.Contacts, "AutoKey = '" + autoKey + "'"))
+            {
+
+                    return (int)ErrorCodes.SUCCESS;
+            }
+            else
+            {
+                return (int)ErrorCodes.INTERNAL_ERROR;
+            }
+        }
+
+        public static int SaveContact(Contact con)
+        {
+            if (sqlHelper.Update(Tables.Contacts,
+                new string[] { "Name" },
+                new string[] { con.Name },
+                "AutoKey = '" + con.AutoKey + "'"))
+            {
+
+                return (int)ErrorCodes.SUCCESS;
+            }
+
+            else
+            {
+                return (int)ErrorCodes.INTERNAL_ERROR;
+            }
+
+        }
+
+        public static string GetConName(long autokey)
+        {
+            return sqlHelper.SelectWithWhere(Tables.Contacts,
+                "Name",
+                "AutoKey = '" + autokey + "'");
+        }
+        public static int AddContact(Contact contact, string userId)
+        {
+            Dictionary<string, string> wheres = new Dictionary<string, string>();
+
+            wheres.Add("Name", contact.Name);
+            wheres.Add("UserID", userId);
+            
+            if (sqlHelper.Exists(Tables.Contacts, wheres))
+                return (int)ErrorCodes.CATEGORY_EXISTS;
+
+            string autoKey = sqlHelper.InsertWithID(Tables.Contacts,
+                new string[] { "Name", "UserID" },
+                new string[] { contact.Name, userId });
+            if (!string.IsNullOrEmpty(autoKey))
+            {
+
+                    return (int)ErrorCodes.SUCCESS;
+            
+            }
+            else
+            {
+                return (int)ErrorCodes.INTERNAL_ERROR;
+            }
+        }
         public static List<Document> GetCatDocuments(long CatID)
         {
             List<Document> documents = new List<Document>();
