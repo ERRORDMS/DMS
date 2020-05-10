@@ -117,6 +117,21 @@
                     {
 
                     }
+                    if(SignInManager.IsSignedIn(User))
+                    {
+                        items.Add()
+                   .Text("Manage Category")
+                   .Icon("edit")
+                   .Option("path", Url.Page("ManageCategory"))
+                   .Selected(IsCurrentPage("ManageCategory"));
+                    } else
+                    {
+                        items.Add()
+                        .Text("About")
+                        .Icon("info")
+                        .Option("path", Url.Page("About"))
+                        .Selected(IsCurrentPage("About"));
+                    }
 
 
                     if(SignInManager.IsSignedIn(User))
