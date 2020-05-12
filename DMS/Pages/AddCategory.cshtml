@@ -70,7 +70,12 @@
         <br />
         <input type="submit" value="Add Category" class="submit" />
     </form>
-
+    <div class="Category_found" style="display: none">
+        the Category already exists
+    </div>
+    <div class="server_error" style="display: none;">
+        Internal Server Error
+    </div>
 </div>
 
 <script>
@@ -121,19 +126,25 @@
 
                 var statusCode = obj.StatusCode;
                 if (statusCode == 0) {
-                    cosnole.log('good');
+                    cosnole.log('SUCCESS');
                 } else {
                     console.log('bad');
                 }
                 if (statusCode == 103) {
-                    console.log('bad2')
+                    console.log('server error');
+                    $(document).ready(function () {
+                        $(".server_error").fadeIn(100)
+                    })
                 } else {
-                    console.log('good1')
+                    console.log('error');
+                    $(".server_error").fadeOut(100)
                 }
                 if (statusCode == 105) {
-                    console.log('bad3')
+                    console.log('Category found');
+                    $('.Category_found').fadeIn(100)
                 } else {
-                    console.log('good3')
+                    console.log('the Category not exists');
+                    $('.Category_found').fadeOut(100)
                 }
             }
         }

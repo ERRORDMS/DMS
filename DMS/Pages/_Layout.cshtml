@@ -154,6 +154,13 @@
                .Option("path", "Identity/Account/Manage");
 
                         items.Add()
+               .Text("Upload")
+               .Icon("upload")
+               .Option("path", Url.Page("Upload"))
+                        .Selected(IsCurrentPage("upload"));
+
+
+                        items.Add()
                             .Text("Settings")
                             .Icon("preferences")
                             .Option("path", Url.Page("Settings"))

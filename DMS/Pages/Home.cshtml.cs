@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace DMS.Pages
 {
+    [AllowAnonymous]
     public class HomeModel : PageModel
     {
         public void OnGet()
