@@ -19,17 +19,17 @@ namespace DMS.Database
         private static ServiceReference1.AlSahlServiceClient client;
         public DataManager()
         {
-        sqlHelper = new SQLHelper(GetConnectionString());
+            sqlHelper = new SQLHelper(GetConnectionString());
             client = new ServiceReference1.AlSahlServiceClient();
 
         }
 
         public static int DeleteCategory(long autoKey)
         {
-            if(sqlHelper.Delete(Tables.Categories, "AutoKey = '" + autoKey+ "'"))
+            if (sqlHelper.Delete(Tables.Categories, "AutoKey = '" + autoKey + "'"))
             {
 
-                if(sqlHelper.Delete(Tables.CategoryUserRel, "CategoryAutoKey = '" + autoKey + "'"))     
+                if (sqlHelper.Delete(Tables.CategoryUserRel, "CategoryAutoKey = '" + autoKey + "'"))
                     return (int)ErrorCodes.SUCCESS;
                 else
                     return (int)ErrorCodes.INTERNAL_ERROR;
@@ -39,14 +39,14 @@ namespace DMS.Database
                 return (int)ErrorCodes.INTERNAL_ERROR;
             }
         }
-        
+
         public static int SaveCategory(Category cat)
         {
             if (sqlHelper.Update(Tables.Categories,
                 new string[] { "Name" },
                 new string[] { cat.Name },
                 "AutoKey = '" + cat.AutoKey + "'"))
-              {
+            {
 
                 return (int)ErrorCodes.SUCCESS;
             }
@@ -64,13 +64,13 @@ namespace DMS.Database
                 "Name",
                 "AutoKey = '" + autokey + "'");
         }
-        public static int AddCategory(Category category,string userId)
+        public static int AddCategory(Category category, string userId)
         {
             string query = "select top 1 UserID ";
             query += " from CategoryUserRel as CUR";
             query += " where UserID = '" + userId + "'";
             query += " and";
-            query += " EXISTS(SELECT Name from Categories where AutoKey = CUR.CategoryAutoKey and Name = '" + category.Name +  "')";
+            query += " EXISTS(SELECT Name from Categories where AutoKey = CUR.CategoryAutoKey and Name = '" + category.Name + "')";
 
             if (sqlHelper.ExecuteReader<object>(query).Count > 0)
                 return (int)ErrorCodes.CATEGORY_EXISTS;
@@ -82,12 +82,12 @@ namespace DMS.Database
             {
 
 
-                if(sqlHelper.Insert(Tables.CategoryUserRel,
+                if (sqlHelper.Insert(Tables.CategoryUserRel,
                     new string[] { "CategoryAutoKey", "UserID" },
                     new string[] { autoKey, userId }))
                 {
 
-                return (int)ErrorCodes.SUCCESS;
+                    return (int)ErrorCodes.SUCCESS;
                 }
 
                 else
@@ -107,7 +107,7 @@ namespace DMS.Database
             if (sqlHelper.Delete(Tables.Contacts, "AutoKey = '" + autoKey + "'"))
             {
 
-                    return (int)ErrorCodes.SUCCESS;
+                return (int)ErrorCodes.SUCCESS;
             }
             else
             {
@@ -145,7 +145,7 @@ namespace DMS.Database
 
             wheres.Add("Name", contact.Name);
             wheres.Add("UserID", userId);
-            
+
             if (sqlHelper.Exists(Tables.Contacts, wheres))
                 return (int)ErrorCodes.CATEGORY_EXISTS;
 
@@ -154,9 +154,7 @@ namespace DMS.Database
                 new string[] { contact.Name, userId });
             if (!string.IsNullOrEmpty(autoKey))
             {
-
-                    return (int)ErrorCodes.SUCCESS;
-            
+                return (int)ErrorCodes.SUCCESS;
             }
             else
             {
@@ -260,7 +258,7 @@ namespace DMS.Database
             query += " from " + Tables.CategoryUserRel + " as CUR";
             query += " where UserID = '" + userID + "'";
 
-                
+
             return sqlHelper.ExecuteReader<Category>(query);
         }
         public static IEnumerable<Contact> GetContacts()
