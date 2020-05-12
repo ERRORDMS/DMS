@@ -1,5 +1,5 @@
 ﻿@page
-@model DMS.Pages.ViewerModel
+@model DocumentViewer
 @{
     ViewData["Title"] = "Document Viewer";
     Layout = "~/Pages/_Layout.cshtml";
@@ -11,10 +11,14 @@
 
 
 <h2>Viewer</h2>
-
+<!DOCTYPE html>
 @{
     var documentViewer = new DocumentViewer
     {
-        Document = "http://www.orimi.com/pdf-test.pdf"
+        Width = 800,
+        Height = 600,
+        Document = "~/Documents/Document.docx"
     };
 }
+
+
