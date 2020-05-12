@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.4.0" />
+    <PackageReference Include="GleamTech.DocumentUltimate" Version="5.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="DevExtreme.AspNet.Data" Version="2.2.1" />
     <PackageReference Include="DevExtreme.AspNet.Core" Version="19.1.3" />

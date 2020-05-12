@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace DMS.Pages
 {
     [Authorize]
-    public class ManageContactModel : PageModel
+    public class AddCategoryModel : PageModel
     {
         public void OnGet()
         {
