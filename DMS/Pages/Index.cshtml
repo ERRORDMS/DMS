@@ -205,10 +205,6 @@
         function getTreeList() {
             return $("#treeList").dxTreeList("instance");
         }
-        if (localStorage.getItem('loggedIn') == null) {
-            window.location = 'login'
-            console.log('User not loggedIn');
-        }
         /*
         $(document).ready(function () {
             $("#btnSearch").click(function (e) {

@@ -32,7 +32,7 @@
 
 <body>
     <div id="app-side-nav-outer-toolbar">
-        <div class="layout-header">
+        <div class="layout-header" style="height:80px;overflow: hidden;">
             @(Html.DevExtreme().Toolbar()
                 .Items(items =>
                         {
@@ -50,7 +50,7 @@
                         .CssClass("header-title");
                 })
             )
-            <partial name="_LoginPartial" />
+                <partial name="_LoginPartial" />
         </div>
         <div class="layout-body">
             @(Html.DevExtreme().Drawer()
@@ -165,6 +165,13 @@
                .Icon("upload")
                .Option("path", Url.Page("Upload"))
                         .Selected(IsCurrentPage("upload"));
+
+
+                        items.Add()
+               .Text("viewer")
+               .Icon("file")
+               .Option("path", Url.Page("Viewer"))
+                        .Selected(IsCurrentPage("Viewer"));
 
 
                         items.Add()
