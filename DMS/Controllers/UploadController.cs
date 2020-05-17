@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using DMS.Database;
 using DMS.Models;
@@ -36,8 +37,9 @@ namespace DMS.Controllers
 
                 var cats = JsonConvert.DeserializeObject<List<DMSCategory>>(categories);   
                 var cons = JsonConvert.DeserializeObject<List<DMSContact>>(contacts);
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                int result = DataManager.AddFile(cats, cons, photo);
+                int result = DataManager.AddFile(cats, cons, photo, userId);
 
                 if(result == (int)ErrorCodes.SUCCESS)
                 {

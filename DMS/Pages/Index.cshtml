@@ -45,8 +45,8 @@
 </style>
 <div class="tree">
     <h2 class="content-block">My Data</h2>
-
-    @(Html.DevExtreme().TextBox()
+        
+        @(Html.DevExtreme().TextBox()
 
         .Name("txtSearch")
         .Width(600)
@@ -56,8 +56,12 @@
              {
                  buttons.Add()
                  .Name("btnSearch")
+                 
                  .Location(TextEditorButtonLocation.Before)
                  .Widget(w => w.Button()
+                     .UseSubmitBehavior(true)
+                     .ID("btnSearch") 
+                     .OnClick("onClick")
                      .Type(ButtonType.Default)
                      .Icon(Url.Content("~/images/icons/search.png")));
          })
@@ -200,6 +204,55 @@
 
         function getTreeList() {
             return $("#treeList").dxTreeList("instance");
+        }
+        if (localStorage.getItem('loggedIn') == null) {
+            window.location = 'login'
+            console.log('User not loggedIn');
+        }
+        /*
+        $(document).ready(function () {
+            $("#btnSearch").click(function (e) {
+                alert('Hello');
+                e.preventDefault();
+
+                var t = $("input[name='__RequestVerificationToken']").val();
+                $.ajax({
+                    url: $(this).attr("formaction"),
+                    headers:
+                    {
+                        "RequestVerificationToken": t
+                    },
+                    type: "POST",
+                    data: { data: 'foo2' },
+                }).done(function (data) {
+                    console.log(data);
+                }).fail(function (a, v, e) {
+                    alert(e);
+                });
+            });
+        });*/
+
+        function onClick() {
+            /*
+                  const xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+
+            }
+        }
+
+        xhr.open("POST", 'api/Search', true);
+
+            const fd = new FormData();
+
+            fd.append('sQuery', txtSearch.value);
+            xhr.send(fd);*/
+
+            $("#gridContainer").dxDataGrid({
+                dataSource: "api/Search?sQuery=" + txtSearch.value,
+            });
+
         }
     </script>
 

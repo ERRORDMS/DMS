@@ -1,32 +1,9 @@
 ﻿@page
-@model DocumentViewer
-@using GleamTech.AspNet.Core
-@using GleamTech.DocumentUltimate
-@using GleamTech.DocumentUltimate.AspNet
-@using GleamTech.DocumentUltimate.AspNet.UI
-@using Microsoft.AspNetCore.Mvc.Razor
+@model DMS.Pages.ViewerModel
 
 @{
     ViewData["Title"] = "Document Viewer";
     Layout = "~/Pages/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
-@{
-    var documentViewer = new DocumentViewer
-    {
-        Width = 800,
-        Height = 600,
-        Document = "~/Documents/Document.docx"
-    };
-}
-<html>
-<head>
-    <title>Document Viewer</title>
-    @((RazorPageBase)this).RenderHead(documentViewer)
-</head>
-<body>
-    @((RazorPageBase)this).RenderBody(documentViewer)
-</body>
-</html>
-
+<partial name="Viewer2" />
