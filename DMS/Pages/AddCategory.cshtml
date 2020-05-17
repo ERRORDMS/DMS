@@ -127,6 +127,8 @@
                 var statusCode = obj.StatusCode;
                 if (statusCode == 0) {
                     cosnole.log('SUCCESS');
+                    $('.Category_found').fadeOut(100);
+                    $(".server_error").fadeOut(100)
                 } else {
                     console.log('bad');
                 }

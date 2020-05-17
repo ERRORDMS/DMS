@@ -1,16 +1,16 @@
 ﻿@page
 @model DocumentViewer
-@{
-    ViewData["Title"] = "Document Viewer";
-    Layout = "~/Pages/_Layout.cshtml";
-}
 @using GleamTech.AspNet.Core
 @using GleamTech.DocumentUltimate
 @using GleamTech.DocumentUltimate.AspNet
 @using GleamTech.DocumentUltimate.AspNet.UI
+@using Microsoft.AspNetCore.Mvc.Razor
 
+@{
+    ViewData["Title"] = "Document Viewer";
+    Layout = "~/Pages/_Layout.cshtml";
+}
 
-<h2>Viewer</h2>
 <!DOCTYPE html>
 @{
     var documentViewer = new DocumentViewer
@@ -20,5 +20,13 @@
         Document = "~/Documents/Document.docx"
     };
 }
-
+<html>
+<head>
+    <title>Document Viewer</title>
+    @((RazorPageBase)this).RenderHead(documentViewer)
+</head>
+<body>
+    @((RazorPageBase)this).RenderBody(documentViewer)
+</body>
+</html>
 

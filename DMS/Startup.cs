@@ -117,7 +117,6 @@ namespace DMS
 
             app.UseStaticFiles();
             app.UseAuthentication();
-          //  app.UseAuthorization();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
