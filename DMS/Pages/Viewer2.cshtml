@@ -1,0 +1,25 @@
+﻿@using GleamTech.AspNet.Core
+@using GleamTech.DocumentUltimate
+@using GleamTech.DocumentUltimate.AspNet
+@using GleamTech.DocumentUltimate.AspNet.UI
+
+<!DOCTYPE html>
+@{
+        var documentViewer = new DocumentViewer
+        {
+            Width = GleamTech.AspNet.UI.CssLength.Percentage(100),
+            Height = GleamTech.AspNet.UI.CssLength.Percentage(100),
+            Document = "~/uploads/AI_Inventor_Notebook-Season2.pdf"
+    };
+}
+<html>
+<head>
+    <title>Document Viewer</title>
+    @this.RenderHead(documentViewer)
+</head>
+<body>
+    <div style="width: 100%; height:100%">
+        @this.RenderBody(documentViewer)
+    </div>
+</body>
+</html>
