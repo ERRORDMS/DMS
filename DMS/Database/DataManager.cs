@@ -190,7 +190,7 @@ namespace DMS.Database
             documents = sqlHelper.ExecuteReader<Document>(query);
             return documents;
         }
-        public static int AddFile(List<DMSCategory> categories, List<DMSContact> contacts, IFormFile file)
+        public static int AddFile(List<DMSCategory> categories, List<DMSContact> contacts, IFormFile file, string userID)
         {/*
             DMSDocument doc = new DMSDocument();
 
@@ -215,7 +215,7 @@ namespace DMS.Database
 
             string infoAutoKey = sqlHelper.InsertWithID(Tables.DocumentInfo,
                 new string[] { "AddedBy", "DateTimeAdded", "IsDeleted" },
-                new string[] { "0", DateTime.Now.ToString(), "0" });
+                new string[] { userID, DateTime.Now.ToString(), "0" });
 
             bool success = sqlHelper.Insert(Tables.DocumentLines,
                 new string[] { "InfoAutoKey", "Ext", "Name" },
@@ -323,7 +323,7 @@ namespace DMS.Database
             }
         }
 
-        public string GetConnectionString()
+        public static string GetConnectionString()
         {
             return new SqlConnectionStringBuilder()
             {
