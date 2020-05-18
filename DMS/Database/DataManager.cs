@@ -208,7 +208,7 @@ namespace DMS.Database
         }
         public static int AddFile(List<DMSCategory> categories, List<DMSContact> contacts, IFormFile file, string userID, string webRoot)
         {/*
-            DMSDocument doc = new DMSDocument();
+            DMSDocument doc = new DMSDocument();    
 
             doc.ContactsList = contacts.ToArray();
             doc.DMSCategoriesList = categories.ToArray();

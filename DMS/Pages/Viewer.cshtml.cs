@@ -13,5 +13,14 @@ namespace DMS.Pages
         {
 
         }
+
+        [HttpPost]
+        public IActionResult OnPostFN()
+        {
+            // Just to test that it actually gets called
+            Console.WriteLine("OnPostGeoLocation CALLED ####################################");
+
+            return new JsonResult("OnPostGeoLocation CALLED ####################################");
+        }
     }
 }

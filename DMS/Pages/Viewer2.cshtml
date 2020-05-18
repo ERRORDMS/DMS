@@ -4,12 +4,20 @@
 @using GleamTech.DocumentUltimate.AspNet.UI
 
 @{
-        var documentViewer = new DocumentViewer
-        {
-            //Width = GleamTech.AspNet.UI.CssLength.Percentage(100),
-            //Height = GleamTech.AspNet.UI.CssLength.Percentage(100),
-             DisplayMode = GleamTech.AspNet.UI.DisplayMode.Viewport,
-            Document = "~/uploads/AI_Inventor_Notebook-Season2.pdf"
+    string fn = "";
+    Microsoft.Extensions.Primitives.StringValues queryVal;
+
+    if (Context.Request.Query.TryGetValue("FileName", out queryVal))
+    {
+        fn = queryVal.FirstOrDefault();
+    }
+
+    var documentViewer = new DocumentViewer
+    {
+        //Width = GleamTech.AspNet.UI.CssLength.Percentage(100),
+        //Height = GleamTech.AspNet.UI.CssLength.Percentage(100),
+        DisplayMode = GleamTech.AspNet.UI.DisplayMode.Viewport,
+        Document = "~/uploads/" + fn
     };
 }
 <html>
@@ -19,6 +27,7 @@
     @this.RenderHead(documentViewer)
 </head>
 <body>
-        @this.RenderBody(documentViewer)
+    @this.RenderBody(documentViewer)
+
 </body>
 </html>

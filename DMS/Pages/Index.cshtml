@@ -45,8 +45,8 @@
 </style>
 <div class="tree">
     <h2 class="content-block">My Data</h2>
-        
-        @(Html.DevExtreme().TextBox()
+
+    @(Html.DevExtreme().TextBox()
 
         .Name("txtSearch")
         .Width(600)
@@ -56,11 +56,11 @@
              {
                  buttons.Add()
                  .Name("btnSearch")
-                 
+
                  .Location(TextEditorButtonLocation.Before)
                  .Widget(w => w.Button()
                      .UseSubmitBehavior(true)
-                     .ID("btnSearch") 
+                     .ID("btnSearch")
                      .OnClick("onClick")
                      .Type(ButtonType.Default)
                      .Icon(Url.Content("~/images/icons/search.png")));
@@ -71,6 +71,7 @@
 
     <br />
     <div id="treeListDemo">
+
         @(Html.DevExtreme().TreeList()
         .ID("treeList")
 
@@ -146,7 +147,7 @@
         )
 
 
-    </div>  
+    </div>
 
     <script>
         function cellTemplate(element, cellInfo) {
@@ -159,7 +160,8 @@
         }
 
         function onEdit(element, cellinfo) {
-            var autokey = cellinfo.data.AutoKey;
+
+            var autokey = cellinfo.data.InfoAutoKey;
 
             window.location.href = 'Viewer?AutoKey=' + autokey;
         }
@@ -186,8 +188,6 @@
         function onValueChangedTree(e) {
             selectedID = e.selectedRowKeys[0];
 
-
-            console.log(grid);
 
             $("#gridContainer").dxDataGrid({
                 dataSource: "api/Upload/GetDocuments?CatID=" + selectedID,

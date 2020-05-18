@@ -21,9 +21,9 @@ namespace DMS.Controllers
         {
             return View();
         }
-        [HttpGet]
+        [HttpGet]   
         public LoadResult Get()
-        {
+        {   
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return DataSourceLoader.Load(DataManager.GetCategories(userId), new DataSourceLoadOptionsBase());
         }

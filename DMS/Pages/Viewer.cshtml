@@ -1,6 +1,8 @@
 ﻿@page
 @model DMS.Pages.ViewerModel
-
+@using System.Net.Http;
+@using System.Net.Http.Headers;
+@using System.IO;
 @{
     ViewData["Title"] = "Document Viewer";
     Layout = "~/Pages/_Layout.cshtml";
@@ -13,28 +15,51 @@
     {
         Redirect("Index");
     }
-
-    //ViewBag["FileName"] =    
 }
 
 
 @if (AutoKey != 0)
 {
-<head>
-    <style>
-        body {
-            height: 100%;
-        }
-        #documentViewer {
-            height: 100%;
-        }
-        .content-block {
-            display: none;
-        }
-    </style>
-</head>
+    <head>
+        <style>
+            body {
+                height: 100%;
+            }
 
-<div style="width: 100%; height:100vh">
-    <partial name="Viewer2" />
-</div>
-}
+            #documentViewer {
+                height: 100%;
+            }
+
+            .content-block {
+                display: none;
+            }
+        </style>
+    </head>
+
+
+    @if (!String.IsNullOrEmpty(Request.Query["FileName"]))
+    {
+
+        <div style="width: 100%; height:100vh">
+            <partial name="Viewer2" />
+        </div>
+    }else
+    {
+
+            <script>
+
+        $(document).ready(function () {
+
+                window.location = 'Viewer?AutoKey=' + @AutoKey + "&FileName=" + getVal();
+           });
+        function getVal()
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("GET", "api/Upload/GetFileName?AutoKey=" + @AutoKey, false );
+    xmlHttp.send();
+    return xmlHttp.responseText;
+        }
+            </script>
+      }
+
+    }

@@ -1,0 +1,31 @@
+{
+  "CacheSourceKey": "ojel1e",
+  "CachePdfKey": "ojel1e/ojel1e-1icf7fn.pdf",
+  "CacheXpzKey": "ojel1e/ojel1e-1raqkc1.xpz",
+  "CacheInfoKey": "ojel1e/ojel1e-1raqkc1.json",
+  "CacheCopyKey": null,
+  "Document": "data.txt",
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": "~\\uploads",
+  "DocumentFileName": "data.txt",
+  "InputOptions": {
+    "$type": "GleamTech.DocumentUltimate.WordProcessingInputOptions, GleamTech.DocumentUltimate",
+    "FieldFileName": null,
+    "UpdateFields": true,
+    "Encoding": null,
+    "Format": "Txt",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "ojel1e",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}
