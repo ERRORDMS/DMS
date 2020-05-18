@@ -1,11 +1,10 @@
-﻿* {
-    overflow: hidden;
-}
-
-body, html {
+﻿body, html {
     margin: 0;
     min-height: 100%;
     height: 100%;
+}
+body {
+    overflow-y: hidden;
 }
 
 #app-side-nav-outer-toolbar {
