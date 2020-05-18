@@ -3,12 +3,16 @@
 @inject SignInManager<DMSUser> SignInManager
 @inject UserManager<DMSUser> UserManager
 @{
-    ViewData["Title"] = "Register";
+    Layout = null;
 }
 
-<h2>@ViewData["Title"]</h2>
 <head>
-    <link href="~/css/Site.css" rel="stylesheet">
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+          integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+          crossorigin="anonymous" />
+    <link href="~/css/auth.css" rel="stylesheet" />
 </head>
 <style>
     .register-form {
@@ -23,31 +27,51 @@
 }
 else
 {
-    <div class="row">
-        <div class="col-md-4 register-form">
+    <img src="~/images/wave.png" class="wave"/>
+    <div class="container">
+        <div class="img">
+            <img src="~/images/download1.svg" />
+        </div>
+        <div class="login-content">
             <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                <h4>Create a new account.</h4>
-                <hr />
-                <div asp-validation-summary="All" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="Input.Email"></label>
-                    <input asp-for="Input.Email" class="form-control" />
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                <img src="~/images/download2.svg" />
+                <h2 class="title">Welcome</h2>
+                <!--<div asp-validation-summary="All" class="text-danger"></div> -->
+                <div class="input-div one">
+                    <div class="i">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="div">
+                        <h5>E-mail</h5>
+                        <input asp-for="Input.Email" class="input email_input" autocomplete="off" />
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Input.Password"></label>
-                    <input asp-for="Input.Password" class="form-control" />
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                <span asp-validation-for="Input.Email" class="error"></span>
+                <div class="input-div pass">
+                    <div class="i">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="div">
+                        <h5>Password</h5>
+                        <input asp-for="Input.Password" class="input" />
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Input.ConfirmPassword"></label>
-                    <input asp-for="Input.ConfirmPassword" class="form-control" />
-                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                <span asp-validation-for="Input.Password" class="error"></span>
+                <div class="input-div conf-pass">
+                    <div class="i">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="div">
+                        <h5>Confirm Password</h5>
+                        <input asp-for="Input.ConfirmPassword" class="input" />
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-default">Register</button>
+                <span asp-validation-for="Input.ConfirmPassword" class="error"></span>
+                <input type="submit" class="btn" value="Register" />
             </form>
         </div>
     </div>
+    <script src="~/js/main.js"></script>
 }
 
 

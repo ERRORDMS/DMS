@@ -184,17 +184,18 @@
                         .Icon("home")
                         .Option("path", Url.Page("Home"))
                         .Selected(IsCurrentPage("Home"));
+
                         items.Add()
                         .Text("Register")
                         .Icon("plus")
-                        .Option("path", "identity/Account/Register")
+                        .Option("path", IsCurrentPage("Login") ? "Register" : "Identity/Account/Register")
                         .Selected(IsCurrentPage("register"));
 
                         items.Add()
-                  .Text("Login")
-                  .Icon("user")
-                  .Option("path", "Identity/Account/Login")
-                  .Selected(IsCurrentPage("Login"));
+                          .Text("Login")
+                          .Icon("user")
+                          .Option("path", IsCurrentPage("Register") ? "Login" : "Identity/Account/Login")
+                          .Selected(IsCurrentPage("Login"));
 
 
                         items.Add()
