@@ -192,19 +192,24 @@ namespace DMS.Database
         }
         public static string GetFileName(long AutoKey)
         {
-            
 
 
+
+            /*
             string query = "select InfoAutoKey,";
             query += " (select DateTimeAdded from " + Tables.DocumentInfo + " where AutoKey = DCR.InfoAutoKey) as DateTimeAdded,";
             query += " (select Name from " + Tables.DocumentLines + " where InfoAutoKey = DCR.InfoAutoKey) as Name,";
             query += " (select Ext from " + Tables.DocumentLines + " where InfoAutoKey = DCR.InfoAutoKey) as Ext";
             query += " from " + Tables.DocumentCategoryRel + " as DCR";
-            query += " where InfoAutoKey = " + AutoKey;
+            query += " where InfoAutoKey = " + AutoKey;*/
 
+            return sqlHelper.SelectWithWhere(Tables.DocumentLines,
+                "EncryptedString",
+                "InfoAutoKey = '" + AutoKey + "'");
+            /*
             Document document = sqlHelper.ExecuteReader<Document>(query)[0];
 
-            return document.Name + document.DateTimeAdded.ToString("MM-dd-yyyy-HH-mm-ss") + document.Ext;
+            return document.Name + document.DateTimeAdded.ToString("MM-dd-yyyy-HH-mm-ss") + document.Ext;*/
         }
         public static int AddFile(List<DMSCategory> categories, List<DMSContact> contacts, IFormFile file, string userID, string webRoot)
         {/*
@@ -231,13 +236,20 @@ namespace DMS.Database
 
             DateTime dt = DateTime.Now;
             string date = dt.ToString("MM-dd-yyyy-HH-mm-ss");
+            string fileName = Path.GetFileNameWithoutExtension(file.FileName) + "-" + date.Replace(" ", "") + Path.GetExtension(file.FileName);
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(fileName);
+            fileName = System.Convert.ToBase64String(plainTextBytes) + Path.GetExtension(file.FileName);
+
+
+
+
             string infoAutoKey = sqlHelper.InsertWithID(Tables.DocumentInfo,
                 new string[] { "AddedBy", "DateTimeAdded", "IsDeleted" },
                 new string[] { userID, dt.ToString(), "0" });
 
             bool success = sqlHelper.Insert(Tables.DocumentLines,
-                new string[] { "InfoAutoKey", "Ext", "Name" },
-                new string[] { infoAutoKey, Path.GetExtension(file.FileName), Path.GetFileNameWithoutExtension(file.FileName) });
+                new string[] { "InfoAutoKey", "Ext", "Name", "EncryptedString" },
+                new string[] { infoAutoKey, Path.GetExtension(file.FileName), Path.GetFileNameWithoutExtension(file.FileName), fileName });
 
             foreach (var category in categories)
             {
@@ -256,8 +268,7 @@ namespace DMS.Database
             if (success)
             {
 
-                string fileName = Path.GetFileNameWithoutExtension(file.FileName) + "-" + date.Replace(" ", "") + Path.GetExtension(file.FileName);
-
+            
                 if (SaveFile(file, webRoot, fileName))
                     return (int)ErrorCodes.SUCCESS;
                 else

@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "1oc04a",
+  "CachePdfKey": "1oc04a/1oc04a-1nrwo2i.pdf",
+  "CacheXpzKey": "1oc04a/1oc04a-e4hyoq.xpz",
+  "CacheInfoKey": "1oc04a/1oc04a-e4hyoq.json",
+  "CacheCopyKey": null,
+  "Document": "ZXJyb3JfMS0wNS0xOC0yMDIwLTE2LTIzLTQyLnBuZw==.png",
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": "~\\uploads",
+  "DocumentFileName": "ZXJyb3JfMS0wNS0xOC0yMDIwLTE2LTIzLTQyLnBuZw==.png",
+  "InputOptions": {
+    "Format": "Png",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "1oc04a",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}

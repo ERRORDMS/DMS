@@ -30,8 +30,9 @@ namespace DMS.Controllers
         [HttpGet]
         public string GetFileName(long AutoKey)
         {
-            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(DataManager.GetFileName(AutoKey));
-            return System.Convert.ToBase64String(plainTextBytes);
+            string fn = DataManager.GetFileName(AutoKey);
+
+            return fn;
 
         }
         
