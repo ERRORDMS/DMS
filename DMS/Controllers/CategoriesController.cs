@@ -10,7 +10,6 @@ using DMS.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using static DMS.Controllers.AuthorizationController;
 
 namespace DMS.Controllers
 {
@@ -35,7 +34,7 @@ namespace DMS.Controllers
         {
             int i = DataManager.SaveCategory(cat);
 
-            Result result = new Result();
+            AuthorizationController.Result result = new AuthorizationController.Result();
             result.StatusName = ((ErrorCodes)i).ToString();
             result.StatusCode = i;
 
@@ -43,6 +42,7 @@ namespace DMS.Controllers
         }
 
         [Route("Name")]
+        [HttpGet]
         public string GetName(long autokey)
         {
             return DataManager.GetCatName(autokey);
@@ -54,7 +54,7 @@ namespace DMS.Controllers
         {
             int i = DataManager.DeleteCategory(autokey);
 
-            Result result = new Result();
+            AuthorizationController.Result result = new AuthorizationController.Result();
             result.StatusName = ((ErrorCodes)i).ToString();
             result.StatusCode = i;
 
@@ -68,7 +68,7 @@ namespace DMS.Controllers
 
             int i =DataManager.AddCategory(category, userId);
 
-            Result result = new Result();
+            AuthorizationController.Result result = new AuthorizationController.Result();
             result.StatusName = ((ErrorCodes)i).ToString();
             result.StatusCode = i;
 

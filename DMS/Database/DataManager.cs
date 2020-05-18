@@ -181,7 +181,7 @@ namespace DMS.Database
 
                 document.InfoAutoKey = Convert.ToInt64(reader["InfoAutoKey"]);
                 document.Name = Convert.ToString(reader["Name"]);
-                document.Ext = Convert.ToString(reader["Ext"]);
+                document.Ext = Convert.ToString(    reader["Ext"]);
                 document.DateTimeAdded = Convert.ToDateTime(reader["DateTimeAdded"]);
 
                 documents.Add(document);
@@ -190,7 +190,23 @@ namespace DMS.Database
             documents = sqlHelper.ExecuteReader<Document>(query);
             return documents;
         }
-        public static int AddFile(List<DMSCategory> categories, List<DMSContact> contacts, IFormFile file, string userID)
+        public static string GetFileName(long AutoKey)
+        {
+            
+
+
+            string query = "select InfoAutoKey,";
+            query += " (select DateTimeAdded from " + Tables.DocumentInfo + " where AutoKey = DCR.InfoAutoKey) as DateTimeAdded,";
+            query += " (select Name from " + Tables.DocumentLines + " where InfoAutoKey = DCR.InfoAutoKey) as Name,";
+            query += " (select Ext from " + Tables.DocumentLines + " where InfoAutoKey = DCR.InfoAutoKey) as Ext";
+            query += " from " + Tables.DocumentCategoryRel + " as DCR";
+            query += " where InfoAutoKey = " + AutoKey;
+
+            Document document = sqlHelper.ExecuteReader<Document>(query)[0];
+
+            return document.Name + document.DateTimeAdded.ToString("MM-dd-yyyy-HH-mm-ss") + document.Ext;
+        }
+        public static int AddFile(List<DMSCategory> categories, List<DMSContact> contacts, IFormFile file, string userID, string webRoot)
         {/*
             DMSDocument doc = new DMSDocument();
 
@@ -213,9 +229,11 @@ namespace DMS.Database
             var ret = client.InsertDMSDocumentLineAsync(arr, Path.GetExtension(file.FileName), doc).Result;
 */
 
+            DateTime dt = DateTime.Now;
+            string date = dt.ToString("MM-dd-yyyy-HH-mm-ss");
             string infoAutoKey = sqlHelper.InsertWithID(Tables.DocumentInfo,
                 new string[] { "AddedBy", "DateTimeAdded", "IsDeleted" },
-                new string[] { userID, DateTime.Now.ToString(), "0" });
+                new string[] { userID, dt.ToString(), "0" });
 
             bool success = sqlHelper.Insert(Tables.DocumentLines,
                 new string[] { "InfoAutoKey", "Ext", "Name" },
@@ -237,7 +255,13 @@ namespace DMS.Database
 
             if (success)
             {
-                return (int)ErrorCodes.SUCCESS;
+
+                string fileName = Path.GetFileNameWithoutExtension(file.FileName) + "-" + date.Replace(" ", "") + Path.GetExtension(file.FileName);
+
+                if (SaveFile(file, webRoot, fileName))
+                    return (int)ErrorCodes.SUCCESS;
+                else
+                    return (int)ErrorCodes.INTERNAL_ERROR;
             }
             else
             {
@@ -247,6 +271,28 @@ namespace DMS.Database
 
         }
 
+        public static bool SaveFile(IFormFile file, string rootPath, string name)
+        {
+            try
+            {
+                var path = Path.Combine(rootPath, "uploads");
+                // Uncomment to save the file
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
+                using (var fileStream = System.IO.File.Create(Path.Combine(path, name)))
+                {
+                    file.CopyTo(fileStream);
+                }
+
+                return true;
+            }
+            catch
+            {
+                //Response.StatusCode = 400;
+                return false;
+            }
+        }
         public static IEnumerable<Category> GetCategories(string userID)
         {
             //return sqlHelper.Select<Category>(Tables.Categories, new string[] { "*" });

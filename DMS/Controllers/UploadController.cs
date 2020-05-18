@@ -26,6 +26,13 @@ namespace DMS.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
         
+        [Route("GetFileName")]
+        [HttpGet]
+        public string GetFileName(long AutoKey)
+        {
+            return DataManager.GetFileName(AutoKey);
+        }
+        
         [HttpPost]
         public ActionResult FileSelection(string categories, string contacts, IFormFile photo)
         {
@@ -33,13 +40,12 @@ namespace DMS.Controllers
             
             if (photo != null)
             {
-                SaveFile(photo);
 
                 var cats = JsonConvert.DeserializeObject<List<DMSCategory>>(categories);   
                 var cons = JsonConvert.DeserializeObject<List<DMSContact>>(contacts);
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                int result = DataManager.AddFile(cats, cons, photo, userId);
+                int result = DataManager.AddFile(cats, cons, photo, userId, _hostingEnvironment.WebRootPath);
 
                 if(result == (int)ErrorCodes.SUCCESS)
                 {
@@ -62,23 +68,5 @@ namespace DMS.Controllers
             return DataManager.GetCatDocuments(CatID);
         }
 
-        void SaveFile(IFormFile file)
-        {
-            try
-            {
-                var path = Path.Combine(_hostingEnvironment.WebRootPath, "uploads");
-                // Uncomment to save the file
-                if(!Directory.Exists(path))
-                    Directory.CreateDirectory(path);
-
-                using(var fileStream = System.IO.File.Create(Path.Combine(path, file.FileName))) {
-                    file.CopyTo(fileStream);
-                }
-            }
-            catch
-            {
-                Response.StatusCode = 400;
-            }
-        }
     }
 }

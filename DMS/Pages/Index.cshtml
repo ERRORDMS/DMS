@@ -104,14 +104,14 @@
         @(Html.DevExtreme().DataGrid()
             .ID("gridContainer")
                 .OnContentReady("contentReady")
-                /*
-            .DataSource(d => d.Mvc()
-        .Controller("api/Upload")
-        .LoadMethod("GET")
-        .LoadParams(new { CatID = new JS("selectedID") })
-        .LoadAction("GetDocuments")
-        .Key("InfoAutoKey")
-    ).KeyExpr("InfoAutoKey")*/
+     /*
+ .DataSource(d => d.Mvc()
+.Controller("api/Upload")
+.LoadMethod("GET")
+.LoadParams(new { CatID = new JS("selectedID") })
+.LoadAction("GetDocuments")
+.Key("InfoAutoKey")
+).KeyExpr("InfoAutoKey")*/
      .DataSourceOptions(o => o.ReshapeOnPush(true))
     .RepaintChangesOnly(true)
             .ShowRowLines(true)
@@ -134,15 +134,35 @@
 
                 columns.Add().DataField("DateTimeAdded")
                     .Caption("Date Added");
+                columns.Add()
+             .Caption("View")
+             .Width(100)
+             .Alignment(HorizontalAlignment.Center)
+             .AllowFiltering(false)
+             .AllowSorting(false)
+             .CellTemplate(new JS("cellTemplate"));
 
             })
         )
 
 
-    </div>
+    </div>  
 
     <script>
+        function cellTemplate(element, cellInfo) {
+            $('<a/>')
+                .text("View")
+                .click(function () {
+                    onEdit(element, cellInfo);
+                })
+                .appendTo(element);
+        }
 
+        function onEdit(element, cellinfo) {
+            var autokey = cellinfo.data.AutoKey;
+
+            window.location.href = 'Viewer?AutoKey=' + autokey;
+        }
         var selectedID = -1;
         var grid;
         function onDragChange(e) {
