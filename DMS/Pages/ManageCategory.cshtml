@@ -32,22 +32,28 @@
             $('#txtName').val(getVal());
             $('#txtName').focus();
             $('#txtName').blur();
-                
+
             });
 
         function getVal()
-{
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("GET", "api/Categories/Name?AutoKey=" + @AutoKey, false );
-    xmlHttp.send();
-    return xmlHttp.responseText;
+        {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", "api/Categories/Name?AutoKey=" + @AutoKey, false );
+            xmlHttp.send();
+            return xmlHttp.responseText;
         }
 
         function saveCat() {
 
             if (txtName.value == null) {
-                alert('Enter name');
+                console.log("no");
+                $(document).ready(function () {
+                  $('.empty_field').fadeIn(100)
+                })
                 return;
+            } else {
+                $('.empty_field').fadeOut(0)
+
             }
                const xhr = new XMLHttpRequest();
 
@@ -94,7 +100,9 @@
                         .ElementAttr("class", "content-block")
                         .Name("txtName")
     )
-
+<div class="empty_field" style="display: none;">
+    Please Enter all fields
+</div>
     <br />
     @(Html.DevExtreme().Button()
         .Icon("save")
@@ -149,7 +157,7 @@ else
 
 
             })
-        )
+    )
 }
 
 <script>

@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "mlj862",
+  "CachePdfKey": "mlj862/mlj862-md9rl0.pdf",
+  "CacheXpzKey": "mlj862/mlj862-141q5cr.xpz",
+  "CacheInfoKey": "mlj862/mlj862-141q5cr.json",
+  "CacheCopyKey": null,
+  "Document": "YXJ0OC0wNS0xOS0yMDIwLTExLTU4LTMwLmpwZw==.jpg",
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": "~\\uploads",
+  "DocumentFileName": "YXJ0OC0wNS0xOS0yMDIwLTExLTU4LTMwLmpwZw==.jpg",
+  "InputOptions": {
+    "Format": "Jpg",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "mlj862",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}
