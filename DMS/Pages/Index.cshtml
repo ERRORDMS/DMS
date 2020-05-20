@@ -81,6 +81,7 @@
     .Key("AutoKey")
 ).KeyExpr("AutoKey")
 .OnSelectionChanged("onValueChangedTree")
+.ElementAttr("class","categoriesTreeList")
 .SelectedRowKeys(new[] { 1 })
             .ParentIdExpr("FatherID")
             .ExpandedRowKeys(new[] { 1 })
@@ -118,32 +119,33 @@
             .ShowRowLines(true)
             .ShowBorders(true)
             .ColumnAutoWidth(true)
+            .ElementAttr("class","dataGrid")
             /*.RowDragging(rd => rd
                 .AllowDropInsideItem(true)
                 .AllowReordering(true)
                 .OnDragChange("onDragChange")
                 .OnReorder("onReorder")
-                .ShowDragIcons(true)
+                .ShowDragIcons(true)    
             )*/
             .Columns(columns =>
-            {
-                columns.Add().DataField("Name")
-                    .Caption("Name");
+             {
+                 columns.Add().DataField("Name")
+                     .Caption("Name");
 
-                columns.Add().DataField("Ext")
-                .Caption("Type");
+                 columns.Add().DataField("Ext")
+                 .Caption("Type");
 
-                columns.Add().DataField("DateTimeAdded")
-                    .Caption("Date Added");
-                columns.Add()
-             .Caption("View")
-             .Width(100)
-             .Alignment(HorizontalAlignment.Center)
-             .AllowFiltering(false)
-             .AllowSorting(false)
-             .CellTemplate(new JS("cellTemplate"));
+                 columns.Add().DataField("DateTimeAdded")
+                     .Caption("Date Added");
+                 columns.Add()
+              .Caption("View")
+              .Width(100)
+              .Alignment(HorizontalAlignment.Center)
+              .AllowFiltering(false)
+              .AllowSorting(false)
+              .CellTemplate(new JS("cellTemplate"));
 
-            })
+             })
         )
 
 
