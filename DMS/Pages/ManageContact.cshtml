@@ -46,16 +46,19 @@
         function saveCon() {
 
             if (txtName.value == null) {
-                alert('Enter name');
+                $('.empty_field').fadeIn(100)
                 return;
             }
-               const xhr = new XMLHttpRequest();
-
-        xhr.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-            window.location = "Index";
+            if (txtName.value !== null) {
+                $('.empty_field').fadeOut(0)
             }
-        }
+            const xhr = new XMLHttpRequest();
+
+            xhr.onreadystatechange = function () {
+              if (this.readyState == 4 && this.status == 200) {
+                 window.location = "Index";
+              }
+            }
 
         xhr.open("POST", 'api/Contacts/Save', true);
 
