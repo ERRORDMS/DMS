@@ -263,12 +263,17 @@
             const fd = new FormData();
 
             fd.append('sQuery', txtSearch.value);
-            xhr.send(fd);*/
+            xhr.send(fd);*/ 
 
-            $("#gridContainer").dxDataGrid({
-                dataSource: "api/Search?sQuery=" + txtSearch.value,
+            $("#treeList").dxTreeList({
+                dataSource: "api/Search/SearchCats?sQuery=" + txtSearch.value,
             });
 
+            $("#gridContainer").dxDataGrid({
+                dataSource: "api/Search/SearchFiles?sQuery=" + txtSearch.value,
+            });
+
+            
         }
     </script>
 

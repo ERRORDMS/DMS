@@ -24,7 +24,9 @@ namespace DMS.Controllers
         [HttpGet]
         public LoadResult Get()
         {
-            return DataSourceLoader.Load(DataManager.GetContacts(), new DataSourceLoadOptionsBase());
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return DataSourceLoader.Load(DataManager.GetContacts(userId), new DataSourceLoadOptionsBase());
         }
 
         [Route("Save")]

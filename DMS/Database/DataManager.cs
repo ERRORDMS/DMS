@@ -29,7 +29,7 @@ namespace DMS.Database
             if (sqlHelper.Delete(Tables.Categories, "AutoKey = '" + autoKey + "'"))
             {
 
-                if (sqlHelper.Delete(Tables.CategoryUserRel, "CategoryAutoKey = '" + autoKey + "'"))
+                if (sqlHelper.Delete(Tables.CategoryUserRel, "CatAutoKey = '" + autoKey + "'"))
                     return (int)ErrorCodes.SUCCESS;
                 else
                     return (int)ErrorCodes.INTERNAL_ERROR;
@@ -70,20 +70,20 @@ namespace DMS.Database
             query += " from CategoryUserRel as CUR";
             query += " where UserID = '" + userId + "'";
             query += " and";
-            query += " EXISTS(SELECT Name from Categories where AutoKey = CUR.CategoryAutoKey and Name = '" + category.Name + "')";
+            query += " EXISTS(SELECT Name from Categories where AutoKey = CUR.CatAutoKey and Name = '" + category.Name + "')";
 
             if (sqlHelper.ExecuteReader<object>(query).Count > 0)
                 return (int)ErrorCodes.CATEGORY_EXISTS;
 
             string autoKey = sqlHelper.InsertWithID(Tables.Categories,
-                new string[] { "Name", "FatherID" },
+                new string[] { "Name", "FatherAutoKey" },
                 new string[] { category.Name, category.FatherID.ToString() });
             if (!string.IsNullOrEmpty(autoKey))
             {
 
 
                 if (sqlHelper.Insert(Tables.CategoryUserRel,
-                    new string[] { "CategoryAutoKey", "UserID" },
+                    new string[] { "CatAutoKey", "UserID" },
                     new string[] { autoKey, userId }))
                 {
 
@@ -144,13 +144,13 @@ namespace DMS.Database
             Dictionary<string, string> wheres = new Dictionary<string, string>();
 
             wheres.Add("Name", contact.Name);
-            wheres.Add("UserID", userId);
+            wheres.Add("DMSUserID", userId);
 
             if (sqlHelper.Exists(Tables.Contacts, wheres))
                 return (int)ErrorCodes.CATEGORY_EXISTS;
 
             string autoKey = sqlHelper.InsertWithID(Tables.Contacts,
-                new string[] { "Name", "UserID" },
+                new string[] { "Name", "DMSUserID" },
                 new string[] { contact.Name, userId });
             if (!string.IsNullOrEmpty(autoKey))
             {
@@ -170,7 +170,7 @@ namespace DMS.Database
             query += " (select Name from " + Tables.DocumentLines + " where InfoAutoKey = DCR.InfoAutoKey) as Name,";
             query += " (select Ext from " + Tables.DocumentLines + " where InfoAutoKey = DCR.InfoAutoKey) as Ext";
             query += " from " + Tables.DocumentCategoryRel + " as DCR";
-            query += " where CategoryAutoKey = " + CatID;
+            query += " where CatAutoKey = " + CatID;
 
             /*
             var reader = sqlHelper.ExecuteReader(query);
@@ -254,14 +254,14 @@ namespace DMS.Database
             foreach (var category in categories)
             {
                 sqlHelper.Insert(Tables.DocumentCategoryRel,
-                    new string[] { "InfoAutoKey", "CategoryAutoKey" },
+                    new string[] { "DocumentAutoKey", "CatAutoKey" },
                     new string[] { infoAutoKey, category.AutoKey.ToString() });
             }
 
             foreach (var contact in contacts)
             {
                 sqlHelper.Insert(Tables.DocumentContactRel,
-                    new string[] { "InfoAutoKey", "ContactAutoKey" },
+                    new string[] { "DocumentAutoKey", "ContactAutoKey" },
                     new string[] { infoAutoKey, contact.AutoKey.ToString() });
             }
 
@@ -309,18 +309,21 @@ namespace DMS.Database
             //return sqlHelper.Select<Category>(Tables.Categories, new string[] { "*" });
 
             string query = "select ";
-            query += " (select Name from " + Tables.Categories + " where AutoKey = CUR.CategoryAutoKey) as Name,";
-            query += " (select AutoKey from " + Tables.Categories + " where AutoKey = CUR.CategoryAutoKey) as AutoKey,";
-            query += "(select FatherID from " + Tables.Categories + " where AutoKey = CUR.CategoryAutoKey) as FatherID";
+            query += " (select Name from " + Tables.Categories + " where AutoKey = CUR.CatAutoKey) as Name,";
+            query += " (select AutoKey from " + Tables.Categories + " where AutoKey = CUR.CatAutoKey) as AutoKey,";
+            query += "(select FatherAutoKey from " + Tables.Categories + " where AutoKey = CUR.CatAutoKey) as FatherID";
             query += " from " + Tables.CategoryUserRel + " as CUR";
             query += " where UserID = '" + userID + "'";
 
 
             return sqlHelper.ExecuteReader<Category>(query);
         }
-        public static IEnumerable<Contact> GetContacts()
+        public static IEnumerable<Contact> GetContacts(string userID)
         {
-            return sqlHelper.Select<Contact>(Tables.Contacts, new string[] { "*" });
+            Dictionary<string,string> wheres = new System.Collections.Generic.Dictionary<string, string>();
+            wheres.Add("DMSUserID", userID);
+
+            return sqlHelper.SelectWithWhere<Contact>(Tables.Contacts, new string[] { "*" }, wheres);
         }
         public static int Login(string username, string password)
         {
@@ -384,10 +387,10 @@ namespace DMS.Database
         {
             return new SqlConnectionStringBuilder()
             {
-                DataSource = @"192.168.1.235\ALSAHL",
+                DataSource = @"127.0.0.1\ALSAHL",
                 UserID = "test",
                 Password = "test_2008",
-                InitialCatalog = "DMS"
+                InitialCatalog = @"D:\AlSahl\Data\MoneySql.MDF"
             }.ConnectionString;
         }
     }

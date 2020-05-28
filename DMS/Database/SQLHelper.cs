@@ -48,6 +48,25 @@ namespace DMS.Database
         }
 
         /// <summary>
+        /// Execute reader query
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public SqlDataReader ExecuteReader(string query)
+        {
+            if (sqlConnection.State != System.Data.ConnectionState.Open)
+                sqlConnection.Open();
+
+            var sqlCommand = sqlConnection.CreateCommand();
+            sqlCommand.CommandType = System.Data.CommandType.Text;
+
+            sqlCommand.CommandText = query;
+
+
+            return sqlCommand.ExecuteReader();
+        }
+
+        /// <summary>
         /// Insert into a table.
         /// </summary>
         /// <param name="table">Table to insert into</param>

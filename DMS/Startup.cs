@@ -41,7 +41,7 @@ namespace DMS
             
             services.AddDbContext<DMSContext>(options =>
                   options.UseSqlServer(
-                       Configuration.GetConnectionString("DMSContextConnection")));
+                       DataManager.GetConnectionString()));
 
             services.AddDefaultIdentity<DMSUser>()
                 .AddEntityFrameworkStores<DMSContext>();
