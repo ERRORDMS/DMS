@@ -38,14 +38,14 @@ namespace DMS
                 .AddMvc()
                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
            
-            
+            /*
             services.AddDbContext<DMSContext>(options =>
                   options.UseSqlServer(
                        DataManager.GetConnectionString()));
 
             services.AddDefaultIdentity<DMSUser>()
                 .AddEntityFrameworkStores<DMSContext>();
-
+                */
 
             services.AddHttpContextAccessor();
 
@@ -54,14 +54,17 @@ namespace DMS
             services.AddGleamTech();
             //----------------------
 
+            /*
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = $"/Identity/Account/Login";
                 options.LogoutPath = $"/Identity/Account/Logout";
                 options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
             });
-            
 
+            */
+
+            /*
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
@@ -82,7 +85,7 @@ namespace DMS
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = true;
             });
-            /*
+            
             services.ConfigureApplicationCookie(options =>
             {
                 // Cookie settings
@@ -116,7 +119,7 @@ namespace DMS
 
 
             app.UseStaticFiles();
-            app.UseAuthentication();
+            //app.UseAuthentication();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
