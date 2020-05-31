@@ -513,7 +513,7 @@ namespace DMS.Database
         {
             return new SqlConnectionStringBuilder()
             {
-                DataSource = @"127.0.0.1\ALSAHL",
+                DataSource = @"192.168.1.141\ALSAHL",
                 UserID = "test",
                 Password = "test_2008",
                 InitialCatalog = @"D:\AlSahl\Data\MoneySql.MDF"
