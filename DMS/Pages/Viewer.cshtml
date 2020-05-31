@@ -32,29 +32,8 @@
     </head>
 
 
-    @if (!String.IsNullOrEmpty(Request.Query["FileName"]))
-    {
-
         <div class="document">
             <partial name="Viewer2" />
         </div>
-    }else
-    {
-
-            <script>
-
-        $(document).ready(function () {
-
-                window.location = 'Viewer?AutoKey=' + @AutoKey + "&FileName=" + getVal();
-           });
-        function getVal()
-{
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("GET", "api/Upload/GetFileName?AutoKey=" + @AutoKey, false );
-    xmlHttp.send();
-    return xmlHttp.responseText;
-        }
-            </script>       
-      }
 
     }

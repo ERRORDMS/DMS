@@ -22,5 +22,6 @@ namespace DMS.Database
         public const string DocumentContactRel = "DocumentContactsRel";
         public const string DocumentSearchKeysRel = "DocumentSearchKeysRel";
         public const string CategoryUserRel = "CategoryUserRel";
+        public const string Images = "Images";
     }
 }

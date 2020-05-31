@@ -262,9 +262,16 @@ namespace DMS.Database
             query += " from " + Tables.DocumentCategoryRel + " as DCR";
             query += " where InfoAutoKey = " + AutoKey;*/
 
-            return sqlHelper.SelectWithWhere(Tables.DocumentLines,
-                "EncryptedString",
+            var LineAutoKey = sqlHelper.SelectWithWhere(Tables.DocumentLines,
+                "AutoKey",
                 "InfoAutoKey = '" + AutoKey + "'");
+            var InfoAutoKey = AutoKey;
+
+            var Ext = sqlHelper.SelectWithWhere(Tables.DocumentLines,
+                "Ext",
+                "InfoAutoKey = '" + AutoKey + "'");
+
+            return InfoAutoKey + "_" + LineAutoKey + Ext;
             /*
             Document document = sqlHelper.ExecuteReader<Document>(query)[0];
 
@@ -329,7 +336,7 @@ namespace DMS.Database
 
             if (!string.IsNullOrEmpty(infoAutoKey) && !string.IsNullOrEmpty(lineAutoKey))
             {
-                string filename = infoAutoKey + "_" + lineAutoKey + "." + Path.GetExtension(file.FileName);
+                string filename = infoAutoKey + "_" + lineAutoKey + Path.GetExtension(file.FileName);
                
 
                 string parent = AddDateDirectories(); // GetParentPathLocator(TmpAdo, "Images");

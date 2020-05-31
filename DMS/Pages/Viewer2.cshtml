@@ -5,23 +5,42 @@
 
 @{
 
-    ServiceReference1.AlSahlServiceClient client = new ServiceReference1.AlSahlServiceClient();
+    //    ServiceReference1.AlSahlServiceClient client = new ServiceReference1.AlSahlServiceClient();
 
-    string fn = "";
+    string AutoKey = "";
     Microsoft.Extensions.Primitives.StringValues queryVal;
 
-    if (Context.Request.Query.TryGetValue("FileName", out queryVal))
+    if (Context.Request.Query.TryGetValue("AutoKey", out queryVal))
     {
-        fn = queryVal.FirstOrDefault();
+        AutoKey = queryVal.FirstOrDefault();
     }
+    //byte[] img = client.GetImageAsync(fn).Result;
 
+
+    DMS.Database.SQLHelper helper = new DMS.Database.SQLHelper(DMS.Database.DataManager.GetConnectionString());
+
+
+    var LineAutoKey = helper.SelectWithWhere(DMS.Database.Tables.DocumentLines,
+        "AutoKey",
+        "InfoAutoKey = '" + AutoKey + "'");
+
+    var InfoAutoKey = AutoKey;
+
+    var Ext = helper.SelectWithWhere(DMS.Database.Tables.DocumentLines,
+        "Ext",
+        "InfoAutoKey = '" + AutoKey + "'");
+
+    var fn = InfoAutoKey + "_" + LineAutoKey + Ext;
+    
+    var arr = helper.ExecuteScalar<byte[]>("select TOP 1 file_stream from " + DMS.Database.Tables.Images + " where name = '" + fn + "'");
 
     var documentViewer = new DocumentViewer
     {
         //Width = GleamTech.AspNet.UI.CssLength.Percentage(100),
         //Height = GleamTech.AspNet.UI.CssLength.Percentage(100),
         // DisplayMode = GleamTech.AspNet.UI.DisplayMode.Viewport,
-        Document = "~/uploads/" + fn
+        //        Document = "~/uploads/" + fn
+        DocumentSource = new DocumentSource(new DocumentInfo(fn), arr)
     };
 
 
