@@ -5,11 +5,9 @@ using System.Threading.Tasks;
 
 namespace DMS.Models
 {
-    public class Document
+    public class SearchKey
     {
-        public long DocumentAutoKey { get; set; }
-        public DateTime DateTimeAdded { get; set; }
+        public long AutoKey { get; set; }
         public string Name { get; set; }
-        public string Ext { get; set; }
     }
 }

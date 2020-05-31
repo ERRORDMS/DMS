@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DMS.Controllers
 {
-    [AllowAnonymous]
     [Route("api/[controller]")]
     public class AuthorizationController : Controller
     {

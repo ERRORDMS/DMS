@@ -14,7 +14,6 @@ using static DMS.Controllers.AuthorizationController;
 namespace DMS.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
     public class ContactsController : Controller
     {
         public IActionResult Index()
@@ -24,7 +23,7 @@ namespace DMS.Controllers
         [HttpGet]
         public LoadResult Get()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = "02";//User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             return DataSourceLoader.Load(DataManager.GetContacts(userId), new DataSourceLoadOptionsBase());
         }
@@ -64,7 +63,7 @@ namespace DMS.Controllers
         [HttpPost]
         public IActionResult addContact(Contact contact)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = "02";//User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             int i = DataManager.AddContact(contact, userId);
 

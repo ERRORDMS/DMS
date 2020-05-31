@@ -85,6 +85,28 @@
                     )
                 </div>
             </div>
+            <div class="dx-field">
+                <div class="dx-field-label">Search Keys:</div>
+                <div class="dx-field-value">
+                    @(Html.DevExtreme().TagBox()
+    .DataSource(d => d.Mvc()
+               .Controller("SearchKeys")
+               .LoadAction("Get")
+               .Key("AutoKey")
+           )
+    .DisplayExpr("Name")
+
+.ID("searchKeysTagBox")
+.Name("searchKeysTagBox")
+    .ValueExpr("AutoKey")
+    .HideSelectedItems(true)
+    .ShowClearButton(true)
+    .OnSelectionChanged("getKeys")
+    .SearchExpr("Name")
+              .SearchEnabled(true)
+                    )
+                </div>
+            </div>
         </div>
         <div id="fileuploader-container">
             @(Html.DevExtreme().FileUploader()
@@ -109,12 +131,16 @@
 <script>
     var file;
     var categories;
+    var keys;
     var contacts;
     function onValueChanged(e) {
         categories = e.component._selectedItems;
     }
     function getContacts(e) {
         contacts = e.component._selectedItems;
+    }
+    function getKeys(e) {
+        keys = e.component._selectedItems;
     }
 
     $(document).ready(function () {
@@ -134,6 +160,7 @@
         fd.append('photo', file);
         fd.append('categories', JSON.stringify(categories))
         fd.append('contacts', JSON.stringify(contacts));
+        fd.append('keys', JSON.stringify(keys));
         xhr.open("POST", "api/upload", true);
         xhr.send(fd);
         /*

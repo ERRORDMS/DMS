@@ -16,7 +16,6 @@ using ServiceReference1;
 namespace DMS.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
     public class UploadController : Controller
     {
         
@@ -37,7 +36,7 @@ namespace DMS.Controllers
         }
         
         [HttpPost]
-        public ActionResult FileSelection(string categories, string contacts, IFormFile photo)
+        public ActionResult FileSelection(string categories, string contacts, string keys, IFormFile photo)
         {
 
             
@@ -46,9 +45,10 @@ namespace DMS.Controllers
 
                 var cats = JsonConvert.DeserializeObject<List<DMSCategory>>(categories);   
                 var cons = JsonConvert.DeserializeObject<List<DMSContact>>(contacts);
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var sKeys = JsonConvert.DeserializeObject<List<SearchKey>>(keys);
+                var userId = "02";// User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                int result = DataManager.AddFile(cats, cons, photo, userId, _hostingEnvironment.WebRootPath);
+                int result = DataManager.AddFile(cats, cons,sKeys, photo, userId, _hostingEnvironment.WebRootPath);
 
                 if(result == (int)ErrorCodes.SUCCESS)
                 {

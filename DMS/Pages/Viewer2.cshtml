@@ -4,6 +4,9 @@
 @using GleamTech.DocumentUltimate.AspNet.UI
 
 @{
+
+    ServiceReference1.AlSahlServiceClient client = new ServiceReference1.AlSahlServiceClient();
+
     string fn = "";
     Microsoft.Extensions.Primitives.StringValues queryVal;
 
@@ -12,13 +15,16 @@
         fn = queryVal.FirstOrDefault();
     }
 
+
     var documentViewer = new DocumentViewer
     {
         //Width = GleamTech.AspNet.UI.CssLength.Percentage(100),
         //Height = GleamTech.AspNet.UI.CssLength.Percentage(100),
-       // DisplayMode = GleamTech.AspNet.UI.DisplayMode.Viewport,
+        // DisplayMode = GleamTech.AspNet.UI.DisplayMode.Viewport,
         Document = "~/uploads/" + fn
     };
+
+
 }
 <html>
 <head>

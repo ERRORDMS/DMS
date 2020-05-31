@@ -1,0 +1,166 @@
+﻿@page
+@model DMS.Pages.ManageSearchKeyModel
+@{
+    ViewData["Title"] = "Manage Search Key";
+    Layout = "~/Pages/_Layout.cshtml";
+
+    long AutoKey = 0;
+
+    AutoKey = Convert.ToInt64(Request.Query["AutoKey"]);
+
+
+}
+
+<h2 class="content-block">Manage Search Key</h2>
+
+
+@if (AutoKey != 0)
+{
+
+    <script>
+
+        $(document).ready(function () {
+
+
+            $('#txtName').val(getVal());
+            $('#txtName').focus();
+            $('#txtName').blur();
+
+            });
+
+        function getVal()
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("GET", "api/SearchKeys/Name?AutoKey=" + @AutoKey, false );
+    xmlHttp.send();
+    return xmlHttp.responseText;
+        }
+
+        function saveCon() {
+
+            if (txtName.value == null) {
+                $('.empty_field').fadeIn(100)
+                return;
+            }
+            if (txtName.value !== null) {
+                $('.empty_field').fadeOut(0)
+            }
+            const xhr = new XMLHttpRequest();
+
+            xhr.onreadystatechange = function () {
+              if (this.readyState == 4 && this.status == 200) {
+                 window.location = "Index";
+              }
+            }
+
+        xhr.open("POST", 'api/SearchKeys/Save', true);
+
+            const fd = new FormData();
+
+            fd.append('AutoKey', @AutoKey);
+            fd.append('Name', txtName.value);
+            xhr.send(fd);
+        }
+
+
+        function deleteCon() {
+            const xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+            window.location = "Index";
+            }
+        }
+
+        xhr.open("POST", 'api/SearchKeys/Delete', true);
+
+            const fd = new FormData();
+
+            fd.append('AutoKey', @AutoKey);
+            xhr.send(fd);
+
+        }
+
+    </script>
+
+
+    @(Html.DevExtreme().TextBox()
+
+                .Placeholder("Search Key Name")
+                        .ElementAttr("class", "content-block")
+                        .Name("txtName")
+    )
+
+    <br />
+    @(Html.DevExtreme().Button()
+        .Icon("save")
+        .Text("Save")
+        .OnClick("saveCon")
+        .ElementAttr("class", "content-block")
+
+    )
+    @(Html.DevExtreme().Button()
+        .Icon("trash")
+        .Text("Delete Search Key")
+        .OnClick("deleteCon")
+        .ElementAttr("class", "content-block")
+
+    )
+}
+else
+{
+    @(Html.DevExtreme().DataGrid()
+        .ID("searchKeysList")
+
+.DataSource(d => d.Mvc()
+    .Controller("SearchKeys")
+    .LoadAction("Get")
+    .Key("AutoKey")
+).KeyExpr("AutoKey")
+            .ShowRowLines(true)
+            .ShowBorders(true)
+            .ColumnAutoWidth(true)
+                    /*.RowDragging(rd => rd
+                        .AllowDropInsideItem(true)
+                        .AllowReordering(true)
+                        .OnDragChange("onDragChange")
+                        .OnReorder("onReorder")
+                        .ShowDragIcons(true)
+                    )*/
+                    .ElementAttr("class", "content-block")
+
+            .Columns(columns =>
+            {
+                columns.Add().DataField("Name")
+                    .Caption("Name");
+                columns.Add()
+               .Caption("Manage")
+               .Width(100)
+               .Alignment(HorizontalAlignment.Center)
+               .AllowFiltering(false)
+               .AllowSorting(false)
+               .CellTemplate(new JS("cellTemplate"));
+
+
+            })
+        )
+}
+
+<script>
+
+    //<![CDATA[
+    function cellTemplate(element, cellInfo) {
+        $('<a/>')
+            .text("Manage")
+            .click(function () {
+                onEdit(element, cellInfo);
+            })
+            .appendTo(element);
+    }
+
+    function onEdit(element, cellinfo) {
+        var autokey = cellinfo.data.AutoKey;
+
+        window.location.href = 'ManageSearchKey?AutoKey=' + autokey;
+    }
+</script>

@@ -1,7 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@using DMS.Areas.Identity.Data
-@inject SignInManager<DMSUser> SignInManager
-@inject UserManager<DMSUser> UserManager
+<!--using DMS.Areas.Identity.Data-->
+<!--inject SignInManager<DMSUser> SignInManager-->
+<!--inject UserManager<DMSUser> UserManager-->
+
 
 
 <!DOCTYPE html>
@@ -50,7 +51,6 @@
                         .CssClass("header-title");
                 })
             )
-                <partial name="_LoginPartial" />
         </div>
         <div class="layout-body">
             @(Html.DevExtreme().Drawer()
@@ -95,116 +95,141 @@
                 .Items(items =>
                 {
 
-                    if (SignInManager.IsSignedIn(User))
-                    {
-                        items.Add()
-                        .Text("Home")
-                        .Icon("home")
-                        .Option("path", Url.Page("Index"))
-                        .Selected(IsCurrentPage("Index"));
+                    //     if (SignInManager.IsSignedIn(User))
+                    //       {
+                    items.Add()
+                    .Text("Home")
+                    .Icon("home")
+                    .Option("path", Url.Page("Index"))
+                    .Selected(IsCurrentPage("Index"));
 
-                        items.Add()
-                   .Text("Categories")
-                   .Html("<span class='space'></span>")
-                   .Icon("tags")
-                   .HasItems(true)
-                   .Option("path", Url.Page("AddCategory"))
-                   .Expanded(IsCurrentPage("AddCategory") || IsCurrentPage("ManageCategory"))
-                   .Selected(IsCurrentPage("AddCategory") || IsCurrentPage("ManageCategory"))
-                   .Selected(false);
+                    items.Add()
+               .Text("Categories")
+               .Html("<span class='space'></span>")
+               .Icon("tags")
+               .HasItems(true)
+               .Option("path", Url.Page("AddCategory"))
+               .Expanded(IsCurrentPage("AddCategory") || IsCurrentPage("ManageCategory"))
+               .Selected(IsCurrentPage("AddCategory") || IsCurrentPage("ManageCategory"))
+               .Selected(false);
 
-                        items.Add()
-                   .Text("Add Category")
-                   .Icon("plus")
-                   .ParentId(2)
-                   .Option("path", Url.Page("AddCategory"))
-                   .Selected(IsCurrentPage("AddCategory"));
-
-
-                        items.Add()
-                   .Text("Manage Category")
-                   .Icon("edit")
-                   .ParentId(2)
-                   .Option("path", Url.Page("ManageCategory"))
-                   .Selected(IsCurrentPage("ManageCategory"));
+                    items.Add()
+               .Text("Add Category")
+               .Icon("plus")
+               .ParentId(2)
+               .Option("path", Url.Page("AddCategory"))
+               .Selected(IsCurrentPage("AddCategory"));
 
 
-
-                        items.Add()
-                   .Text("Contacts")
-                   .Html("<span class='space'></span>")
-                   .Icon("user")
-                   .HasItems(true)
-                   .Option("path", Url.Page("AddContact"))
-                   .Expanded(IsCurrentPage("AddContact") || IsCurrentPage("ManageContact"))
-                   .Selected(IsCurrentPage("AddContact") || IsCurrentPage("ManageContact"))
-                   .Selected(false);
-
-                        items.Add()
-                   .Text("Add Contact")
-                   .Icon("plus")
-                   .ParentId(5)
-                   .Option("path", Url.Page("AddContact"))
-                   .Selected(IsCurrentPage("AddContact"));
+                    items.Add()
+               .Text("Manage Category")
+               .Icon("edit")
+               .ParentId(2)
+               .Option("path", Url.Page("ManageCategory"))
+               .Selected(IsCurrentPage("ManageCategory"));
 
 
-                        items.Add()
-                   .Text("Manage Contact")
-                   .Icon("edit")
-                   .ParentId(5)
-                   .Option("path", Url.Page("ManageContact"))
-                   .Selected(IsCurrentPage("ManageContact"));
 
-                        items.Add()
+                    items.Add()
+               .Text("Contacts")
+               .Html("<span class='space'></span>")
+               .Icon("user")
+               .HasItems(true)
+               .Option("path", Url.Page("AddContact"))
+               .Expanded(IsCurrentPage("AddContact") || IsCurrentPage("ManageContact"))
+               .Selected(IsCurrentPage("AddContact") || IsCurrentPage("ManageContact"))
+               .Selected(false);
+
+                    items.Add()
+               .Text("Add Contact")
+               .Icon("plus")
+               .ParentId(5)
+               .Option("path", Url.Page("AddContact"))
+               .Selected(IsCurrentPage("AddContact"));
+
+
+                    items.Add()
+               .Text("Manage Contact")
+               .Icon("edit")
+               .ParentId(5)
+               .Option("path", Url.Page("ManageContact"))
+               .Selected(IsCurrentPage("ManageContact"));
+
+                    items.Add()
+                .Text("Search Keys")
+                .Html("<span class='space'></span>")
+                .Icon("key")
+                .HasItems(true)
+                .Option("path", Url.Page("AddSearchKey"))
+                .Expanded(IsCurrentPage("AddSearchKey") || IsCurrentPage("ManageSearchKey"))
+                .Selected(IsCurrentPage("AddSearchKey") || IsCurrentPage("ManageSearchKey"))
+                .Selected(false);
+
+                    items.Add()
+               .Text("Add Key")
+               .Icon("plus")
+               .ParentId(8)
+               .Option("path", Url.Page("AddSearchKey"))
+               .Selected(IsCurrentPage("AddSearchKey"));
+
+
+                    items.Add()
+               .Text("Manage Key")
+               .Icon("edit")
+               .ParentId(8)
+               .Option("path", Url.Page("ManageSearchKey"))
+               .Selected(IsCurrentPage("ManageSearchKey"));
+
+                    items.Add()
                .Text("Profile")
                .Icon("user")
                .Option("path", "Identity/Account/Manage");
 
-                        items.Add()
-               .Text("Upload")
-               .Icon("upload")
-               .Option("path", Url.Page("Upload"))
-                        .Selected(IsCurrentPage("upload"));
+                    items.Add()
+           .Text("Upload")
+           .Icon("upload")
+           .Option("path", Url.Page("Upload"))
+                    .Selected(IsCurrentPage("upload"));
 
 
-                        items.Add()
-                            .Text("Settings")
-                            .Icon("preferences")
-                            .Option("path", Url.Page("Settings"))
-                .Visible(false)
-                            .Selected(IsCurrentPage("Settings"));
+                    items.Add()
+                        .Text("Settings")
+                        .Icon("preferences")
+                        .Option("path", Url.Page("Settings"))
+            .Visible(false)
+                        .Selected(IsCurrentPage("Settings"));
 
-                    }
+                    //            }
 
-                    if (!SignInManager.IsSignedIn(User))
-                    {
+                    //                    if (!SignInManager.IsSignedIn(User))
+                    //                  {
 
-                        items.Add()
-                        .Text("Home")
-                        .Icon("home")
-                        .Option("path", Url.Page("Home"))
-                        .Selected(IsCurrentPage("Home"));
+                    items.Add()
+                    .Text("Home")
+                    .Icon("home")
+                    .Option("path", Url.Page("Home"))
+                    .Selected(IsCurrentPage("Home"));
 
-                        items.Add()
-                        .Text("Register")
-                        .Icon("plus")
-                        .Option("path", IsCurrentPage("Login") ? "Register" : "Identity/Account/Register")
-                        .Selected(IsCurrentPage("register"));
+                    items.Add()
+                    .Text("Register")
+                    .Icon("plus")
+                    .Option("path", IsCurrentPage("Login") ? "Register" : "Identity/Account/Register")
+                    .Selected(IsCurrentPage("register"));
 
-                        items.Add()
-                          .Text("Login")
-                          .Icon("user")
-                          .Option("path", IsCurrentPage("Register") ? "Login" : "Identity/Account/Login")
-                          .Selected(IsCurrentPage("Login"));
+                    items.Add()
+                      .Text("Login")
+                      .Icon("user")
+                      .Option("path", IsCurrentPage("Register") ? "Login" : "Identity/Account/Login")
+                      .Selected(IsCurrentPage("Login"));
 
 
-                        items.Add()
-                        .Text("About")
-                        .Icon("info")
-                        .Option("path", Url.Page("About"))
-                        .Selected(IsCurrentPage("About"));
-                    }
+                    items.Add()
+                    .Text("About")
+                    .Icon("info")
+                    .Option("path", Url.Page("About"))
+                    .Selected(IsCurrentPage("About"));
                 }
+                   //          }
                    )
                 .DataStructure(TreeViewDataStructure.Plain)
                 .SelectionMode(NavSelectionMode.Single)

@@ -1,37 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Data.ResponseModel;
 using DMS.Database;
 using DMS.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DMS.Controllers
 {
     [Route("api/[controller]")]
-    public class CategoriesController : Controller
+    public class SearchKeysController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
-        [HttpGet]   
         public LoadResult Get()
         {
             var userId = "02";//User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return DataSourceLoader.Load(DataManager.GetCategories(userId), new DataSourceLoadOptionsBase());
+            return DataSourceLoader.Load(DataManager.GetSearchKeys(userId), new DataSourceLoadOptionsBase());
         }
 
         [Route("Save")]
         [HttpPost]
-        public IActionResult saveCat(Category cat)
+        public IActionResult saveKey(SearchKey key)
         {
-            int i = DataManager.SaveCategory(cat);
+            int i = DataManager.SaveKey(key);
 
             AuthorizationController.Result result = new AuthorizationController.Result();
             result.StatusName = ((ErrorCodes)i).ToString();
@@ -44,14 +36,14 @@ namespace DMS.Controllers
         [HttpGet]
         public string GetName(long autokey)
         {
-            return DataManager.GetCatName(autokey);
+            return DataManager.GetKeyName(autokey);
         }
 
         [Route("Delete")]
         [HttpPost]
-        public IActionResult saveCat(long autokey)
+        public IActionResult saveKey(long autokey)
         {
-            int i = DataManager.DeleteCategory(autokey);
+            int i = DataManager.DeleteKey(autokey);
 
             AuthorizationController.Result result = new AuthorizationController.Result();
             result.StatusName = ((ErrorCodes)i).ToString();
@@ -59,13 +51,15 @@ namespace DMS.Controllers
 
             return new JsonResult(result);
         }
-        [Route("addCategory")]
+
+
+        [Route("AddKey")]
         [HttpPost]
-        public IActionResult addCategory(Category category)
+        public IActionResult AddKey(string name)
         {
             var userId = "02";//User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            int i =DataManager.AddCategory(category, userId);
+            int i = DataManager.AddKey(name, userId);
 
             AuthorizationController.Result result = new AuthorizationController.Result();
             result.StatusName = ((ErrorCodes)i).ToString();

@@ -15,10 +15,12 @@ namespace DMS.Database
         public const string Users = "users";
         public const string Categories = "DocumentCatTree";
         public const string Contacts = "Contacts";
+        public const string SearchKeys = "SearchKeys";
         public const string DocumentInfo = "DocumentsInfo";
-        public const string DocumentLines = "DocumentLines";
-        public const string DocumentCategoryRel = "DocumentCategoryRel";
-        public const string DocumentContactRel = "DocumentContactRel";
+        public const string DocumentLines = "DocumentLine";
+        public const string DocumentCategoryRel = "DocumentCatRel";
+        public const string DocumentContactRel = "DocumentContactsRel";
+        public const string DocumentSearchKeysRel = "DocumentSearchKeysRel";
         public const string CategoryUserRel = "CategoryUserRel";
     }
 }

@@ -27,7 +27,7 @@ namespace DMS.Controllers
                 return BadRequest();
 
             List<Category> categories = new List<Category>();
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = "02";//User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             SQLHelper helper = new SQLHelper(DataManager.GetConnectionString());
             foreach (var word in sQuery.Split(" "))
@@ -43,16 +43,19 @@ namespace DMS.Controllers
                 query += " Cat.Name as CatName,";
                 query += " Cat.AutoKey as CatAutoKey";
                 query += " FROM";
-                query += " DocumentInfo D";
-                query += " INNER JOIN DocumentLines DL on DL.InfoAutoKey = D.AutoKey";
-                query += " INNER JOIN DocumentContactRel DCR on DCR.InfoAutoKey = D.AutoKey";
-                query += " INNER JOIN DocumentCategoryRel DCL on DCL.InfoAutoKey = D.AutoKey";
-                query += " INNER JOIN Categories Cat on Cat.AutoKey = DCL.CategoryAutoKey";
-                query += " INNER JOIN Contacts C on C.AutoKey = DCR.ContactAutoKey";
+                query += Tables.DocumentInfo + " D";
+                query += " INNER JOIN " + Tables.DocumentLines + " DL on DL.InfoAutoKey = D.AutoKey";
+                query += " INNER JOIN " + Tables.DocumentContactRel + " DCR on DCR.InfoAutoKey = D.AutoKey";
+                query += " INNER JOIN " + Tables.DocumentCategoryRel + " DCL on DCL.InfoAutoKey = D.AutoKey";
+                query += " INNER JOIN " + Tables.Categories + " Cat on Cat.AutoKey = DCL.CatAutoKey";
+                query += " INNER JOIN " + Tables.Contacts + " C on C.AutoKey = DCR.ContactAutoKey";
+                query += " INNER JOIN " + Tables.DocumentSearchKeysRel + " DSKR on DSKR.DocumentAutoKey = D.AutoKey";
+                query += " INNER JOIN " + Tables.SearchKeys + " S on S.AutoKey = DSKR.ID";
                 query += " WHERE";
                 query += " D.AddedBy = '" + userId + "'";
                 query += " AND DL.Name like '%" + word + "%'";
                 query += " OR C.Name like '%" + word + "%'";
+                query += " OR S.Name like '%" + word + "%'";
                 query += " OR Cat.Name like '%" + word + "%'";
 
                 SearchResult sResult = new SearchResult();
@@ -149,7 +152,7 @@ namespace DMS.Controllers
                 return BadRequest();
 
             List<SearchResult> result = new List<SearchResult>();
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = "02";// User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             SQLHelper helper = new SQLHelper(DataManager.GetConnectionString());
             foreach (var word in sQuery.Split(" "))
@@ -166,16 +169,19 @@ namespace DMS.Controllers
                 query += " Cat.Name as CatName,";
                 query += " Cat.AutoKey as CatAutoKey";
                 query += " FROM";
-                query += " DocumentInfo D";
-                query += " INNER JOIN DocumentLines DL on DL.InfoAutoKey = D.AutoKey";
-                query += " INNER JOIN DocumentContactRel DCR on DCR.InfoAutoKey = D.AutoKey";
-                query += " INNER JOIN DocumentCategoryRel DCL on DCL.InfoAutoKey = D.AutoKey";
-                query += " INNER JOIN Categories Cat on Cat.AutoKey = DCL.CategoryAutoKey";
-                query += " INNER JOIN Contacts C on C.AutoKey = DCR.ContactAutoKey";
+                query += Tables.DocumentInfo + " D";
+                query += " INNER JOIN " + Tables.DocumentLines + " DL on DL.InfoAutoKey = D.AutoKey";
+                query += " INNER JOIN " + Tables.DocumentContactRel + " DCR on DCR.InfoAutoKey = D.AutoKey";
+                query += " INNER JOIN " + Tables.DocumentCategoryRel + " DCL on DCL.InfoAutoKey = D.AutoKey";
+                query += " INNER JOIN " + Tables.Categories + " Cat on Cat.AutoKey = DCL.CatAutoKey";
+                query += " INNER JOIN " + Tables.DocumentSearchKeysRel + " DSKR on DSKR.DocumentAutoKey = D.AutoKey";
+                query += " INNER JOIN " + Tables.Contacts + " C on C.AutoKey = DCR.ContactAutoKey";
+                query += " INNER JOIN " + Tables.SearchKeys + " S on S.AutoKey = DSKR.ID";
                 query += " WHERE";
                 query += " D.AddedBy = '" + userId + "'";
                 query += " AND DL.Name like '%" + word + "%'";
                 query += " OR C.Name like '%" + word + "%'";
+                query += " OR S.Name like '%" + word + "%'";
                 query += " OR Cat.Name like '%" + word + "%'";
 
                 SearchResult sResult = new SearchResult();
