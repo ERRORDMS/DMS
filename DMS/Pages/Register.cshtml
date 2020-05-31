@@ -1,0 +1,56 @@
+﻿@page
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Register</title>
+</head>
+<body>
+    <img src="~/images/wave.png" class="wave" />
+    <div class="container">
+        <div class="img">
+            <img src="~/images/download1.svg" />
+        </div>
+        <div class="login-content">
+            <form method="post">
+                <img src="~/images/download2.svg" />
+                <h2 class="title">Welcome</h2>
+                <div class="input-div one">
+                    <div class="i">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="div">
+                        <h5>E-mail</h5>
+                        <input type="email" class="input email_input" autocomplete="off" />
+                    </div>
+                </div>
+                <div class="input-div pass">
+                    <div class="i">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="div">
+                        <h5>Password</h5>
+                        <input type="password" class="input" />
+                    </div>
+                </div>
+                <div class="input-div conf-pass">
+                    <div class="i">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="div">
+                        <h5>Confirm Password</h5>
+                        <input type="password" class="input" />
+                    </div>
+                </div>
+                <input type="submit" class="btn" value="Register" />
+            </form>
+        </div>
+    </div>
+    <script src="~/js/main.js"></script>
+</body>
+</html>
