@@ -36,7 +36,7 @@ namespace DMS
             services
                 .AddMvc()
                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
-           
+
             /*
             services.AddDbContext<DMSContext>(options =>
                   options.UseSqlServer(
