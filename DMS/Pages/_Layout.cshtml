@@ -1,10 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity
-<!--using DMS.Areas.Identity.Data-->
-<!--inject SignInManager<DMSUser> SignInManager-->
-<!--inject UserManager<DMSUser> UserManager-->
-
-
-
+﻿
 <!DOCTYPE html>
 <html>
 <head>
@@ -94,9 +88,6 @@
             @(Html.DevExtreme().TreeView()
                 .Items(items =>
                 {
-
-                    //     if (SignInManager.IsSignedIn(User))
-                    //       {
                     items.Add()
                     .Text("Home")
                     .Icon("home")
@@ -180,10 +171,6 @@
                .Option("path", Url.Page("ManageSearchKey"))
                .Selected(IsCurrentPage("ManageSearchKey"));
 
-                    items.Add()
-               .Text("Profile")
-               .Icon("user")
-               .Option("path", "Identity/Account/Manage");
 
                     items.Add()
            .Text("Upload")
@@ -199,10 +186,6 @@
             .Visible(false)
                         .Selected(IsCurrentPage("Settings"));
 
-                    //            }
-
-                    //                    if (!SignInManager.IsSignedIn(User))
-                    //                  {
 
                     items.Add()
                     .Text("Home")
@@ -213,13 +196,13 @@
                     items.Add()
                     .Text("Register")
                     .Icon("plus")
-                    .Option("path", IsCurrentPage("Login") ? "Register" : "Identity/Account/Register")
+                    .Option("path", Url.Page("Register"))
                     .Selected(IsCurrentPage("register"));
 
                     items.Add()
                       .Text("Login")
                       .Icon("user")
-                      .Option("path", IsCurrentPage("Register") ? "Login" : "Identity/Account/Login")
+                      .Option("path", Url.Page("Login"))
                       .Selected(IsCurrentPage("Login"));
 
 
@@ -229,7 +212,6 @@
                     .Option("path", Url.Page("About"))
                     .Selected(IsCurrentPage("About"));
                 }
-                   //          }
                    )
                 .DataStructure(TreeViewDataStructure.Plain)
                 .SelectionMode(NavSelectionMode.Single)
