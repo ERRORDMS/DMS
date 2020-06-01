@@ -64,7 +64,7 @@ namespace DMS
   {
       options.Cookie.Name = "AuthCookieAspNetCore";
       options.LoginPath = "/Login";
-      //options.LogoutPath = "/Logout";
+      options.LogoutPath = "/SignOut";
       options.Cookie.HttpOnly = true;
       options.Cookie.SecurePolicy = _environment.IsDevelopment()
         ? CookieSecurePolicy.None : CookieSecurePolicy.Always;

@@ -1,7 +1,13 @@
 ﻿@page
 @model DMS.Pages.SignOutModel
+@using Microsoft.AspNetCore.Authentication.Cookies;
+@using Microsoft.AspNetCore.Authentication;
 @{
     Layout = null;
+    await HttpContext.SignOutAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme);
+
+    Response.Redirect("Login");
 }
 
 <!DOCTYPE html>
