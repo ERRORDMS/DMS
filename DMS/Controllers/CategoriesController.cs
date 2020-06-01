@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DMS.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class CategoriesController : Controller
     {

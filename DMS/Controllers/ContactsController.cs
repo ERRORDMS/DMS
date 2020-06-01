@@ -13,6 +13,7 @@ using static DMS.Controllers.AuthorizationController;
 
 namespace DMS.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class ContactsController : Controller
     {

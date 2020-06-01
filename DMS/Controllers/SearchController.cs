@@ -5,11 +5,13 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using DMS.Database;
 using DMS.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace DMS.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class SearchController : Controller
     {

@@ -6,10 +6,12 @@ using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Data.ResponseModel;
 using DMS.Database;
 using DMS.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DMS.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class SearchKeysController : Controller
     {

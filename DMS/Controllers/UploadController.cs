@@ -15,6 +15,7 @@ using ServiceReference1;
 
 namespace DMS.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class UploadController : Controller
     {
