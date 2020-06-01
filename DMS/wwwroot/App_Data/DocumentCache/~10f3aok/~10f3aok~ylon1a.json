@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "10f3aok",
+  "CachePdfKey": "10f3aok/10f3aok-md9rl0.pdf",
+  "CacheXpzKey": "10f3aok/10f3aok-ylon1a.xpz",
+  "CacheInfoKey": "10f3aok/10f3aok-ylon1a.json",
+  "CacheCopyKey": "10f3aok/fo9wg3.jpg",
+  "Document": null,
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": null,
+  "DocumentFileName": "1231482_750159.jpg",
+  "InputOptions": {
+    "Format": "Jpg",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "10f3aok",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}
