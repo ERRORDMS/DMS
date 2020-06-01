@@ -330,9 +330,10 @@ namespace DMS.Database
             foreach (var key in SearchKeys)
             {
                 sqlHelper.Insert(Tables.DocumentSearchKeysRel,
-                    new string[] { "DocumentAutoKey", "ID" },
+                    new string[] { "DocumentAutoKey", "SearchAutoKey" },
                     new string[] { infoAutoKey, key.AutoKey.ToString() });
             }
+            
 
             if (!string.IsNullOrEmpty(infoAutoKey) && !string.IsNullOrEmpty(lineAutoKey))
             {

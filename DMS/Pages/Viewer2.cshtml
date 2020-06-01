@@ -7,31 +7,30 @@
 
     //    ServiceReference1.AlSahlServiceClient client = new ServiceReference1.AlSahlServiceClient();
 
-    string AutoKey = "";
+    string InfoAutoKey = "";
+    string LineAutoKey = "";
     Microsoft.Extensions.Primitives.StringValues queryVal;
 
-    if (Context.Request.Query.TryGetValue("AutoKey", out queryVal))
+    if (Context.Request.Query.TryGetValue("InfoAutoKey", out queryVal))
     {
-        AutoKey = queryVal.FirstOrDefault();
+        InfoAutoKey = queryVal.FirstOrDefault();
+    }
+
+    if (Context.Request.Query.TryGetValue("LineAutoKey", out queryVal))
+    {
+        LineAutoKey = queryVal.FirstOrDefault();
     }
     //byte[] img = client.GetImageAsync(fn).Result;
 
 
     DMS.Database.SQLHelper helper = new DMS.Database.SQLHelper(DMS.Database.DataManager.GetConnectionString());
 
-
-    var LineAutoKey = helper.SelectWithWhere(DMS.Database.Tables.DocumentLines,
-        "AutoKey",
-        "InfoAutoKey = '" + AutoKey + "'");
-
-    var InfoAutoKey = AutoKey;
-
     var Ext = helper.SelectWithWhere(DMS.Database.Tables.DocumentLines,
         "Ext",
-        "InfoAutoKey = '" + AutoKey + "'");
+        "InfoAutoKey = '" + InfoAutoKey + "'");
 
     var fn = InfoAutoKey + "_" + LineAutoKey + Ext;
-    
+
     var arr = helper.ExecuteScalar<byte[]>("select TOP 1 file_stream from " + DMS.Database.Tables.Images + " where name = '" + fn + "'");
 
     var documentViewer = new DocumentViewer

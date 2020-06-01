@@ -9,12 +9,12 @@
 
     long AutoKey = 0;
 
-    AutoKey = Convert.ToInt64(Request.Query["AutoKey"]);
+    AutoKey = Convert.ToInt64(Request.Query["InfoAutoKey"]);
 
     if (AutoKey == 0)
     {
         Redirect("Index");
-    }
+    }  
 }
 
 
