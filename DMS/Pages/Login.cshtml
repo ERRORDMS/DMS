@@ -22,7 +22,7 @@
             <img src="~/images/download1.svg" />
         </div>
         <div class="login-content">
-            <form method="post">
+            <form action="javascript:Login()">
                 <img src="~/images/download2.svg" />
                 <h2 class="title">Welcome</h2>
                 <div class="input-div one">
@@ -31,7 +31,7 @@
                     </div>
                     <div class="div">
                         <h5>E-mail</h5>
-                        <input type="email" class="input email_input" autocomplete="off" />
+                        <input type="email" class="input email_input" id="email_input" autocomplete="off" />
                     </div>
                 </div>
                 <div class="input-div pass">
@@ -40,7 +40,7 @@
                     </div>
                     <div class="div">
                         <h5>Password</h5>
-                        <input type="password" class="input" />
+                        <input type="password" class="input" id="password_input"/>
                     </div>
                 </div>
                 <a href="#">Forgot Password?</a>
@@ -49,5 +49,23 @@
         </div>
     </div>
     <script src="~/js/main.js"></script>
+
+    <script>
+        function Login() {
+            const xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log(this.response);
+                }
+            }
+            let email = document.getElementById('email_input').value;
+            let password = document.getElementById('password_input').value;
+            const fd = new FormData();
+            fd.append('email', email);
+            fd.append('password', password);
+            xhr.open('Post', 'api/authorization/Login', true);
+            xhr.send(fd);
+        }
+    </script>
 </body>
 </html>

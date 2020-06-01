@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "5q4i87",
+  "CachePdfKey": "5q4i87/5q4i87-1k3kk2s.pdf",
+  "CacheXpzKey": "5q4i87/5q4i87-1yel322.xpz",
+  "CacheInfoKey": "5q4i87/5q4i87-1yel322.json",
+  "CacheCopyKey": "5q4i87/j7cqha.pdf",
+  "Document": null,
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": null,
+  "DocumentFileName": "1231473_750150.pdf",
+  "InputOptions": {
+    "Format": "Pdf",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "5q4i87",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}

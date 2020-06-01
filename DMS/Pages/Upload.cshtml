@@ -153,6 +153,7 @@
 
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
+                console.log(this.response);
                 console.log("1");
             }
         }
@@ -162,14 +163,7 @@
         fd.append('contacts', JSON.stringify(contacts));
         fd.append('keys', JSON.stringify(keys));
         xhr.open("POST", "api/upload", true);
-        xhr.send(fd);
-        /*
-        $.post("api/upload", {
-            photo: file,
-            categories: categories,
-            contacts: contacts
-        })
-        */
+        xhr.send(fd);   
     }
 </script>
 
