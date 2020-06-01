@@ -163,8 +163,9 @@
 
         function onEdit(element, cellinfo) {
 
+            console.log(cellinfo);
             var infoAutoKey = cellinfo.data.DocumentAutoKey;
-            var lineAutoKey = cellinfo.data.AutoKey;
+            var lineAutoKey = cellinfo.data.LineAutoKey;
 
             window.location.href = 'Viewer?InfoAutoKey=' + infoAutoKey + '&LineAutoKey=' + lineAutoKey;
         }

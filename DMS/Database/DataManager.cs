@@ -228,6 +228,7 @@ namespace DMS.Database
             string query = "select DocumentAutoKey,";
             query += " (select DateTimeAdded from " + Tables.DocumentInfo + " where AutoKey = DCR.DocumentAutoKey) as DateTimeAdded,";
             query += " (select Name from " + Tables.DocumentLines + " where InfoAutoKey = DCR.DocumentAutoKey) as Name,";
+            query += " (select AutoKey from " + Tables.DocumentLines + " where InfoAutoKey = DCR.DocumentAutoKey) as LineAutoKey,";
             query += " (select Ext from " + Tables.DocumentLines + " where InfoAutoKey = DCR.DocumentAutoKey) as Ext";
             query += " from " + Tables.DocumentCategoryRel + " as DCR";
             query += " where CatAutoKey = " + CatID;
