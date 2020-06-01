@@ -163,9 +163,10 @@
 
         function onEdit(element, cellinfo) {
 
-            var autokey = cellinfo.data.DocumentAutoKey;
+            var infoAutoKey = cellinfo.data.DocumentAutoKey;
+            var lineAutoKey = cellinfo.data.AutoKey;
 
-            window.location.href = 'Viewer?AutoKey=' + autokey;
+            window.location.href = 'Viewer?InfoAutoKey=' + infoAutoKey + '&LineAutoKey=' + lineAutoKey;
         }
         var selectedID = -1;
         var grid;
@@ -265,7 +266,18 @@
             const fd = new FormData();
 
             fd.append('sQuery', txtSearch.value);
-            xhr.send(fd);*/ 
+            xhr.send(fd);*/
+
+            if (txtSearch.value == '' || txtSearch.value == null) {
+                $("#treeList").dxTreeList({
+                    dataSource: "api/Categories/",
+                });
+
+                $("#gridContainer").dxDataGrid({
+                    dataSource: null,
+                });
+                return;
+            }
 
             $("#treeList").dxTreeList({
                 dataSource: "api/Search/SearchCats?sQuery=" + txtSearch.value,
