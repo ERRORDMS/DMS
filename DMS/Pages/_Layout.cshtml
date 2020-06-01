@@ -185,22 +185,29 @@
                         .Option("path", Url.Page("Settings"))
             .Visible(false)
                         .Selected(IsCurrentPage("Settings"));
+                    if (!User.Identity.IsAuthenticated)
+                    {
+                        items.Add()
+                        .Text("Register")
+                        .Icon("plus")
+                        .Option("path", Url.Page("Register"))
+                        .Selected(IsCurrentPage("register"));
 
+                        items.Add()
+                          .Text("Login")
+                          .Icon("user")
+                          .Option("path", Url.Page("Login"))
+                          .Selected(IsCurrentPage("Login"));
 
-
-                    items.Add()
-                    .Text("Register")
-                    .Icon("plus")
-                    .Option("path", Url.Page("Register"))
-                    .Selected(IsCurrentPage("register"));
-
-                    items.Add()
-                      .Text("Login")
-                      .Icon("user")
-                      .Option("path", Url.Page("Login"))
-                      .Selected(IsCurrentPage("Login"));
-
-
+                    }
+                    else
+                    {
+                        items.Add()
+                          .Text("Logout")
+                          .Icon("export")
+                          .Option("path", Url.Page("SignOut"))
+                          .Selected(IsCurrentPage("SignOut"));
+                    }
                     items.Add()
                     .Text("About")
                     .Icon("info")
