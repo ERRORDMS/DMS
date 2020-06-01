@@ -7,11 +7,16 @@ using DMS.Models;
 using GleamTech;
 using GleamTech.AspNet.Core;
 using GleamTech.DocumentUltimate.AspNet;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,9 +26,11 @@ namespace DMS
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public IHostingEnvironment _environment;
+        public Startup(IConfiguration configuration, IHostingEnvironment _environment)
         {
             Configuration = configuration;
+            this._environment = _environment;
             new DataManager();
         }
 
@@ -34,7 +41,7 @@ namespace DMS
         {
             // Add framework services.
             services
-                .AddMvc()
+                .AddMvc(options => options.Filters.Add(new AuthorizeFilter()))
                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
             /*
@@ -48,10 +55,28 @@ namespace DMS
 
             services.AddHttpContextAccessor();
 
-            //Add GleamTech to the ASP.NET Core services container.
+            //Add GleamTech to the ASP.NET Core services container. 
             //----------------------
             services.AddGleamTech();
             //----------------------
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+  .AddCookie(options =>
+  {
+      options.Cookie.Name = "AuthCookieAspNetCore";
+      options.LoginPath = "/Login";
+      options.LogoutPath = "/Logout";
+      options.Cookie.HttpOnly = true;
+      options.Cookie.SecurePolicy = _environment.IsDevelopment()
+        ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
+      options.Cookie.SameSite = SameSiteMode.Lax;
+  });
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.MinimumSameSitePolicy = SameSiteMode.Strict;
+                options.HttpOnly = HttpOnlyPolicy.None;
+                options.Secure = _environment.IsDevelopment()
+                  ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
+            });
 
             /*
             services.ConfigureApplicationCookie(options =>
@@ -116,6 +141,8 @@ namespace DMS
             app.UseGleamTech();
             //----------------------
 
+            app.UseCookiePolicy();
+            app.UseAuthentication();
 
             app.UseStaticFiles();
             //app.UseAuthentication();
@@ -125,6 +152,7 @@ namespace DMS
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
         }
     }
 }

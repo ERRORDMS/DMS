@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using DMS.Database;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DMS.Controllers
 {
     [Route("api/[controller]")]
+    [AllowAnonymous]
     public class AuthorizationController : Controller
     {
         public IActionResult Index()
@@ -18,7 +22,7 @@ namespace DMS.Controllers
 
         [Route("Login")]
         [HttpPost]
-        public IActionResult Login(string Username, string Password)
+        public  IActionResult Login(string Username, string Password)
         {
 
             int i = DataManager.Login(Username, Password);
@@ -27,6 +31,22 @@ namespace DMS.Controllers
             result.StatusName = ((ErrorCodes)i).ToString();
             result.StatusCode = i;
 
+            if(i == (int)ErrorCodes.SUCCESS)
+            {
+                var claims = new List<Claim>
+{
+  new Claim(ClaimTypes.Name, Guid.NewGuid().ToString())
+};
+
+                var claimsIdentity = new ClaimsIdentity(
+                  claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var authProperties = new AuthenticationProperties();
+
+                HttpContext.SignInAsync(
+                  CookieAuthenticationDefaults.AuthenticationScheme,
+                  new ClaimsPrincipal(claimsIdentity),
+                  authProperties);
+            }
             return new JsonResult(result);
         }
 

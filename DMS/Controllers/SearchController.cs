@@ -237,8 +237,8 @@ namespace DMS.Controllers
             while (reader.Read())
             {
                 sResult = new SearchResult();
-                sResult.InfoAutoKey = Convert.ToInt64(reader["InfoAutoKey"]);
-                sResult.AutoKey = Convert.ToInt64(reader["LineAutoKey"]);
+                sResult.DocumentAutoKey = Convert.ToInt64(reader["InfoAutoKey"]);
+                sResult.LineAutoKey = Convert.ToInt64(reader["LineAutoKey"]);
                 sResult.CatAutoKey = Convert.ToInt64(reader["CatAutoKey"]);
                 sResult.Ext = Convert.ToString(reader["Ext"]);
                 sResult.Name = Convert.ToString(reader["Name"]);
@@ -261,8 +261,8 @@ namespace DMS.Controllers
 
     public class SearchResult
     {
-        public long InfoAutoKey { get; set; }
-        public long AutoKey { get; set; }
+        public long DocumentAutoKey { get; set; }
+        public long LineAutoKey { get; set; }
         public string Name { get; set; }
         public string Ext { get; set; }
         public string ConName { get; set; }
