@@ -1,4 +1,5 @@
 ﻿@page
+@model DMS.Pages.RegisterModel
 @{
     Layout = null;
 }
@@ -9,6 +10,10 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Register</title>
+    <link rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+          integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+          crossorigin="anonymous" />
     <link href="~/css/auth.css" rel="stylesheet" />
 </head>
 <body>
@@ -26,7 +31,16 @@
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="div">
-                        <h5>E-mail</h5>
+                        <h5>E-mail <span class="err102">Username already exists</span></h5>
+                        <input type="text" class="input email_input" id="email_input" autocomplete="off" />
+                    </div>
+                </div>
+                <div class="input-div one">
+                    <div class="i">
+                        <i class="far fa-envelope"></i>
+                    </div>
+                    <div class="div">
+                        <h5>E-mail <span class="err104">Email already exists</span></h5>
                         <input type="email" class="input email_input" id="email_input" autocomplete="off" />
                     </div>
                 </div>
@@ -58,7 +72,32 @@
             const xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
-                    console.log(this.response);
+                           var t = this.responseText;
+                    var obj = JSON.parse(t);
+
+                    var statusCode = obj.StatusCode;
+
+
+                    if (statusCode == 0) {
+                        window.location = 'index';
+                    }
+                    if (statusCode == 102) {
+                        // Username already exists
+                        $(".err102").fadeIn(200);
+                        console.log(102)
+                    } else {
+                        $(".err102").fadeOut(0);
+                    }
+                    if (statusCode == 103) {
+                        console.log(103)
+                    }
+                    if (statusCode == 104) {
+                        // Email exists
+                        $(".err104").fadeIn(200);
+                        console.log(104)
+                    } else {
+                        $(".err104").fadeOut(0);
+                    }
                 }
             }
             let email = document.getElementById('email_input').value;
@@ -66,7 +105,7 @@
             const fd = new FormData();
             fd.append("email", email);
             fd.append("password", password);
-            xhr.open('post', 'api/authorization/Register');
+            xhr.open('post', 'api/authorization/Register',true);
             xhr.send(fd);
         }
     </script>

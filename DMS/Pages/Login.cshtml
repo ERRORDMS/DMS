@@ -47,6 +47,7 @@
                 <a href="#">Forgot Password?</a>
                 <input type="submit" class="btn" value="Login" />
             </form>
+            <span class="err101">Wrong credentials</span>
         </div>
     </div>
     <script src="~/js/main.js"></script>
@@ -56,7 +57,29 @@
             const xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
-                    console.log(this.response);
+                                  var t = this.responseText;
+                    var obj = JSON.parse(t);
+                    console.log(obj);
+
+                    var statusCode = obj.StatusCode;
+
+
+                    if (statusCode == 0) {
+                        window.location = 'index';
+                    }
+                    if (statusCode == 101) {
+                        $(document).ready(function () {
+                          $(".err101").fadeIn(200)
+                        })
+                    } else {
+                        $(".err101").fadeOut(200)
+                    }
+                    if (statusCode = 103) {
+                        // Internal error
+                        console.log(103);
+                    } else {
+                        console.log('good!!')
+                    }
                 }
             }
             let email = document.getElementById('email_input').value;

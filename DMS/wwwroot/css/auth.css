@@ -179,6 +179,22 @@ a {
     .btn:hover {
         background-position: right;
     }
+.err101 {
+    display: none;
+    color: rgb(250,82,82);
+    font-weight: 400;
+}
+.err102 {
+    display: none;
+    color: rgb(250,82,82);
+    font-weight: 400;
+}
+
+.err104 {
+    display: none;
+    color: rgb(250,82,82);
+    font-weight: 400;
+}
 
 
 @media screen and (max-width: 1050px) {
