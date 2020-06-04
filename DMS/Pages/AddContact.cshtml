@@ -12,7 +12,7 @@
             left: 40%;
             top: 40%;
             transform: translate(-50%,-50%);
-        }
+            }
 
         .contact_input {
             width: 360px;
@@ -96,6 +96,10 @@
                 $('.empty_field').fadeIn(100);
             });
             return;
+        } else if (!birthdayDateBox.value) {
+            $(document).ready(function () {
+                $(".empty_field").fadeIn(100);
+            })
         } else {
             $('.empty_field').fadeOut(0);
             const xhr = new XMLHttpRequest();
