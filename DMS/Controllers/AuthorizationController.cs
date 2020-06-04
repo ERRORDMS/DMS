@@ -31,11 +31,15 @@ namespace DMS.Controllers
             result.StatusName = ((ErrorCodes)i).ToString();
             result.StatusCode = i;
 
-            if(i == (int)ErrorCodes.SUCCESS)
+            var id = DataManager.GetClient().GetUserIDbyNameAsync(Username).Result;
+
+            if (i == (int)ErrorCodes.SUCCESS)
             {
                 var claims = new List<Claim>
 {
-  new Claim(ClaimTypes.Name, Guid.NewGuid().ToString())
+  new Claim(ClaimTypes.Name, Guid.NewGuid().ToString()),
+  new Claim(ClaimTypes.Email, Username),
+  new Claim(ClaimTypes.UserData, id )
 };
 
                 var claimsIdentity = new ClaimsIdentity(

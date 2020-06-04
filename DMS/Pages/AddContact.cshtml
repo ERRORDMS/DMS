@@ -64,6 +64,15 @@
                 .ElementAttr("class", "contact_input")
                 .HoverStateEnabled(true)
             )
+
+            @(Html.DevExtreme().DateBox()
+                .Type(DateBoxType.Date)
+                .Name("birthdayDateBox")
+                .Placeholder("Birthday")
+                .Value(DateTime.Now)
+                .ShowClearButton(true)
+                .Max(DateTime.Now)
+            )
             <br />
             <br />
             <input type="submit" value="Add Contact" class="add_Contact_button" />
@@ -128,6 +137,7 @@
             var contact = ContactName.value;
             const fd = new FormData();
             fd.append("Name", contact);
+            fd.append('Birthday', birthdayDateBox.value)
             xhr.open("POST", "api/Contacts/addContact", true);
             xhr.send(fd);
         }

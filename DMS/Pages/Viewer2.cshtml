@@ -5,7 +5,6 @@
 
 @{
 
-    //    ServiceReference1.AlSahlServiceClient client = new ServiceReference1.AlSahlServiceClient();
 
     string InfoAutoKey = "";
     string LineAutoKey = "";
@@ -20,7 +19,6 @@
     {
         LineAutoKey = queryVal.FirstOrDefault();
     }
-    //byte[] img = client.GetImageAsync(fn).Result;
 
 
     DMS.Database.SQLHelper helper = new DMS.Database.SQLHelper(DMS.Database.DataManager.GetConnectionString());

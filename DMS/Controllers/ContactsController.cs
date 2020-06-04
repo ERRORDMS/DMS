@@ -24,8 +24,7 @@ namespace DMS.Controllers
         [HttpGet]
         public LoadResult Get()
         {
-            var userId = "02";//User.FindFirstValue(ClaimTypes.NameIdentifier);
-
+            var userId = User.FindFirstValue(ClaimTypes.UserData);
             return DataSourceLoader.Load(DataManager.GetContacts(userId), new DataSourceLoadOptionsBase());
         }
 
@@ -62,11 +61,10 @@ namespace DMS.Controllers
         }
         [Route("addContact")]
         [HttpPost]
-        public IActionResult addContact(Contact contact)
+        public IActionResult addContact(Contact contact,DateTime birthday)
         {
-            var userId = "02";//User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            int i = DataManager.AddContact(contact, userId);
+            var userId = User.FindFirstValue(ClaimTypes.UserData);
+            int i = DataManager.AddContact(contact,birthday, userId);
 
             Result result = new Result();
             result.StatusName = ((ErrorCodes)i).ToString();

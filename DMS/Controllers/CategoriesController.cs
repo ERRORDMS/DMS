@@ -24,7 +24,7 @@ namespace DMS.Controllers
         [HttpGet]   
         public LoadResult Get()
         {
-            var userId = "02";//User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.UserData);
             return DataSourceLoader.Load(DataManager.GetCategories(userId), new DataSourceLoadOptionsBase());
         }
 
@@ -64,7 +64,7 @@ namespace DMS.Controllers
         [HttpPost]
         public IActionResult addCategory(Category category)
         {
-            var userId = "02";//User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.UserData);
 
             int i =DataManager.AddCategory(category, userId);
 

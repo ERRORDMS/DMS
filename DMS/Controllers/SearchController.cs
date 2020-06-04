@@ -29,7 +29,7 @@ namespace DMS.Controllers
                 return BadRequest();
 
             List<Category> categories = new List<Category>();
-            var userId = "02";//User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.UserData);
 
             SQLHelper helper = new SQLHelper(DataManager.GetConnectionString());
             string[] words = sQuery.Split(' ');
@@ -180,7 +180,7 @@ namespace DMS.Controllers
                 return BadRequest();
 
             List<SearchResult> result = new List<SearchResult>();
-            var userId = "02";// User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.UserData);
 
             SQLHelper helper = new SQLHelper(DataManager.GetConnectionString());
             string[] words = sQuery.Split(' ');

@@ -22,8 +22,11 @@ namespace DMS.Database
         {
             sqlHelper = new SQLHelper(GetConnectionString());
             client = new ServiceReference1.AlSahlServiceClient();
+            
 
         }
+
+        public static AlSahlServiceClient GetClient() { return client; }
 
         public static int DeleteCategory(long autoKey)
         {
@@ -177,7 +180,7 @@ namespace DMS.Database
                 "Name",
                 "AutoKey = '" + autokey + "'");
         }
-        public static int AddContact(Contact contact, string userId)
+        public static int AddContact(Contact contact, DateTime birthDate,  string userId)
         {
             Dictionary<string, string> wheres = new Dictionary<string, string>();
 
@@ -187,9 +190,11 @@ namespace DMS.Database
             if (sqlHelper.Exists(Tables.Contacts, wheres))
                 return (int)ErrorCodes.ALREADY_EXISTS;
 
+            var genId = GetAutoIcrementID(birthDate, "", "");
+
             string autoKey = sqlHelper.InsertWithID(Tables.Contacts,
                 new string[] { "ID", "Name", "DMSUserID" },
-                new string[] { contact.Name, userId });
+                new string[] { genId, contact.Name, userId });
             if (!string.IsNullOrEmpty(autoKey))
             {
                 return (int)ErrorCodes.SUCCESS;
@@ -200,6 +205,41 @@ namespace DMS.Database
             }
         }
 
+        private static string GetAutoIcrementID(DateTime Birthdate, string MainCatID = "", string GenderID = "")
+        {
+            string NewNo = "";
+
+            NewNo += Birthdate.Year.ToString().Substring(2, 2);
+            NewNo += "-";
+
+            string Query = "select max(ID) from " + Tables.Contacts + " where id like '" + NewNo + "%%'";
+
+              
+                string max = sqlHelper.ExecuteScalar<string>(Query);
+                string[] mycount = max.Split('-');
+                // MessageBox.Show(mycount[1].ToString());
+                UInt64 count = 0;
+
+                if (mycount.Length != 1 && mycount.Length != 0)
+                {
+                    if (!UInt64.TryParse(mycount[1], out count))
+                        count = 0;
+                }
+                count++;
+                string nn = count.ToString();
+                nn = nn.PadLeft(5, '0');
+                NewNo += nn + "-";
+                if (!string.IsNullOrEmpty(GenderID))
+                {
+                NewNo += GenderID;
+                }
+                else
+                {
+                    NewNo += "2";
+                }
+            
+            return NewNo;
+        }
         public static int AddKey(string name, string userId)
         {
             Dictionary<string, string> wheres = new Dictionary<string, string>();
@@ -508,11 +548,14 @@ namespace DMS.Database
                     new string[] { email, username, password }))
                     return 0;
                 else
+                {
+
+                }
                     return (int)ErrorCodes.INTERNAL_ERROR;
                     
 
             }
-            catch (Exception)
+            catch (Exception) 
             {
                 return (int)ErrorCodes.INTERNAL_ERROR;
             }
@@ -522,7 +565,7 @@ namespace DMS.Database
         {
             return new SqlConnectionStringBuilder()
             {
-                DataSource = @"192.168.1.141\ALSAHL",
+                DataSource = @"127.0.0.1\ALSAHL",
                 UserID = "test",
                 Password = "test_2008",
                 InitialCatalog = @"D:\AlSahl\Data\MoneySql.MDF"

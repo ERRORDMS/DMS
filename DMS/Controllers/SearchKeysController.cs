@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Data.ResponseModel;
@@ -17,7 +18,7 @@ namespace DMS.Controllers
     {
         public LoadResult Get()
         {
-            var userId = "02";//User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.UserData);
             return DataSourceLoader.Load(DataManager.GetSearchKeys(userId), new DataSourceLoadOptionsBase());
         }
 
@@ -59,8 +60,7 @@ namespace DMS.Controllers
         [HttpPost]
         public IActionResult AddKey(string name)
         {
-            var userId = "02";//User.FindFirstValue(ClaimTypes.NameIdentifier);
-
+            var userId = User.FindFirstValue(ClaimTypes.UserData);
             int i = DataManager.AddKey(name, userId);
 
             AuthorizationController.Result result = new AuthorizationController.Result();

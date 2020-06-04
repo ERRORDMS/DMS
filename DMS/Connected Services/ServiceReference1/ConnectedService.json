@@ -1,12 +1,12 @@
 ﻿{
   "ProviderId": "Microsoft.VisualStudio.ConnectedService.Wcf",
-  "Version": "15.0.30515.712",
+  "Version": "15.0.40203.910",
   "GettingStartedDocument": {
     "Uri": "https://go.microsoft.com/fwlink/?linkid=858517"
   },
   "ExtendedData": {
     "inputs": [
-      "http://192.168.1.141:9100"
+      "http://127.0.0.1:9100"
     ],
     "collectionTypes": [
       "System.Array",

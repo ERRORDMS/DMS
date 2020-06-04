@@ -13,7 +13,7 @@ namespace ServiceReference1
     
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.1-preview-30514-0828")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="CheckScan", Namespace="http://schemas.datacontract.org/2004/07/WCFServiceLib")]
     public partial class CheckScan : object
     {
@@ -350,7 +350,7 @@ namespace ServiceReference1
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.1-preview-30514-0828")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="WCFReturn", Namespace="http://schemas.datacontract.org/2004/07/LibraryCore2009")]
     public partial class WCFReturn : object
     {
@@ -447,7 +447,7 @@ namespace ServiceReference1
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.1-preview-30514-0828")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="DMSDocument", Namespace="http://schemas.datacontract.org/2004/07/WCFServiceLib")]
     public partial class DMSDocument : object
     {
@@ -679,7 +679,7 @@ namespace ServiceReference1
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.1-preview-30514-0828")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="DMSContact", Namespace="http://schemas.datacontract.org/2004/07/WCFServiceLib")]
     public partial class DMSContact : object
     {
@@ -731,7 +731,7 @@ namespace ServiceReference1
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.1-preview-30514-0828")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="DMSCategory", Namespace="http://schemas.datacontract.org/2004/07/WCFServiceLib")]
     public partial class DMSCategory : object
     {
@@ -783,7 +783,7 @@ namespace ServiceReference1
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.1-preview-30514-0828")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="DMSDocumentLine", Namespace="http://schemas.datacontract.org/2004/07/WCFServiceLib")]
     public partial class DMSDocumentLine : object
     {
@@ -835,7 +835,7 @@ namespace ServiceReference1
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.1-preview-30514-0828")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="DMSSearchKeys", Namespace="http://schemas.datacontract.org/2004/07/WCFServiceLib")]
     public partial class DMSSearchKeys : object
     {
@@ -887,7 +887,7 @@ namespace ServiceReference1
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.1-preview-30514-0828")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="ItemCatImages", Namespace="http://schemas.datacontract.org/2004/07/WCFServiceLib")]
     public partial class ItemCatImages : object
     {
@@ -939,7 +939,7 @@ namespace ServiceReference1
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.1-preview-30514-0828")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="Item", Namespace="http://schemas.datacontract.org/2004/07/OrdersWCF")]
     public partial class Item : object
     {
@@ -1051,7 +1051,7 @@ namespace ServiceReference1
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.1-preview-30514-0828")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="ItemImages", Namespace="http://schemas.datacontract.org/2004/07/OrdersWCF")]
     public partial class ItemImages : object
     {
@@ -1148,7 +1148,7 @@ namespace ServiceReference1
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.1-preview-30514-0828")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="POSClients", Namespace="http://schemas.datacontract.org/2004/07/WCFServiceLib")]
     public partial class POSClients : object
     {
@@ -1185,7 +1185,7 @@ namespace ServiceReference1
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.1-preview-30514-0828")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="POSItems", Namespace="http://schemas.datacontract.org/2004/07/LibraryCore2009.POS")]
     public partial class POSItems : object
     {
@@ -1252,7 +1252,7 @@ namespace ServiceReference1
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.1-preview-30514-0828")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="QueueSection", Namespace="http://schemas.datacontract.org/2004/07/WCFServiceLib")]
     public partial class QueueSection : object
     {
@@ -1289,7 +1289,7 @@ namespace ServiceReference1
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.1-preview-30514-0828")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="QueueLocation", Namespace="http://schemas.datacontract.org/2004/07/WCFServiceLib")]
     public partial class QueueLocation : object
     {
@@ -1341,7 +1341,7 @@ namespace ServiceReference1
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.1-preview-30514-0828")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="QueueTrans", Namespace="http://schemas.datacontract.org/2004/07/WCFServiceLib")]
     public partial class QueueTrans : object
     {
@@ -1467,7 +1467,7 @@ namespace ServiceReference1
         }
     }
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.1-preview-30514-0828")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.Runtime.Serialization.DataContractAttribute(Name="SourceAction", Namespace="http://schemas.datacontract.org/2004/07/ToolsCore2009.Defaults2009")]
     public enum SourceAction : int
     {
@@ -1485,7 +1485,7 @@ namespace ServiceReference1
         SetIsApproved = 3,
     }
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.1-preview-30514-0828")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="ServiceReference1.IAlSahlService")]
     public interface IAlSahlService
     {
@@ -1507,6 +1507,9 @@ namespace ServiceReference1
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAlSahlService/SaveChecksTrans", ReplyAction="http://tempuri.org/IAlSahlService/SaveChecksTransResponse")]
         System.Threading.Tasks.Task<ServiceReference1.WCFReturn> SaveChecksTransAsync(string myTrans, string ID, string Deletedcheckstbl);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAlSahlService/GetAutoIcrementID", ReplyAction="http://tempuri.org/IAlSahlService/GetAutoIcrementIDResponse")]
+        System.Threading.Tasks.Task<string> GetAutoIcrementIDAsync(System.DateTime Birthdate, string MainCatID, string GenderID);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAlSahlService/InsertDMSDocumentLine", ReplyAction="http://tempuri.org/IAlSahlService/InsertDMSDocumentLineResponse")]
         System.Threading.Tasks.Task<ServiceReference1.WCFReturn> InsertDMSDocumentLineAsync(byte[] imageBytes, string Ext, ServiceReference1.DMSDocument doc);
@@ -1672,13 +1675,13 @@ namespace ServiceReference1
         System.Threading.Tasks.Task<System.TimeZone> GetTimeZoneAsync();
     }
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.1-preview-30514-0828")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     public interface IAlSahlServiceChannel : ServiceReference1.IAlSahlService, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.1-preview-30514-0828")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     public partial class AlSahlServiceClient : System.ServiceModel.ClientBase<ServiceReference1.IAlSahlService>, ServiceReference1.IAlSahlService
     {
         
@@ -1750,6 +1753,11 @@ namespace ServiceReference1
         public System.Threading.Tasks.Task<ServiceReference1.WCFReturn> SaveChecksTransAsync(string myTrans, string ID, string Deletedcheckstbl)
         {
             return base.Channel.SaveChecksTransAsync(myTrans, ID, Deletedcheckstbl);
+        }
+        
+        public System.Threading.Tasks.Task<string> GetAutoIcrementIDAsync(System.DateTime Birthdate, string MainCatID, string GenderID)
+        {
+            return base.Channel.GetAutoIcrementIDAsync(Birthdate, MainCatID, GenderID);
         }
         
         public System.Threading.Tasks.Task<ServiceReference1.WCFReturn> InsertDMSDocumentLineAsync(byte[] imageBytes, string Ext, ServiceReference1.DMSDocument doc)
