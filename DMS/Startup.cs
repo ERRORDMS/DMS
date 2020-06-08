@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;   
 using DMS.Database;
@@ -11,10 +12,14 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.CookiePolicy;
+using System.Globalization;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -40,9 +45,12 @@ namespace DMS
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
             services
                 .AddMvc(options => options.Filters.Add(new AuthorizeFilter()))
-                .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
+                .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver())
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+                .AddDataAnnotationsLocalization();
 
             /*
             services.AddDbContext<DMSContext>(options =>
@@ -70,13 +78,16 @@ namespace DMS
         ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
       options.Cookie.SameSite = SameSiteMode.Lax;
   });
+
             services.Configure<CookiePolicyOptions>(options =>
             {
+            
                 options.MinimumSameSitePolicy = SameSiteMode.Strict;
                 options.HttpOnly = HttpOnlyPolicy.None;
                 options.Secure = _environment.IsDevelopment()
                   ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
             });
+
 
             /*
             services.ConfigureApplicationCookie(options =>
@@ -143,6 +154,19 @@ namespace DMS
 
             app.UseCookiePolicy();
             app.UseAuthentication();
+
+            var supportedCultures = new[]
+            {
+                new CultureInfo("en-US"),
+                new CultureInfo("ar-PS"),
+            };
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("en-US"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures,
+                 RequestCultureProviders = new[] { new CookieRequestCultureProvider() }
+            });
 
             app.UseStaticFiles();
             //app.UseAuthentication();

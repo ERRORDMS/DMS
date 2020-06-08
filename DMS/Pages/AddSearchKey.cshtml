@@ -1,9 +1,12 @@
 ﻿@page
 @model DMS.Pages.AddSearchKeyModel
 @{
-    ViewData["Title"] = "Add Search Key";
+    ViewData["Title"] = Localizer["Title"];
     Layout = "~/Pages/_Layout.cshtml";
 }
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 <head>
     <style>
 
@@ -54,31 +57,31 @@
     </style>
 </head>
 
-<h2 class="content-block">Add Search Key</h2>
+<h2 class="content-block">@Localizer["AddSearchKey"]</h2>
 <div class="add_contact_form">
     <form action="javascript:addKey()">
         <div class="dx-field-value">
             @(Html.DevExtreme().TextBox()
                 .Mode(TextBoxMode.Text)
                 .Name("SearchKeyName")
-                .Placeholder("Search Key")
+                .Placeholder(Localizer["SearchKey"].Value)
                 .ElementAttr("class", "contact_input")
                 .HoverStateEnabled(true)
             )
             <br />
             <br />
-            <input type="submit" value="Add Search Key" class="add_Contact_button" />
+            <input type="submit" value="@Localizer["AddSearchKey"]" class="add_Contact_button" />
         </div>
     </form>
 </div>
 <div class="contact_found" style="display: none">
-    The Search Key already exists.
+    @Localizer["AlreadyExists"]
 </div>
 <div class="server_error" style="display: none;">
-    Internal Server Error.
+    @Localizer["InternalError"]
 </div>
 <div class="empty_field" style="display: none;">
-    Please enter all fields.
+    @Localizer["MissingArgs"]
 </div>
 
 <script>

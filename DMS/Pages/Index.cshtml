@@ -1,12 +1,13 @@
 ﻿@page
 @model DMS.Pages.IndexModel
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = Localizer["Title"];
     Layout = "~/Pages/_Layout.cshtml";
 }
 
 @using DMS.Models
-
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 <style>
     .tree {
         margin-left: 5rem;
@@ -44,7 +45,6 @@
         }
 </style>
 <div class="tree">
-    <h2 class="content-block">My Data</h2>
 
     @(Html.DevExtreme().TextBox()
 
@@ -65,7 +65,7 @@
                      .Type(ButtonType.Default)
                      .Icon(Url.Content("~/images/icons/search.png")));
          })
-        .Placeholder("Search")
+        .Placeholder(Localizer["SearchText"].Value)
 
     )
 
@@ -99,7 +99,7 @@
             .Columns(columns =>
             {
                 columns.Add().DataField("Name")
-                    .Caption("Category Name");
+                    .Caption(Localizer["CategoryName"].Value);
 
             })
         )
@@ -125,18 +125,18 @@
                 .AllowReordering(true)
                 .OnDragChange("onDragChange")
                 .OnReorder("onReorder")
-                .ShowDragIcons(true)    
+                .ShowDragIcons(true)
             )*/
             .Columns(columns =>
              {
                  columns.Add().DataField("Name")
-                     .Caption("Name");
+                     .Caption(Localizer["NameCol"].Value);
 
                  columns.Add().DataField("Ext")
-                 .Caption("Type");
+                 .Caption(Localizer["TypeCol"].Value);
 
                  columns.Add().DataField("DateTimeAdded")
-                     .Caption("Date Added");
+                     .Caption(Localizer["DateAddedCol"].Value);
                  columns.Add()
               .Caption("View")
               .Width(100)
@@ -154,7 +154,7 @@
     <script>
         function cellTemplate(element, cellInfo) {
             $('<a/>')
-                .text("View")
+                .text('@Localizer["ViewCol"]')
                 .click(function () {
                     onEdit(element, cellInfo);
                 })
@@ -182,7 +182,7 @@
                 }
                 targetNode = targetNode.parent;
             }
-        }               
+        }
 
         function contentReady(e) {
             grid = e;
@@ -286,7 +286,7 @@
                 dataSource: "api/Search/SearchFiles?sQuery=" + txtSearch.value,
             });
 
-            
+
         }
     </script>
 

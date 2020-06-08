@@ -1,7 +1,7 @@
 ﻿@page
 @model DMS.Pages.ManageSearchKeyModel
 @{
-    ViewData["Title"] = "Manage Search Key";
+    ViewData["Title"] = Localizer["Title"];
     Layout = "~/Pages/_Layout.cshtml";
 
     long AutoKey = 0;
@@ -10,8 +10,9 @@
 
 
 }
-
-<h2 class="content-block">Manage Search Key</h2>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<h2 class="content-block">@Localizer["ManageKey"]</h2>
 
 
 @if (AutoKey != 0)
@@ -86,7 +87,7 @@
 
     @(Html.DevExtreme().TextBox()
 
-                .Placeholder("Search Key Name")
+                .Placeholder(Localizer["SearchKeyCol"].Value)
                         .ElementAttr("class", "content-block")
                         .Name("txtName")
     )
@@ -94,14 +95,14 @@
     <br />
     @(Html.DevExtreme().Button()
         .Icon("save")
-        .Text("Save")
+        .Text(Localizer["Save"].Value)
         .OnClick("saveCon")
         .ElementAttr("class", "content-block")
 
     )
     @(Html.DevExtreme().Button()
         .Icon("trash")
-        .Text("Delete Search Key")
+        .Text(Localizer["DeleteKey"].Value)
         .OnClick("deleteCon")
         .ElementAttr("class", "content-block")
 
@@ -132,9 +133,9 @@ else
             .Columns(columns =>
             {
                 columns.Add().DataField("Name")
-                    .Caption("Name");
+                    .Caption(Localizer["SearchKeyCol"].Value);
                 columns.Add()
-               .Caption("Manage")
+               .Caption(Localizer["Manage"].Value)
                .Width(100)
                .Alignment(HorizontalAlignment.Center)
                .AllowFiltering(false)
@@ -151,7 +152,7 @@ else
     //<![CDATA[
     function cellTemplate(element, cellInfo) {
         $('<a/>')
-            .text("Manage")
+            .text(@Localizer["Manage"])
             .click(function () {
                 onEdit(element, cellInfo);
             })

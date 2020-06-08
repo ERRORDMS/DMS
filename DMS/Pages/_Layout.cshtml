@@ -1,4 +1,7 @@
-﻿
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@using System.Globalization
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,8 +24,15 @@
             margin-right: 20px;
         }
     </style>
+    @if (CultureInfo.CurrentCulture.TextInfo.IsRightToLeft)
+    {
+        <style>
+            body {
+                direction: rtl
+            }
+        </style>
+    }
     <script src="~/js/vendor.js" asp-append-version="true"></script>
-
 </head>
 
 <body>
@@ -30,21 +40,33 @@
         <div class="layout-header" style="height:80px;overflow: hidden;">
             @(Html.DevExtreme().Toolbar()
                 .Items(items =>
-                        {
+                {
+
+                        items.Add()
+                            .Widget(w => w
+                                .Button()
+                                .Icon("menu")
+                                .OnClick("DMS.onMenuButtonClick")
+                            )
+                            .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.After : ToolbarItemLocation.Before)
+                            .CssClass("menu-button");
+
+                        items.Add()
+                            .Html("<div>" + Localizer["Title"].Value + "</div>")
+                            .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.After : ToolbarItemLocation.Before)
+                            .CssClass("header-title");
+
                     items.Add()
-                        .Widget(w => w
-                            .Button()
-                            .Icon("menu")
-                            .OnClick("DMS.onMenuButtonClick")
-                        )
-                        .Location(ToolbarItemLocation.Before)
-                        .CssClass("menu-button");
-                    items.Add()
-                        .Html("<div>Document Management System</div>")
-                        .Location(ToolbarItemLocation.Before)
-                        .CssClass("header-title");
+                       .Widget(w => w
+                           .Button()
+                           .Text(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "English" : "عربي")
+                           .OnClick(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "switchLanguageEn" : "switchLanguageAr")
+                       )
+                       .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.Before : ToolbarItemLocation.After)
+                       .CssClass("menu-button");
                 })
             )
+
         </div>
         <div class="layout-body">
             @(Html.DevExtreme().Drawer()
@@ -89,13 +111,13 @@
                 .Items(items =>
                 {
                     items.Add()
-                    .Text("Home")
+                    .Text(Localizer["Home"].Value)
                     .Icon("home")
                     .Option("path", Url.Page("Index"))
                     .Selected(IsCurrentPage("Index"));
 
                     items.Add()
-               .Text("Categories")
+               .Text(Localizer["Categories"].Value)
                .Html("<span class='space'></span>")
                .Icon("tags")
                .HasItems(true)
@@ -105,7 +127,7 @@
                .Selected(false);
 
                     items.Add()
-               .Text("Add Category")
+               .Text(Localizer["AddCategory"].Value)
                .Icon("plus")
                .ParentId(2)
                .Option("path", Url.Page("AddCategory"))
@@ -113,7 +135,7 @@
 
 
                     items.Add()
-               .Text("Manage Category")
+               .Text(Localizer["ManageCategory"].Value)
                .Icon("edit")
                .ParentId(2)
                .Option("path", Url.Page("ManageCategory"))
@@ -122,7 +144,7 @@
 
 
                     items.Add()
-               .Text("Contacts")
+               .Text(Localizer["Contacts"].Value)
                .Html("<span class='space'></span>")
                .Icon("user")
                .HasItems(true)
@@ -132,7 +154,7 @@
                .Selected(false);
 
                     items.Add()
-               .Text("Add Contact")
+               .Text(Localizer["AddContact"].Value)
                .Icon("plus")
                .ParentId(5)
                .Option("path", Url.Page("AddContact"))
@@ -140,14 +162,14 @@
 
 
                     items.Add()
-               .Text("Manage Contact")
+               .Text(Localizer["ManageContact"].Value)
                .Icon("edit")
                .ParentId(5)
                .Option("path", Url.Page("ManageContact"))
                .Selected(IsCurrentPage("ManageContact"));
 
                     items.Add()
-                .Text("Search Keys")
+                .Text(Localizer["SearchKeys"].Value)
                 .Html("<span class='space'></span>")
                 .Icon("key")
                 .HasItems(true)
@@ -157,7 +179,7 @@
                 .Selected(false);
 
                     items.Add()
-               .Text("Add Key")
+               .Text(Localizer["AddSearchKey"].Value)
                .Icon("plus")
                .ParentId(8)
                .Option("path", Url.Page("AddSearchKey"))
@@ -165,7 +187,7 @@
 
 
                     items.Add()
-               .Text("Manage Key")
+               .Text(Localizer["ManageSearchKey"].Value)
                .Icon("edit")
                .ParentId(8)
                .Option("path", Url.Page("ManageSearchKey"))
@@ -173,14 +195,14 @@
 
 
                     items.Add()
-           .Text("Upload")
+           .Text(Localizer["Upload"].Value)
            .Icon("upload")
            .Option("path", Url.Page("Upload"))
                     .Selected(IsCurrentPage("upload"));
 
 
                     items.Add()
-                        .Text("Settings")
+                        .Text(Localizer["Settings"].Value)
                         .Icon("preferences")
                         .Option("path", Url.Page("Settings"))
             .Visible(false)
@@ -188,13 +210,13 @@
                     if (!User.Identity.IsAuthenticated)
                     {
                         items.Add()
-                        .Text("Register")
+                        .Text(Localizer["Register"].Value)
                         .Icon("plus")
                         .Option("path", Url.Page("Register"))
                         .Selected(IsCurrentPage("register"));
 
                         items.Add()
-                          .Text("Login")
+                          .Text(Localizer["Login"].Value)
                           .Icon("user")
                           .Option("path", Url.Page("Login"))
                           .Selected(IsCurrentPage("Login"));
@@ -203,16 +225,11 @@
                     else
                     {
                         items.Add()
-                          .Text("Logout")
+                          .Text(Localizer["Logout"].Value)
                           .Icon("export")
                           .Option("path", Url.Page("SignOut"))
                           .Selected(IsCurrentPage("SignOut"));
                     }
-                    items.Add()
-                    .Text("About")
-                    .Icon("info")
-                    .Option("path", Url.Page("About"))
-                    .Selected(IsCurrentPage("About"));
                 }
                    )
                 .DataStructure(TreeViewDataStructure.Plain)
@@ -225,10 +242,30 @@
         </div>
     }
 
-
-
-
     <script>
+
+
+        function switchLanguageEn() {
+            switchLanguage("en-US");
+        }
+
+        function switchLanguageAr() {
+
+            switchLanguage("ar-PS");
+        }
+
+        function switchLanguage(culture) {
+            const xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    window.location = "Index";
+                }
+            }
+            const fd = new FormData();
+            fd.append('culture', culture);
+            xhr.open("POST", "api/Culture", true);
+            xhr.send(fd);
+        }
 
         var DMS = (function () {
 
@@ -256,6 +293,7 @@
 
                 return state === "true";
             }
+
 
             function saveDrawerOpened() {
                 sessionStorage.setItem(DRAWER_OPENED_KEY, getDrawer().option("opened"));

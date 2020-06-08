@@ -1,7 +1,11 @@
 ﻿@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @model DMS.Pages.LoginModel
 @{
     Layout = null;
+    ViewData["Title"] = Localizer["Title"];
+
 }
 
 <!DOCTYPE html>
@@ -25,13 +29,13 @@
         <div class="login-content">
             <form action="javascript:Login()">
                 <img src="~/images/download2.svg" />
-                <h2 class="title">Welcome</h2>
+                <h2 class="title">@Localizer["Welcome"]</h2>
                 <div class="input-div one">
                     <div class="i">
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="div">
-                        <h5>E-mail</h5>
+                        <h5>@Localizer["Email"]</h5>
                         <input type="email" class="input email_input" id="email_input" autocomplete="off" />
                     </div>
                 </div>
@@ -40,14 +44,14 @@
                         <i class="fas fa-lock"></i>
                     </div>
                     <div class="div">
-                        <h5>Password</h5>
+                        <h5>@Localizer["Password"]</h5>
                         <input type="password" class="input" id="password_input" />
                     </div>
                 </div>
-                <a href="#">Forgot Password?</a>
-                <input type="submit" class="btn" value="Login" />
+                <a href="#">@Localizer["ForgotPassword"]</a>
+                <input type="submit" class="btn" value="@Localizer["Login"]" />
             </form>
-            <span class="err101">Wrong credentials</span>
+            <span class="err101">@Localizer["WrongCredentials"]</span>
         </div>
     </div>
     <script src="~/js/main.js"></script>
@@ -57,7 +61,7 @@
             const xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
-                                  var t = this.responseText;
+                    var t = this.responseText;
                     var obj = JSON.parse(t);
                     console.log(obj);
 
@@ -69,7 +73,7 @@
                     }
                     if (statusCode == 101) {
                         $(document).ready(function () {
-                          $(".err101").fadeIn(200)
+                            $(".err101").fadeIn(200)
                         })
                     } else {
                         $(".err101").fadeOut(200)
@@ -91,6 +95,7 @@
             xhr.send(fd);
         }
     </script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
 </body>
 </html>
 

@@ -1,8 +1,10 @@
 ﻿@page
 @{
-    ViewData["Title"] = "AddCategory";
+    ViewData["Title"] = Localizer["Title"];
 }
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 <head>
     <style>
 
@@ -43,19 +45,20 @@
             cursor: pointer;
             transition: .5s;
         }
+
             .add_Category_button:hover {
                 box-shadow: 1px 1px 4px black;
             }
-    </style>  
+    </style>
 </head>
-    <h2 class="content-block">Add Category</h2>
+<h2 class="content-block">@Localizer["AddCategory"]</h2>
 <div class="add_Category_form">
     <form action="javascript:addCategory()">
         <div class="dx-field-value">
             @(Html.DevExtreme().TextBox()
                 .Mode(TextBoxMode.Text)
                 .Name("CategoryName")
-                .Placeholder("Category Name")
+                .Placeholder(Localizer["CategoryNameCol"].Value)
                 .ElementAttr("class", "category_input")
                 .HoverStateEnabled(true)
             )
@@ -71,7 +74,7 @@
                     .LoadAction("Get")
                     .Key("AutoKey")
                 )
-                .Placeholder("Select parent category")
+                .Placeholder(Localizer["SelectParent"].Value)
                 .OnValueChanged("getparent")
                 .ShowClearButton(true)
                 .ContentTemplate(new TemplateName("EmbeddedTreeViewSingle"))
@@ -108,18 +111,18 @@
             }
             <br />
             <br />
-            <input type="submit" value="Add Category" class="add_Category_button" />
+            <input type="submit" value="@Localizer["AddCategory"]" class="add_Category_button" />
         </div>
     </form>
 </div>
 <div class="Category_found" style="display: none">
-    the Category already exists
+    @Localizer["AlreadyExists"]
 </div>
 <div class="server_error" style="display: none;">
-    Internal Server Error
+    @Localizer["InternalError"]
 </div>
 <div class="empty_field" style="display: none;">
-    Please Enter all fields
+    @Localizer["MissingArgs"]
 </div>
 <script>
     function syncTreeViewSelection(treeView, value) {

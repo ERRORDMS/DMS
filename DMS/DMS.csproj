@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="compilerconfig.json" />
     <Content Remove="wwwroot\js\site.js" />
     <Content Remove="wwwroot\js\site.min.js" />
   </ItemGroup>
@@ -37,6 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="compilerconfig.json" />
     <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-theme.css.map" />
     <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-theme.min.css.map" />
     <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap.css.map" />
