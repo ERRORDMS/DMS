@@ -6,8 +6,15 @@
     Layout = null;
     ViewData["Title"] = Localizer["Title"];
 
+
+
 }
 
+@{  if (User.Identity.IsAuthenticated)
+    {
+        <script>window.location = '/'</script>
+    }
+}
 <!DOCTYPE html>
 
 <html>
@@ -35,7 +42,7 @@
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="div">
-                        <h5>@Localizer["Email"]</h5>
+                        <h5>@Localizer["Email"] <span class="err101">@Localizer["WrongCredentials"]</span></h5>
                         <input type="email" class="input email_input" id="email_input" autocomplete="off" />
                     </div>
                 </div>
@@ -51,7 +58,6 @@
                 <a href="#">@Localizer["ForgotPassword"]</a>
                 <input type="submit" class="btn" value="@Localizer["Login"]" />
             </form>
-            <span class="err101">@Localizer["WrongCredentials"]</span>
         </div>
     </div>
     <script src="~/js/main.js"></script>

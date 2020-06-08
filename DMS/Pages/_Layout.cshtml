@@ -202,11 +202,19 @@
 
 
                     items.Add()
+           .Text("Profile")
+           .Icon("user")
+           .Option("path", Url.Page("Profile"))
+                    .Selected(IsCurrentPage("Profile"));
+
+
+                    items.Add()
                         .Text(Localizer["Settings"].Value)
                         .Icon("preferences")
                         .Option("path", Url.Page("Settings"))
             .Visible(false)
                         .Selected(IsCurrentPage("Settings"));
+
                     if (!User.Identity.IsAuthenticated)
                     {
                         items.Add()

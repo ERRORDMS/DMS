@@ -2,6 +2,11 @@
 @model DMS.Pages.RegisterModel
 @{
     Layout = null;
+    
+    if (User.Identity.IsAuthenticated)
+    {
+    <script>window.location = '/'</script>
+    }
 }
 
 <!DOCTYPE html>
@@ -31,7 +36,7 @@
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="div">
-                        <h5>E-mail <span class="err102">Username already exists</span></h5>
+                        <h5>Username <span class="err102">Username already exists</span></h5>
                         <input type="text" class="input email_input" id="email_input" autocomplete="off" />
                     </div>
                 </div>
