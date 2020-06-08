@@ -91,13 +91,16 @@
     </script>
 
 
+
     @(Html.DevExtreme().TextBox()
 
                 .Placeholder(Localizer["ContactNameCol"].Value)
                         .ElementAttr("class", "content-block")
                         .Name("txtName")
     )
-
+    <div class="empty_field" style="display: none;">
+        @Localizer["MissingArgs"]
+    </div>
     <br />
     @(Html.DevExtreme().Button()
         .Icon("save")
