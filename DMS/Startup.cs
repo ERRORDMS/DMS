@@ -158,7 +158,7 @@ namespace DMS
             var supportedCultures = new[]
             {
                 new CultureInfo("en-US"),
-                new CultureInfo("ar-PS"),
+                new CultureInfo("ar-SA"),
             };
             app.UseRequestLocalization(new RequestLocalizationOptions
             {

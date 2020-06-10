@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using System.ServiceModel.Dispatcher;
+using System.ServiceModel;
 
 namespace DMS.Database
 {
@@ -21,7 +22,7 @@ namespace DMS.Database
         public DataManager()
         {
             sqlHelper = new SQLHelper(GetConnectionString());
-            client = new ServiceReference1.AlSahlServiceClient();
+            client = new ServiceReference1.AlSahlServiceClient(new BasicHttpBinding(), new EndpointAddress(new Uri("http://192.168.1.104:9100/AlSahlService")));
             
 
         }
