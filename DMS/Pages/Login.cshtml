@@ -4,7 +4,6 @@
 @model DMS.Pages.LoginModel
 @{
     Layout = null;
-    ViewData["Title"] = Localizer["Title"];
 
 }
 
@@ -13,7 +12,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Login</title>
+    <title>@Localizer["Title"]</title>
     <link rel="stylesheet"
           href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
           integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
@@ -35,8 +34,8 @@
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="div">
-                        <h5>@Localizer["Email"]</h5>
-                        <input type="email" class="input email_input" id="email_input" autocomplete="off" />
+                        <h5>@Localizer["Username"]</h5>
+                        <input type="text" class="input email_input" id="email_input" autocomplete="off" />
                     </div>
                 </div>
                 <div class="input-div pass">

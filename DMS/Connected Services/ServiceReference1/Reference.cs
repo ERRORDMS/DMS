@@ -1650,8 +1650,14 @@ namespace ServiceReference1
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAlSahlService/login", ReplyAction="http://tempuri.org/IAlSahlService/loginResponse")]
         System.Threading.Tasks.Task<bool> loginAsync(string UserName, string Password);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAlSahlService/SetPassword", ReplyAction="http://tempuri.org/IAlSahlService/SetPasswordResponse")]
+        System.Threading.Tasks.Task SetPasswordAsync(string username, string password);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAlSahlService/SaveVisit", ReplyAction="http://tempuri.org/IAlSahlService/SaveVisitResponse")]
-        System.Threading.Tasks.Task<ServiceReference1.WCFReturn> SaveVisitAsync(string Infostr, string Procedure, string Plan, string diagnostics, string Prediag, string Note, string Proceduretbl, string PatientStatus, bool HasAppointment, string Appointment, bool CloseReception, bool IsFollowUp);
+        System.Threading.Tasks.Task<ServiceReference1.WCFReturn> SaveVisitAsync(string Infostr, string Procedure, string Plan, string diagnostics, string Prediag, string Note, string Proceduretbl, string PatientStatus, bool HasAppointment, string Appointment, bool CloseReception, bool IsFollowUp, string serNoteFmtLine);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAlSahlService/SaveRound", ReplyAction="http://tempuri.org/IAlSahlService/SaveRoundResponse")]
+        System.Threading.Tasks.Task<ServiceReference1.WCFReturn> SaveRoundAsync(string sertrans, string serdiagnosticsTbl, string serNoteLine, string serProceduretbl, string ser_sectiontStatus, string serNoteFmtLine);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAlSahlService/PrintVote", ReplyAction="http://tempuri.org/IAlSahlService/PrintVoteResponse")]
         System.Threading.Tasks.Task PrintVoteAsync(long VoterID, string[] Names, long RandoNumber);
@@ -1977,9 +1983,19 @@ namespace ServiceReference1
             return base.Channel.loginAsync(UserName, Password);
         }
         
-        public System.Threading.Tasks.Task<ServiceReference1.WCFReturn> SaveVisitAsync(string Infostr, string Procedure, string Plan, string diagnostics, string Prediag, string Note, string Proceduretbl, string PatientStatus, bool HasAppointment, string Appointment, bool CloseReception, bool IsFollowUp)
+        public System.Threading.Tasks.Task SetPasswordAsync(string username, string password)
         {
-            return base.Channel.SaveVisitAsync(Infostr, Procedure, Plan, diagnostics, Prediag, Note, Proceduretbl, PatientStatus, HasAppointment, Appointment, CloseReception, IsFollowUp);
+            return base.Channel.SetPasswordAsync(username, password);
+        }
+        
+        public System.Threading.Tasks.Task<ServiceReference1.WCFReturn> SaveVisitAsync(string Infostr, string Procedure, string Plan, string diagnostics, string Prediag, string Note, string Proceduretbl, string PatientStatus, bool HasAppointment, string Appointment, bool CloseReception, bool IsFollowUp, string serNoteFmtLine)
+        {
+            return base.Channel.SaveVisitAsync(Infostr, Procedure, Plan, diagnostics, Prediag, Note, Proceduretbl, PatientStatus, HasAppointment, Appointment, CloseReception, IsFollowUp, serNoteFmtLine);
+        }
+        
+        public System.Threading.Tasks.Task<ServiceReference1.WCFReturn> SaveRoundAsync(string sertrans, string serdiagnosticsTbl, string serNoteLine, string serProceduretbl, string ser_sectiontStatus, string serNoteFmtLine)
+        {
+            return base.Channel.SaveRoundAsync(sertrans, serdiagnosticsTbl, serNoteLine, serProceduretbl, ser_sectiontStatus, serNoteFmtLine);
         }
         
         public System.Threading.Tasks.Task PrintVoteAsync(long VoterID, string[] Names, long RandoNumber)
@@ -2045,7 +2061,7 @@ namespace ServiceReference1
         {
             if ((endpointConfiguration == EndpointConfiguration.BasicHttpBinding_IAlSahlService))
             {
-                return new System.ServiceModel.EndpointAddress("http://localhost:9100/AlSahlService");
+                return new System.ServiceModel.EndpointAddress("http://192.168.1.104:9100/AlSahlService");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

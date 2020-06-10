@@ -479,6 +479,11 @@ namespace DMS.Database
 
             return sqlHelper.ExecuteReader<Category>(query);
         }
+
+        public static string GetUserAutoKey(string name)
+        {
+            return sqlHelper.SelectWithWhere(Tables.Users, "AutoKey", "Name = '" + name + "'");
+        }
         public static IEnumerable<Contact> GetContacts(string userID)
         {
             Dictionary<string,string> wheres = new System.Collections.Generic.Dictionary<string, string>();
@@ -535,32 +540,64 @@ namespace DMS.Database
 
                 wheres = new Dictionary<string, string>();
 
-                wheres.Add("Username", username);
+                wheres.Add("Name", username);
 
                 if (sqlHelper.Exists(Tables.Users, wheres))
                 {
                     return (int)ErrorCodes.USERNAME_EXISTS;
                 }
-                
+
+                var id = GetUserAutoIcrementID();
 
                 if (sqlHelper.Insert(Tables.Users,
-                    new string[] { "Email", "Username", "Password" },
-                    new string[] { email, username, password }))
-                    return 0;
+                    new string[] { "Email", "Name", "ID" },
+                    new string[] { email, username,  id }))
+                {
+                    client.SetPasswordAsync(username, password);
+                    return (int)ErrorCodes.SUCCESS;
+                }
                 else
                 {
+                    return (int)ErrorCodes.INTERNAL_ERROR;
 
                 }
-                    return (int)ErrorCodes.INTERNAL_ERROR;
-                    
-
             }
             catch (Exception) 
             {
                 return (int)ErrorCodes.INTERNAL_ERROR;
             }
+
         }
 
+
+        private static string GetUserAutoIcrementID()
+        {
+            string NewNo = "";
+
+            NewNo += DateTime.Now.Year.ToString().Substring(2, 2);
+            NewNo += "-";
+
+            string Query = "select max(ID) from " + Tables.Users + " where id like '" + NewNo + "%%'";
+
+
+            string max = sqlHelper.ExecuteScalar<string>(Query);
+            string[] mycount = max.Split('-');
+            // MessageBox.Show(mycount[1].ToString());
+            UInt64 count = 0;
+
+            if (mycount.Length != 1 && mycount.Length != 0)
+            {
+                if (!UInt64.TryParse(mycount[1], out count))
+                    count = 0;
+            }
+            count++;
+            string nn = count.ToString();
+            nn = nn.PadLeft(5, '0');
+            NewNo += nn + "-";
+            NewNo += "2";
+
+            return NewNo;
+        }
         public static string GetConnectionString()
         {
             return new SqlConnectionStringBuilder()

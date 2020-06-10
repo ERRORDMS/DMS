@@ -22,7 +22,7 @@ namespace DMS.Controllers
 
         [Route("Login")]
         [HttpPost]
-        public  IActionResult Login(string Username, string Password)
+        public IActionResult Login(string Username, string Password)
         {
 
             int i = DataManager.Login(Username, Password);
@@ -30,27 +30,11 @@ namespace DMS.Controllers
             Result result = new Result();
             result.StatusName = ((ErrorCodes)i).ToString();
             result.StatusCode = i;
-
-            var id = DataManager.GetClient().GetUserIDbyNameAsync(Username).Result;
-
             if (i == (int)ErrorCodes.SUCCESS)
             {
-                var claims = new List<Claim>
-{
-  new Claim(ClaimTypes.Name, Guid.NewGuid().ToString()),
-  new Claim(ClaimTypes.Email, Username),
-  new Claim(ClaimTypes.UserData, id )
-};
-
-                var claimsIdentity = new ClaimsIdentity(
-                  claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var authProperties = new AuthenticationProperties();
-
-                HttpContext.SignInAsync(
-                  CookieAuthenticationDefaults.AuthenticationScheme,
-                  new ClaimsPrincipal(claimsIdentity),
-                  authProperties);
+                AddCookies(Username);
             }
+
             return new JsonResult(result);
         }
 
@@ -64,8 +48,31 @@ namespace DMS.Controllers
             Result result = new Result();
             result.StatusName = ((ErrorCodes)i).ToString();
             result.StatusCode = i;
-
+            if (i == (int)ErrorCodes.SUCCESS)
+            {
+                AddCookies(Username);
+            }   
             return new JsonResult(result);
+        }
+
+        public void AddCookies(string Username)
+        {
+            var id = DataManager.GetClient().GetUserIDbyNameAsync(Username).Result;
+
+                var claims = new List<Claim>
+{
+  new Claim(ClaimTypes.Name, Guid.NewGuid().ToString()),
+  new Claim(ClaimTypes.UserData, id )
+};
+
+                var claimsIdentity = new ClaimsIdentity(
+                  claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var authProperties = new AuthenticationProperties();
+
+                HttpContext.SignInAsync(
+                  CookieAuthenticationDefaults.AuthenticationScheme,
+                  new ClaimsPrincipal(claimsIdentity),
+                  authProperties);
         }
 
         public class Result
