@@ -6,6 +6,11 @@
     Layout = null;
     ViewData["Title"] = Localizer["Title"];
 
+    if (User.Identity.IsAuthenticated)
+    {
+        Redirect("Index");
+    }
+
 }
 
 

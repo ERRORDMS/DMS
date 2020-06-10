@@ -5,6 +5,10 @@
 @{
     Layout = null;
 
+    if (User.Identity.IsAuthenticated)
+    {
+        Redirect("Index");
+    }
 }
 
 <!DOCTYPE html>
