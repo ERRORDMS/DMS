@@ -52,13 +52,19 @@
                     </div>
                 </div>
                 <a href="#">@Localizer["ForgotPassword"]</a>
+                <a href="/Register">create Account</a>
                 <input type="submit" class="btn" value="@Localizer["Login"]" />
             </form>
             <span class="err101">@Localizer["WrongCredentials"]</span>
         </div>
     </div>
+    <div class="box">
+        @(Html.DevExtreme().Button()
+        .Text(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "English" : "عربي"))
+    </div>
+   
     <script src="~/js/main.js"></script>
-
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script>
         function Login() {
             const xhr = new XMLHttpRequest();
@@ -98,7 +104,6 @@
             xhr.send(fd);
         }
     </script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
 </body>
 </html>
 

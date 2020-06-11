@@ -36,6 +36,8 @@
             <form action="javascript:register()" method="post">
                 <img src="~/images/download2.svg" />
                 <h2 class="title">@Localizer["Welcome"]</h2>
+                <span class="err99">Please Enter all fields</span>
+                <span class="err100">Password don't match</span>
                 <div class="input-div one">
                     <div class="i">
                         <i class="fas fa-user"></i>
@@ -69,17 +71,33 @@
                     </div>
                     <div class="div">
                         <h5>@Localizer["ConfirmPassword"]</h5>
-                        <input type="password" class="input" />
+                        <input type="password" class="input" id="confirm_password_input" />
                     </div>
                 </div>
+                <a href="/login">Have an account ?</a>
                 <input type="submit" class="btn" value="@Localizer["Register"]" />
             </form>
         </div>
     </div>
     <script src="~/js/main.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script>
         function register() {
-            const xhr = new XMLHttpRequest();
+            let email = document.getElementById('email_input').value;
+            let username = document.getElementById('username_input').value;
+            let password = document.getElementById('password_input').value;
+            let confirm_password = document.getElementById('confirm_password_input').value;
+
+            if (!email || !username || !password || !confirm_password) {
+                $(document).ready(function () {
+                    $(".err99").fadeIn(100)
+                })
+                return;
+            } else if (confirm_password !== password) {
+                $('.err100').fadeIn(100);
+            } else {
+                $(".err99, .err100").fadeOut(100);
+                const xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     var t = this.responseText;
@@ -93,7 +111,9 @@
                     }
                     if (statusCode == 102) {
                         // Username already exists
-                        $(".err102").fadeIn(200);
+                        $(document).ready(function () {
+                          $(".err102").fadeIn(200);
+                        })
                         console.log(102)
                     } else {
                         $(".err102").fadeOut(0);
@@ -103,26 +123,26 @@
                     }
                     if (statusCode == 104) {
                         // Email exists
-                        $(".err104").fadeIn(200);
+                        $(document).ready(function () {
+                          $(".err104").fadeIn(200);
+                        })
                         console.log(104)
                     } else {
                         $(".err104").fadeOut(0);
                     }
                 }
             }
-            let email = document.getElementById('email_input').value;
-            let username = document.getElementById('username_input').value;
-            let password = document.getElementById('password_input').value;
+           
             const fd = new FormData();
             fd.append('username', username);
             fd.append("email", email);
             fd.append("password", password);
             xhr.open('post', 'api/authorization/Register', true);
             xhr.send(fd);
+            }
         }
     </script>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
 </body>
 </html>

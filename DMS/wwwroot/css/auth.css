@@ -179,6 +179,16 @@ a {
     .btn:hover {
         background-position: right;
     }
+.err99 {
+    display: none;
+    color: rgb(250,82,82);
+    font-weight: 400;
+}
+.err100 {
+    display: none;
+    color: rgb(250,82,82);
+    font-weight: 400;
+}
 .err101 {
     display: none;
     color: rgb(250,82,82);
@@ -194,6 +204,11 @@ a {
     display: none;
     color: rgb(250,82,82);
     font-weight: 400;
+}
+.box {
+    position: absolute;
+    left:100%;
+    top: 100%;
 }
 
 
