@@ -126,6 +126,9 @@
   <data name="EmailAlreadyExists" xml:space="preserve">
     <value>E-mail already exists</value>
   </data>
+  <data name="Login" xml:space="preserve">
+    <value>Have an account?</value>
+  </data>
   <data name="Password" xml:space="preserve">
     <value>Password</value>
   </data>
