@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "15mruwz",
+  "CachePdfKey": "15mruwz/15mruwz-1nrwo2i.pdf",
+  "CacheXpzKey": "15mruwz/15mruwz-1vjmhto.xpz",
+  "CacheInfoKey": "15mruwz/15mruwz-1vjmhto.json",
+  "CacheCopyKey": "15mruwz/1loez19.png",
+  "Document": null,
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": null,
+  "DocumentFileName": "1231483_750160.png",
+  "InputOptions": {
+    "Format": "Png",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "15mruwz",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}

@@ -7,7 +7,7 @@
 
     if (User.Identity.IsAuthenticated)
     {
-        Redirect("Index");
+      <script>window.location = '/index'</script>
     }
 }
 
@@ -59,17 +59,16 @@
                 <a href="#">@Localizer["ForgotPassword"]</a>
                 <a href="/Register">@Localizer["CreateAccount"]</a>
                 <input type="submit" class="btn" value="@Localizer["Login"]" />
-
-                @(Html.DevExtreme().Button()
-                    .Type(ButtonType.Normal)
-                    .ID("btnChangeLang")
-                    .OnClick(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "switchLanguageEn" : "switchLanguageAr")
-                    .Text(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "English" : "عربي"))
             </form>
             <span class="err101">@Localizer["WrongCredentials"]</span>
         </div>
     </div>
     <div class="box">
+        @(Html.DevExtreme().Button()
+                    .Type(ButtonType.Normal)
+                    .ID("btnChangeLang")
+                    .OnClick(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "switchLanguageEn" : "switchLanguageAr")
+                    .Text(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "English" : "عربي"))
     </div>
    
     <script src="~/js/main.js"></script>
