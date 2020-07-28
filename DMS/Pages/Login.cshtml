@@ -44,7 +44,7 @@
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="div">
-                        <h5>@Localizer["Email"]<span class="empty_field">Email field is required</span><span class="err101">@Localizer["WrongCredentials"]</span></h5>
+                        <h5>@Localizer["Email"]<span class="empty_field">@Localizer["FieldRequired"]</span><span class="err101">@Localizer["WrongCredentials"]</span></h5>
                         <input type="email" class="input email_input" id="email_input" autocomplete="off" />
                     </div>
                 </div>
@@ -53,7 +53,7 @@
                         <i class="fas fa-lock"></i>
                     </div>
                     <div class="div">
-                        <h5>@Localizer["Password"]<span class="empty_password">Password field is required</span></h5>
+                        <h5>@Localizer["Password"]<span class="empty_password">@Localizer["FieldRequired"]</span></h5>
                         <input type="password" class="input " id="password_input" />
                     </div>
                 </div>
@@ -128,7 +128,7 @@
                         var obj = JSON.parse(t);
 
                         var statusCode = obj.StatusCode;
-
+                        console.log(statusCode);
 
                         if (statusCode == 0) {
                             window.location = 'index';
@@ -140,7 +140,7 @@
                         } else {
                             $(".err101").fadeOut(200)
                         }
-                        if (statusCode = 103) {
+                        if (statusCode == 103) {
                             // Internal error
                             location.reload();
                         } 

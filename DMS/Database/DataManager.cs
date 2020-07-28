@@ -638,8 +638,9 @@ namespace DMS.Database
         }
         public static int Login(string username, string password)
         {
-            try
-            {/*
+        //    try
+        //    {
+        /*
                 Dictionary<string, string> wheres = new Dictionary<string, string>();
 
                 wheres.Add("Username", username);
@@ -655,13 +656,13 @@ namespace DMS.Database
                 else
                     return (int)ErrorCodes.WRONG_CREDENTIALS;
 
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ex.Message);
-                return (int)ErrorCodes.INTERNAL_ERROR;
+          //  }
+        //    catch (Exception ex)
+      //      {
+    //            Logger.Log(ex.Message);
+  //              return (int)ErrorCodes.INTERNAL_ERROR;
 
-            }
+//            }
         }
 
         public static int GenerateTables()
