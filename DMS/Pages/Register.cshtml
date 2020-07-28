@@ -8,7 +8,7 @@
 
     if (User.Identity.IsAuthenticated)
     {
-        Redirect("Index");
+        <script>window.location = '/index'</script>
     }
 
 }
@@ -69,10 +69,37 @@
                 <input type="submit" class="btn" value="@Localizer["Register"]" />
             </form>
         </div>
+    </div><div class="box">
+        @(Html.DevExtreme().Button()
+                    .Type(ButtonType.Normal)
+                    .ID("btnChangeLang")
+                    .OnClick(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "switchLanguageEn" : "switchLanguageAr")
+                    .Text(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "English" : "عربي"))
     </div>
     <script src="~/js/main.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script>
+        function switchLanguageEn() {
+            switchLanguage("en-US");
+        }
+
+        function switchLanguageAr() {
+            switchLanguage("ar-SA");
+        }
+
+        function switchLanguage(culture) {
+            const xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    location.reload();
+                }
+            }
+            const fd = new FormData();
+            fd.append('culture', culture);
+            xhr.open("POST", "api/Culture", true);
+            xhr.send(fd);
+        }
+
         function register() {
             let email = document.getElementById('email_input').value;
             let password = document.getElementById('password_input').value;
@@ -88,46 +115,46 @@
             } else {
                 $(".err99, .err100").fadeOut(100);
                 const xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    var t = this.responseText;
-                    var obj = JSON.parse(t);
+                xhr.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var t = this.responseText;
+                        var obj = JSON.parse(t);
 
-                    var statusCode = obj.StatusCode;
+                        var statusCode = obj.StatusCode;
 
 
-                    if (statusCode == 0) {
-                        window.location = 'index';
-                    }
-                    if (statusCode == 102) {
-                        // Username already exists
-                        $(document).ready(function () {
-                          $(".err102").fadeIn(200);
-                        })
-                        console.log(102)
-                    } else {
-                        $(".err102").fadeOut(0);
-                    }
-                    if (statusCode == 103) {
-                        console.log(103)
-                    }
-                    if (statusCode == 104) {
-                        // Email exists
-                        $(document).ready(function () {
-                          $(".err104").fadeIn(200);
-                        })
-                        console.log(104)
-                    } else {
-                        $(".err104").fadeOut(0);
+                        if (statusCode == 0) {
+                            window.location = 'index';
+                        }
+                        if (statusCode == 102) {
+                            // Username already exists
+                            $(document).ready(function () {
+                                $(".err102").fadeIn(200);
+                            })
+                            console.log(102)
+                        } else {
+                            $(".err102").fadeOut(0);
+                        }
+                        if (statusCode == 103) {
+                            console.log(103)
+                        }
+                        if (statusCode == 104) {
+                            // Email exists
+                            $(document).ready(function () {
+                                $(".err104").fadeIn(200);
+                            })
+                            console.log(104)
+                        } else {
+                            $(".err104").fadeOut(0);
+                        }
                     }
                 }
-            }
-           
-            const fd = new FormData();
-            fd.append("email", email);
-            fd.append("password", password);
-            xhr.open('post', 'api/authorization/Register', true);
-            xhr.send(fd);
+
+                const fd = new FormData();
+                fd.append("email", email);
+                fd.append("password", password);
+                xhr.open('post', 'api/authorization/Register', true);
+                xhr.send(fd);
             }
         }
     </script>

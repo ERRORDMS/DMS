@@ -7,7 +7,9 @@
 
     if (User.Identity.IsAuthenticated)
     {
-        Redirect("Index");
+        <script>window.location = '/index'</script>
+
+
     }
 }
 
@@ -71,7 +73,7 @@
     </div>
     <div class="box">
     </div>
-   
+
     <script src="~/js/main.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script>
