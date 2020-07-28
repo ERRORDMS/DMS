@@ -129,8 +129,14 @@
   <data name="Login" xml:space="preserve">
     <value>Have an account?</value>
   </data>
+  <data name="MissingFields" xml:space="preserve">
+    <value>Please enter all fields!</value>
+  </data>
   <data name="Password" xml:space="preserve">
     <value>Password</value>
+  </data>
+  <data name="PasswordsDontMatch" xml:space="preserve">
+    <value>Passwords don't match!</value>
   </data>
   <data name="Register" xml:space="preserve">
     <value>Register</value>

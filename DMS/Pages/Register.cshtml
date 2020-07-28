@@ -39,7 +39,7 @@
             <form action="javascript:register()" method="post">
                 <img src="~/images/download2.svg" />
                 <h2 class="title">@Localizer["Welcome"]</h2>
-                <span class="err99">Please Enter all fields</span>
+                <span class="err99">@Localizer["MissingFields"]</span>
                 <div class="input-div one">
                     <div class="i">
                         <i class="far fa-envelope"></i>
@@ -63,7 +63,7 @@
                         <i class="fas fa-lock"></i>
                     </div>
                     <div class="div">
-                        <h5>@Localizer["ConfirmPassword"]<span class="err100">Password don't match</span></h5>
+                        <h5>@Localizer["ConfirmPassword"]<span class="err100">@Localizer["PasswordsDontMatch"]</span></h5>
                         <input type="password" class="input" id="confirm_password_input" />
                     </div>
                 </div>

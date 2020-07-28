@@ -129,8 +129,14 @@
   <data name="Login" xml:space="preserve">
     <value>تسجيل الدخول</value>
   </data>
+  <data name="MissingFields" xml:space="preserve">
+    <value>الرجاء ادخال جميع المعلومات</value>
+  </data>
   <data name="Password" xml:space="preserve">
     <value>كلمة المرور</value>
+  </data>
+  <data name="PasswordsDontMatch" xml:space="preserve">
+    <value>كلمة السر لا تتشابه</value>
   </data>
   <data name="Register" xml:space="preserve">
     <value>تسجيل الدخول</value>
