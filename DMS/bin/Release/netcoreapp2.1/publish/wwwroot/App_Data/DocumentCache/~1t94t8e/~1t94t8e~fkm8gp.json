@@ -1,0 +1,31 @@
+{
+  "CacheSourceKey": "1t94t8e",
+  "CachePdfKey": "1t94t8e/1t94t8e-514he1.pdf",
+  "CacheXpzKey": "1t94t8e/1t94t8e-fkm8gp.xpz",
+  "CacheInfoKey": "1t94t8e/1t94t8e-fkm8gp.json",
+  "CacheCopyKey": "1t94t8e/sg4xmw.txt",
+  "Document": null,
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": null,
+  "DocumentFileName": "1231477_750154.txt",
+  "InputOptions": {
+    "$type": "GleamTech.DocumentUltimate.WordProcessingInputOptions, GleamTech.DocumentUltimate",
+    "FieldFileName": "1231477_750154.txt",
+    "UpdateFields": true,
+    "Encoding": null,
+    "Format": "Txt",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "1t94t8e",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}

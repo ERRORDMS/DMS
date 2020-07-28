@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "ruhwkw",
+  "CachePdfKey": "ruhwkw/ruhwkw-md9rl0.pdf",
+  "CacheXpzKey": "ruhwkw/ruhwkw-177hwps.xpz",
+  "CacheInfoKey": "ruhwkw/ruhwkw-177hwps.json",
+  "CacheCopyKey": null,
+  "Document": "Y2hlY2stMDUtMTgtMjAyMC0xNi0yNS0xMC5qcGc=.jpg",
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": "~\\uploads",
+  "DocumentFileName": "Y2hlY2stMDUtMTgtMjAyMC0xNi0yNS0xMC5qcGc=.jpg",
+  "InputOptions": {
+    "Format": "Jpg",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "ruhwkw",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}

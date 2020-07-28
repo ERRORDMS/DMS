@@ -1,0 +1,101 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using DMS.Database;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+
+namespace DMS.Controllers
+{
+    [AllowAnonymous]
+    [Route("api/[controller]")]
+    public class SettingsController : Controller
+    {
+        public static string GetSettings()
+        {
+            if (!System.IO.File.Exists("settings.json"))
+            {
+                using (var writer = System.IO.File.CreateText("settings.json"))
+                {
+                    writer.Write(JsonConvert.SerializeObject(
+                     new Settings()
+                     {
+                         ServiceEndpoint = "http://localhost:9100/AlSahlService",
+                         DataSource = @".\",
+                         Database = "DB",
+                     }
+
+                     ));
+
+                    writer.Flush();
+                    writer.Close();
+                }
+            }
+
+
+            return System.IO.File.ReadAllText("settings.json");
+            
+        }
+
+        [HttpGet]
+        public string Get()
+        {
+            if (!System.IO.File.Exists("settings.json"))
+            {
+                using (var writer = System.IO.File.CreateText("settings.json"))
+                {
+                    writer.Write(JsonConvert.SerializeObject(
+                     new Settings()
+                     {
+                         ServiceEndpoint = "http://localhost:9100/AlSahlService",
+                         DataSource = @".\",
+                         Database = "DB",
+                     }
+
+                     ));
+
+                    writer.Flush();
+                    writer.Close();
+                }
+            }
+
+
+            return System.IO.File.ReadAllText("settings.json");
+
+        }
+
+        [HttpPost]
+        [Route("GenerateTables")]
+        public ActionResult GenerateTables()
+        {
+            DataManager.GenerateTables();
+
+            return Ok();
+        }
+
+
+        [HttpPost]
+        [Route("Save")]
+        public  ActionResult SaveSettings(string serviceendpoint, string datasource, string database)
+        {
+            Settings settings = new Settings();
+            settings.ServiceEndpoint = serviceendpoint;
+            settings.DataSource = datasource;
+            settings.Database = database;
+
+            System.IO.File.WriteAllText("settings.json", JsonConvert.SerializeObject(settings));
+
+            return Ok();
+        }
+
+    }
+
+    public class Settings
+    {
+        public string ServiceEndpoint { get; set; }
+        public string DataSource { get; set; }
+        public string Database { get; set; }
+    }
+}

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using Dapper;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Data;
@@ -23,26 +24,21 @@ namespace DMS.Database
         /// <returns></returns>
         public List<T> ExecuteReader<T>(string query)
         {
-            if (sqlConnection.State != System.Data.ConnectionState.Open)
+            if (sqlConnection.State == System.Data.ConnectionState.Closed)
                 sqlConnection.Open();
 
+            //var list = sqlConnection.Query<T>(query).ToList();
             var sqlCommand = sqlConnection.CreateCommand();
             sqlCommand.CommandType = System.Data.CommandType.Text;
-            
             sqlCommand.CommandText = query;
 
-            List<T> list;
+            var reader = sqlCommand.ExecuteReader();
 
-            using (var reader = sqlCommand.ExecuteReader())
-            {
-                list = DataReaderMapToList<T>(reader);
-            }
+            var list = DataReaderMapToList<T>(reader);
 
 
-            if (sqlConnection.State == System.Data.ConnectionState.Open)
-                sqlConnection.Close();
+                
 
-            sqlCommand.Dispose();
 
             return list;
         }
@@ -54,7 +50,7 @@ namespace DMS.Database
         /// <returns></returns>
         public SqlDataReader ExecuteReader(string query)
         {
-            if (sqlConnection.State != System.Data.ConnectionState.Open)
+            if (sqlConnection.State == System.Data.ConnectionState.Closed)
                 sqlConnection.Open();
 
             var sqlCommand = sqlConnection.CreateCommand();
@@ -66,9 +62,23 @@ namespace DMS.Database
             return sqlCommand.ExecuteReader();
         }
 
+        public bool TableExists(string tablename)
+        {
+
+            if (sqlConnection.State == System.Data.ConnectionState.Closed)
+                sqlConnection.Open();
+
+            var sqlCommand = sqlConnection.CreateCommand();
+            sqlCommand.CommandType = System.Data.CommandType.Text;
+
+            sqlCommand.CommandText = "SELECT OBJECT_ID('" + tablename + "', 'U')";
+
+            return sqlCommand.ExecuteScalar() != null;
+        }
+
         public int ExecuteNonQuery(string query, params SqlParameter[] parameters )
         {
-            if (sqlConnection.State != System.Data.ConnectionState.Open)
+            if (sqlConnection.State == System.Data.ConnectionState.Closed)
                 sqlConnection.Open();
 
             var sqlCommand = sqlConnection.CreateCommand();
@@ -84,7 +94,7 @@ namespace DMS.Database
 
         public T ExecuteScalar<T>(string query)
         {
-            if (sqlConnection.State != System.Data.ConnectionState.Open)
+            if (sqlConnection.State == System.Data.ConnectionState.Closed)
                 sqlConnection.Open();
 
             var sqlCommand = sqlConnection.CreateCommand();
@@ -107,7 +117,7 @@ namespace DMS.Database
             int rv = 0;
             try
             {
-                if (sqlConnection.State != System.Data.ConnectionState.Open)
+                if (sqlConnection.State == System.Data.ConnectionState.Closed)
                     sqlConnection.Open();
 
                 var sqlCommand = sqlConnection.CreateCommand();
@@ -139,8 +149,8 @@ namespace DMS.Database
 
                 rv = sqlCommand.ExecuteNonQuery();
 
-                if (sqlConnection.State == System.Data.ConnectionState.Open)
-                    sqlConnection.Close();
+    
+                    
                 sqlCommand.Dispose();
             }
             catch(Exception ex)
@@ -159,7 +169,7 @@ namespace DMS.Database
         public string InsertWithID(string table, string[] columns, string[] values)
         {
             object rv = null;
-                if (sqlConnection.State != System.Data.ConnectionState.Open)
+                if (sqlConnection.State == System.Data.ConnectionState.Closed)
                     sqlConnection.Open();
 
                 var sqlCommand = sqlConnection.CreateCommand();
@@ -191,8 +201,8 @@ namespace DMS.Database
 
                 rv = sqlCommand.ExecuteScalar();
 
-                if (sqlConnection.State == System.Data.ConnectionState.Open)
-                    sqlConnection.Close();
+    
+                    
                 sqlCommand.Dispose();
             return Convert.ToString(rv);
         }
@@ -208,7 +218,7 @@ namespace DMS.Database
             int rv = 0;
             try
             {
-                if (sqlConnection.State != System.Data.ConnectionState.Open)
+                if (sqlConnection.State == System.Data.ConnectionState.Closed)
                     sqlConnection.Open();
 
                 var sqlCommand = sqlConnection.CreateCommand();
@@ -221,8 +231,8 @@ namespace DMS.Database
 
                 rv = sqlCommand.ExecuteNonQuery();
 
-                if (sqlConnection.State == System.Data.ConnectionState.Open)
-                    sqlConnection.Close();
+    
+                    
                 sqlCommand.Dispose();
             }
             catch (Exception ex)
@@ -244,7 +254,7 @@ namespace DMS.Database
             int rv = 0;
             try
             {
-                if (sqlConnection.State != System.Data.ConnectionState.Open)
+                if (sqlConnection.State == System.Data.ConnectionState.Closed)
                     sqlConnection.Open();
 
                 var sqlCommand = sqlConnection.CreateCommand();
@@ -272,8 +282,8 @@ namespace DMS.Database
 
                 rv = sqlCommand.ExecuteNonQuery();
 
-                if (sqlConnection.State == System.Data.ConnectionState.Open)
-                    sqlConnection.Close();
+    
+                    
                 sqlCommand.Dispose();
             }
             catch (Exception ex)
@@ -294,7 +304,7 @@ namespace DMS.Database
         {
             List<T> list = new List<T>();
 
-            if (sqlConnection.State != System.Data.ConnectionState.Open)
+            if (sqlConnection.State == System.Data.ConnectionState.Closed)
                 sqlConnection.Open();
 
             var sqlCommand = sqlConnection.CreateCommand();
@@ -309,10 +319,7 @@ namespace DMS.Database
                 list = DataReaderMapToList<T>(reader);
             }
 
-
-             if (sqlConnection.State == System.Data.ConnectionState.Open)
-                    sqlConnection.Close();
-
+            
             sqlCommand.Dispose();
             
             return list;
@@ -329,7 +336,7 @@ namespace DMS.Database
         {
             string rv;
 
-            if (sqlConnection.State != System.Data.ConnectionState.Open)
+            if (sqlConnection.State == System.Data.ConnectionState.Closed)
                 sqlConnection.Open();
 
             var sqlCommand = sqlConnection.CreateCommand();
@@ -341,8 +348,8 @@ namespace DMS.Database
 
             rv = Convert.ToString(sqlCommand.ExecuteScalar());
 
-            if (sqlConnection.State == System.Data.ConnectionState.Open)
-                sqlConnection.Close();
+
+                
 
             sqlCommand.Dispose();
 
@@ -359,7 +366,7 @@ namespace DMS.Database
         {
             string rv;
 
-            if (sqlConnection.State != System.Data.ConnectionState.Open)
+            if (sqlConnection.State == System.Data.ConnectionState.Closed)
                 sqlConnection.Open();
 
             var sqlCommand = sqlConnection.CreateCommand();
@@ -371,8 +378,8 @@ namespace DMS.Database
 
             rv = Convert.ToString(sqlCommand.ExecuteScalar());
 
-            if (sqlConnection.State == System.Data.ConnectionState.Open)
-                sqlConnection.Close();
+
+                
 
             sqlCommand.Dispose();
 
@@ -390,7 +397,7 @@ namespace DMS.Database
         {
             List<T> list = new List<T>();
 
-            if (sqlConnection.State != System.Data.ConnectionState.Open)
+            if (sqlConnection.State == System.Data.ConnectionState.Closed)
                 sqlConnection.Open();
 
             var sqlCommand = sqlConnection.CreateCommand();
@@ -420,8 +427,8 @@ namespace DMS.Database
             }
 
 
-            if (sqlConnection.State == System.Data.ConnectionState.Open)
-                sqlConnection.Close();
+
+                
 
             sqlCommand.Dispose();
 
@@ -436,7 +443,7 @@ namespace DMS.Database
         /// <returns></returns>
         public bool Exists(string table, Dictionary<string, string> whereValues)
         {
-            if (sqlConnection.State != System.Data.ConnectionState.Open)
+            if (sqlConnection.State == System.Data.ConnectionState.Closed)
                 sqlConnection.Open();
 
             var sqlCommand = sqlConnection.CreateCommand();
@@ -460,8 +467,8 @@ namespace DMS.Database
             var reader = sqlCommand.ExecuteReader();
 
             bool hasRows = reader.HasRows;
-            if (sqlConnection.State == System.Data.ConnectionState.Open)
-                sqlConnection.Close();
+
+                
 
             sqlCommand.Dispose();
 
@@ -475,7 +482,7 @@ namespace DMS.Database
         /// <returns></returns>
         public bool ExistsOR(string table, Dictionary<string, string> whereValues)
         {
-            if (sqlConnection.State != System.Data.ConnectionState.Open)
+            if (sqlConnection.State == System.Data.ConnectionState.Closed)
                 sqlConnection.Open();
 
             var sqlCommand = sqlConnection.CreateCommand();
@@ -499,8 +506,8 @@ namespace DMS.Database
             var reader = sqlCommand.ExecuteReader();
 
             bool hasRows = reader.HasRows;
-            if (sqlConnection.State == System.Data.ConnectionState.Open)
-                sqlConnection.Close();
+
+                
 
             sqlCommand.Dispose();
 
@@ -529,9 +536,9 @@ namespace DMS.Database
 
         public void Dispose()
         {
-            if (sqlConnection.State == System.Data.ConnectionState.Open)
+
             {
-                sqlConnection.Close();
+                
                 sqlConnection.Dispose();
             }
         }

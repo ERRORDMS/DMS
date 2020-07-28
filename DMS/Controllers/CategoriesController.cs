@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DMS.Controllers
 {
-    [Authorize]
+    [AllowAnonymous]
     [Route("api/[controller]")]
     public class CategoriesController : Controller
     {
@@ -21,18 +21,24 @@ namespace DMS.Controllers
         {
             return View();
         }
+
         [HttpGet]   
-        public LoadResult Get()
+        public LoadResult Get(string userId = null)
         {
-            var userId = User.FindFirstValue(ClaimTypes.UserData);
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.UserData);
+
             return DataSourceLoader.Load(DataManager.GetCategories(userId), new DataSourceLoadOptionsBase());
         }
 
         [Route("Save")]
         [HttpPost]
-        public IActionResult saveCat(Category cat)
+        public IActionResult saveCat(Category cat, string userId = null)
         {
-            int i = DataManager.SaveCategory(cat);
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.UserData);
+
+            int i = DataManager.SaveCategory(cat, userId);
 
             AuthorizationController.Result result = new AuthorizationController.Result();
             result.StatusName = ((ErrorCodes)i).ToString();
@@ -60,11 +66,13 @@ namespace DMS.Controllers
 
             return new JsonResult(result);
         }
+
         [Route("addCategory")]
         [HttpPost]
-        public IActionResult addCategory(Category category)
+        public IActionResult addCategory(Category category,string userId = null)
         {
-            var userId = User.FindFirstValue(ClaimTypes.UserData);
+            if(string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.UserData);
 
             int i =DataManager.AddCategory(category, userId);
 

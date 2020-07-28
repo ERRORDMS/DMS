@@ -40,24 +40,30 @@ namespace DMS.Controllers
 
         [Route("Register")]
         [HttpPost]
-        public JsonResult Register(string Email, string Username, string Password)
+        public JsonResult Register(string Email, string Password)
         {
 
-            int i = DataManager.Register(Email, Username, Password);
+            int i = DataManager.Register(Email, Password);
 
             Result result = new Result();
             result.StatusName = ((ErrorCodes)i).ToString();
             result.StatusCode = i;
             if (i == (int)ErrorCodes.SUCCESS)
             {
-                AddCookies(Username);
+                AddCookies(Email);
             }   
             return new JsonResult(result);
         }
 
-        public void AddCookies(string Username)
+        [Route("GetUserID")]
+        [HttpGet]
+        public string GetUserID(string Email)
         {
-            var id = DataManager.GetClient().GetUserIDbyNameAsync(Username).Result;
+            return DataManager.GetClient().GetUserIDbyNameAsync(Email).Result; 
+        }
+        private void AddCookies(string Username)
+        {
+            var id = GetUserID(Username);
 
                 var claims = new List<Claim>
 {

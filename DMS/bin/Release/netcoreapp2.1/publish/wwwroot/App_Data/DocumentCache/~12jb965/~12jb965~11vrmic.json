@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "12jb965",
+  "CachePdfKey": "12jb965/12jb965-1k3kk2s.pdf",
+  "CacheXpzKey": "12jb965/12jb965-11vrmic.xpz",
+  "CacheInfoKey": "12jb965/12jb965-11vrmic.json",
+  "CacheCopyKey": "12jb965/2kzg9k.pdf",
+  "Document": null,
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": null,
+  "DocumentFileName": "1231485_750162.pdf",
+  "InputOptions": {
+    "Format": "Pdf",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "12jb965",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}

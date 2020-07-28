@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "vrp7jg",
+  "CachePdfKey": "vrp7jg/vrp7jg-1k3kk2s.pdf",
+  "CacheXpzKey": "vrp7jg/vrp7jg-10tgg7r.xpz",
+  "CacheInfoKey": "vrp7jg/vrp7jg-10tgg7r.json",
+  "CacheCopyKey": null,
+  "Document": "QUlfSW52ZW50b3JfTm90ZWJvb2stU2Vhc29uMi0wNS0xOS0yMDIwLTEyLTA5LTA0LnBkZg==.pdf",
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": "~\\uploads",
+  "DocumentFileName": "QUlfSW52ZW50b3JfTm90ZWJvb2stU2Vhc29uMi0wNS0xOS0yMDIwLTEyLTA5LTA0LnBkZg==.pdf",
+  "InputOptions": {
+    "Format": "Pdf",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "vrp7jg",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}

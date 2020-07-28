@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.35" />
     <PackageReference Include="EntityFramework" Version="6.4.0" />
     <PackageReference Include="GleamTech.DocumentUltimate" Version="5.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
@@ -72,6 +73,12 @@
 
   <ItemGroup>
     <WCFMetadata Include="Connected Services" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="settings.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties TemplateFeatures="NETCORE CS RESPONSIVE" /></VisualStudio></ProjectExtensions>

@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DMS.Controllers
 {
-    [Authorize]
+    [AllowAnonymous]
     [Route("api/[controller]")]
     public class SearchController : Controller
     {
@@ -23,13 +23,14 @@ namespace DMS.Controllers
 
         [Route("SearchCats")]
         [HttpGet]
-        public ActionResult SearchCats(string sQuery)
+        public ActionResult SearchCats(string sQuery, string userId = null)
         {
             if (string.IsNullOrEmpty(sQuery))
                 return BadRequest();
 
             List<Category> categories = new List<Category>();
-            var userId = User.FindFirstValue(ClaimTypes.UserData);
+            if(string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.UserData);
 
             SQLHelper helper = new SQLHelper(DataManager.GetConnectionString());
             string[] words = sQuery.Split(' ');
@@ -174,13 +175,14 @@ namespace DMS.Controllers
         */
         [Route("SearchFiles")]
         [HttpGet]
-        public ActionResult SearchFiles(string sQuery)
+        public ActionResult SearchFiles(string sQuery, string userId = null)
         {
             if (string.IsNullOrEmpty(sQuery))
                 return BadRequest();
 
             List<SearchResult> result = new List<SearchResult>();
-            var userId = User.FindFirstValue(ClaimTypes.UserData);
+            if(string.IsNullOrEmpty(userId))
+             userId = User.FindFirstValue(ClaimTypes.UserData);
 
             SQLHelper helper = new SQLHelper(DataManager.GetConnectionString());
             string[] words = sQuery.Split(' ');

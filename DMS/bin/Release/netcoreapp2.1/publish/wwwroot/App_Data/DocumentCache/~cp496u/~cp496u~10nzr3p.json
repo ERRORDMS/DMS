@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "cp496u",
+  "CachePdfKey": "cp496u/cp496u-1k3kk2s.pdf",
+  "CacheXpzKey": "cp496u/cp496u-10nzr3p.xpz",
+  "CacheInfoKey": "cp496u/cp496u-10nzr3p.json",
+  "CacheCopyKey": null,
+  "Document": "AI_Inventor_Notebook-Season2.pdf",
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": "~\\uploads",
+  "DocumentFileName": "AI_Inventor_Notebook-Season2.pdf",
+  "InputOptions": {
+    "Format": "Pdf",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "cp496u",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}

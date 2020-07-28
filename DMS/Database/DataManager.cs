@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using System.ServiceModel.Dispatcher;
 using System.ServiceModel;
+using DMS.Controllers;
+using Newtonsoft.Json;
 
 namespace DMS.Database
 {
@@ -19,46 +21,80 @@ namespace DMS.Database
     {
         private static SQLHelper sqlHelper;
         private static ServiceReference1.AlSahlServiceClient client;
+        private static Settings settings;
         public DataManager()
         {
-            sqlHelper = new SQLHelper(GetConnectionString());
-            client = new ServiceReference1.AlSahlServiceClient(new BasicHttpBinding(), new EndpointAddress(new Uri("http://192.168.1.104:9100/AlSahlService")));
-            
-
+            try
+            {
+                settings = JsonConvert.DeserializeObject<Settings>(SettingsController.GetSettings());
+                client = new ServiceReference1.AlSahlServiceClient(new BasicHttpBinding(), new EndpointAddress(new Uri(settings.ServiceEndpoint)));
+                sqlHelper = new SQLHelper(GetConnectionString());
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+            }
         }
 
         public static AlSahlServiceClient GetClient() { return client; }
 
         public static int DeleteCategory(long autoKey)
         {
-            if (sqlHelper.Delete(Tables.Categories, "AutoKey = '" + autoKey + "'"))
+            try
             {
+                if (sqlHelper.Delete(Tables.Categories, "AutoKey = '" + autoKey + "'"))
+                {
 
-                if (sqlHelper.Delete(Tables.CategoryUserRel, "CatAutoKey = '" + autoKey + "'"))
-                    return (int)ErrorCodes.SUCCESS;
+                    if (sqlHelper.Delete(Tables.CategoryUserRel, "CatAutoKey = '" + autoKey + "'"))
+                        return (int)ErrorCodes.SUCCESS;
+                    else
+                        return (int)ErrorCodes.INTERNAL_ERROR;
+                }
                 else
+                {
                     return (int)ErrorCodes.INTERNAL_ERROR;
-            }
-            else
+                }
+            }catch(Exception ex)
             {
+                Logger.Log(ex.Message);
                 return (int)ErrorCodes.INTERNAL_ERROR;
+
             }
         }
 
-        public static int SaveCategory(Category cat)
+        public static int SaveCategory(Category cat, string userId)
         {
-            if (sqlHelper.Update(Tables.Categories,
-                new string[] { "Name" },
-                new string[] { cat.Name },
-                "AutoKey = '" + cat.AutoKey + "'"))
+            try
             {
+                string query = "select top 1 UserID ";
+                query += " from " + Tables.CategoryUserRel + " as CUR";
+                query += " where UserID = '" + userId + "'";
+                query += " and";
+                query += " EXISTS(SELECT Name from " + Tables.Categories + " where AutoKey = CUR.CatAutoKey and Name = '" + cat.Name + "')";
 
-                return (int)ErrorCodes.SUCCESS;
+                if (sqlHelper.ExecuteReader<object>(query).Count > 0)
+                    return (int)ErrorCodes.ALREADY_EXISTS;
+
+
+                if (sqlHelper.Update(Tables.Categories,
+                    new string[] { "Name" },
+                    new string[] { cat.Name },
+                    "AutoKey = '" + cat.AutoKey + "'"))
+                {
+
+                    return (int)ErrorCodes.SUCCESS;
+                }
+
+                else
+                {
+                    return (int)ErrorCodes.INTERNAL_ERROR;
+                }
             }
-
-            else
+            catch (Exception ex)
             {
+                Logger.Log(ex.Message);
                 return (int)ErrorCodes.INTERNAL_ERROR;
+
             }
 
         }
@@ -71,25 +107,147 @@ namespace DMS.Database
         }
         public static int AddCategory(Category category, string userId)
         {
-            string query = "select top 1 UserID ";
-            query += " from " + Tables.CategoryUserRel + " as CUR";
-            query += " where UserID = '" + userId + "'";
-            query += " and";
-            query += " EXISTS(SELECT Name from " + Tables.Categories + " where AutoKey = CUR.CatAutoKey and Name = '" + category.Name + "')";
-
-            if (sqlHelper.ExecuteReader<object>(query).Count > 0)
-                return (int)ErrorCodes.ALREADY_EXISTS;
-
-            string autoKey = sqlHelper.InsertWithID(Tables.Categories,
-                new string[] { "Name", "FatherAutoKey" },
-                new string[] { category.Name, category.FatherID.ToString() });
-            if (!string.IsNullOrEmpty(autoKey))
+            try
             {
+                string query = "select top 1 UserID ";
+                query += " from " + Tables.CategoryUserRel + " as CUR";
+                query += " where UserID = '" + userId + "'";
+                query += " and";
+                query += " EXISTS(SELECT Name from " + Tables.Categories + " where AutoKey = CUR.CatAutoKey and Name = '" + category.Name + "')";
+
+                if (sqlHelper.ExecuteReader<object>(query).Count > 0)
+                    return (int)ErrorCodes.ALREADY_EXISTS;
+
+                string autoKey = sqlHelper.InsertWithID(Tables.Categories,
+                    new string[] { "Name", "FatherAutoKey" },
+                    new string[] { category.Name, category.FatherID.ToString() });
+                if (!string.IsNullOrEmpty(autoKey))
+                {
 
 
-                if (sqlHelper.Insert(Tables.CategoryUserRel,
-                    new string[] { "CatAutoKey", "UserID" },
-                    new string[] { autoKey, userId }))
+                    if (sqlHelper.Insert(Tables.CategoryUserRel,
+                        new string[] { "CatAutoKey", "UserID" },
+                        new string[] { autoKey, userId }))
+                    {
+
+                        return (int)ErrorCodes.SUCCESS;
+                    }
+
+                    else
+                    {
+                        return (int)ErrorCodes.INTERNAL_ERROR;
+                    }
+                }
+                else
+                {
+                    return (int)ErrorCodes.INTERNAL_ERROR;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+                return (int)ErrorCodes.INTERNAL_ERROR;
+
+            }
+        }
+
+
+        public static int DeleteContact(long autoKey)
+        {
+            try
+            {
+                if (sqlHelper.Delete(Tables.Contacts, "AutoKey = '" + autoKey + "'"))
+                {
+
+                    return (int)ErrorCodes.SUCCESS;
+                }
+                else
+                {
+                    return (int)ErrorCodes.INTERNAL_ERROR;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+                return (int)ErrorCodes.INTERNAL_ERROR;
+
+            }
+        }
+
+        public static int DeleteKey(long autoKey)
+        {
+            try
+            {
+                if (sqlHelper.Delete(Tables.SearchKeys, "AutoKey = '" + autoKey + "'"))
+                {
+
+                    return (int)ErrorCodes.SUCCESS;
+                }
+                else
+                {
+                    return (int)ErrorCodes.INTERNAL_ERROR;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+                return (int)ErrorCodes.INTERNAL_ERROR;
+
+            }
+        }
+
+        public static int SaveContact(Contact con, string userId)
+        {
+            try
+            {
+                Dictionary<string, string> wheres = new Dictionary<string, string>();
+
+                wheres.Add("Name", con.Name);
+                wheres.Add("DMSUserID", userId);
+
+                if (sqlHelper.Exists(Tables.Contacts, wheres))
+                    return (int)ErrorCodes.ALREADY_EXISTS;
+
+                if (sqlHelper.Update(Tables.Contacts,
+                    new string[] { "Name" },
+                    new string[] { con.Name },
+                    "AutoKey = '" + con.AutoKey + "'"))
+                {
+
+                    return (int)ErrorCodes.SUCCESS;
+                }
+
+                else
+                {
+                    return (int)ErrorCodes.INTERNAL_ERROR;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+                return (int)ErrorCodes.INTERNAL_ERROR;
+
+            }
+        }
+
+        public static int SaveKey(SearchKey con, string userId)
+        {
+            try
+            {
+                Dictionary<string, string> wheres = new Dictionary<string, string>();
+
+                wheres.Add("Name", con.Name);
+                wheres.Add("DMSUserID", userId);
+
+                if (sqlHelper.Exists(Tables.SearchKeys, wheres))
+                    return (int)ErrorCodes.ALREADY_EXISTS;
+
+
+                if (sqlHelper.Update(Tables.SearchKeys,
+                    new string[] { "Name" },
+                    new string[] { con.Name },
+                    "AutoKey = '" + con.AutoKey + "'"))
                 {
 
                     return (int)ErrorCodes.SUCCESS;
@@ -100,71 +258,11 @@ namespace DMS.Database
                     return (int)ErrorCodes.INTERNAL_ERROR;
                 }
             }
-            else
+            catch (Exception ex)
             {
+                Logger.Log(ex.Message);
                 return (int)ErrorCodes.INTERNAL_ERROR;
-            }
-        }
 
-
-        public static int DeleteContact(long autoKey)
-        {
-            if (sqlHelper.Delete(Tables.Contacts, "AutoKey = '" + autoKey + "'"))
-            {
-
-                return (int)ErrorCodes.SUCCESS;
-            }
-            else
-            {
-                return (int)ErrorCodes.INTERNAL_ERROR;
-            }
-        }
-
-        public static int DeleteKey(long autoKey)
-        {
-            if (sqlHelper.Delete(Tables.SearchKeys, "AutoKey = '" + autoKey + "'"))
-            {
-
-                return (int)ErrorCodes.SUCCESS;
-            }
-            else
-            {
-                return (int)ErrorCodes.INTERNAL_ERROR;
-            }
-        }
-
-        public static int SaveContact(Contact con)
-        {
-            if (sqlHelper.Update(Tables.Contacts,
-                new string[] { "Name" },
-                new string[] { con.Name },
-                "AutoKey = '" + con.AutoKey + "'"))
-            {
-
-                return (int)ErrorCodes.SUCCESS;
-            }
-
-            else
-            {
-                return (int)ErrorCodes.INTERNAL_ERROR;
-            }
-
-        }
-
-        public static int SaveKey(SearchKey con)
-        {
-            if (sqlHelper.Update(Tables.SearchKeys,
-                new string[] { "Name" },
-                new string[] { con.Name },
-                "AutoKey = '" + con.AutoKey + "'"))
-            {
-
-                return (int)ErrorCodes.SUCCESS;
-            }
-
-            else
-            {
-                return (int)ErrorCodes.INTERNAL_ERROR;
             }
 
         }
@@ -183,26 +281,35 @@ namespace DMS.Database
         }
         public static int AddContact(Contact contact, DateTime birthDate,  string userId)
         {
-            Dictionary<string, string> wheres = new Dictionary<string, string>();
-
-            wheres.Add("Name", contact.Name);
-            wheres.Add("DMSUserID", userId);
-
-            if (sqlHelper.Exists(Tables.Contacts, wheres))
-                return (int)ErrorCodes.ALREADY_EXISTS;
-
-            var genId = GetAutoIcrementID(birthDate, "", "");
-
-            string autoKey = sqlHelper.InsertWithID(Tables.Contacts,
-                new string[] { "ID", "Name", "DMSUserID" },
-                new string[] { genId, contact.Name, userId });
-            if (!string.IsNullOrEmpty(autoKey))
+            try
             {
-                return (int)ErrorCodes.SUCCESS;
+                Dictionary<string, string> wheres = new Dictionary<string, string>();
+
+                wheres.Add("Name", contact.Name);
+                wheres.Add("DMSUserID", userId);
+
+                if (sqlHelper.Exists(Tables.Contacts, wheres))
+                    return (int)ErrorCodes.ALREADY_EXISTS;
+
+                var genId = GetAutoIcrementID(birthDate, "", "");
+
+                string autoKey = sqlHelper.InsertWithID(Tables.Contacts,
+                    new string[] { "ID", "Name", "DMSUserID" },
+                    new string[] { genId, contact.Name, userId });
+                if (!string.IsNullOrEmpty(autoKey))
+                {
+                    return (int)ErrorCodes.SUCCESS;
+                }
+                else
+                {
+                    return (int)ErrorCodes.INTERNAL_ERROR;
+                }
             }
-            else
+            catch (Exception ex)
             {
+                Logger.Log(ex.Message);
                 return (int)ErrorCodes.INTERNAL_ERROR;
+
             }
         }
 
@@ -243,29 +350,39 @@ namespace DMS.Database
         }
         public static int AddKey(string name, string userId)
         {
-            Dictionary<string, string> wheres = new Dictionary<string, string>();
-
-            wheres.Add("Name", name);
-            wheres.Add("DMSUserID", userId);
-
-            if (sqlHelper.Exists(Tables.SearchKeys, wheres))
-                return (int)ErrorCodes.ALREADY_EXISTS;
-
-            string autoKey = sqlHelper.InsertWithID(Tables.SearchKeys,
-                new string[] { "Name", "DMSUserID" },
-                new string[] {name, userId });
-
-            if (!string.IsNullOrEmpty(autoKey))
+            try
             {
-                return (int)ErrorCodes.SUCCESS;
+                Dictionary<string, string> wheres = new Dictionary<string, string>();
+
+                wheres.Add("Name", name);
+                wheres.Add("DMSUserID", userId);
+
+                if (sqlHelper.Exists(Tables.SearchKeys, wheres))
+                    return (int)ErrorCodes.ALREADY_EXISTS;
+
+                string autoKey = sqlHelper.InsertWithID(Tables.SearchKeys,
+                    new string[] { "Name", "DMSUserID" },
+                    new string[] { name, userId });
+
+                if (!string.IsNullOrEmpty(autoKey))
+                {
+                    return (int)ErrorCodes.SUCCESS;
+                }
+                else
+                {
+                    return (int)ErrorCodes.INTERNAL_ERROR;
+                }
             }
-            else
+            catch (Exception ex)
             {
+                Logger.Log(ex.Message);
                 return (int)ErrorCodes.INTERNAL_ERROR;
+
             }
         }
         public static List<Document> GetCatDocuments(long CatID)
         {
+
             string query = "select DocumentAutoKey,";
             query += " (select DateTimeAdded from " + Tables.DocumentInfo + " where AutoKey = DCR.DocumentAutoKey) as DateTimeAdded,";
             query += " (select Name from " + Tables.DocumentLines + " where InfoAutoKey = DCR.DocumentAutoKey) as Name,";
@@ -290,6 +407,17 @@ namespace DMS.Database
             }
             */
             return sqlHelper.ExecuteReader<Document>(query); 
+        }
+
+        public static byte[] GetFile(long InfoAutoKey, long LineAutoKey, string Ext)
+        {
+
+            var fn = InfoAutoKey + "_" + LineAutoKey + Ext;
+
+            var arr = sqlHelper.ExecuteScalar<byte[]>("select TOP 1 file_stream from " + DMS.Database.Tables.Images + " where name = '" + fn + "'");
+
+            return arr;
+
         }
         public static string GetFileName(long AutoKey)
         {
@@ -320,90 +448,99 @@ namespace DMS.Database
             return document.Name + document.DateTimeAdded.ToString("MM-dd-yyyy-HH-mm-ss") + document.Ext;*/
         }
         public static int AddFile(List<DMSCategory> categories, List<DMSContact> contacts, List<SearchKey> SearchKeys, IFormFile file, string userID, string webRoot)
-        {/*
-            DMSDocument doc = new DMSDocument();    
-
-            doc.ContactsList = contacts.ToArray();
-            doc.DMSCategoriesList = categories.ToArray();
-            doc.UserID = "0";
-            doc.ManualFileNo = "";
-            doc.BarCode = "";
-            doc.LinesList = new DMSDocumentLine[]
+        {
+            try
             {
+                /*
+            DMSDocument doc = new DMSDocument();
+
+                doc.ContactsList = contacts.ToArray();
+                doc.DMSCategoriesList = categories.ToArray();
+                doc.UserID = "0";
+                doc.ManualFileNo = "";
+                doc.BarCode = "";
+                doc.LinesList = new DMSDocumentLine[]
+                {
                 new DMSDocumentLine() { Pages = 1 }
-            };
-            doc.SearchKeysList = new DMSSearchKeys[0];
-            
-            doc.DateTimeCreated = DateTime.Now;
-            doc.DateTimeAdded = DateTime.Now;
+                };
+                doc.SearchKeysList = new DMSSearchKeys[0];
 
-            byte[] arr = file.GetBytes().Result;
+                doc.DateTimeCreated = DateTime.Now;
+                doc.DateTimeAdded = DateTime.Now;
 
-            var ret = client.InsertDMSDocumentLineAsync(arr, Path.GetExtension(file.FileName), doc).Result;
-*/
+                byte[] arr = file.GetBytes().Result;
 
-            DateTime dt = DateTime.Now;
-         //   string date = dt.ToString("MM-dd-yyyy-HH-mm-ss");
-           // string fileName = Path.GetFileNameWithoutExtension(file.FileName) + "-" + date.Replace(" ", "") + Path.GetExtension(file.FileName);
-           // var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(fileName);
-           // fileName = System.Convert.ToBase64String(plainTextBytes) + Path.GetExtension(file.FileName);
+                var ret = client.InsertDMSDocumentLineAsync(arr, Path.GetExtension(file.FileName), doc).Result;
+                */
 
-            string infoAutoKey = sqlHelper.InsertWithID(Tables.DocumentInfo,
-                new string[] { "AddedByUserID", "DateTimeAdded", "DateTimeCreated",  "IsDeleted" },
-                new string[] { userID, dt.ToString(), dt.ToString(), "0" });
+                            DateTime dt = DateTime.Now;
+                //   string date = dt.ToString("MM-dd-yyyy-HH-mm-ss");
+                // string fileName = Path.GetFileNameWithoutExtension(file.FileName) + "-" + date.Replace(" ", "") + Path.GetExtension(file.FileName);
+                // var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(fileName);
+                // fileName = System.Convert.ToBase64String(plainTextBytes) + Path.GetExtension(file.FileName);
 
-            string lineAutoKey = sqlHelper.InsertWithID(Tables.DocumentLines,
-                new string[] { "InfoAutoKey", "Ext", "Name"},
-                new string[] { infoAutoKey, Path.GetExtension(file.FileName), Path.GetFileNameWithoutExtension(file.FileName) });
+                string infoAutoKey = sqlHelper.InsertWithID(Tables.DocumentInfo,
+                    new string[] { "AddedByUserID", "DateTimeAdded", "DateTimeCreated", "IsDeleted" },
+                    new string[] { userID, dt.ToString(), dt.ToString(), "0" });
 
-            foreach (var category in categories)
-            {
-                sqlHelper.Insert(Tables.DocumentCategoryRel,
-                    new string[] { "DocumentAutoKey", "CatAutoKey" },
-                    new string[] { infoAutoKey, category.AutoKey.ToString() });
-            }
+                string lineAutoKey = sqlHelper.InsertWithID(Tables.DocumentLines,
+                    new string[] { "InfoAutoKey", "Ext", "Name" },
+                    new string[] { infoAutoKey, Path.GetExtension(file.FileName), Path.GetFileNameWithoutExtension(file.FileName) });
 
-            foreach (var contact in contacts)
-            {
-                sqlHelper.Insert(Tables.DocumentContactRel,
-                    new string[] { "DocumentAutoKey", "ContactAutoKey" },
-                    new string[] { infoAutoKey, contact.AutoKey.ToString() });
-            }
-            foreach (var key in SearchKeys)
-            {
-                sqlHelper.Insert(Tables.DocumentSearchKeysRel,
-                    new string[] { "DocumentAutoKey", "SearchAutoKey" },
-                    new string[] { infoAutoKey, key.AutoKey.ToString() });
-            }
-            
+                foreach (var category in categories)
+                {
+                    sqlHelper.Insert(Tables.DocumentCategoryRel,
+                        new string[] { "DocumentAutoKey", "CatAutoKey" },
+                        new string[] { infoAutoKey, category.AutoKey.ToString() });
+                }
 
-            if (!string.IsNullOrEmpty(infoAutoKey) && !string.IsNullOrEmpty(lineAutoKey))
-            {
-                string filename = infoAutoKey + "_" + lineAutoKey + Path.GetExtension(file.FileName);
-               
+                foreach (var contact in contacts)
+                {
+                    sqlHelper.Insert(Tables.DocumentContactRel,
+                        new string[] { "DocumentAutoKey", "ContactAutoKey" },
+                        new string[] { infoAutoKey, contact.AutoKey.ToString() });
+                }
+                foreach (var key in SearchKeys)
+                {
+                    sqlHelper.Insert(Tables.DocumentSearchKeysRel,
+                        new string[] { "DocumentAutoKey", "SearchAutoKey" },
+                        new string[] { infoAutoKey, key.AutoKey.ToString() });
+                }
 
-                string parent = AddDateDirectories(); // GetParentPathLocator(TmpAdo, "Images");
-                string query
-                    = " INSERT into Images (stream_id, file_stream, name, path_locator) ";
-                query += "  values (NEWID(), @File, '" + filename + "', CAST('" + parent + "' AS hierarchyid))";
 
-                var bytes = file.GetBytes().Result;
+                if (!string.IsNullOrEmpty(infoAutoKey) && !string.IsNullOrEmpty(lineAutoKey))
+                {
+                    string filename = infoAutoKey + "_" + lineAutoKey + Path.GetExtension(file.FileName);
 
-                SqlParameter param = new SqlParameter("@File", System.Data.SqlDbType.Binary, bytes.Length);
-                param.Value = bytes;
 
-                int i =  sqlHelper.ExecuteNonQuery(query, param);
+                    string parent = AddDateDirectories(); // GetParentPathLocator(TmpAdo, "Images");
+                    string query
+                        = " INSERT into Images (stream_id, file_stream, name, path_locator) ";
+                    query += "  values (NEWID(), @File, '" + filename + "', CAST('" + parent + "' AS hierarchyid))";
 
-                if (i > 0)
-                    return (int)ErrorCodes.SUCCESS;
+                    var bytes = file.GetBytes().Result;
+
+                    SqlParameter param = new SqlParameter("@File", System.Data.SqlDbType.Binary, bytes.Length);
+                    param.Value = bytes;
+
+                    int i = sqlHelper.ExecuteNonQuery(query, param);
+
+                    if (i > 0)
+                        return (int)ErrorCodes.SUCCESS;
+                    else
+                        return (int)ErrorCodes.INTERNAL_ERROR;
+                }
                 else
+                {
                     return (int)ErrorCodes.INTERNAL_ERROR;
+                }
             }
-            else
+            catch (Exception ex)
             {
+                Logger.Log(ex.Message);
                 return (int)ErrorCodes.INTERNAL_ERROR;
-            }
 
+            }
 
         }
         private static string AddDateDirectories()
@@ -519,29 +656,80 @@ namespace DMS.Database
                     return (int)ErrorCodes.WRONG_CREDENTIALS;
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Logger.Log(ex.Message);
                 return (int)ErrorCodes.INTERNAL_ERROR;
+
             }
         }
 
-        public static int Register(string email, string username, string password)
+        public static int GenerateTables()
+        {
+            try
+            {
+                String query = @"
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'CategoryUserRel'))
+BEGIN
+
+CREATE TABLE [dbo].[CategoryUserRel](
+	[RelAutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+	[CatAutoKey] [bigint] NULL,
+	[UserID] [nvarchar](max) NULL,
+ CONSTRAINT [PK_CategoryUserRel] PRIMARY KEY CLUSTERED 
+(
+	[RelAutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+END
+
+
+IF COL_LENGTH('dbo.Contacts', 'DMSUserID') IS NULL
+BEGIN
+  ALTER TABLE [Contacts]
+    ADD [DMSUserID] NVARCHAR(MAX) NULL
+END
+
+
+IF COL_LENGTH('dbo.DocumentLine', 'Name') IS NULL
+BEGIN
+  ALTER TABLE [DocumentLine]
+    ADD [Name] NVARCHAR(MAX) NULL
+END
+
+IF COL_LENGTH('dbo.SearchKeys', 'DMSUserID') IS NULL
+BEGIN
+  ALTER TABLE [SearchKeys]
+    ADD [DMSUserID] NVARCHAR(MAX) NULL
+END
+
+";
+
+                sqlHelper.ExecuteNonQuery(query);
+                return (int)ErrorCodes.SUCCESS;
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+                return (int)ErrorCodes.INTERNAL_ERROR;
+
+            }
+        }
+        public static int Register(string email, string password)
         {
             try
             {
                 
                 Dictionary<string, string> wheres = new Dictionary<string, string>();
 
-                wheres.Add("Email", email);
-
-                if (sqlHelper.Exists(Tables.Users, wheres))
-                {
-                    return (int)ErrorCodes.EMAIL_EXISTS;
-                }
 
                 wheres = new Dictionary<string, string>();
 
-                wheres.Add("Name", username);
+                wheres.Add("Name", email);
 
                 if (sqlHelper.Exists(Tables.Users, wheres))
                 {
@@ -551,10 +739,10 @@ namespace DMS.Database
                 var id = GetUserAutoIcrementID();
 
                 if (sqlHelper.Insert(Tables.Users,
-                    new string[] { "Email", "Name", "ID" },
-                    new string[] { email, username,  id }))
+                    new string[] {  "Name", "ID" },
+                    new string[] {  email,  id }))
                 {
-                    client.SetPasswordAsync(username, password);
+                    client.SetPasswordAsync(email, password) ;
                     return (int)ErrorCodes.SUCCESS;
                 }
                 else
@@ -563,9 +751,11 @@ namespace DMS.Database
 
                 }
             }
-            catch (Exception) 
+            catch (Exception ex)
             {
+                Logger.Log(ex.Message);
                 return (int)ErrorCodes.INTERNAL_ERROR;
+
             }
 
         }
@@ -603,10 +793,11 @@ namespace DMS.Database
         {
             return new SqlConnectionStringBuilder()
             {
-                DataSource = @"192.168.1.104\ALSAHL",
+                DataSource = settings.DataSource,
                 UserID = "test",
                 Password = "test_2008",
-                InitialCatalog = @"D:\AlSahl\Data\MoneySql.MDF"
+                MultipleActiveResultSets = true,
+                InitialCatalog = settings.Database
             }.ConnectionString;
         }
     }

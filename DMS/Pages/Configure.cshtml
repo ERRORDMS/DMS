@@ -1,0 +1,104 @@
+﻿@page
+@model DMS.Pages.ConfigureModel
+@{
+    ViewData["Title"] = "Configure";
+}
+
+<h2 class="content-block">Configuration</h2>
+
+@(Html.DevExtreme().TextBox()
+        .Name("txtIP")
+        .ElementAttr("class", "content-block")
+        .Placeholder("Service Endpoint"))
+
+<br />
+
+@(Html.DevExtreme().TextBox()
+        .Name("txtDataSource")
+        .ElementAttr("class", "content-block")
+        .Placeholder("DataSource"))
+<br />
+@(Html.DevExtreme().TextBox()
+        .Name("txtDB")
+        .ElementAttr("class", "content-block")
+        .Placeholder("Database"))
+
+<br />
+
+@(Html.DevExtreme().Button()
+        .Text("Save")
+        .ElementAttr("class", "content-block")
+        .Type(ButtonType.Success)
+        .Icon("save")
+        .OnClick("save"))
+@(Html.DevExtreme().Button()
+        .Text("Generate tables & columns")
+        .ElementAttr("class", "content-block")
+        .Type(ButtonType.Success)
+        .Icon("save")
+        .OnClick("generate"))
+<script>
+
+    $(document).ready(function () {
+
+        var json = getSettings();
+
+        var settings = JSON.parse(json);
+
+        $('#txtIP').val(settings.ServiceEndpoint);
+        $('#txtDataSource').val(settings.DataSource);
+        $('#txtDB').val(settings.Database);
+
+
+        $('#txtDB').focus();
+        $('#txtDB').blur();
+
+        $('#txtDataSource').focus();
+        $('#txtDataSource').blur();
+
+        $('#txtIP').focus();
+        $('#txtIP').blur();
+    });
+
+    function getSettings() {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", "api/Settings", false);
+        xmlHttp.send();
+        return xmlHttp.responseText;
+
+    }
+
+    function generate() {
+        const xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                alert('Generated');
+            }
+        }
+
+        xhr.open("POST", 'api/Settings/GenerateTables', true);
+        xhr.send();
+    }
+
+    function save() {
+        const xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                alert('Saved');
+            }
+        }
+
+        xhr.open("POST", 'api/Settings/Save', true);
+
+        const fd = new FormData();
+
+        fd.append('serviceendpoint', txtIP.value);
+        fd.append('datasource', txtDataSource.value);
+        fd.append('database', txtDB.value);
+
+        xhr.send(fd);
+
+    }
+</script>

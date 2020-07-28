@@ -12,21 +12,26 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DMS.Controllers
 {
-    [Authorize]
+    [AllowAnonymous]
     [Route("api/[controller]")]
     public class SearchKeysController : Controller
     {
-        public LoadResult Get()
+        public LoadResult Get(string userId)
         {
-            var userId = User.FindFirstValue(ClaimTypes.UserData);
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.UserData);
             return DataSourceLoader.Load(DataManager.GetSearchKeys(userId), new DataSourceLoadOptionsBase());
         }
 
         [Route("Save")]
         [HttpPost]
-        public IActionResult saveKey(SearchKey key)
+        public IActionResult saveKey(SearchKey key, string userId)
         {
-            int i = DataManager.SaveKey(key);
+
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.UserData);
+
+            int i = DataManager.SaveKey(key, userId);
 
             AuthorizationController.Result result = new AuthorizationController.Result();
             result.StatusName = ((ErrorCodes)i).ToString();
@@ -58,9 +63,10 @@ namespace DMS.Controllers
 
         [Route("AddKey")]
         [HttpPost]
-        public IActionResult AddKey(string name)
+        public IActionResult AddKey(string name, string userId = null)
         {
-            var userId = User.FindFirstValue(ClaimTypes.UserData);
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.UserData);
             int i = DataManager.AddKey(name, userId);
 
             AuthorizationController.Result result = new AuthorizationController.Result();

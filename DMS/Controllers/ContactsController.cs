@@ -13,7 +13,7 @@ using static DMS.Controllers.AuthorizationController;
 
 namespace DMS.Controllers
 {
-    [Authorize]
+    [AllowAnonymous]
     [Route("api/[controller]")]
     public class ContactsController : Controller
     {
@@ -22,17 +22,22 @@ namespace DMS.Controllers
             return View();
         }
         [HttpGet]
-        public LoadResult Get()
+        public LoadResult Get(string userId = null)
         {
-            var userId = User.FindFirstValue(ClaimTypes.UserData);
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.UserData);
             return DataSourceLoader.Load(DataManager.GetContacts(userId), new DataSourceLoadOptionsBase());
         }
 
         [Route("Save")]
         [HttpPost]
-        public IActionResult saveCon(Contact cat)
+        public IActionResult saveCon(Contact cat, string userId = null)
         {
-            int i = DataManager.SaveContact(cat);
+
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.UserData);
+
+            int i = DataManager.SaveContact(cat, userId);
 
             Result result = new Result();
             result.StatusName = ((ErrorCodes)i).ToString();
@@ -61,9 +66,10 @@ namespace DMS.Controllers
         }
         [Route("addContact")]
         [HttpPost]
-        public IActionResult addContact(Contact contact,DateTime birthday)
+        public IActionResult addContact(Contact contact,DateTime birthday, string userId = null)
         {
-            var userId = User.FindFirstValue(ClaimTypes.UserData);
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.UserData);
             int i = DataManager.AddContact(contact,birthday, userId);
 
             Result result = new Result();
