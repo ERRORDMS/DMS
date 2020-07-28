@@ -76,6 +76,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Pages\Register.cshtml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
     <Content Update="settings.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>

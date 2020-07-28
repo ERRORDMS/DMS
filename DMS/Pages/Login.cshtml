@@ -7,7 +7,7 @@
 
     if (User.Identity.IsAuthenticated)
     {
-        <script>window.location = '/index'</script>
+        <script>window.location = 'index'</script>
 
 
     }
@@ -59,7 +59,7 @@
                     </div>
                 </div>
                 <a href="#">@Localizer["ForgotPassword"]</a>
-                <a href="/Register">@Localizer["CreateAccount"]</a>
+                <a href="Register">@Localizer["CreateAccount"]</a>
                 <input type="submit" class="btn" value="@Localizer["Login"]" />
 
                 @(Html.DevExtreme().Button()
