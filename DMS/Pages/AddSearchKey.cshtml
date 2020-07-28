@@ -46,6 +46,7 @@
             color: rgb(255,82,82);
             position: absolute;
             top: 50%;
+            display: none;
         }
 
         .empty_field {
@@ -53,12 +54,22 @@
             position: absolute;
             top: 70%;
             left: 50%;
+            display: none;
         }
     </style>
 </head>
 
 <h2 class="content-block">@Localizer["AddSearchKey"]</h2>
 <div class="add_contact_form">
+    <div class="contact_found">
+        @Localizer["AlreadyExists"]
+    </div>
+    <div class="server_error">
+        @Localizer["InternalError"]
+    </div>
+    <div class="empty_field">
+        @Localizer["MissingArgs"]
+    </div>
     <form action="javascript:addKey()">
         <div class="dx-field-value">
             @(Html.DevExtreme().TextBox()
@@ -74,15 +85,7 @@
         </div>
     </form>
 </div>
-<div class="contact_found" style="display: none">
-    @Localizer["AlreadyExists"]
-</div>
-<div class="server_error" style="display: none;">
-    @Localizer["InternalError"]
-</div>
-<div class="empty_field" style="display: none;">
-    @Localizer["MissingArgs"]
-</div>
+
 
 <script>
     function addKey() {
