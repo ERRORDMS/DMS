@@ -49,10 +49,24 @@
             .add_Category_button:hover {
                 box-shadow: 1px 1px 4px black;
             }
+
+        .Category_found, .server_error, .empty_field {
+            display: none;
+            color: rgb(250,82,82);
+        }
     </style>
 </head>
 <h2 class="content-block">@Localizer["AddCategory"]</h2>
 <div class="add_Category_form">
+    <div class="Category_found">
+        @Localizer["AlreadyExists"]
+    </div>
+    <div class="server_error">
+        @Localizer["InternalError"]
+    </div>
+    <div class="empty_field">
+        @Localizer["MissingArgs"]
+    </div>
     <form action="javascript:addCategory()">
         <div class="dx-field-value">
             @(Html.DevExtreme().TextBox()
@@ -115,15 +129,7 @@
         </div>
     </form>
 </div>
-<div class="Category_found" style="display: none">
-    @Localizer["AlreadyExists"]
-</div>
-<div class="server_error" style="display: none;">
-    @Localizer["InternalError"]
-</div>
-<div class="empty_field" style="display: none;">
-    @Localizer["MissingArgs"]
-</div>
+
 <script>
     function syncTreeViewSelection(treeView, value) {
         if (!value) {
@@ -149,9 +155,7 @@
     var parent;
 
     function getparent(e) {
-        console.log(e);
         parent = e.value;
-        console.log(parent);
     }
 
     function treeBox_valueChanged(e) {
@@ -163,7 +167,6 @@
 
     function addCategory() {
         if (CategoryName.value == "") {
-            console.log("Hi");
             $(document).ready(function () {
                 $(".empty_field").fadeIn(100)
             })
@@ -176,37 +179,27 @@
             xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     var t = this.response;
-                    console.log(t);
                     var obj = JSON.parse(t);
-                    console.log(obj);
-
                     var statusCode = obj.StatusCode;
 
                     if (statusCode == 0) {
-                        console.log('SUCCESS');
                         $(document).ready(function () {
                             $('.Category_found').fadeOut(0, function () {
                                 $(".server_error").fadeOut(0)
                             });
                         })
                         window.location = '/';
-                    } else {
-                        console.log('bad');
                     }
                     if (statusCode == 103) {
-                        console.log('server error');
                         $(document).ready(function () {
                             $(".server_error").fadeIn(100)
                         })
                     } else {
-                        console.log('error');
                         $(".server_error").fadeOut(100)
                     }
                     if (statusCode == 105) {
-                        console.log('Category found');
                         $('.Category_found').fadeIn(100);
                     } else {
-                        console.log('the Category not exists');
                         $('.Category_found').fadeOut(100)
                     }
                 }

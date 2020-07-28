@@ -12,6 +12,13 @@
 }
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+
+<style>
+    .empty_field {
+        display: none;
+        color: rgb(250,82,82);
+    }
+</style>
 <h2 class="content-block">@Localizer["ManageKey"]</h2>
 
 
@@ -84,7 +91,9 @@
 
     </script>
 
-
+    <div class="empty_field">
+        empty
+    </div>
     @(Html.DevExtreme().TextBox()
 
                 .Placeholder(Localizer["SearchKeyCol"].Value)

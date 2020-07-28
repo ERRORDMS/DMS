@@ -28,7 +28,6 @@
     <link rel="stylesheet" href="~/css/vendor.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Site.css" />
     <script src="~/js/vendor.js" asp-append-version="true"></script>
-
 </head>
 <body>
     <img src="~/images/wave.png" class="wave" />
@@ -45,8 +44,8 @@
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="div">
-                        <h5>@Localizer["Email"]</h5>
-                        <input type="text" class="input email_input" id="email_input" autocomplete="off" />
+                        <h5>@Localizer["Email"]<span class="empty_field">Email field is required</span><span class="err101">@Localizer["WrongCredentials"]</span></h5>
+                        <input type="email" class="input email_input" id="email_input" autocomplete="off" />
                     </div>
                 </div>
                 <div class="input-div pass">
@@ -54,8 +53,8 @@
                         <i class="fas fa-lock"></i>
                     </div>
                     <div class="div">
-                        <h5>@Localizer["Password"]</h5>
-                        <input type="password" class="input" id="password_input" />
+                        <h5>@Localizer["Password"]<span class="empty_password">Password field is required</span></h5>
+                        <input type="password" class="input " id="password_input" />
                     </div>
                 </div>
                 <a href="#">@Localizer["ForgotPassword"]</a>
@@ -68,7 +67,6 @@
                     .OnClick(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "switchLanguageEn" : "switchLanguageAr")
                     .Text(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "English" : "عربي"))
             </form>
-            <span class="err101">@Localizer["WrongCredentials"]</span>
         </div>
     </div>
     <div class="box">
@@ -100,41 +98,61 @@
         }
 
         function Login() {
-            const xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    var t = this.responseText;
-                    var obj = JSON.parse(t);
-                    console.log(obj);
-
-                    var statusCode = obj.StatusCode;
-
-
-                    if (statusCode == 0) {
-                        window.location = 'index';
-                    }
-                    if (statusCode == 101) {
-                        $(document).ready(function () {
-                            $(".err101").fadeIn(200)
-                        })
-                    } else {
-                        $(".err101").fadeOut(200)
-                    }
-                    if (statusCode = 103) {
-                        // Internal error
-                        console.log(103);
-                    } else {
-                        console.log('good!!')
-                    }
-                }
-            }
             let email = document.getElementById('email_input').value;
             let password = document.getElementById('password_input').value;
-            const fd = new FormData();
-            fd.append('username', email);
-            fd.append('password', password);
-            xhr.open('Post', 'api/authorization/Login', true);
-            xhr.send(fd);
+            if (!email) {
+                $(document).ready(function () {
+                    $(".empty_field").fadeIn(200)
+                })
+            }
+            if (!password) {
+                $(".empty_password").fadeIn(200);
+            }
+            $("#email_input").click(function () {
+                window.onkeyup = function () {
+                    $(".empty_field").fadeOut(200)
+                }
+            })
+            $('#password_input').click(function () {
+                window.onkeyup = function () {
+                    $(".empty_password").fadeOut(200);
+                }
+            })
+
+
+            if (email && password) {
+                const xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var t = this.responseText;
+                        var obj = JSON.parse(t);
+
+                        var statusCode = obj.StatusCode;
+
+
+                        if (statusCode == 0) {
+                            window.location = 'index';
+                        }
+                        if (statusCode == 101) {
+                            $(document).ready(function () {
+                                $(".err101").fadeIn(200)
+                            })
+                        } else {
+                            $(".err101").fadeOut(200)
+                        }
+                        if (statusCode = 103) {
+                            // Internal error
+                            location.reload();
+                        } 
+                    }
+                }
+
+                const fd = new FormData();
+                fd.append('username', email);
+                fd.append('password', password);
+                xhr.open('Post', 'api/authorization/Login', true);
+                xhr.send(fd);
+            }
         }
     </script>
 </body>

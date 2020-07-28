@@ -40,7 +40,6 @@
                 <img src="~/images/download2.svg" />
                 <h2 class="title">@Localizer["Welcome"]</h2>
                 <span class="err99">Please Enter all fields</span>
-                <span class="err100">Password don't match</span>
                 <div class="input-div one">
                     <div class="i">
                         <i class="far fa-envelope"></i>
@@ -64,7 +63,7 @@
                         <i class="fas fa-lock"></i>
                     </div>
                     <div class="div">
-                        <h5>@Localizer["ConfirmPassword"]</h5>
+                        <h5>@Localizer["ConfirmPassword"]<span class="err100">Password don't match</span></h5>
                         <input type="password" class="input" id="confirm_password_input" />
                     </div>
                 </div>
@@ -134,18 +133,15 @@
                                 $(".err102").fadeIn(200);
                             })
                             console.log(102)
-                        } else {
-                            $(".err102").fadeOut(0);
                         }
                         if (statusCode == 103) {
-                            console.log(103)
+                            location.reload()
                         }
                         if (statusCode == 104) {
                             // Email exists
                             $(document).ready(function () {
                                 $(".err104").fadeIn(200);
                             })
-                            console.log(104)
                         } else {
                             $(".err104").fadeOut(0);
                         }

@@ -210,6 +210,16 @@ a {
     left:94%;
     top: 95%;
 }
+.empty_field {
+    display: none;
+    color: rgb(250,82,82);
+    font-weight: 400;
+}
+.empty_password {
+    display: none;
+    color: rgb(250,82,82);
+    font-weight: 400;
+}
 
 
 @media screen and (max-width: 1050px) {
