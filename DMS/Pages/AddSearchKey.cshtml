@@ -100,9 +100,7 @@
             xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     var t = this.response;
-                    console.log(t);
                     var obj = JSON.parse(t);
-                    console.log(obj);
 
                     var statusCode = obj.StatusCode;
                     if (statusCode == 0) {
@@ -115,8 +113,6 @@
                         });
                         window.location = '/';
 
-                    } else {
-                        console.log('bad');
                     }
                     if (statusCode == 103) {
                         $(document).ready(function () {
