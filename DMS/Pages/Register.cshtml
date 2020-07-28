@@ -106,6 +106,16 @@
             let password = document.getElementById('password_input').value;
             let confirm_password = document.getElementById('confirm_password_input').value;
 
+            $("#email_input").click(function () {
+                window.onkeyup = function () {
+                    $(".err104").fadeOut(200);
+                }
+            });
+            $("#confirm_password_input").click(function () {
+                window.onkeyup = function () {
+                    $(".err100").fadeOut(200);
+                }
+            })
             if (!email || !password || !confirm_password) {
                 $(document).ready(function () {
                     $(".err99").fadeIn(100)
