@@ -123,6 +123,9 @@
   <data name="DeleteCat" xml:space="preserve">
     <value>حذف الفئة</value>
   </data>
+  <data name="Exists" xml:space="preserve">
+    <value>الفئة موجودة مسبقا</value>
+  </data>
   <data name="Manage" xml:space="preserve">
     <value>تعديل</value>
   </data>
@@ -130,7 +133,7 @@
     <value>تعديل فئة</value>
   </data>
   <data name="MissingArgs" xml:space="preserve">
-    <value>الرجهاء ادخل جميع المعلومات</value>
+    <value>الرجاء ادخل جميع المعلومات</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>تخزين</value>

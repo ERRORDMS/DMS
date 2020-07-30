@@ -56,7 +56,7 @@ namespace DMS.Controllers
 
         [Route("Delete")]
         [HttpPost]
-        public IActionResult saveCat(long autokey)
+        public IActionResult deleteCat(long autokey)
         {
             int i = DataManager.DeleteCategory(autokey);
 

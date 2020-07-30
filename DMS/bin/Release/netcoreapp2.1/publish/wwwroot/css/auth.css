@@ -193,6 +193,7 @@ a {
     display: none;
     color: rgb(250,82,82);
     font-weight: 400;
+    margin-left: 2rem;
 }
 .err102 {
     display: none;
@@ -214,11 +215,13 @@ a {
     display: none;
     color: rgb(250,82,82);
     font-weight: 400;
+    margin-left: 2rem;
 }
 .empty_password {
     display: none;
     color: rgb(250,82,82);
     font-weight: 400;
+    margin-left: 2rem;
 }
 
 

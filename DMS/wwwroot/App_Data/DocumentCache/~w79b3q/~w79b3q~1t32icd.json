@@ -1,0 +1,51 @@
+{
+  "CacheSourceKey": "w79b3q",
+  "CachePdfKey": "w79b3q/w79b3q-84k8vm.pdf",
+  "CacheXpzKey": "w79b3q/w79b3q-1t32icd.xpz",
+  "CacheInfoKey": "w79b3q/w79b3q-1t32icd.json",
+  "CacheCopyKey": "w79b3q/1vryvck.pdf",
+  "Document": null,
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": null,
+  "DocumentFileName": "1241652_760492.pdf",
+  "InputOptions": {
+    "Format": "Pdf",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [
+      {
+        "$type": "GleamTech.DocumentUltimate.TextWatermark, GleamTech.DocumentUltimate",
+        "Text": "DocumentUltimate",
+        "TextAlignment": "Left",
+        "Font": null,
+        "FontColor": "Red",
+        "UseFontSize": false,
+        "HorizontalAlignment": "Center",
+        "VerticalAlignment": "Center",
+        "HorizontalDistance": 0.0,
+        "VerticalDistance": 0.0,
+        "DistanceIsPercentage": false,
+        "Width": 50.0,
+        "Height": 50.0,
+        "SizeIsPercentage": true,
+        "Rotation": 0.0,
+        "Opacity": 50.0,
+        "InBackground": false,
+        "AnnotationMode": false,
+        "PrintVisible": true,
+        "ScreenVisible": true,
+        "PageRange": "all"
+      }
+    ],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "w79b3q",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}

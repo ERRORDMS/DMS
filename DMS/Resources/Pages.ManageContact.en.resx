@@ -123,6 +123,9 @@
   <data name="DeleteCon" xml:space="preserve">
     <value>Delete Contact</value>
   </data>
+  <data name="Exists" xml:space="preserve">
+    <value>Contact already exists</value>
+  </data>
   <data name="Manage" xml:space="preserve">
     <value>Manage</value>
   </data>

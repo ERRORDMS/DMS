@@ -3,11 +3,11 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iis": {
-      "applicationUrl": "http://localhost/DMS",
+      "applicationUrl": "http://localhost/",
       "sslPort": 0
     },
     "iisExpress": {
-      "applicationUrl": "http://192.168.1.10059609/",
+      "applicationUrl": "http://localhost:59609/",
       "sslPort": 0
     }
   },

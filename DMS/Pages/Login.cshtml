@@ -110,7 +110,7 @@
             }
             $("#email_input").click(function () {
                 window.onkeyup = function () {
-                    $(".empty_field").fadeOut(200)
+                    $(".empty_field,.err101").fadeOut(200)
                 }
             })
             $('#password_input').click(function () {
@@ -128,7 +128,6 @@
                         var obj = JSON.parse(t);
 
                         var statusCode = obj.StatusCode;
-                        console.log(statusCode);
 
                         if (statusCode == 0) {
                             window.location = 'index';

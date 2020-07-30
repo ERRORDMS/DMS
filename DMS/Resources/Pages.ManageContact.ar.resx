@@ -123,6 +123,9 @@
   <data name="DeleteCon" xml:space="preserve">
     <value>حذف الجهة</value>
   </data>
+  <data name="Exists" xml:space="preserve">
+    <value>جهة التعامل موجودة مسبقا</value>
+  </data>
   <data name="Manage" xml:space="preserve">
     <value>تعديل</value>
   </data>

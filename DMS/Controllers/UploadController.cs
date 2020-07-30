@@ -55,7 +55,7 @@ namespace DMS.Controllers
                 var cons = JsonConvert.DeserializeObject<List<DMSContact>>(contacts);
                 var sKeys = JsonConvert.DeserializeObject<List<SearchKey>>(keys);
                 if(string.IsNullOrEmpty(userId))
-                    userId =  User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    userId =  User.FindFirstValue(ClaimTypes.UserData);
 
                 int result = DataManager.AddFile(cats, cons,sKeys, photo, userId, _hostingEnvironment.WebRootPath);
 

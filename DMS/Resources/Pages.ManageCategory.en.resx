@@ -123,6 +123,9 @@
   <data name="DeleteCat" xml:space="preserve">
     <value>Delete Category</value>
   </data>
+  <data name="Exists" xml:space="preserve">
+    <value>Category already exists</value>
+  </data>
   <data name="Manage" xml:space="preserve">
     <value>Manage</value>
   </data>

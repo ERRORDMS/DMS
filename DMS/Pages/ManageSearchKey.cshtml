@@ -16,6 +16,12 @@
 <style>
     .empty_field {
         display: none;
+        margin-left: 2rem;
+        color: rgb(250,82,82);
+    }
+    .already_exists {
+        display: none;
+        margin-left: 2rem;
         color: rgb(250,82,82);
     }
 </style>
@@ -45,19 +51,37 @@
         }
 
         function saveCon() {
-
-            if (txtName.value == null) {
+            $(document).ready(function () {
+                $(".content-block").click(function () {
+                    window.onkeyup = function () {
+                        $('.empty_field').fadeOut(0);
+                        $(".already_exists").fadeOut(100);
+                    }
+                })
+            })
+            if (txtName.value == '') {
                 $('.empty_field').fadeIn(100)
                 return;
             }
-            if (txtName.value !== null) {
+            if (txtName.value !== '') {
                 $('.empty_field').fadeOut(0)
             }
             const xhr = new XMLHttpRequest();
 
             xhr.onreadystatechange = function () {
-              if (this.readyState == 4 && this.status == 200) {
-                 window.location = "Index";
+                if (this.readyState == 4 && this.status == 200) {
+                    var t = this.responseText;
+                    var obj = JSON.parse(t);
+
+                    var statusCode = obj.StatusCode;
+                    if (statusCode == 0) {
+                      window.location = "Index";
+                    }
+                    if (statusCode == 105) {
+                        $(".already_exists").fadeIn(100);
+                    } else {
+                        $(".already_exists").fadeOut(100);
+                    }
               }
             }
 
@@ -92,7 +116,10 @@
     </script>
 
     <div class="empty_field">
-        empty
+        @Localizer["MissingArgs"]
+    </div>
+    <div class="already_exists">
+        @Localizer["Exists"]
     </div>
     @(Html.DevExtreme().TextBox()
 

@@ -46,7 +46,10 @@ namespace DMS.Database
                 {
 
                     if (sqlHelper.Delete(Tables.CategoryUserRel, "CatAutoKey = '" + autoKey + "'"))
+                    {
+                        sqlHelper.ExecuteNonQuery("UPDATE " + Tables.Categories + " SET FatherAutoKey = 0 where FatherAutoKey = " + autoKey);
                         return (int)ErrorCodes.SUCCESS;
+                    }
                     else
                         return (int)ErrorCodes.INTERNAL_ERROR;
                 }
@@ -382,31 +385,39 @@ namespace DMS.Database
         }
         public static List<Document> GetCatDocuments(long CatID)
         {
-
-            string query = "select DocumentAutoKey,";
-            query += " (select DateTimeAdded from " + Tables.DocumentInfo + " where AutoKey = DCR.DocumentAutoKey) as DateTimeAdded,";
-            query += " (select Name from " + Tables.DocumentLines + " where InfoAutoKey = DCR.DocumentAutoKey) as Name,";
-            query += " (select AutoKey from " + Tables.DocumentLines + " where InfoAutoKey = DCR.DocumentAutoKey) as LineAutoKey,";
-            query += " (select Ext from " + Tables.DocumentLines + " where InfoAutoKey = DCR.DocumentAutoKey) as Ext";
-            query += " from " + Tables.DocumentCategoryRel + " as DCR";
-            query += " where CatAutoKey = " + CatID;
-
-            /*
-            var reader = sqlHelper.ExecuteReader(query);
-
-            while (reader.Read())
+            try
             {
-                Document document = new Document();
+                string query = "select DocumentAutoKey,";
+                query += " (select DateTimeAdded from " + Tables.DocumentInfo + " where InfoAutoKey = DCR.DocumentAutoKey) as DateTimeAdded,";
+                query += " (select Name from " + Tables.DocumentLines + " where InfoAutoKey = DCR.DocumentAutoKey) as Name,";
+                query += " (select AutoKey from " + Tables.DocumentLines + " where InfoAutoKey = DCR.DocumentAutoKey) as LineAutoKey,";
+                query += " (select Ext from " + Tables.DocumentLines + " where InfoAutoKey = DCR.DocumentAutoKey) as Ext";
+                query += " from " + Tables.DocumentCategoryRel + " as DCR";
+                query += " where CatAutoKey = " + CatID;
 
-                document.InfoAutoKey = Convert.ToInt64(reader["InfoAutoKey"]);
-                document.Name = Convert.ToString(reader["Name"]);
-                document.Ext = Convert.ToString(    reader["Ext"]);
-                document.DateTimeAdded = Convert.ToDateTime(reader["DateTimeAdded"]);
+                /*
+                var reader = sqlHelper.ExecuteReader(query);
 
-                documents.Add(document);
+                while (reader.Read())
+                {
+                    Document document = new Document();
+
+                    document.InfoAutoKey = Convert.ToInt64(reader["InfoAutoKey"]);
+                    document.Name = Convert.ToString(reader["Name"]);
+                    document.Ext = Convert.ToString(    reader["Ext"]);
+                    document.DateTimeAdded = Convert.ToDateTime(reader["DateTimeAdded"]);
+
+                    documents.Add(document);
+                }
+                */
+                return sqlHelper.ExecuteReader<Document>(query);
             }
-            */
-            return sqlHelper.ExecuteReader<Document>(query); 
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+                return null;
+
+            }
         }
 
         public static byte[] GetFile(long InfoAutoKey, long LineAutoKey, string Ext)

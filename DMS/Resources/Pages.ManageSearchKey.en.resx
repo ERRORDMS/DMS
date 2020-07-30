@@ -120,11 +120,17 @@
   <data name="DeleteKey" xml:space="preserve">
     <value>Delete Search Key</value>
   </data>
+  <data name="Exists" xml:space="preserve">
+    <value>Search key already exists</value>
+  </data>
   <data name="Manage" xml:space="preserve">
     <value>Manage</value>
   </data>
   <data name="ManageKey" xml:space="preserve">
     <value>Manage Search Key</value>
+  </data>
+  <data name="MissingArgs" xml:space="preserve">
+    <value>Please enter all fields</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>

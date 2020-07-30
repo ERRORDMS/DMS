@@ -8,12 +8,30 @@
 <head>
     <style>
 
+        .tree {
+        }
+
+        #treeList {
+            max-height: 440px;
+        }
+
+        .dx-sortable-dragging {
+            opacity: 0.9
+        }
+
+
 
         .add_Category_form {
+            /*  
+
             display: flex;
-            justify-content: center;
+            justify-content:center;
+            align-content:center;
             align-items: center;
+            */
         }
+        
+
 
         form {
             text-align: center;
@@ -29,7 +47,7 @@
 
 
         .add_Category_button {
-            width: 100%;
+            width: 360px;
             height: 50px;
             border-radius: 15px;
             outline: none;
@@ -48,7 +66,13 @@
             .add_Category_button:hover {
                 box-shadow: 1px 1px 4px black;
             }
-
+        .body_content {
+            margin-left: 4rem;
+        }
+        .error {
+            display: flex;
+            justify-content: center;
+        }
         .Category_found, .server_error, .empty_field {
             display: none;
             color: rgb(250,82,82);
@@ -56,77 +80,189 @@
     </style>
 </head>
 <h2 class="content-block">@Localizer["AddCategory"]</h2>
-<div class="add_Category_form">
-    <div class="Category_found">
-        @Localizer["AlreadyExists"]
+<div class="body_content">
+    <div class="error">
+        <div class="Category_found">
+            @Localizer["AlreadyExists"]
+        </div>
+        <div class="server_error">
+            @Localizer["InternalError"]
+        </div>
+        <div class="empty_field">
+            @Localizer["MissingArgs"]
+        </div>
     </div>
-    <div class="server_error">
-        @Localizer["InternalError"]
-    </div>
-    <div class="empty_field">
-        @Localizer["MissingArgs"]
-    </div>
-    <form action="javascript:addCategory()">
-        <div class="dx-field-value">
-            @(Html.DevExtreme().TextBox()
+    <div class="add_Category_form">
+
+        <form action="javascript:addCategory()">
+            <div class="dx-field-value">
+                @(Html.DevExtreme().TextBox()
                 .Mode(TextBoxMode.Text)
                 .Name("CategoryName")
                 .Placeholder(Localizer["CategoryNameCol"].Value)
                 .ElementAttr("class", "category_input")
                 .HoverStateEnabled(true)
             )
-            <br />
-            @(Html.DevExtreme().DropDownBox()
-                .ValueExpr("AutoKey")
-                .DisplayExpr("Text")
-                .ElementAttr("class", "parent_input")
-                .DropDownOptions(o => o.Height(350))
-                .DataSource(d => d.Mvc()
-                    .Controller("Categories")
-                    .LoadAction("Get")
-                    .Key("AutoKey")
-                )
-                .Placeholder(Localizer["SelectParent"].Value)
-                .OnValueChanged("getparent")
-                .ShowClearButton(true)
-                .ContentTemplate(new TemplateName("EmbeddedTreeViewSingle"))
-            )
-            <br />
-            @using (Html.DevExtreme().NamedTemplate("EmbeddedTreeViewSingle"))
-            {
-                @(Html.DevExtreme().TreeView()
-            .DataSource(new JS(@"component.option(""dataSource"")"))
-            .KeyExpr("AutoKey")
-            .DisplayExpr("Name")
-            .ItemsExpr("Items")
-            .ExpandedExpr("Expanded")
-            .ParentIdExpr("FatherID")
-            .DataStructure(TreeViewDataStructure.Plain)
-            .SelectionMode(NavSelectionMode.Single)
-            .SelectByClick(true)
-            .Height(235)
-            .OnItemSelectionChanged(@<text>
-                        function(args) {
-                        var nodes = args.component.getNodes(),
-                        value = getSelectedItemsKeys(nodes);
+                <br />
+                <!--
+                            @(Html.DevExtreme().DropDownBox()
+                                .ValueExpr("AutoKey")
+                                .DisplayExpr("Text")
+                                .ElementAttr("class", "parent_input")
+                                .DropDownOptions(o => o.Height(350))
+                                .DataSource(d => d.Mvc()
+                                    .Controller("Categories")
+                                    .LoadAction("Get")
+                                    .Key("AutoKey")
+                                )
+                                .Placeholder(Localizer["SelectParent"].Value)
+                                .OnValueChanged("getparent")
+                                .ShowClearButton(true)
+                                .ContentTemplate(new TemplateName("EmbeddedTreeViewSingle"))
+                            )
+                            <br />
+                            @using (Html.DevExtreme().NamedTemplate("EmbeddedTreeViewSingle"))
+                            {
+                                @(Html.DevExtreme().TreeView()
+                            .DataSource(new JS(@"component.option(""dataSource"")"))
+                            .KeyExpr("AutoKey")
+                            .DisplayExpr("Name")
+                            .ItemsExpr("Items")
+                            .ExpandedExpr("Expanded")
+                            .ParentIdExpr("FatherID")
+                            .DataStructure(TreeViewDataStructure.Plain)
+                            .SelectionMode(NavSelectionMode.Single)
+                            .SelectByClick(true)
+                            .Height(235)
+                            .OnItemSelectionChanged(@<text>
+                                        function(args) {
+                                        var nodes = args.component.getNodes(),
+                                        value = getSelectedItemsKeys(nodes);
 
-                        component.option("value", value);
-                        }
-            </text>)
-.OnContentReady(@<text>
-                    function(args) {
-                    syncTreeViewSelection(args.component, component.option("value"));
-                    }
-</text>)
-                )
-            }
-            <br />
-            <input type="submit" value="@Localizer["AddCategory"]" class="add_Category_button" />
-        </div>
-    </form>
+                                        component.option("value", value);
+                                        }
+                            </text>)
+                .OnContentReady(@<text>
+                                    function(args) {
+                                    syncTreeViewSelection(args.component, component.option("value"));
+                                    }
+                </text>)
+                                )
+                            }
+                                 -->
+                <br />
+
+                <div id="treeListDemo">
+
+                    @(Html.DevExtreme().TreeList()
+        .ID("treeList")
+
+.DataSource(d => d.Mvc()
+    .Controller("Categories")
+    .LoadAction("Get")
+    .Key("AutoKey")
+).KeyExpr("AutoKey")
+.OnSelectionChanged("onValueChangedTree")
+.ElementAttr("class","categoriesTreeList")
+.SelectedRowKeys(new[] { 1 })
+            .ParentIdExpr("FatherID")
+            .ExpandedRowKeys(new[] { 1 })
+            .ShowRowLines(true)
+    .Selection(s => s.Mode(SelectionMode.Single))
+            .ShowBorders(true)
+            .ColumnAutoWidth(true)
+            /*.RowDragging(rd => rd
+                .AllowDropInsideItem(true)
+                .AllowReordering(true)
+                .OnDragChange("onDragChange")
+                .OnReorder("onReorder")
+                .ShowDragIcons(true)
+            )*/
+            .Columns(columns =>
+            {
+                columns.Add().DataField("Name")
+                    .Caption(Localizer["CategoryName"].Value);
+
+            })
+        )
+
+
+
+                </div>
+                <br />
+                <input type="submit" value="@Localizer["AddCategory"]" class="add_Category_button" />
+            </div>
+        </form>
+    </div>
 </div>
 
+
 <script>
+
+    function onEdit(element, cellinfo) {
+        var infoAutoKey = cellinfo.data.DocumentAutoKey;
+        var lineAutoKey = cellinfo.data.LineAutoKey;
+        window.location.href = 'Viewer?InfoAutoKey=' + infoAutoKey + '&LineAutoKey=' + lineAutoKey;
+    }
+    var selectedID = -1;
+    var grid;
+    function onDragChange(e) {
+        var treeList = e.component,
+            visibleRows = treeList.getVisibleRows(),
+            sourceNode = treeList.getNodeByKey(e.itemData.ID),
+            targetNode = visibleRows[e.toIndex].node;
+
+        while (targetNode && targetNode.data) {
+            if (targetNode.data.ID === sourceNode.data.ID) {
+                e.cancel = true;
+                break;
+            }
+            targetNode = targetNode.parent;
+        }
+    }
+
+    function contentReady(e) {
+        grid = e;
+    }
+    function onValueChangedTree(e) {
+        selectedID = e.selectedRowKeys[0];
+
+        //$("#gridContainer").dxDataGrid({
+         //   dataSource: "api/Upload/GetDocuments?CatID=" + selectedID,
+       // });
+
+
+    }
+
+    function onReorder(e) {
+        var treeList = e.component,
+            visibleRows = treeList.getVisibleRows(),
+            sourceData = e.itemData,
+            targetData = visibleRows[e.toIndex].data;
+
+        if (e.dropInsideItem) {
+            e.itemData.Head_ID = targetData.ID;
+        } else {
+            var sourceIndex = employees.indexOf(sourceData),
+                targetIndex = employees.indexOf(targetData);
+
+            if (sourceData.Head_ID !== targetData.Head_ID) {
+                sourceData.Head_ID = targetData.Head_ID;
+                if (e.toIndex > e.fromIndex) {
+                    targetIndex++;
+                }
+            }
+
+            employees.splice(sourceIndex, 1);
+            employees.splice(targetIndex, 0, sourceData);
+        }
+
+        treeList.refresh();
+    }
+
+    function getTreeList() {
+        return $("#treeList").dxTreeList("instance");
+    }
     function syncTreeViewSelection(treeView, value) {
         if (!value) {
             treeView.unselectAll();
@@ -162,6 +298,13 @@
     }
 
     function addCategory() {
+        $(document).ready(function () {
+            $('.category_input').click(function () {
+                window.onkeyup = function () {
+                    $('.Category_found,.empty_field').fadeOut(200);
+                }
+            })
+        });
         if (CategoryName.value == "") {
             $(document).ready(function () {
                 $(".empty_field").fadeIn(100)
@@ -203,7 +346,7 @@
             var category = CategoryName.value;
             const fd = new FormData();
             fd.append("Name", category);
-            fd.append("FatherID", parent);
+            fd.append("FatherID", selectedID);
             xhr.open("post", "api/Categories/addCategory", true);
             xhr.send(fd);
         }

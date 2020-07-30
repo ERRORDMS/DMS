@@ -190,7 +190,6 @@
         function onValueChangedTree(e) {
             selectedID = e.selectedRowKeys[0];
 
-
             $("#gridContainer").dxDataGrid({
                 dataSource: "api/Upload/GetDocuments?CatID=" + selectedID,
             });

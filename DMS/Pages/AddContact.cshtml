@@ -15,6 +15,10 @@
             align-items: center;
         }
 
+        form {
+            text-align: center;
+        }
+
         .contact_input {
             width: 360px;
         }
@@ -39,26 +43,25 @@
             .add_Contact_button:hover {
                 box-shadow: 1px 1px 4px black;
             }
-
-        .contact_found, server_error {
+        .error {
+            display: flex;
+            justify-content: center;
+            align-items:center;
+        }
+        .contact_found, .server_error {
             color: rgb(255,82,82);
-            position: absolute;
-            top: 50%;
             display: none;
         }
 
         .empty_field {
             color: rgb(255,82,82);
-            position: absolute;
-            top: 70%;
-            left: 50%;
             display: none;
         }
     </style>
 </head>
 
 <h2 class="content-block">@Localizer["AddContact"]</h2>
-<div class="add_contact_form">
+<div class="error">
     <div class="contact_found">
         @Localizer["AlreadyExists"]
     </div>
@@ -68,6 +71,8 @@
     <div class="empty_field">
         @Localizer["MissingArgs"]
     </div>
+</div>
+<div class="add_contact_form">
     <form action="javascript:addContact()">
         <div class="dx-field-value">
             @(Html.DevExtreme().TextBox()
@@ -77,6 +82,7 @@
                 .ElementAttr("class", "contact_input")
                 .HoverStateEnabled(true)
             )
+            <br />
             @(Html.DevExtreme().DateBox()
                 .Type(DateBoxType.Date)
                 .Name("birthdayDateBox")

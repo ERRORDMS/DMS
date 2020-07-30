@@ -120,11 +120,17 @@
   <data name="DeleteKey" xml:space="preserve">
     <value>حذف مفتاح البحث</value>
   </data>
+  <data name="Exists" xml:space="preserve">
+    <value>مفتاح البحث موجود مسبقا</value>
+  </data>
   <data name="Manage" xml:space="preserve">
     <value>تعديل</value>
   </data>
   <data name="ManageKey" xml:space="preserve">
     <value>تعديل مفتاح بحث</value>
+  </data>
+  <data name="MissingArgs" xml:space="preserve">
+    <value>الرجاء ادخل جميع المعلومات</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>تخزبن</value>
