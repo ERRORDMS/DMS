@@ -31,13 +31,15 @@
         margin-left: 2rem;
         display: none;
     }
-    .addCategory_form_bar {
-        position: fixed;
-        width: 100%;
-        z-index: 4000;
-    }
-    .addCategory_form {
+    .form_category {
         display: flex;
+        align-items: center;
+    }
+    #devextreme0 {
+        margin: 0;
+    }
+    .space {
+        margin-left: 2rem;
     }
     .category_input {
         width: 360px;
@@ -211,6 +213,7 @@ else
     </div>
 
     <div id="addCatDiv" class="content-block">
+        <div class="form_category">
 
             @(Html.DevExtreme().TextBox()
                     .Mode(TextBoxMode.Text)
@@ -219,13 +222,15 @@ else
                     .ElementAttr("class", "content-block category_input")
                     .HoverStateEnabled(true)
             )
-
+            <span class="space"></span>
             @(Html.DevExtreme().Button()
         .Icon("plus")
         .Text(Localizer["AddCategory"].Value)
         .OnClick("addCategory")
 
     )
+        </div>
+
 
 
     </div>
