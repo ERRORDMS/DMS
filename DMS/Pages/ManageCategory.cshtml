@@ -31,7 +31,14 @@
         margin-left: 2rem;
         display: none;
     }
-
+    .addCategory_form_bar {
+        position: fixed;
+        width: 100%;
+        z-index: 4000;
+    }
+    .addCategory_form {
+        display: flex;
+    }
     .category_input {
         width: 360px;
         margin-right: 1rem;
@@ -165,29 +172,31 @@
     <div class="already_exists">
         @Localizer["Exists"]
     </div>
-    @(Html.DevExtreme().TextBox()
+    <div class="addCategory_form_bar">
+        <div class="addCategory_form">
+            @(Html.DevExtreme().TextBox()
 
                 .Placeholder(Localizer["CategoryNameCol"].Value)
                         .ElementAttr("class", "content-block")
                         .Name("txtName")
     )
-
-
-    <br />
-    @(Html.DevExtreme().Button()
+            @(Html.DevExtreme().Button()
         .Icon("save")
         .Text(Localizer["Save"].Value)
         .OnClick("saveCat")
         .ElementAttr("class", "content-block")
 
     )
-    @(Html.DevExtreme().Button()
+            @(Html.DevExtreme().Button()
         .Icon("trash")
         .Text(Localizer["DeleteCat"].Value)
         .OnClick("deleteCat")
         .ElementAttr("class", "content-block")
 
     )
+        </div>
+    </div>
+   
 }
 else
 {
