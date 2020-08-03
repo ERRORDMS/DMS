@@ -242,15 +242,7 @@
             margin-left: 10px;
             font-weight: bold;
         }
-        body {
-            display: block;
-        }
-
-        .file-uploader-block {
-            width: 350px;
-            float: left;
-        }
-
+         
         .note {
             font-size: 10pt;
             color: #484848;
@@ -260,15 +252,24 @@
             .note > span {
                 font-weight: 700
             }
-
+        /* 
         .main-block {
             max-width: 900px;
             min-width: 700px;
             margin-left: 5rem;
         }
-
-        .savebutton {
+                */
+        .buttons {
+            display: flex;
+            justify-content: center;
+            justify-content: space-between;
+            align-items:center;
+        }
+        .select_button {
             float: left;
+        }
+        .upload_button {
+            float: right;
         }
     </style>
 
@@ -280,12 +281,10 @@
 
             <div class="dx-fieldset">
 
-                <div class="dx-field">
-                    <div class="dx-field-label">
-                        <div id="fileuploader-container">
+                <div class="buttons">
 
-
-                            @(Html.DevExtreme().FileUploader()
+                    <div class="select_button">
+                        @(Html.DevExtreme().FileUploader()
                     .Name("Photo")
                     .ID("File")
                     .SelectButtonText("Select file")
@@ -295,18 +294,18 @@
                     .Multiple(true)
                     .UploadMode(FileUploadMode.UseForm)
                 )
-
-                        </div>
                     </div>
-                    <div class="dx-field-value">
+                    <div class="upload_button">
                         @(Html.DevExtreme().Button()
                 .ID("button")
                 .Text("Upload file")
                 .Type(ButtonType.Success)
                 .UseSubmitBehavior(true)
             )
-
                     </div>
+
+                     
+
                 </div>
 
 
@@ -318,61 +317,26 @@
                         <span class="progress-bar-text">0%</span>
                     </div>
                 </div>
-                <div class="dx-field">
-                    <div class="dx-field-label">Categories:</div>
-                    <div class="dx-field-value">
-                        <!--
-                                   (Html.DevExtreme().TagBox()
 
-                .DataSource(d => d.Mvc()
-                    .Controller("Categories")
-                    .LoadAction("Get")
-                    .Key("AutoKey")
-                )
-
-                .DisplayExpr("Name")
-                .ValueExpr("AutoKey")
-                .ID("categoriesTagBox")
-                .Name("categoriesTagBox")
-                         .SearchExpr("Name")
-                         .HideSelectedItems(true)
-                         .OnSelectionChanged("onValueChanged")
-                         .ShowClearButton(true)
-                                   .SearchEnabled(true)
-                                    )-->
-                        @(Html.DevExtreme().TreeList()
-            .ID("treeList")
+                <!--
+                       (Html.DevExtreme().TagBox()
 
     .DataSource(d => d.Mvc()
         .Controller("Categories")
         .LoadAction("Get")
         .Key("AutoKey")
-    ).KeyExpr("AutoKey")
-    .OnSelectionChanged("onValueChangedTree")
-    .ElementAttr("class","categoriesTreeList")
-    .SelectedRowKeys(new[] { 1 })
-    .SearchPanel(s=>s
-                        .Visible(true)
-                        .Placeholder("Search")
-                        .SearchVisibleColumnsOnly(true)
-                )
-                .OnContentReady("treeReady")
+    )
 
-                .ParentIdExpr("FatherAutoKey")
-                .ExpandedRowKeys(new[] { 1 })
-                .ShowRowLines(true)
-        .Selection(s => s.Mode(SelectionMode.Multiple))
-                .ShowBorders(true)
-                .ColumnAutoWidth(true)
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("Name")
-                        .Caption("Category Name");
-
-                })
-            )
-                    </div>
-                </div>
+    .DisplayExpr("Name")
+    .ValueExpr("AutoKey")
+    .ID("categoriesTagBox")
+    .Name("categoriesTagBox")
+             .SearchExpr("Name")
+             .HideSelectedItems(true)
+             .OnSelectionChanged("onValueChanged")
+             .ShowClearButton(true)
+                       .SearchEnabled(true)
+                        )-->
                 <div class="dx-field">
                     <div class="dx-field-label">Contacts:</div>
                     <div class="dx-field-value">
@@ -421,6 +385,38 @@
                         )
                     </div>
                 </div>
+                @(Html.DevExtreme().TreeList()
+            .ID("treeList")
+
+    .DataSource(d => d.Mvc()
+        .Controller("Categories")
+        .LoadAction("Get")
+        .Key("AutoKey")
+    ).KeyExpr("AutoKey")
+    .OnSelectionChanged("onValueChangedTree")
+    .ElementAttr("class","categoriesTreeList")
+    .SelectedRowKeys(new[] { 1 })
+    .SearchPanel(s=>s
+                        .Visible(true)
+                        .Placeholder("Search")
+                        .SearchVisibleColumnsOnly(true)
+                )
+                .OnContentReady("treeReady")
+
+                .ParentIdExpr("FatherAutoKey")
+                .ExpandedRowKeys(new[] { 1 })
+                .ShowRowLines(true)
+        .Selection(s => s.Mode(SelectionMode.Multiple))
+                .ShowBorders(true)
+                .ColumnAutoWidth(true)
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("Name")
+                        .Caption("Category Name");
+
+                })
+            )
+
             </div>
 
 
