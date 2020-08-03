@@ -123,11 +123,14 @@
   <data name="DateAddedCol" xml:space="preserve">
     <value>Date Added</value>
   </data>
+  <data name="EditCol" xml:space="preserve">
+    <value>Edit</value>
+  </data>
   <data name="NameCol" xml:space="preserve">
     <value>Name</value>
   </data>
   <data name="SearchText" xml:space="preserve">
-    <value>Search</value>
+    <value>Search by file name, category, contact or search key</value>
   </data>
   <data name="TypeCol" xml:space="preserve">
     <value>Type</value>

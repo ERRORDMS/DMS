@@ -168,14 +168,17 @@ namespace DMS.Database
         /// <returns>Success or failure</returns>
         public string InsertWithID(string table, string[] columns, string[] values)
         {
-            object rv = null;
+            String query = "";
+            try
+            {
+                object rv = null;
                 if (sqlConnection.State == System.Data.ConnectionState.Closed)
                     sqlConnection.Open();
 
                 var sqlCommand = sqlConnection.CreateCommand();
                 sqlCommand.CommandType = System.Data.CommandType.Text;
 
-                String query = "INSERT INTO " + table + " (";
+                query = "INSERT INTO " + table + " (";
 
                 query += String.Join(',', columns);
 
@@ -187,7 +190,10 @@ namespace DMS.Database
                 {
                     string val = values[i];
 
-                    query += "N'" + val + "'";
+                    if (!DateTime.TryParse(val, out _))
+                        query += "N";
+
+                    query += "'" + val + "'";
 
                     if (i != values.Length - 1)
                     {
@@ -201,10 +207,15 @@ namespace DMS.Database
 
                 rv = sqlCommand.ExecuteScalar();
 
-    
-                    
+
+
                 sqlCommand.Dispose();
-            return Convert.ToString(rv);
+                return Convert.ToString(rv);
+            }catch(Exception ex)
+            {
+                Logger.Log(ex.Message + " - " + query);
+                return "";
+            }
         }
         /// <summary>
         /// Delete from a table

@@ -93,7 +93,7 @@ namespace DMS.Controllers
                 {
                     Category category = new Category();
                     category.Name = Convert.ToString(reader["CatName"]);
-                    category.FatherID = 0;//Convert.ToInt64(reader["FatherAutoKey"]);
+                    category.FatherAutoKey = 0;//Convert.ToInt64(reader["FatherAutoKey"]);
                     category.AutoKey = autokey;
 
                     categories.Add(category);
@@ -128,7 +128,7 @@ namespace DMS.Controllers
                 query += " DL.Name,";
                 query += " DL.Ext,";
                 query += " C.Name as ConName,";
-                query += " Cat.FatherID,";
+                query += " Cat.FatherAutoKey,";
                 query += " Cat.Name as CatName,";
                 query += " Cat.AutoKey as CatAutoKey";
                 query += " FROM";
@@ -150,7 +150,7 @@ namespace DMS.Controllers
                 {
                     Category category = new Category();
                     category.Name = Convert.ToString(reader["CatName"]);
-                    category.FatherID = Convert.ToInt64(reader["FatherID"]);
+                    category.FatherAutoKey = Convert.ToInt64(reader["FatherAutoKey"]);
                     category.AutoKey = Convert.ToInt64(reader["CatAutoKey"]);
 
                     categories.Add(category);

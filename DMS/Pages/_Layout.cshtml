@@ -19,6 +19,8 @@
           crossorigin="anonymous" />
     <link rel="stylesheet" href="~/css/vendor.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Site.css" />
+    <link href="~/css/Roboto.css" rel='stylesheet' type='text/css'>
+
     <style>
         .space {
             margin-right: 20px;
@@ -81,7 +83,7 @@
                                 <div class="content-block">
                                     <div class="content-footer">
                                         <div id="footer">
-                                            Copyright (C) Zimam Solutions
+                                            Copyright (C) 2020 Zimam Solutions
                                             <br />
                                             All trademarks or registered trademarks are property of their respective owners.
                                         </div>
@@ -96,7 +98,7 @@
 
     @using (Html.DevExtreme().NamedTemplate("navigation-menu"))
     {
-        <div class="menu-container dx-swatch-additional">
+        <div class="menu-container dx-swatch-additional" style="background-color:#363640">
 
             @functions{
                 bool IsCurrentPage(string pageName)
@@ -116,36 +118,37 @@
                     .Option("path", Url.Page("Index"))
                     .Selected(IsCurrentPage("Index"));
 
+                    /*
                     items.Add()
                .Text(Localizer["Categories"].Value)
-               .Html("<span class='space'></span>")
+//               .Html("<span class='space'></span>")
                .Icon("tags")
                .HasItems(true)
                .Option("path", Url.Page("AddCategory"))
                .Expanded(IsCurrentPage("AddCategory") || IsCurrentPage("ManageCategory"))
                .Selected(IsCurrentPage("AddCategory") || IsCurrentPage("ManageCategory"))
                .Selected(false);
-
+                    
                     items.Add()
                .Text(Localizer["AddCategory"].Value)
                .Icon("plus")
                .ParentId(2)
                .Option("path", Url.Page("AddCategory"))
                .Selected(IsCurrentPage("AddCategory"));
-
+                    */
 
                     items.Add()
-               .Text(Localizer["ManageCategory"].Value)
-               .Icon("edit")
-               .ParentId(2)
+               .Text(Localizer["Categories"].Value)
+               .Icon("tags")
+           //    .ParentId(2)
                .Option("path", Url.Page("ManageCategory"))
                .Selected(IsCurrentPage("ManageCategory"));
-
+                    
 
 
                     items.Add()
                .Text(Localizer["Contacts"].Value)
-               .Html("<span class='space'></span>")
+         //      .Html("<span class='space'></span>")
                .Icon("user")
                .HasItems(true)
                .Option("path", Url.Page("AddContact"))
@@ -156,7 +159,7 @@
                     items.Add()
                .Text(Localizer["AddContact"].Value)
                .Icon("plus")
-               .ParentId(5)
+               .ParentId(3)
                .Option("path", Url.Page("AddContact"))
                .Selected(IsCurrentPage("AddContact"));
 
@@ -164,13 +167,13 @@
                     items.Add()
                .Text(Localizer["ManageContact"].Value)
                .Icon("edit")
-               .ParentId(5)
+               .ParentId(3)
                .Option("path", Url.Page("ManageContact"))
                .Selected(IsCurrentPage("ManageContact"));
 
                     items.Add()
                 .Text(Localizer["SearchKeys"].Value)
-                .Html("<span class='space'></span>")
+         //       .Html("<span class='space'></span>")
                 .Icon("key")
                 .HasItems(true)
                 .Option("path", Url.Page("AddSearchKey"))
@@ -181,7 +184,7 @@
                     items.Add()
                .Text(Localizer["AddSearchKey"].Value)
                .Icon("plus")
-               .ParentId(8)
+               .ParentId(6)
                .Option("path", Url.Page("AddSearchKey"))
                .Selected(IsCurrentPage("AddSearchKey"));
 
@@ -189,7 +192,7 @@
                     items.Add()
                .Text(Localizer["ManageSearchKey"].Value)
                .Icon("edit")
-               .ParentId(8)
+               .ParentId(6)
                .Option("path", Url.Page("ManageSearchKey"))
                .Selected(IsCurrentPage("ManageSearchKey"));
 

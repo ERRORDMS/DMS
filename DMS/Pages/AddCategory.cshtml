@@ -22,6 +22,8 @@
 
 
         .add_Category_form {
+            position:absolute;
+            right: 20%;
             /*  
 
             display: flex;
@@ -34,7 +36,7 @@
 
 
         form {
-            text-align: center;
+        /*    text-align: center;*/
         }
 
         .category_input {
@@ -67,7 +69,7 @@
                 box-shadow: 1px 1px 4px black;
             }
         .body_content {
-            margin-left: 4rem;
+            /*margin-left: 2rem;*/
         }
         .error {
             display: flex;
@@ -129,7 +131,7 @@
                             .DisplayExpr("Name")
                             .ItemsExpr("Items")
                             .ExpandedExpr("Expanded")
-                            .ParentIdExpr("FatherID")
+                            .ParentIdExpr("FatherAutoKey")
                             .DataStructure(TreeViewDataStructure.Plain)
                             .SelectionMode(NavSelectionMode.Single)
                             .SelectByClick(true)
@@ -165,7 +167,9 @@
 .OnSelectionChanged("onValueChangedTree")
 .ElementAttr("class","categoriesTreeList")
 .SelectedRowKeys(new[] { 1 })
-            .ParentIdExpr("FatherID")
+            .OnContentReady("treeReady")
+
+            .ParentIdExpr("FatherAutoKey")
             .ExpandedRowKeys(new[] { 1 })
             .ShowRowLines(true)
     .Selection(s => s.Mode(SelectionMode.Single))
@@ -204,22 +208,8 @@
         var lineAutoKey = cellinfo.data.LineAutoKey;
         window.location.href = 'Viewer?InfoAutoKey=' + infoAutoKey + '&LineAutoKey=' + lineAutoKey;
     }
-    var selectedID = -1;
+    var selectedID = 0;
     var grid;
-    function onDragChange(e) {
-        var treeList = e.component,
-            visibleRows = treeList.getVisibleRows(),
-            sourceNode = treeList.getNodeByKey(e.itemData.ID),
-            targetNode = visibleRows[e.toIndex].node;
-
-        while (targetNode && targetNode.data) {
-            if (targetNode.data.ID === sourceNode.data.ID) {
-                e.cancel = true;
-                break;
-            }
-            targetNode = targetNode.parent;
-        }
-    }
 
     function contentReady(e) {
         grid = e;
@@ -234,32 +224,9 @@
 
     }
 
-    function onReorder(e) {
-        var treeList = e.component,
-            visibleRows = treeList.getVisibleRows(),
-            sourceData = e.itemData,
-            targetData = visibleRows[e.toIndex].data;
-
-        if (e.dropInsideItem) {
-            e.itemData.Head_ID = targetData.ID;
-        } else {
-            var sourceIndex = employees.indexOf(sourceData),
-                targetIndex = employees.indexOf(targetData);
-
-            if (sourceData.Head_ID !== targetData.Head_ID) {
-                sourceData.Head_ID = targetData.Head_ID;
-                if (e.toIndex > e.fromIndex) {
-                    targetIndex++;
-                }
-            }
-
-            employees.splice(sourceIndex, 1);
-            employees.splice(targetIndex, 0, sourceData);
-        }
-
-        treeList.refresh();
+    function treeReady(e) {
+        $('#treeList').dxTreeList('instance').deselectAll();
     }
-
     function getTreeList() {
         return $("#treeList").dxTreeList("instance");
     }
@@ -327,7 +294,8 @@
                                 $(".server_error").fadeOut(0)
                             });
                         })
-                        window.location = '/';
+                        //  window.location = '/';
+                        getTreeList().refresh();
                     }
                     if (statusCode == 103) {
                         $(document).ready(function () {
@@ -346,7 +314,7 @@
             var category = CategoryName.value;
             const fd = new FormData();
             fd.append("Name", category);
-            fd.append("FatherID", selectedID);
+            fd.append("FatherAutoKey", selectedID);
             xhr.open("post", "api/Categories/addCategory", true);
             xhr.send(fd);
         }

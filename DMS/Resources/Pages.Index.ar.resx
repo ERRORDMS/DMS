@@ -123,11 +123,14 @@
   <data name="DateAddedCol" xml:space="preserve">
     <value>التاريخ</value>
   </data>
+  <data name="EditCol" xml:space="preserve">
+    <value>تعديل الملف</value>
+  </data>
   <data name="NameCol" xml:space="preserve">
     <value>الاسم</value>
   </data>
   <data name="SearchText" xml:space="preserve">
-    <value>ابحث</value>
+    <value>ابحث عن اسم الملف، او فئة او جهة تعامل او مفتاح بحث</value>
   </data>
   <data name="TypeCol" xml:space="preserve">
     <value>نوع الملف</value>

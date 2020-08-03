@@ -31,6 +31,21 @@ namespace DMS.Controllers
             return DataSourceLoader.Load(DataManager.GetCategories(userId), new DataSourceLoadOptionsBase());
         }
 
+        [Route("SetParent")]
+        [HttpPost]
+        public IActionResult SetParent(Category cat, string userId = null)
+        {
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.UserData);
+
+            int i = DataManager.SetParent(cat, userId);
+
+            AuthorizationController.Result result = new AuthorizationController.Result();
+            result.StatusName = ((ErrorCodes)i).ToString();
+            result.StatusCode = i;
+
+            return new JsonResult(result);
+        }
         [Route("Save")]
         [HttpPost]
         public IActionResult saveCat(Category cat, string userId = null)
@@ -52,6 +67,13 @@ namespace DMS.Controllers
         public string GetName(long autokey)
         {
             return DataManager.GetCatName(autokey);
+        }
+
+        [Route("GetFather")]
+        [HttpGet]
+        public string GetFather(long autokey)
+        {
+            return DataManager.GetFather(autokey);
         }
 
         [Route("Delete")]

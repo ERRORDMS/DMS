@@ -1,0 +1,335 @@
+﻿@page
+@model DMS.Pages.ManageFileModel
+@{
+    ViewData["Title"] = Localizer["Title"];
+
+    Layout = "~/Pages/_Layout.cshtml";
+
+    long AutoKey = 0;
+
+    AutoKey = Convert.ToInt64(Request.Query["AutoKey"]);
+
+
+    if (AutoKey == 0)
+    {
+        <script>
+            window.location = 'index';
+        </script>
+    }
+
+}
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<style>
+
+    .main-block {
+        max-width: 900px;
+        min-width: 700px;
+        margin-left: 5rem;
+    }
+</style>
+
+
+<script>
+
+        $(document).ready(function () {
+
+
+            $('#txtName').val(getVal());
+            $('#txtName').focus();
+            $('#txtName').blur();
+
+
+
+            });
+
+        function getVal()
+        {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", "api/Upload/GetFileName?AutoKey=" + @AutoKey, false );
+            xmlHttp.send();
+            return xmlHttp.responseText;
+    }
+
+        function saveCat() {
+            $(document).ready(function () {
+                $(".content-block").click(function () {
+                    window.onkeyup = function () {
+                        $('.empty_field').fadeOut(0);
+                        $(".already_exists").fadeOut(100);
+                    }
+                })
+            });
+            if (txtName.value == '') {
+                $(document).ready(function () {
+                    $('.empty_field').fadeIn(100)
+                })
+                return;
+            } else {
+                $('.empty_field').fadeOut(0)
+
+            }
+               const xhr = new XMLHttpRequest();
+
+                xhr.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var t = this.responseText;
+                        var obj = JSON.parse(t);
+
+                        var statusCode = obj.StatusCode;
+                        if (statusCode == 0) {
+                            window.location = "Index";
+                        }
+                        if (statusCode == 105) {
+                            $(".already_exists").fadeIn(100);
+                        } else {
+                            $(".already_exists").fadeOut(100);
+                        }
+                    }
+                }
+
+
+                xhr.open("POST", 'api/Categories/Save', true);
+
+                const fd = new FormData();
+
+                fd.append('AutoKey', @AutoKey);
+                fd.append('Name', txtName.value);
+                xhr.send(fd);
+
+        }
+
+
+        function deleteCat() {
+            const xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+            window.location = "Index";
+            }
+        }
+
+        xhr.open("POST", 'api/Categories/Delete', true);
+
+            const fd = new FormData();
+
+            fd.append('AutoKey', @AutoKey);
+            xhr.send(fd);
+
+        }
+
+</script>
+
+<h2 class="content-block">@Localizer["ManageFile"]</h2>
+
+
+<br />
+<div class="main-block">
+<div class="dx-fieldset">
+    <div class="dx-field">
+        <div class="dx-field-label">Categories:</div>
+        <div class="dx-field-value">
+            @(Html.DevExtreme().TagBox()
+
+.DataSource(d => d.Mvc()
+    .Controller("Categories")
+    .LoadAction("Get")
+    .Key("AutoKey")
+)
+.DisplayExpr("Name")
+.ValueExpr("AutoKey")
+.ID("categoriesTagBox")
+.Name("categoriesTagBox")
+         .SearchExpr("Name")
+         .HideSelectedItems(true)
+         .ShowClearButton(true)
+                   .SearchEnabled(true)
+                    )
+        </div>
+    </div>
+    <div class="dx-field">
+        <div class="dx-field-label">Contacts:</div>
+        <div class="dx-field-value">
+            @(Html.DevExtreme().TagBox()
+    .DisplayExpr("Name")
+        .DataSource(d => d.Mvc()
+               .Controller("Contacts")
+               .LoadAction("Get")
+               .Key("AutoKey")
+           )
+.ID("contactsTagBox")
+.Name("contactsTagBox")
+    .ValueExpr("AutoKey")
+    .HideSelectedItems(true)
+    .ShowClearButton(true)
+    .SearchExpr("Name")
+              .SearchEnabled(true)
+                    )
+        </div>
+    </div>
+    <div class="dx-field">
+        <div class="dx-field-label">Search Keys:</div>
+        <div class="dx-field-value">
+            @(Html.DevExtreme().TagBox()
+            .ID("searchKeysTagBox")
+            .Name("searchKeysTagBox")
+
+    .DataSource(d => d.Mvc()
+               .Controller("SearchKeys")
+               .LoadAction("Get")
+               .Key("AutoKey")
+           )
+            .ValueExpr("AutoKey")
+            .DisplayExpr("Name")
+            .HideSelectedItems(true)
+            .ShowClearButton(true)
+            .SearchExpr("Name")
+            .SearchEnabled(true)
+          )
+        </div>
+    </div>
+    </div>
+
+    <br />
+    @(Html.DevExtreme().Button()
+        .Icon("save")
+        .Text(Localizer["Save"].Value)
+        .OnClick("saveFile")
+        .ElementAttr("class", "content-block")
+
+    )
+    @(Html.DevExtreme().Button()
+        .Icon("trash")
+        .Text(Localizer["DeleteFile"].Value)
+        .OnClick("deleteFile")
+        .ElementAttr("class", "content-block")
+
+    )
+
+    </div>
+    <script>
+    var categories;
+    var keys;
+        var contacts;
+
+        function saveFile() {
+            categories = $("#categoriesTagBox").dxTagBox("instance").option("value");
+
+            keys = $("#searchKeysTagBox").dxTagBox("instance").option("value");
+            contacts = $("#contactsTagBox").dxTagBox("instance").option("value"); 
+            
+            var outputCats = []
+            $.each(categories, function (i, e) {
+                if (e.AutoKey != null)
+                    outputCats.push(e.AutoKey);
+                else
+                    outputCats.push(e);
+            });
+
+            var outputKeys = []
+            $.each(keys, function (i, e) {
+                if (e.AutoKey != null)
+                    outputKeys.push(e.AutoKey);
+                else
+                    outputKeys.push(e);
+            });
+
+            var outputCons = []
+            $.each(contacts, function (i, e) {
+                if (e.AutoKey != null)
+                    outputCons.push(e.AutoKey);
+                else
+                    outputCons.push(e);
+            });
+
+           /* var outputCats = $(categories).map(function () {
+                if (this.AutoKey != null)
+                    return this.AutoKey;
+                else
+                    return this;
+            });
+
+            var outputKeys = $(keys).map(function () {
+                if (this.AutoKey != null)
+                    return this.AutoKey;
+                else
+                    return this;
+            });
+
+            var outputCons = $(contacts).map(function () {
+                if (this.AutoKey != null)
+                    return this.AutoKey;
+                else
+                    return this;
+            });*/
+
+            console.log(outputCats);
+
+
+               const xhr = new XMLHttpRequest();
+
+                xhr.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var t = this.responseText;
+                        var obj = JSON.parse(t);
+
+                        var statusCode = obj.StatusCode;
+                        if (statusCode == 0) {
+                            window.location = "Index";
+                        }
+                    }
+                }
+
+
+                xhr.open("POST", 'api/Upload/EditFile', true);
+
+                const fd = new FormData();
+
+        fd.append('AutoKey', @AutoKey);
+        fd.append('categories', JSON.stringify(outputCats))
+        fd.append('contacts', JSON.stringify(outputCons));
+        fd.append('keys', JSON.stringify(outputKeys));
+
+                xhr.send(fd);
+
+        }
+
+
+        function deleteFile() {
+            const xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+            window.location = "Index";
+            }
+        }
+
+        xhr.open("POST", 'api/Upload/DeleteFile', true);
+
+            const fd = new FormData();
+
+            fd.append('AutoKey', @AutoKey);
+            xhr.send(fd);
+
+    }
+
+    $(document).ready(function () {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", "api/Upload/GetFileInfo?InfoAutoKey=" + @AutoKey, false);
+        xmlHttp.send();
+
+        var res = JSON.parse(xmlHttp.responseText);
+        categories = res.Categories;
+        keys = res.SearchKeys;
+        contacts = res.Contacts;
+
+        $("#contactsTagBox").dxTagBox("instance").option("value", contacts);  
+        $("#searchKeysTagBox").dxTagBox("instance").option("value", keys);  
+        $("#categoriesTagBox").dxTagBox("instance").option("value", categories);  
+        
+    });
+
+
+
+    </script>

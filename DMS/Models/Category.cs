@@ -9,6 +9,6 @@ namespace DMS.Models
     {
         public long AutoKey { get; set; }
         public string Name { get; set; }
-        public long FatherID { get; set; }
+        public long FatherAutoKey { get; set; }
     }
 }

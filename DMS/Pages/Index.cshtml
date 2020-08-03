@@ -9,6 +9,7 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 <style>
+    
     .tree {
         margin-left: 5rem;
         padding: 1rem;
@@ -83,13 +84,14 @@
 .OnSelectionChanged("onValueChangedTree")
 .ElementAttr("class","categoriesTreeList")
 .SelectedRowKeys(new[] { 1 })
-            .ParentIdExpr("FatherID")
+            .ParentIdExpr("FatherAutoKey")
             .ExpandedRowKeys(new[] { 1 })
             .ShowRowLines(true)
+                .OnContentReady("treeReady")
     .Selection(s => s.Mode(SelectionMode.Single))
             .ShowBorders(true)
-            .ColumnAutoWidth(true)
-            /*.RowDragging(rd => rd
+            .ColumnAutoWidth(true)/*
+            .RowDragging(rd => rd
                 .AllowDropInsideItem(true)
                 .AllowReordering(true)
                 .OnDragChange("onDragChange")
@@ -103,6 +105,7 @@
 
             })
         )
+     
         @(Html.DevExtreme().DataGrid()
             .ID("gridContainer")
                 .OnContentReady("contentReady")
@@ -136,14 +139,24 @@
                  .Caption(Localizer["TypeCol"].Value);
 
                  columns.Add().DataField("DateTimeAdded")
-                     .Caption(Localizer["DateAddedCol"].Value);
-                 columns.Add()
+                    .DataType(GridColumnDataType.Date)
+                    .Caption(Localizer["DateAddedCol"].Value);
+                 
+        columns.Add()
               .Caption("View")
               .Width(100)
               .Alignment(HorizontalAlignment.Center)
               .AllowFiltering(false)
               .AllowSorting(false)
               .CellTemplate(new JS("cellTemplate"));
+
+        columns.Add()
+              .Caption("Edit")
+              .Width(100)
+              .Alignment(HorizontalAlignment.Center)
+              .AllowFiltering(false)
+              .AllowSorting(false)
+              .CellTemplate(new JS("cellTemplate2"));
 
              })
         )
@@ -167,25 +180,31 @@
 
             window.location.href = 'Viewer?InfoAutoKey=' + infoAutoKey + '&LineAutoKey=' + lineAutoKey;
         }
-        var selectedID = -1;
-        var grid;
-        function onDragChange(e) {
-            var treeList = e.component,
-                visibleRows = treeList.getVisibleRows(),
-                sourceNode = treeList.getNodeByKey(e.itemData.ID),
-                targetNode = visibleRows[e.toIndex].node;
 
-            while (targetNode && targetNode.data) {
-                if (targetNode.data.ID === sourceNode.data.ID) {
-                    e.cancel = true;
-                    break;
-                }
-                targetNode = targetNode.parent;
-            }
+         function cellTemplate2(element, cellInfo) {
+            $('<a/>')
+                .text('@Localizer["EditCol"]')
+                .click(function () {
+                    onEdit2(element, cellInfo);
+                })
+                .appendTo(element);
         }
+
+        function onEdit2(element, cellinfo) {
+            var infoAutoKey = cellinfo.data.DocumentAutoKey;
+//            var lineAutoKey = cellinfo.data.LineAutoKey;
+
+            window.location.href = 'ManageFile?AutoKey=' + infoAutoKey;
+        }
+        var selectedID = 0;
+        var grid;
 
         function contentReady(e) {
             grid = e;
+        }
+
+        function treeReady(e) {
+            $('#treeList').dxTreeList('instance').deselectAll();
         }
         function onValueChangedTree(e) {
             selectedID = e.selectedRowKeys[0];
@@ -197,31 +216,6 @@
 
         }
 
-        function onReorder(e) {
-            var treeList = e.component,
-                visibleRows = treeList.getVisibleRows(),
-                sourceData = e.itemData,
-                targetData = visibleRows[e.toIndex].data;
-
-            if (e.dropInsideItem) {
-                e.itemData.Head_ID = targetData.ID;
-            } else {
-                var sourceIndex = employees.indexOf(sourceData),
-                    targetIndex = employees.indexOf(targetData);
-
-                if (sourceData.Head_ID !== targetData.Head_ID) {
-                    sourceData.Head_ID = targetData.Head_ID;
-                    if (e.toIndex > e.fromIndex) {
-                        targetIndex++;
-                    }
-                }
-
-                employees.splice(sourceIndex, 1);
-                employees.splice(targetIndex, 0, sourceData);
-            }
-
-            treeList.refresh();
-        }
 
         function getTreeList() {
             return $("#treeList").dxTreeList("instance");
@@ -288,8 +282,6 @@
 
         }
     </script>
-
-    <script src="~/js/employees.js"></script>
 
 
 </div>

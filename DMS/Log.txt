@@ -1,5 +1,4 @@
-7/28/2020 9:16:30 PM - One or more errors occurred. (An error occurred while sending the request.)
-7/28/2020 9:16:33 PM - One or more errors occurred. (An error occurred while sending the request.)
-7/28/2020 9:20:43 PM - One or more errors occurred. (An error occurred while sending the request.)
-7/28/2020 9:21:56 PM - One or more errors occurred. (An error occurred while sending the request.)
-7/28/2020 9:21:58 PM - One or more errors occurred. (An error occurred while sending the request.)
+8/2/2020 4:45:59 PM - The conversion of a nvarchar data type to a smalldatetime data type resulted in an out-of-range value.
+The statement has been terminated. - INSERT INTO DocumentsInfo (AddedByUserID,DateTimeAdded,DateTimeCreated,IsDeleted) VALUES (N'20-00001-2',N'2020-45-02 04:45:59',N'2020-45-02 04:45:59',N'0') SELECT SCOPE_IDENTITY()
+8/2/2020 4:45:59 PM - The INSERT statement conflicted with the FOREIGN KEY constraint "FK_DocumentLine_DocumentsInfo". The conflict occurred in database "D:\AlSahl\Data\MoneySql.MDF", table "dbo.DocumentsInfo", column 'InfoAutoKey'.
+The statement has been terminated. - INSERT INTO DocumentLine (InfoAutoKey,Ext,Name) VALUES (N'',N'.pdf',N'10844061_-_RAPIDPoint_500_System_Interface_Specifications_Manual_-_English_-_Rev_D_DXDCM_09008b8380899edb-1542075185586') SELECT SCOPE_IDENTITY()
