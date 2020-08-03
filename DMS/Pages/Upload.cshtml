@@ -223,6 +223,18 @@
 
 
     <style>
+        .maindiv {
+            font-family: 'Roboto';
+            font-weight: 100;
+            width: 100%;
+            text-align: center;
+        }
+
+        header {
+            margin-top: 2rem;
+            font-size: 32px;
+        }
+
         .progress-bar {
             height: 35px;
             width: 250px;
@@ -276,7 +288,7 @@
     <div class="maindiv main-block">
 
         <form id="form" action="javascript:upload()" method="post" enctype="multipart/form-data">
-            <h3>Upload</h3>
+            <header>Upload</header>
             <br />
 
             <div class="dx-fieldset">
@@ -304,7 +316,7 @@
             )
                     </div>
 
-                     
+
 
                 </div>
 
@@ -319,24 +331,25 @@
                 </div>
 
                 <!--
-                       (Html.DevExtreme().TagBox()
+                           (Html.DevExtreme().TagBox()
 
-    .DataSource(d => d.Mvc()
-        .Controller("Categories")
-        .LoadAction("Get")
-        .Key("AutoKey")
-    )
+        .DataSource(d => d.Mvc()
+            .Controller("Categories")
+            .LoadAction("Get")
+            .Key("AutoKey")
+        )
 
-    .DisplayExpr("Name")
-    .ValueExpr("AutoKey")
-    .ID("categoriesTagBox")
-    .Name("categoriesTagBox")
-             .SearchExpr("Name")
-             .HideSelectedItems(true)
-             .OnSelectionChanged("onValueChanged")
-             .ShowClearButton(true)
-                       .SearchEnabled(true)
-                        )-->
+        .DisplayExpr("Name")
+        .ValueExpr("AutoKey")
+        .ID("categoriesTagBox")
+        .Name("categoriesTagBox")
+                 .SearchExpr("Name")
+                 .HideSelectedItems(true)
+                 .OnSelectionChanged("onValueChanged")
+                 .ShowClearButton(true)
+                           .SearchEnabled(true)
+                            )-->
+                <br />
                 <div class="dx-field">
                     <div class="dx-field-label">Contacts:</div>
                     <div class="dx-field-value">

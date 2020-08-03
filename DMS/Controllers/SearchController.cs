@@ -87,7 +87,12 @@ namespace DMS.Controllers
             var reader = helper.ExecuteReader(query);
             while (reader.Read())
             {
-                long autokey = Convert.ToInt64(reader["CatAutoKey"]);
+                object catAutoKey = reader["CatAutoKey"];
+
+                if (catAutoKey == DBNull.Value)
+                    continue;
+
+                long autokey = Convert.ToInt64(catAutoKey);
 
                 if (!categories.Any(S => S.AutoKey == autokey))
                 {
@@ -240,10 +245,15 @@ namespace DMS.Controllers
             var reader = helper.ExecuteReader(query);
             while (reader.Read())
             {
+                object catAutoKey = reader["CatAutoKey"];
+
+                if (catAutoKey == DBNull.Value)
+                    continue;
+
                 sResult = new SearchResult();
                 sResult.DocumentAutoKey = Convert.ToInt64(reader["InfoAutoKey"]);
                 sResult.LineAutoKey = Convert.ToInt64(reader["LineAutoKey"]);
-                sResult.CatAutoKey = Convert.ToInt64(reader["CatAutoKey"]);
+                sResult.CatAutoKey = Convert.ToInt64(catAutoKey );
                 sResult.Ext = Convert.ToString(reader["Ext"]);
                 sResult.Name = Convert.ToString(reader["Name"]);
                 sResult.ConName = Convert.ToString(reader["ConName"]);
