@@ -21,11 +21,6 @@
     <link rel="stylesheet" href="~/css/Site.css" />
     <link href="~/css/Roboto.css" rel='stylesheet' type='text/css'>
 
-    <style>
-        .space {
-            margin-right: 20px;
-        }
-    </style>
     @if (CultureInfo.CurrentCulture.TextInfo.IsRightToLeft)
     {
         <style>
@@ -39,7 +34,7 @@
 
 <body>
     <div id="app-side-nav-outer-toolbar">
-        <div class="layout-header" style="height:80px;overflow: hidden;">
+        <div class="layout-header" style="height:60px;overflow: hidden;">
             @(Html.DevExtreme().Toolbar()
                 .Items(items =>
                 {

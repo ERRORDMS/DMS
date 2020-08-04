@@ -2,3 +2,4 @@
 The statement has been terminated. - INSERT INTO DocumentsInfo (AddedByUserID,DateTimeAdded,DateTimeCreated,IsDeleted) VALUES (N'20-00001-2',N'2020-45-02 04:45:59',N'2020-45-02 04:45:59',N'0') SELECT SCOPE_IDENTITY()
 8/2/2020 4:45:59 PM - The INSERT statement conflicted with the FOREIGN KEY constraint "FK_DocumentLine_DocumentsInfo". The conflict occurred in database "D:\AlSahl\Data\MoneySql.MDF", table "dbo.DocumentsInfo", column 'InfoAutoKey'.
 The statement has been terminated. - INSERT INTO DocumentLine (InfoAutoKey,Ext,Name) VALUES (N'',N'.pdf',N'10844061_-_RAPIDPoint_500_System_Interface_Specifications_Manual_-_English_-_Rev_D_DXDCM_09008b8380899edb-1542075185586') SELECT SCOPE_IDENTITY()
+8/4/2020 12:08:06 PM - A transport-level error has occurred when receiving results from the server. (provider: Session Provider, error: 19 - Physical connection is not usable)

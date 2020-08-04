@@ -19,13 +19,49 @@
         margin-left: 2rem;
         color: rgb(250,82,82);
     }
+
     .already_exists {
         display: none;
         margin-left: 2rem;
         color: rgb(250,82,82);
     }
+
+    .add_search_key_form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    #header {
+        position: fixed;
+        width: 100%;
+        height: 100px;
+        background: rgb(255,255,255);
+        z-index: 2000;
+        box-shadow: 0px 2px 5px black;
+        padding-bottom: 2rem
+    }
+    .search_key_input {
+        width: 360px;
+    }
+
+    .error {
+        display: flex;
+        justify-content: center;
+    }
+    .space {
+        margin-left: 2rem;
+    }
+    .inputs {
+        display: flex;
+    }
+    .dataGrid {
+        margin-top: 7rem;
+    }
+    .contact_found, .server_error {
+        color: rgb(255,82,82);
+        display: none;
+    }
 </style>
-<h2 class="content-block">@Localizer["ManageKey"]</h2>
 
 
 @if (AutoKey != 0)
@@ -146,6 +182,33 @@
 }
 else
 {
+<div id="header">
+    <h2 class="content-block" style="font-size:22px;margin:0;margin-left:2rem;">@Localizer["ManageKey"]</h2>
+    <div class="add_search_key_form">
+
+        <form action="javascript:addKey()">
+            <div class="inputs">
+
+                @(Html.DevExtreme().TextBox()
+                .Mode(TextBoxMode.Text)
+                .Name("SearchKeyName")
+                .Placeholder(Localizer["SearchKey"].Value)
+                .ElementAttr("class", "search_key_input")
+                .HoverStateEnabled(true)
+            )
+                <span class="space"></span>
+                @(Html.DevExtreme().Button()
+        .Icon("plus")
+        .Text(Localizer["AddSearchKey"].Value)
+        .OnClick("addKey")
+
+    )
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="dataGrid">
     @(Html.DevExtreme().DataGrid()
         .ID("searchKeysList")
 
@@ -181,6 +244,8 @@ else
 
             })
         )
+</div>
+    
 }
 
 <script>
@@ -199,5 +264,53 @@ else
         var autokey = cellinfo.data.AutoKey;
 
         window.location.href = 'ManageSearchKey?AutoKey=' + autokey;
+    }
+    function addKey() {
+        if (!SearchKeyName.value) {
+            $(document).ready(function () {
+                $('.empty_field').fadeIn(100);
+            });
+            return;
+        } else {
+            $('.empty_field').fadeOut(0);
+            const xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var t = this.response;
+                    var obj = JSON.parse(t);
+
+                    var statusCode = obj.StatusCode;
+                    if (statusCode == 0) {
+                        $(document).ready(function () {
+                            $(".contact_found").fadeOut(0, function () {
+                                $(".server_error").fadeOut(0, function () {
+                                    $('.empty_field').fadeOut(0)
+                                })
+                            })
+                        });
+                        window.location = '/';
+
+                    }
+                    if (statusCode == 103) {
+                        $(document).ready(function () {
+                            $(".server_error").fadeIn(100);
+                        })
+                    } else {
+                        $('.server_error').fadeOut(0)
+                    }
+                    if (statusCode == 105) {
+                        $(".contact_found").fadeIn(100);
+                    } else {
+                        $('.contact_found').fadeOut(0);
+                    }
+                }
+            }
+            var contact = SearchKeyName.value;
+            const fd = new FormData();
+            fd.append("Name", contact);
+            xhr.open("POST", "api/SearchKeys/AddKey", true);
+            xhr.send(fd);
+        }
+
     }
 </script>

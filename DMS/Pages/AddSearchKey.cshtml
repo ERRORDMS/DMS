@@ -20,26 +20,7 @@
             width: 360px;
         }
 
-        .add_Contact_button {
-            width: 100%;
-            height: 50px;
-            border-radius: 15px;
-            outline: none;
-            border: none;
-            background-image: linear-gradient(to right, rgb(255,87,34), rgb(255,92,38), rgb(255,114,45));
-            background-size: 200%;
-            font-size: 1.2rem;
-            color: #fff;
-            font-family: 'Poppins', sans-serif;
-            text-transform: uppercase;
-            margin: 1rem 0;
-            cursor: pointer;
-            transition: .5s;
-        }
-
-            .add_Contact_button:hover {
-                box-shadow: 1px 1px 4px black;
-            }
+        
 
         .error {
             display: flex;
@@ -70,7 +51,7 @@
         @Localizer["MissingArgs"]
     </div>
 </div>
-<div class="add_contact_form">
+<div class="add_search_key_form">
  
     <form action="javascript:addKey()">
         <div class="dx-field-value">
@@ -82,8 +63,12 @@
                 .HoverStateEnabled(true)
             )
             <br />
-            <br />
-            <input type="submit" value="@Localizer["AddSearchKey"]" class="add_Contact_button" />
+            @(Html.DevExtreme().Button()
+        .Icon("plus")
+        .Text(Localizer["AddSearchKey"].Value)
+        .OnClick("addContact")
+
+    )
         </div>
     </form>
 </div>
