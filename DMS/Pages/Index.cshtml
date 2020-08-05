@@ -88,6 +88,11 @@
             .ExpandedRowKeys(new[] { 1 })
             .ShowRowLines(true)
                 .OnContentReady("treeReady")
+                .SearchPanel(s => s
+                    .Visible(true)
+                    .Placeholder("Search")
+                    .SearchVisibleColumnsOnly(true)
+            )
     .Selection(s => s.Mode(SelectionMode.Single))
             .ShowBorders(true)
             .ColumnAutoWidth(true)/*
