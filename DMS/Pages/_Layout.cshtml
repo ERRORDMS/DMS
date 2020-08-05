@@ -140,7 +140,7 @@
                .Selected(IsCurrentPage("ManageCategory"));
                     
 
-
+            /*
                     items.Add()
                .Text(Localizer["Contacts"].Value)
          //      .Html("<span class='space'></span>")
@@ -157,16 +157,15 @@
                .ParentId(3)
                .Option("path", Url.Page("AddContact"))
                .Selected(IsCurrentPage("AddContact"));
-
+            */
 
                     items.Add()
-               .Text(Localizer["ManageContact"].Value)
-               .Icon("edit")
-               .ParentId(3)
+               .Text(Localizer["Contacts"].Value)
+               .Icon("user")
                .Option("path", Url.Page("ManageContact"))
                .Selected(IsCurrentPage("ManageContact"));
 
-                    items.Add()
+                /*    items.Add()
                 .Text(Localizer["SearchKeys"].Value)
          //       .Html("<span class='space'></span>")
                 .Icon("key")
@@ -183,11 +182,10 @@
                .Option("path", Url.Page("AddSearchKey"))
                .Selected(IsCurrentPage("AddSearchKey"));
 
-
+                    */
                     items.Add()
-               .Text(Localizer["ManageSearchKey"].Value)
-               .Icon("edit")
-               .ParentId(6)
+                .Text(Localizer["SearchKeys"].Value)
+               .Icon("key")
                .Option("path", Url.Page("ManageSearchKey"))
                .Selected(IsCurrentPage("ManageSearchKey"));
 

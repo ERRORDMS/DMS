@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddContact" xml:space="preserve">
+    <value>اضافة جهة</value>
+  </data>
+  <data name="AlreadyExists" xml:space="preserve">
+    <value>الجهة موجودة مسبقاً</value>
+  </data>
   <data name="Birthday" xml:space="preserve">
     <value>تاريخ الميلاد</value>
   </data>
@@ -129,8 +135,8 @@
   <data name="DeleteCon" xml:space="preserve">
     <value>حذف الجهة</value>
   </data>
-  <data name="Exists" xml:space="preserve">
-    <value>جهة التعامل موجودة مسبقا</value>
+  <data name="InternalError" xml:space="preserve">
+    <value>وُجِدَ خدأ داخلي</value>
   </data>
   <data name="Manage" xml:space="preserve">
     <value>تعديل</value>

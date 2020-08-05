@@ -155,7 +155,7 @@
         @Localizer["MissingArgs"]
     </div>
     <div class="already_exists">
-        @Localizer["Exists"]
+        @Localizer["AlreadyExists"]
     </div>
     @(Html.DevExtreme().TextBox()
 
@@ -185,7 +185,17 @@ else
 <div id="header">
     <h2 class="content-block" style="font-size:22px;margin:0;margin-left:2rem;">@Localizer["ManageKey"]</h2>
     <div class="add_search_key_form">
-
+        <div class="error">
+            <div class="contact_found">
+                @Localizer["AlreadyExists"]
+            </div>
+            <div class="server_error">
+                @Localizer["InternalError"]
+            </div>
+            <div class="empty_field">
+                @Localizer["MissingArgs"]
+            </div>
+        </div>
         <form action="javascript:addKey()">
             <div class="inputs">
 
@@ -303,6 +313,7 @@ else
                     } else {
                         $('.contact_found').fadeOut(0);
                     }
+
                 }
             }
             var contact = SearchKeyName.value;
