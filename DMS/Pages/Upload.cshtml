@@ -274,17 +274,24 @@
     .buttons {
         display: flex;
         justify-content: center;
-        justify-content: space-between;
         align-items: center;
     }
-
+    #files_div {
+        overflow: auto;
+        height:140px;
+        width: 70%;
+        margin-left: 3rem;
+    }
     .select_button {
-        float: left;
+        margin-left: 3rem;
+ 
     }
 
     .upload_button {
-        float: right;
+        margin-right: 3rem;
     }
+       
+    
 </style>
 
 <div class="maindiv main-block">
@@ -293,12 +300,11 @@
         <header>Upload</header>
         <br />
 
-        <div class="dx-fieldset">
 
-            <div class="buttons">
+        <div class="buttons">
 
-                <div class="select_button">
-                    @(Html.DevExtreme().FileUploader()
+            <div class="select_button">
+                @(Html.DevExtreme().FileUploader()
                     .Name("Photo")
                     .ID("File")
                     .SelectButtonText("Select file")
@@ -308,54 +314,56 @@
                     .Multiple(true)
                     .UploadMode(FileUploadMode.UseForm)
                 )
-                </div>
-                <div class="upload_button">
-                    @(Html.DevExtreme().Button()
+            </div>
+            <div class="upload_button">
+                @(Html.DevExtreme().Button()
                 .ID("button")
                 .Text("Upload file")
                 .Type(ButtonType.Success)
                 .UseSubmitBehavior(true)
             )
-                </div>
-
-
-
             </div>
 
 
-            <div id="pleaseWait" style="display:none">
-                Please wait... Uploading.
+
+        </div>
+        <div id="files_div">
+
+        </div>
+
+        <div id="pleaseWait" style="display:none">
+            Please wait... Uploading.
+        </div>
+        <div class="progress-bar" style="display:none" id="progressBar">
+            <div class="progress-bar-fill">
+                <span class="progress-bar-text">0%</span>
             </div>
-            <div class="progress-bar" style="display:none" id="progressBar">
-                <div class="progress-bar-fill">
-                    <span class="progress-bar-text">0%</span>
-                </div>
-            </div>
+        </div>
 
-            <!--
-                               (Html.DevExtreme().TagBox()
+        <!--
+                       (Html.DevExtreme().TagBox()
 
-            .DataSource(d => d.Mvc()
-                .Controller("Categories")
-                .LoadAction("Get")
-                .Key("AutoKey")
-            )
+    .DataSource(d => d.Mvc()
+        .Controller("Categories")
+        .LoadAction("Get")
+        .Key("AutoKey")
+    )
 
-            .DisplayExpr("Name")
-            .ValueExpr("AutoKey")
-            .ID("categoriesTagBox")
-            .Name("categoriesTagBox")
-                     .SearchExpr("Name")
-                     .HideSelectedItems(true)
-                     .OnSelectionChanged("onValueChanged")
-                     .ShowClearButton(true)
-                               .SearchEnabled(true)
-                                )-->
-            <br />
-            <div class="dx-field">
-                <div class="dx-field-label">Contacts:</div>
-                <div class="dx-field-value">
-                    @(Html.DevExtreme().TagBox()
+    .DisplayExpr("Name")
+    .ValueExpr("AutoKey")
+    .ID("categoriesTagBox")
+    .Name("categoriesTagBox")
+             .SearchExpr("Name")
+             .HideSelectedItems(true)
+             .OnSelectionChanged("onValueChanged")
+             .ShowClearButton(true)
+                       .SearchEnabled(true)
+                        )-->
+        <br />
+        <div class="dx-field">
+            <div class="dx-field-label">Contacts:</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().TagBox()
                         /*
         .DataSource(d => d.Mvc()
                    .Controller("Contacts")
@@ -375,12 +383,12 @@
                         )
 
 
-                </div>
             </div>
-            <div class="dx-field">
-                <div class="dx-field-label">Search Keys:</div>
-                <div class="dx-field-value">
-                    @(Html.DevExtreme().TagBox()
+        </div>
+        <div class="dx-field">
+            <div class="dx-field-label">Search Keys:</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().TagBox()
                         /*
         .DataSource(d => d.Mvc()
                    .Controller("SearchKeys")
@@ -398,9 +406,10 @@
         .SearchExpr("Name")
                   .SearchEnabled(true)
                         )
-                </div>
             </div>
-            @(Html.DevExtreme().TreeList()
+        </div>
+
+        @(Html.DevExtreme().TreeList()
             .ID("treeList")
 
     .DataSource(d => d.Mvc()
@@ -432,7 +441,6 @@
                 })
             )
 
-        </div>
 
 
     </form>
@@ -475,7 +483,23 @@
     function treeReady(e) {
         $('#treeList').dxTreeList('instance').deselectAll();
     }
-
+    window.onchange = function () { getfiles() }
+    function getfiles() {
+        /*
+        let filesUploaderContainer = document.querySelector(".dx-fileuploader-files-container");
+        filesUploaderContainer.style.display = "none";
+        let fileUploader = document.getElementsByClassName("dx-fileuploader-file-container");
+        let arr = Array.from(fileUploader);
+        console.log(fileUploader);
+        for (let i = 0; i < arr.length; i++) {
+            console.log(arr[i]);
+            $('#files_div').append(arr[i]);
+          //  $("#files_div").html(arr[i]);
+        }*/
+        let filesUploaderContainer = document.querySelector(".dx-fileuploader-files-container");
+        $('#files_div').html(filesUploaderContainer);
+    //    filesUploaderContainer.style.display = "none";
+    }
 
     $(document).ready(function () {
         $("#File").change(function (e) {
@@ -483,7 +507,7 @@
         })
 
         var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("GET", "api/Contacts", false);
+        xmlHttp.open("GET", "api/Contacts", true);
         xmlHttp.send();
 
         var res = JSON.parse(xmlHttp.responseText);
