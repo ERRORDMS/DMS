@@ -44,6 +44,15 @@
         .option:last-child {
             margin-right: 0;
         }
+    .dx-treelist-cell-expandable:hover {
+        cursor: pointer;
+    }
+    .view:hover {
+        cursor: pointer;
+    }
+    .edit:hover {
+        cursor: pointer;
+    }
 </style>
 <div class="tree">
 
@@ -176,7 +185,8 @@
                 .click(function () {
                     onEdit(element, cellInfo);
                 })
-                .appendTo(element);
+                .appendTo(element)
+                .addClass("view")
         }
 
         function onEdit(element, cellinfo) {
@@ -192,7 +202,8 @@
                 .click(function () {
                     onEdit2(element, cellInfo);
                 })
-                .appendTo(element);
+                .appendTo(element)
+                .addClass("edit")
         }
 
         function onEdit2(element, cellinfo) {
