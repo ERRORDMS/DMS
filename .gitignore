@@ -7,3 +7,4 @@
 /DMS/obj
 /DMS/.vs/DMS
 /DMS/bin/Debug/netcoreapp2.1
+/DMS/bin/Release/netcoreapp2.1/publish
