@@ -473,7 +473,7 @@ namespace DMS.Database
         {
             try
             {
-                string query = "select DocumentAutoKey,";
+                string query = "select ROW_NUMBER() OVER(ORDER BY AutoKey ASC) AS ID, DocumentAutoKey,";
                 query += " (select DateTimeAdded from " + Tables.DocumentInfo + " where InfoAutoKey = DCR.DocumentAutoKey) as DateTimeAdded,";
                 query += " (select Name from " + Tables.DocumentLines + " where InfoAutoKey = DCR.DocumentAutoKey) as Name,";
                 query += " (select AutoKey from " + Tables.DocumentLines + " where InfoAutoKey = DCR.DocumentAutoKey) as LineAutoKey,";
@@ -496,7 +496,7 @@ namespace DMS.Database
                     documents.Add(document);
                 }
                 */
-                return sqlHelper.ExecuteReader<Document>(query);
+                    return sqlHelper.ExecuteReader<Document>(query);
             }
             catch (Exception ex)
             {

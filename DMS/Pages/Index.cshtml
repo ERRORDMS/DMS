@@ -132,7 +132,7 @@
 .Key("InfoAutoKey")
 ).KeyExpr("InfoAutoKey")*/
      .DataSourceOptions(o => o.ReshapeOnPush(true))
-    .RepaintChangesOnly(true)
+    .RepaintChangesOnly(true)    
             .ShowRowLines(true)
             .ShowBorders(true)
             .ColumnAutoWidth(true)
@@ -145,34 +145,41 @@
                 .ShowDragIcons(true)
             )*/
             .Columns(columns =>
-             {
-                 columns.Add().DataField("Name")
-                     .Caption(Localizer["NameCol"].Value);
+            {
+                columns.Add().DataField("ID")
+                .Alignment(HorizontalAlignment.Left)
+                    .DataType(GridColumnDataType.Number)
+                    .Caption("ID");
 
-                 columns.Add().DataField("Ext")
-                 .Caption(Localizer["TypeCol"].Value);
 
-                 columns.Add().DataField("DateTimeAdded")
-                    .DataType(GridColumnDataType.Date)
-                    .Caption(Localizer["DateAddedCol"].Value);
-                 
-        columns.Add()
-              .Caption("View")
-              .Width(100)
-              .Alignment(HorizontalAlignment.Center)
-              .AllowFiltering(false)
-              .AllowSorting(false)
-              .CellTemplate(new JS("cellTemplate"));
+                columns.Add().DataField("Name")
 
-        columns.Add()
-              .Caption("Edit")
-              .Width(100)
-              .Alignment(HorizontalAlignment.Center)
-              .AllowFiltering(false)
-              .AllowSorting(false)
-              .CellTemplate(new JS("cellTemplate2"));
+                    .Caption(Localizer["NameCol"].Value);
 
-             })
+                columns.Add().DataField("Ext")
+                .Caption(Localizer["TypeCol"].Value);
+
+                columns.Add().DataField("DateTimeAdded")
+                   .DataType(GridColumnDataType.DateTime)
+                   .Caption(Localizer["DateAddedCol"].Value);
+
+                columns.Add()
+                      .Caption("View")
+                      .Width(100)
+                      .Alignment(HorizontalAlignment.Center)
+                      .AllowFiltering(false)
+                      .AllowSorting(false)
+                      .CellTemplate(new JS("cellTemplate"));
+
+                columns.Add()
+                      .Caption("Edit")
+                      .Width(100)
+                      .Alignment(HorizontalAlignment.Center)
+                      .AllowFiltering(false)
+                      .AllowSorting(false)
+                      .CellTemplate(new JS("cellTemplate2"));
+
+            })
         )
 
 

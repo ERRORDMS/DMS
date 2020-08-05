@@ -7,6 +7,7 @@ namespace DMS.Models
 {
     public class Document
     {
+        public long ID { get; set; }
         public long DocumentAutoKey { get; set; }
         public long LineAutoKey { get; set; }
         public DateTime DateTimeAdded { get; set; }
