@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "fmutr",
+  "CachePdfKey": "fmutr/fmutr-syll83.pdf",
+  "CacheXpzKey": "fmutr/fmutr-1w46wsi.xpz",
+  "CacheInfoKey": "fmutr/fmutr-1w46wsi.json",
+  "CacheCopyKey": "fmutr/13551ef.gif",
+  "Document": null,
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": null,
+  "DocumentFileName": "1241721_760560.gif",
+  "InputOptions": {
+    "Format": "Gif",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "fmutr",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}
