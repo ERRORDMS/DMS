@@ -64,7 +64,8 @@ body, html {
 
 .layout-body .menu-container {
     height: 100%;
-    width: 250px;
+    width: 200px;
+    box-shadow: 25px 25px 100px rgb(0,0,0);
 }
 
 .layout-body .content {

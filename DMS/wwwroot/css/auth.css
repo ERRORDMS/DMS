@@ -102,7 +102,7 @@ form {
     bottom: -2px;
     width: 0%;
     height: 2px;
-    background-color: #38d39f;
+    background-color: #0087FF;
     transition: .4s;
 }
 
@@ -124,7 +124,7 @@ form {
 }
 
 .input-div.focus > .i > i {
-    color: #38d39f;
+    color: #0087FF;
 }
 
 .input-div > div > input {
@@ -165,7 +165,7 @@ a {
     border-radius: 25px;
     outline: none;
     border: none;
-    background-image: linear-gradient(to right, #32be8f, #38d39f, #32be8f);
+    background-image: linear-gradient(to right, #0087FF, #0087FF, #0087FF );
     background-size: 200%;
     font-size: 1.2rem;
     color: #fff;
