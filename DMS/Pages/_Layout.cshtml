@@ -130,7 +130,6 @@
         }
 
         .logo {
-            text-transform: lowercase;
             font: 300 2em "Source Sans Pro", Helvetica, Arial, sans-serif;
             text-align: center;
             padding: 0;
@@ -171,11 +170,10 @@
             color: #dfdbd9;
             font: 400 1.125em "Source Sans Pro", Helvetica, Arial, sans-serif;
             text-align: center;
-            text-transform: lowercase;
         }
 
             .main-nav a:hover {
-                color: #fff;
+                color: #0087FF;
             }
 
         .social-links {
@@ -238,6 +236,12 @@
         ul li a {
             display: flex;
             justify-content: center;
+        }
+
+        #progressBar {
+            margin: 20px;
+            width: 100px;
+            height: 100px;
         }
         
     </style>
@@ -332,14 +336,17 @@
     </div>
         -->
     <div class="nav-wrap">
+
         <nav class="main-nav" role="navigation">
             <ul class="unstyled list-hover-slide">
-                <li><a href="#"><span class="icon"><i class="fas fa-users"></i></span><span class="text">@Localizer["Categories"]</span></a></li>
+                <li><a href="#">@Localizer["Categories"]</a></li>
                 <li><a href="#">Work</a></li>
                 <li><a href="#">Contact</a></li>
                 <li><a href="#">Blog</a></li>
+                <li><div id="progressBar"></div></li>
             </ul>
         </nav>
+
     </div>
     @*
          @functions{
@@ -434,8 +441,24 @@
 </div>
     }
 
+    <script src="~/js/progressbar.js"></script>
     <script>
 
+        $(document).ready(function () {
+
+            var bar = new ProgressBar.Circle('#progressBar', {
+                strokeWidth: 2,
+                easing: 'easeInOut',
+                duration: 1400,
+                color: '#0087FF',
+                trailColor: '#eee',
+                trailWidth: 1,
+                svgStyle: null
+            });
+
+            bar.animate(.3);
+
+        })
 
         function switchLanguageEn() {
             switchLanguage("en-US");
@@ -450,7 +473,7 @@
             const xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
-                    window.location = "Index";
+                    window.location = "Dashboard";
                 }
             }
             const fd = new FormData();
@@ -556,9 +579,7 @@
             this.removeEventListener("DOMContentLoaded", documentReady);
             DMS.init();
         });
-        $(document).ready(function () {
-            $('')
-        })
+    
     </script>
 
     @RenderSection("Scripts", required: false)
