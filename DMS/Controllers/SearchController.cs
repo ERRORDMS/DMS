@@ -193,7 +193,8 @@ namespace DMS.Controllers
             string[] words = sQuery.Split(' ');
 
             string query = "SELECT";
-
+            query += " ROW_NUMBER() OVER(ORDER BY DL.AutoKey ASC) AS ID,";
+            query += " D.DateTimeAdded,";
             query += " D.InfoAutoKey,";
             query += " DL.Name,";
             query += " DL.AutoKey as LineAutoKey, ";
@@ -218,27 +219,23 @@ namespace DMS.Controllers
             for (int i = 0; i < words.Length; i++)
             {
                 string word = words[i];
+
                 if (i == 0)
                 {
-                    query += " AND";
-                    query += " (";
-                    query += " DL.Name like '%" + word + "%'";
-                    query += " OR C.Name like '%" + word + "%'";
-                    query += " OR S.Name like '%" + word + "%'";
-                    query += " OR Cat.Name like '%" + word + "%'";
-                    query += " )";
+                    query += " AND ";
                 }
                 else
                 {
-
                     query += " OR ";
-                    query += " (";
-                    query += " DL.Name like '%" + word + "%'";
-                    query += " OR C.Name like '%" + word + "%'";
-                    query += " OR S.Name like '%" + word + "%'";
-                    query += " OR Cat.Name like '%" + word + "%'";
-                    query += " )";
                 }
+
+                query += " (";
+                query += " DL.Name like '%" + word + "%'";
+                query += " OR C.Name like '%" + word + "%'";
+                query += " OR S.Name like '%" + word + "%'";
+                query += " OR Cat.Name like '%" + word + "%'";
+                query += " )";
+         
             }
 
             SearchResult sResult;
@@ -251,6 +248,8 @@ namespace DMS.Controllers
                     continue;
 
                 sResult = new SearchResult();
+                sResult.ID = Convert.ToInt64(reader["ID"]);
+                sResult.DateTimeAdded = Convert.ToDateTime(reader["DateTimeAdded"]);
                 sResult.DocumentAutoKey = Convert.ToInt64(reader["InfoAutoKey"]);
                 sResult.LineAutoKey = Convert.ToInt64(reader["LineAutoKey"]);
                 sResult.CatAutoKey = Convert.ToInt64(catAutoKey );
@@ -275,6 +274,8 @@ namespace DMS.Controllers
 
     public class SearchResult
     {
+        public long ID { get; set; }
+        public DateTime DateTimeAdded { get; set; }
         public long DocumentAutoKey { get; set; }
         public long LineAutoKey { get; set; }
         public string Name { get; set; }

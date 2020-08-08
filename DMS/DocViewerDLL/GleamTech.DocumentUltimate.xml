@@ -2619,7 +2619,7 @@
         <member name="F:GleamTech.DocumentUltimate.DocumentFormat.Epub">
             <summary>Electronic Publication (EPUB).</summary>
         </member>
-        <member name="F:GleamTech.DocumentUltimate.DocumentFormat.Html">
+        <member name="F:GleamTech.DocumentUltimate.DocumentFormat">
             <summary>HyperText Markup Language (HTML).</summary>
         </member>
         <member name="F:GleamTech.DocumentUltimate.DocumentFormat.Mht">
@@ -2912,20 +2912,20 @@
         <member name="F:GleamTech.DocumentUltimate.HorizontalAlignment.Center">
             <summary>The watermark is aligned in the horizontal center of the document page.</summary>
         </member>
-        <member name="T:GleamTech.DocumentUltimate.HtmlOutputOptions">
+        <member name="T:GleamTech.DocumentUltimateOutputOptions">
             <summary>Represents a set of html output options used for document conversion.</summary>
         </member>
-        <member name="M:GleamTech.DocumentUltimate.HtmlOutputOptions.#ctor">
-            <summary>Initializes a new instance of the <see cref="T:GleamTech.DocumentUltimate.HtmlOutputOptions"/> class.</summary>
+        <member name="M:GleamTech.DocumentUltimateOutputOptions.#ctor">
+            <summary>Initializes a new instance of the <see cref="T:GleamTech.DocumentUltimateOutputOptions"/> class.</summary>
         </member>
-        <member name="P:GleamTech.DocumentUltimate.HtmlOutputOptions.ExternalImages">
+        <member name="P:GleamTech.DocumentUltimateOutputOptions.ExternalImages">
             <summary>
             Gets or sets a value indicating whether the images in html page should be exported 
             as separate files (externally linked) or embedded as data-URIs (as base64 encoded string).
             The default is false.
             </summary>
         </member>
-        <member name="P:GleamTech.DocumentUltimate.HtmlOutputOptions.ExternalCss">
+        <member name="P:GleamTech.DocumentUltimateOutputOptions.ExternalCss">
             <summary>
             Gets or sets a value indicating whether the CSS in html page should be exported 
             as separate files (externally linked) or embedded as &lt;style&gt; tags.
@@ -3915,7 +3915,7 @@
         </member>
         <member name="P:GleamTech.DocumentUltimate.WordProcessingInputOptions.Encoding">
             <summary>
-            Gets or sets the encoding that will be used to load an <see cref="F:GleamTech.DocumentUltimate.DocumentFormat.Html"/> or <see cref="F:GleamTech.DocumentUltimate.DocumentFormat.Txt"/>
+            Gets or sets the encoding that will be used to load an <see cref="F:GleamTech.DocumentUltimate.DocumentFormat"/> or <see cref="F:GleamTech.DocumentUltimate.DocumentFormat.Txt"/>
             document if the encoding is not specified in the file. If encoding is not specified in HTML/TXT and this property is null,
             then the converter will try to automatically detect the encoding.
             The default is null.

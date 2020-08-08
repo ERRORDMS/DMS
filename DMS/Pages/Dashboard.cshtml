@@ -1,0 +1,310 @@
+﻿@page
+@model DMS.Pages.DashboardModel
+@{
+    ViewData["Title"] = Localizer["Title"];
+    Layout = "~/Pages/_Layout.cshtml";
+}
+
+@using DMS.Models
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+<style>
+    
+    .tree {
+        margin-left: 5rem;
+        padding: 1rem;
+    }
+
+    #treeList {
+        max-height: 440px;
+    }
+
+    .dx-sortable-dragging {
+        opacity: 0.9
+    }
+
+    .options {
+        margin-top: 20px;
+        padding: 20px;
+        background-color: rgba(191, 191, 191, 0.15);
+        position: relative;
+    }
+
+    .caption {
+        font-size: 18px;
+        font-weight: 500;
+    }
+
+    .option {
+        margin-top: 10px;
+        margin-right: 40px;
+        display: inline-block;
+    }
+
+        .option:last-child {
+            margin-right: 0;
+        }
+    .dx-treelist-cell-expandable:hover {
+        cursor: pointer;
+    }
+    .view:hover {
+        cursor: pointer;
+    }
+    .edit:hover {
+        cursor: pointer;
+    }
+</style>
+<div class="tree">
+
+    @(Html.DevExtreme().TextBox()
+
+        .Name("txtSearch")
+        .Width(600)
+        .ShowClearButton(true)
+        .ElementAttr("class", "content-block")
+         .Buttons(buttons =>
+             {
+                 buttons.Add()
+                 .Name("btnSearch")
+
+                 .Location(TextEditorButtonLocation.Before)
+                 .Widget(w => w.Button()
+                     .UseSubmitBehavior(true)
+                     .ID("btnSearch")
+                     .OnClick("onClick")
+                     .Type(ButtonType.Default)
+                     .Icon(Url.Content("~/images/icons/search.png")));
+         })
+        .Placeholder(Localizer["SearchText"].Value)
+
+    )
+
+    <br />
+    <div id="treeListDemo">
+
+        @(Html.DevExtreme().TreeList()
+        .ID("treeList")
+
+.DataSource(d => d.Mvc()
+    .Controller("Categories")
+    .LoadAction("Get")
+    .Key("AutoKey")
+).KeyExpr("AutoKey")
+.OnSelectionChanged("onValueChangedTree")
+.ElementAttr("class","categoriesTreeList")
+.SelectedRowKeys(new[] { 1 })
+            .ParentIdExpr("FatherAutoKey")
+            .ExpandedRowKeys(new[] { 1 })
+            .ShowRowLines(true)
+                .OnContentReady("treeReady")
+                .SearchPanel(s => s
+                    .Visible(true)
+                    .Placeholder("Search")
+                    .SearchVisibleColumnsOnly(true)
+            )
+    .Selection(s => s.Mode(SelectionMode.Single))
+            .ShowBorders(true)
+            .ColumnAutoWidth(true)/*
+            .RowDragging(rd => rd
+                .AllowDropInsideItem(true)
+                .AllowReordering(true)
+                .OnDragChange("onDragChange")
+                .OnReorder("onReorder")
+                .ShowDragIcons(true)
+            )*/
+            .Columns(columns =>
+            {
+                columns.Add().DataField("Name")
+                    .Caption(Localizer["CategoryName"].Value);
+
+            })
+        )
+     
+        @(Html.DevExtreme().DataGrid()
+            .ID("gridContainer")
+                .OnContentReady("contentReady")
+     /*
+ .DataSource(d => d.Mvc()
+.Controller("api/Upload")
+.LoadMethod("GET")
+.LoadParams(new { CatID = new JS("selectedID") })
+.LoadAction("GetDocuments")
+.Key("InfoAutoKey")
+).KeyExpr("InfoAutoKey")*/
+     .DataSourceOptions(o => o.ReshapeOnPush(true))
+    .RepaintChangesOnly(true)    
+            .ShowRowLines(true)
+            .ShowBorders(true)
+            .ColumnAutoWidth(true)
+            .ElementAttr("class","dataGrid")
+            /*.RowDragging(rd => rd
+                .AllowDropInsideItem(true)
+                .AllowReordering(true)
+                .OnDragChange("onDragChange")
+                .OnReorder("onReorder")
+                .ShowDragIcons(true)
+            )*/
+            .Columns(columns =>
+            {
+                columns.Add().DataField("ID")
+                .Alignment(HorizontalAlignment.Left)
+                    .DataType(GridColumnDataType.Number)
+                    .Caption("ID");
+
+
+                columns.Add().DataField("Name")
+
+                    .Caption(Localizer["NameCol"].Value);
+
+                columns.Add().DataField("Ext")
+                .Caption(Localizer["TypeCol"].Value);
+
+                columns.Add().DataField("DateTimeAdded")
+                   .DataType(GridColumnDataType.DateTime)
+                   .Caption(Localizer["DateAddedCol"].Value);
+
+                columns.Add()
+                      .Caption("View")
+                      .Width(100)
+                      .Alignment(HorizontalAlignment.Center)
+                      .AllowFiltering(false)
+                      .AllowSorting(false)
+                      .CellTemplate(new JS("cellTemplate"));
+
+                columns.Add()
+                      .Caption("Edit")
+                      .Width(100)
+                      .Alignment(HorizontalAlignment.Center)
+                      .AllowFiltering(false)
+                      .AllowSorting(false)
+                      .CellTemplate(new JS("cellTemplate2"));
+
+            })
+        )
+
+
+    </div>
+
+    <script>
+        function cellTemplate(element, cellInfo) {
+            $('<a/>')
+                .text('@Localizer["ViewCol"]')
+                .click(function () {
+                    onEdit(element, cellInfo);
+                })
+                .appendTo(element)
+                .addClass("view")
+        }
+
+        function onEdit(element, cellinfo) {
+            var infoAutoKey = cellinfo.data.DocumentAutoKey;
+            var lineAutoKey = cellinfo.data.LineAutoKey;
+
+            window.location.href = 'Viewer?InfoAutoKey=' + infoAutoKey + '&LineAutoKey=' + lineAutoKey;
+        }
+
+         function cellTemplate2(element, cellInfo) {
+            $('<a/>')
+                .text('@Localizer["EditCol"]')
+                .click(function () {
+                    onEdit2(element, cellInfo);
+                })
+                .appendTo(element)
+                .addClass("edit")
+        }
+
+        function onEdit2(element, cellinfo) {
+            var infoAutoKey = cellinfo.data.DocumentAutoKey;
+//            var lineAutoKey = cellinfo.data.LineAutoKey;
+
+            window.location.href = 'ManageFile?AutoKey=' + infoAutoKey;
+        }
+        var selectedID = 0;
+        var grid;
+
+        function contentReady(e) {
+            grid = e;
+        }
+
+        function treeReady(e) {
+            //$('#treeList').dxTreeList('instance').deselectAll();
+        }
+        function onValueChangedTree(e) {
+            selectedID = e.selectedRowKeys[0];
+
+            $("#gridContainer").dxDataGrid({
+                dataSource: "api/Upload/GetDocuments?CatID=" + selectedID,
+            });
+
+
+        }
+
+
+        function getTreeList() {
+            return $("#treeList").dxTreeList("instance");
+        }
+        /*
+        $(document).ready(function () {
+            $("#btnSearch").click(function (e) {
+                alert('Hello');
+                e.preventDefault();
+
+                var t = $("input[name='__RequestVerificationToken']").val();
+                $.ajax({
+                    url: $(this).attr("formaction"),
+                    headers:
+                    {
+                        "RequestVerificationToken": t
+                    },
+                    type: "POST",
+                    data: { data: 'foo2' },
+                }).done(function (data) {
+                    console.log(data);
+                }).fail(function (a, v, e) {
+                    alert(e);
+                });
+            });
+        });*/
+
+        function onClick() {
+            /*
+                  const xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+
+            }
+        }
+
+        xhr.open("POST", 'api/Search', true);
+
+            const fd = new FormData();
+
+            fd.append('sQuery', txtSearch.value);
+            xhr.send(fd);*/
+
+            if (txtSearch.value == '' || txtSearch.value == null) {
+                $("#treeList").dxTreeList({
+                    dataSource: "api/Categories/",
+                });
+
+                $("#gridContainer").dxDataGrid({
+                    dataSource: null,
+                });
+                return;
+            }
+
+            $("#treeList").dxTreeList({
+                dataSource: "api/Search/SearchCats?sQuery=" + txtSearch.value,
+            });
+
+            $("#gridContainer").dxDataGrid({
+                dataSource: "api/Search/SearchFiles?sQuery=" + txtSearch.value,
+            });
+
+
+        }
+    </script>
+
+
+</div>

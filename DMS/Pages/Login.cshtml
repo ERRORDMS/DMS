@@ -7,7 +7,7 @@
 
     if (User.Identity.IsAuthenticated)
     {
-        <script>window.location = 'index'</script>
+        <script>window.location = 'Dashboard'</script>
 
 
     }
@@ -130,7 +130,7 @@
                         var statusCode = obj.StatusCode;
 
                         if (statusCode == 0) {
-                            window.location = 'index';
+                            window.location = 'Dashboard';
                         }
                         if (statusCode == 101) {
                             $(document).ready(function () {

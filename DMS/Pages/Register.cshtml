@@ -8,7 +8,7 @@
 
     if (User.Identity.IsAuthenticated)
     {
-        <script>window.location = 'index'</script>
+        <script>window.location = 'Dashboard'</script>
     }
 
 }
@@ -135,7 +135,7 @@
 
 
                         if (statusCode == 0) {
-                            window.location = 'index';
+                            window.location = 'Dashboard';
                         }
                         if (statusCode == 102) {
                             // Username already exists

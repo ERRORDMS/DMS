@@ -1,0 +1,31 @@
+{
+  "CacheSourceKey": "bbkik5",
+  "CachePdfKey": "bbkik5/bbkik5-en4k60.pdf",
+  "CacheXpzKey": "bbkik5/bbkik5-1896vax.xpz",
+  "CacheInfoKey": "bbkik5/bbkik5-1896vax.json",
+  "CacheCopyKey": "bbkik5/1z05ebz.txt",
+  "Document": null,
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": null,
+  "DocumentFileName": "1241725_760564.txt",
+  "InputOptions": {
+    "$type": "GleamTech.DocumentUltimate.WordProcessingInputOptions, GleamTech.DocumentUltimate",
+    "FieldFileName": "1241725_760564.txt",
+    "UpdateFields": true,
+    "Encoding": null,
+    "Format": "Txt",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "bbkik5",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}

@@ -4,6 +4,6 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <_PublishTargetUrl>D:\Projects\DMS\DMS\bin\Release\netcoreapp2.1\publish\</_PublishTargetUrl>
+    <_PublishTargetUrl>D:\Projects\Malafatee\DMS\bin\Release\netcoreapp2.1\publish\</_PublishTargetUrl>
   </PropertyGroup>
 </Project>

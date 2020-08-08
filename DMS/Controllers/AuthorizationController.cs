@@ -15,10 +15,6 @@ namespace DMS.Controllers
     [AllowAnonymous]
     public class AuthorizationController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
 
         [Route("Login")]
         [HttpPost]

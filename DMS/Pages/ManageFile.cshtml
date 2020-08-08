@@ -13,7 +13,7 @@
     if (AutoKey == 0)
     {
         <script>
-            window.location = 'index';
+            window.location = 'Dashboard';
         </script>
     }
 
@@ -31,95 +31,6 @@
 </style>
 
 
-<script>
-
-        $(document).ready(function () {
-
-
-            $('#txtName').val(getVal());
-            $('#txtName').focus();
-            $('#txtName').blur();
-
-
-
-            });
-
-        function getVal()
-        {
-            var xmlHttp = new XMLHttpRequest();
-            xmlHttp.open("GET", "api/Upload/GetFileName?AutoKey=" + @AutoKey, false );
-            xmlHttp.send();
-            return xmlHttp.responseText;
-    }
-
-        function saveCat() {
-            $(document).ready(function () {
-                $(".content-block").click(function () {
-                    window.onkeyup = function () {
-                        $('.empty_field').fadeOut(0);
-                        $(".already_exists").fadeOut(100);
-                    }
-                })
-            });
-            if (txtName.value == '') {
-                $(document).ready(function () {
-                    $('.empty_field').fadeIn(100)
-                })
-                return;
-            } else {
-                $('.empty_field').fadeOut(0)
-
-            }
-               const xhr = new XMLHttpRequest();
-
-                xhr.onreadystatechange = function () {
-                    if (this.readyState == 4 && this.status == 200) {
-                        var t = this.responseText;
-                        var obj = JSON.parse(t);
-
-                        var statusCode = obj.StatusCode;
-                        if (statusCode == 0) {
-                            window.location = "Index";
-                        }
-                        if (statusCode == 105) {
-                            $(".already_exists").fadeIn(100);
-                        } else {
-                            $(".already_exists").fadeOut(100);
-                        }
-                    }
-                }
-
-
-                xhr.open("POST", 'api/Categories/Save', true);
-
-                const fd = new FormData();
-
-                fd.append('AutoKey', @AutoKey);
-                fd.append('Name', txtName.value);
-                xhr.send(fd);
-
-        }
-
-
-        function deleteCat() {
-            const xhr = new XMLHttpRequest();
-
-        xhr.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-            window.location = "Index";
-            }
-        }
-
-        xhr.open("POST", 'api/Categories/Delete', true);
-
-            const fd = new FormData();
-
-            fd.append('AutoKey', @AutoKey);
-            xhr.send(fd);
-
-        }
-
-</script>
 
 <h2 class="content-block">@Localizer["ManageFile"]</h2>
 
@@ -276,7 +187,7 @@
 
                         var statusCode = obj.StatusCode;
                         if (statusCode == 0) {
-                            window.location = "Index";
+                            window.location = "Dashboard";
                         }
                     }
                 }
@@ -301,7 +212,7 @@
 
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-            window.location = "Index";
+            window.location = "Dashboard";
             }
         }
 
