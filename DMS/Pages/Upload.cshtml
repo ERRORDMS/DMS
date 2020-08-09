@@ -545,7 +545,7 @@
     );
 
     function upload() {
-        console.log(files);
+        
 
         if (categories == null) {
             alert('Choose a category!');
@@ -564,7 +564,20 @@
 
         var i = files.length;
 
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", "api/authorization/getuserstorage", false);
+        xmlHttp.send();
+
+        storage = JSON.parse(xmlHttp.responseText);
+
         Array.from(files).forEach(file => {
+
+            var fileSizeMB = file.size / 1048576.0;
+
+            if ((storage.UsedStorage + fileSizeMB) > storage.Storage) {
+                alert("You don't have enough space!")
+                return;
+            }
 
             i--;
             progressBarFill.style.width = "0%";

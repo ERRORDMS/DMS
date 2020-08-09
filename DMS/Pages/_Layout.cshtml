@@ -493,7 +493,7 @@
             }
 
 
-            usedStorageLbl.innerHTML = usedStorage.toFixed(1);
+            usedStorageLbl.innerHTML = calc(usedStorage);
             usedStoragePrefix.innerHTML = prefix;
 
             var maxStorage = storage.Storage;
@@ -527,6 +527,11 @@
             bar.animate(perc / 100);
 
         })
+
+        function calc(num) {
+            var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]
+            return with2Decimals;
+        }
 
         function switchLanguageEn() {
             switchLanguage("en-US");
@@ -613,15 +618,7 @@
             }
 
             function onMenuButtonClick() {
-                const Navbar = document.getElementsByClassName("dx-overlay-content dx-resizable").item(0);
-                const Navitems = document.getElementsByClassName('nav-item');
-                const button = document.getElementById("progressBar");
-
                 getDrawer().toggle();
-                if (Navbar.style.width == '60px') {
-                    $(Navitems).css("display", "none");
-                    $(button).css("display", "none");
-                }
                 saveDrawerOpened();
                
             }
