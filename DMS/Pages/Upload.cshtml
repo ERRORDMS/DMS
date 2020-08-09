@@ -234,11 +234,15 @@
         margin-top: 2rem;
         font-size: 32px;
     }
-
+    #progressBar {
+        height: 25px;
+        width: 450px;
+    }
     .progress-bar {
-        height: 35px;
-        width: 250px;
+        height: 25px;
+        width: 450px;
         border: 2px solid darkblue;
+        z-index: 5000;
     }
 
     .progress-bar-fill {
@@ -339,7 +343,8 @@
         <div id="pleaseWait" style="display:none">
             Please wait... Uploading.
         </div>
-        <div class="progress-bar" style="display:none" id="progressBar">
+
+        <div class="progress-bar" id="progressBar">
             <div class="progress-bar-fill">
                 <span class="progress-bar-text">0%</span>
             </div>
@@ -543,7 +548,8 @@
     const progressBarText = progressBarFill.querySelector(
         ".progress-bar-text"
     );
-
+    console.log(progressBarFill);
+    console.log(progressBarText);
     function upload() {
         console.log(files);
 
@@ -563,7 +569,6 @@
         })
 
         var i = files.length;
-
         Array.from(files).forEach(file => {
 
             i--;
