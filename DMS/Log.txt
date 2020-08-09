@@ -7,3 +7,8 @@ The statement has been terminated. - INSERT INTO DocumentLine (InfoAutoKey,Ext,N
 8/5/2020 7:09:21 PM - Invalid column name 'LineAutoKey'.
 8/5/2020 7:09:22 PM - Invalid column name 'LineAutoKey'.
 8/5/2020 7:09:23 PM - Invalid column name 'LineAutoKey'.
+8/9/2020 5:32:20 PM - Index was out of range. Must be non-negative and less than the size of the collection.
+Parameter name: index
+8/9/2020 5:32:22 PM - Index was out of range. Must be non-negative and less than the size of the collection.
+Parameter name: index
+8/9/2020 5:38:30 PM - Error converting data type varchar to bigint.

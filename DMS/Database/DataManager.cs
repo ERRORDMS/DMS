@@ -15,6 +15,7 @@ using System.ServiceModel;
 using DMS.Controllers;
 using Newtonsoft.Json;
 using System.Globalization;
+using static DMS.Controllers.AuthorizationController;
 
 namespace DMS.Database
 {
@@ -933,6 +934,28 @@ END
 
             }
         }
+        
+        public static UserStorage GetUserStorage(string UserID)
+        {
+            try
+            {
+
+                Dictionary<string, string> wheres = new Dictionary<string, string>();
+                wheres.Add("UserID", UserID);
+
+                return sqlHelper.SelectWithWhere<UserStorage>(Tables.UserStorage,
+                    new string[] { "UsedStorage", "Storage" },
+                    wheres)[0];
+            }
+
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+                return null;
+
+            }
+        }
+
         public static int Register(string email, string password)
         {
             try
@@ -956,8 +979,18 @@ END
                     new string[] {  "Name", "ID" },
                     new string[] {  email,  id }))
                 {
-                    client.SetPasswordAsync(email, password) ;
-                    return (int)ErrorCodes.SUCCESS;
+                    if (sqlHelper.Insert(Tables.UserStorage,
+                        new string[] { "UserID", "UsedStorage", "Storage" },
+                        new string[] { GetUserAutoKey(email), "0", "10000" }))
+                    {
+                        client.SetPasswordAsync(email, password);
+                        return (int)ErrorCodes.SUCCESS;
+
+                    }
+                    else
+                    {
+                        return (int)ErrorCodes.INTERNAL_ERROR;
+                    }
                 }
                 else
                 {

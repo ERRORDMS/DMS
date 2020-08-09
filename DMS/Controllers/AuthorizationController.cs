@@ -77,6 +77,21 @@ namespace DMS.Controllers
                   authProperties);
         }
 
+        [Route("GetUserStorage")]
+        [HttpGet]
+        public UserStorage GetStorage(string userId = null)
+        {
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.UserData);
+            return DataManager.GetUserStorage(userId);
+        }
+
+        public class UserStorage
+        {
+            public double UsedStorage { get; set; }
+            public double Storage { get; set; }
+        }
+
         public class Result
         {
             public string StatusName { get; set; }
