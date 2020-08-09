@@ -11,7 +11,6 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>DMS</title>
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
     <link rel="stylesheet"
           href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
@@ -510,14 +509,8 @@
         var DMS = (function () {
 
             var DRAWER_OPENED_KEY = "DMS-drawer-opened";
-            const Navbar = document.getElementsByClassName("dx-overlay-content dx-resizable").item(0);
-            const Navitems = document.getElementsByClassName('nav-item');
-            /*
-            if (Navbar.style.width == "60px") {
-                $(Navitems).css("width", "0px");
-            }
-            */
-            //window.oc
+            
+
             var breakpoints = {
                 xSmallMedia: window.matchMedia("(max-width: 599.99px)"),
                 smallMedia: window.matchMedia("(min-width: 600px) and (max-width: 959.99px)"),
@@ -576,16 +569,17 @@
             }
 
             function onMenuButtonClick() {
+                const Navbar = document.getElementsByClassName("dx-overlay-content dx-resizable").item(0);
+                const Navitems = document.getElementsByClassName('nav-item');
+                const button = document.getElementById("progressBar");
+
                 getDrawer().toggle();
-                saveDrawerOpened();
-                /*
-                if (Navbar.style.width < "60px") {
-                    $(Navitems).css("display", "block");
-                }
                 if (Navbar.style.width == '60px') {
                     $(Navitems).css("display", "none");
+                    $(button).css("display", "none");
                 }
-                */
+                saveDrawerOpened();
+               
             }
 
             function onTreeViewItemClick(e) {

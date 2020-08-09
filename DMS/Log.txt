@@ -7,3 +7,4 @@ The statement has been terminated. - INSERT INTO DocumentLine (InfoAutoKey,Ext,N
 8/5/2020 7:09:21 PM - Invalid column name 'LineAutoKey'.
 8/5/2020 7:09:22 PM - Invalid column name 'LineAutoKey'.
 8/5/2020 7:09:23 PM - Invalid column name 'LineAutoKey'.
+8/9/2020 4:03:03 PM - A transport-level error has occurred when receiving results from the server. (provider: Session Provider, error: 19 - Physical connection is not usable)
