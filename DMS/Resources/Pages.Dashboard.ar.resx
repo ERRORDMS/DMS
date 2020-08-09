@@ -130,7 +130,7 @@
     <value>الاسم</value>
   </data>
   <data name="SearchText" xml:space="preserve">
-    <value>ابحث عن اسم الملف، او فئة او جهة تعامل او مفتاح بحث</value>
+    <value>ابحث الملفات عن اسم الملف، او فئة او جهة تعامل او مفتاح بحث</value>
   </data>
   <data name="TypeCol" xml:space="preserve">
     <value>نوع الملف</value>

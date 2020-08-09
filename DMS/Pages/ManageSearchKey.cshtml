@@ -32,7 +32,6 @@
         align-items: center;
     }
     #header {
-        position: fixed;
         width: 100%;
         height: 100px;
         background: rgb(255,255,255);
@@ -55,7 +54,11 @@
         display: flex;
     }
     .dataGrid {
-        margin-top: 7rem;
+        margin-top: 1.5rem;
+    }
+
+    #searchKeysList{
+        max-height:60vh;
     }
     .contact_found, .server_error {
         color: rgb(255,82,82);
@@ -298,8 +301,12 @@ else
                                 })
                             })
                         });
-                        window.location = 'Dashboard';
 
+                        $('#searchKeysList').dxDataGrid('instance').refresh();
+
+                        $('#SearchKeyName').val("");
+                        $('#SearchKeyName').focus();
+                        $('#SearchKeyName').blur();
                     }
                     if (statusCode == 103) {
                         $(document).ready(function () {

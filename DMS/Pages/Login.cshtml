@@ -46,21 +46,21 @@
                     <div class="div">
                         <h5>@Localizer["Email"]<span class="empty_field">@Localizer["FieldRequired"]</span><span class="err101">@Localizer["WrongCredentials"]</span></h5>
                         <input type="email" class="input email_input" id="email_input" autocomplete="off" />
-                    </div>
+                    </div>  
                 </div>
                 <div class="input-div pass">
                     <div class="i">
                         <i class="fas fa-lock"></i>
                     </div>
                     <div class="div">
-                        <h5>@Localizer["Password"]<span class="empty_password">@Localizer["FieldRequired"]</span></h5>
+                        <h5 >@Localizer["Password"]<span class="empty_password">@Localizer["FieldRequired"]</span></h5>
                         <input type="password" class="input " id="password_input" />
                     </div>
                 </div>
                 <a href="#">@Localizer["ForgotPassword"]</a>
                 <a href="Register">@Localizer["CreateAccount"]</a>
                 <input type="submit" class="btn" value="@Localizer["Login"]" />
-
+                        
                 @(Html.DevExtreme().Button()
                     .Type(ButtonType.Normal)
                     .ID("btnChangeLang")
