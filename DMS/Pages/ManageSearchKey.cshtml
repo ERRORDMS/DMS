@@ -32,6 +32,9 @@
         align-items: center;
     }
     #header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 100%;
         height: 100px;
         background: rgb(255,255,255);
@@ -58,7 +61,7 @@
     }
 
     #searchKeysList{
-        max-height:60vh;
+        max-height:50vh;
     }
     .contact_found, .server_error {
         color: rgb(255,82,82);
@@ -186,13 +189,13 @@
 else
 {
 <div id="header">
-    <h2 class="content-block" style="font-size:22px;margin:0;margin-left:2rem;">@Localizer["ManageKey"]</h2>
+    <h2 class="content-block" style="font-size:22px;margin:0;margin-right:2rem;">@Localizer["ManageKey"]</h2>
     <div class="add_search_key_form">
         <div class="error">
             <div class="contact_found">
                 @Localizer["AlreadyExists"]
             </div>
-            <div class="server_error">
+               <div class="server_error">
                 @Localizer["InternalError"]
             </div>
             <div class="empty_field">
