@@ -16,6 +16,7 @@ using DMS.Controllers;
 using Newtonsoft.Json;
 using System.Globalization;
 using static DMS.Controllers.AuthorizationController;
+using DevExpress.Web;
 
 namespace DMS.Database
 {
@@ -680,14 +681,15 @@ namespace DMS.Database
                     int i = sqlHelper.ExecuteNonQuery(query, param);
 
                     if (i > 0)
-                        return (int)ErrorCodes.SUCCESS;
-                    else
-                        return (int)ErrorCodes.INTERNAL_ERROR;
+                    {
+                        var fileSize = file.Length / 1048576.0;
+
+                        if (AddUsedStorage(Math.Round(fileSize, 2), userID))
+                            return (int)ErrorCodes.SUCCESS;
+                    }
                 }
-                else
-                {
-                    return (int)ErrorCodes.INTERNAL_ERROR;
-                }
+
+                return (int)ErrorCodes.INTERNAL_ERROR;
             }
             catch (Exception ex)
             {
@@ -697,6 +699,19 @@ namespace DMS.Database
             }
 
         }
+
+
+        public static bool AddUsedStorage(double amount, string userID)
+        {
+
+            var oldStorage = GetUserStorage(userID);
+
+            return sqlHelper.Update(Tables.UserStorage,
+                new string[] { "UsedStorage" },
+                new string[] {  (oldStorage.UsedStorage + amount).ToString() },
+                "UserID = '" + userID + "'");
+        }
+
 
         public static int AddFile(IFormFile file, string userID, out string infoAutoKey)
         {

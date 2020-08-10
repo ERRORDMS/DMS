@@ -234,15 +234,11 @@
         margin-top: 2rem;
         font-size: 32px;
     }
-    #progressBar {
-        height: 25px;
-        width: 450px;
-    }
+
     .progress-bar {
-        height: 25px;
-        width: 450px;
+        height: 35px;
+        width: 250px;
         border: 2px solid darkblue;
-        z-index: 5000;
     }
 
     .progress-bar-fill {
@@ -343,8 +339,7 @@
         <div id="pleaseWait" style="display:none">
             Please wait... Uploading.
         </div>
-
-        <div class="progress-bar" id="progressBar">
+        <div class="progress-bar" style="display:none" id="progressBar">
             <div class="progress-bar-fill">
                 <span class="progress-bar-text">0%</span>
             </div>
@@ -548,10 +543,9 @@
     const progressBarText = progressBarFill.querySelector(
         ".progress-bar-text"
     );
-    console.log(progressBarFill);
-    console.log(progressBarText);
+
     function upload() {
-        console.log(files);
+        
 
         if (categories == null) {
             alert('Choose a category!');
@@ -569,7 +563,21 @@
         })
 
         var i = files.length;
+
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", "api/authorization/getuserstorage", false);
+        xmlHttp.send();
+
+        storage = JSON.parse(xmlHttp.responseText);
+
         Array.from(files).forEach(file => {
+
+            var fileSizeMB = file.size / 1048576.0;
+
+            if ((storage.UsedStorage + fileSizeMB) > storage.Storage) {
+                alert("You don't have enough space!")
+                return;
+            }
 
             i--;
             progressBarFill.style.width = "0%";
