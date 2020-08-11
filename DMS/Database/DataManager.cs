@@ -40,7 +40,7 @@ namespace DMS.Database
         }
 
         public static AlSahlServiceClient GetClient() { return client; }
-
+        
         public static int DeleteCategory(long autoKey)
         {
             try
@@ -1011,6 +1011,10 @@ END
                 {
                     return (int)ErrorCodes.INTERNAL_ERROR;
 
+
+
+
+                    
                 }
             }
             catch (Exception ex)
