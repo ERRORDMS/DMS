@@ -117,92 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="about" xml:space="preserve">
-    <value>about</value>
+  <data name="About" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="AboutLogo" xml:space="preserve">
+    <value>About Malafatee</value>
   </data>
   <data name="contactus" xml:space="preserve">
-    <value>Contact us</value>
-  </data>
-  <data name="Control" xml:space="preserve">
-    <value>Control</value>
-  </data>
-  <data name="create" xml:space="preserve">
-    <value>Create Account</value>
+    <value>Contact Us</value>
   </data>
   <data name="Dashboard" xml:space="preserve">
     <value>Dashboard</value>
   </data>
-  <data name="description_control" xml:space="preserve">
-    <value>Have full control of all your business/family's documents and files, no need for large storage and drawers anymore!</value>
-  </data>
-  <data name="description_first_feature" xml:space="preserve">
-    <value>Our search engine makes searching for your files fast and easy! Associate all your files with specific people, specific search keys, and specific categories!</value>
-  </data>
-  <data name="description_first_title" xml:space="preserve">
-    <value>With Malafatee, you will never have to go through every single drawer in your business/house to find that one document from 10 years ago.</value>
-  </data>
-  <data name="description_question1" xml:space="preserve">
-    <value>Yes, there is! You can download the Malafatee app on your phone and access your files anytime, anywhere!</value>
-  </data>
-  <data name="description_question2" xml:space="preserve">
-    <value>Yes! All the files uploaded on Malafatee are encrypted and saved on our protected servers.</value>
-  </data>
-  <data name="description_question3" xml:space="preserve">
-    <value>Yes! You can download any file you want any time!</value>
-  </data>
-  <data name="description_question4" xml:space="preserve">
-    <value>Yes, you can download them and then share them on whatever platform you like!</value>
-  </data>
-  <data name="description_Savetime" xml:space="preserve">
-    <value>Start saving your files on our website and you will feel so much better knowing you have everything under control!</value>
-  </data>
-  <data name="description_second_feature" xml:space="preserve">
-    <value>With Malafatee, you can view all your documents or files from anywhere in the world, anytime, on all devices!</value>
-  </data>
-  <data name="description_second_title" xml:space="preserve">
-    <value>With Malafatee, you will be able to retrieve any type of file quickly and easily with a few mouse clicks.</value>
-  </data>
-  <data name="description_sub_title1" xml:space="preserve">
-    <value>With Malafatee, you can save and view more than 70+ file formats, anytime, anywhere, on any device.</value>
-  </data>
-  <data name="description_sub_title2" xml:space="preserve">
-    <value>Crystal-clear zooming. High resolution rendering, preserving text and graphics (no rasterization) exactly as they are in the original.</value>
-  </data>
-  <data name="description_sub_title3" xml:space="preserve">
-    <value>Fast document loading, the whole document is not loaded at once, document pages are loaded as you are about to view them.</value>
-  </data>
-  <data name="description_sub_title4" xml:space="preserve">
-    <value>With Malafatee, you can find any document in a few mouse clicks, with almost no effort at all.</value>
-  </data>
-  <data name="description_third_feature" xml:space="preserve">
-    <value>With a user friendly interface, Malafatee drops all the pain and effort you have to go through to find your monthly bills, your contracts, your birth certificate, etc!</value>
-  </data>
-  <data name="description_work" xml:space="preserve">
-    <value>Malafatee will save you time and effort.</value>
-  </data>
-  <data name="Emailsupport" xml:space="preserve">
-    <value>Email support</value>
-  </data>
-  <data name="Enterprise" xml:space="preserve">
-    <value>Enterprise</value>
-  </data>
-  <data name="first_feature" xml:space="preserve">
-    <value>Never lose a file again. Period.</value>
-  </data>
-  <data name="first_title" xml:space="preserve">
-    <value>You will never lose any document or file again.</value>
-  </data>
-  <data name="Free" xml:space="preserve">
-    <value>Free</value>
-  </data>
-  <data name="Getin" xml:space="preserve">
-    <value>Get in touch or create an account.</value>
-  </data>
-  <data name="GetStarted" xml:space="preserve">
-    <value>Get Started</value>
+  <data name="guide" xml:space="preserve">
+    <value>A quick guide to our company culture</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Home</value>
+  </data>
+  <data name="How" xml:space="preserve">
+    <value>How it works</value>
   </data>
   <data name="Legal" xml:space="preserve">
     <value>Legal</value>
@@ -210,79 +144,25 @@
   <data name="Logo" xml:space="preserve">
     <value>Malafatee</value>
   </data>
-  <data name="mo" xml:space="preserve">
-    <value>mo</value>
-  </data>
-  <data name="Ourprices" xml:space="preserve">
-    <value>Our prices.</value>
-  </data>
-  <data name="Pricing" xml:space="preserve">
-    <value>Pricing</value>
+  <data name="Move" xml:space="preserve">
+    <value>Move with urgency and focus</value>
   </data>
   <data name="PrivacyPolicy" xml:space="preserve">
     <value>Privacy Policy</value>
   </data>
-  <data name="product" xml:space="preserve">
+  <data name="Product" xml:space="preserve">
     <value>Product</value>
-  </data>
-  <data name="question1" xml:space="preserve">
-    <value>Is there a mobile application for Malafatee?</value>
-  </data>
-  <data name="question2" xml:space="preserve">
-    <value>Are my files secure on Malafatee?</value>
-  </data>
-  <data name="question3" xml:space="preserve">
-    <value>Can I download my files?</value>
-  </data>
-  <data name="question4" xml:space="preserve">
-    <value>Can I share my documents or files?</value>
-  </data>
-  <data name="ready" xml:space="preserve">
-    <value>Ready to get started?</value>
-  </data>
-  <data name="Savetime" xml:space="preserve">
-    <value>Save time with Malafatee</value>
-  </data>
-  <data name="second_feature" xml:space="preserve">
-    <value>Access your files from anywhere around the world</value>
-  </data>
-  <data name="second_title" xml:space="preserve">
-    <value>Here&amp;apos;s what you get</value>
   </data>
   <data name="SignUp" xml:space="preserve">
     <value>Sign Up</value>
   </data>
-  <data name="Standard" xml:space="preserve">
-    <value>Standard</value>
-  </data>
-  <data name="Start" xml:space="preserve">
-    <value>Start Now!</value>
-  </data>
-  <data name="Storage" xml:space="preserve">
-    <value>Storage</value>
-  </data>
-  <data name="sub_title1" xml:space="preserve">
-    <value>View almost any document type (70+ file formats, including PDF &amp; Microsoft Office)</value>
-  </data>
-  <data name="sub_title2" xml:space="preserve">
-    <value>Quality</value>
-  </data>
-  <data name="sub_title3" xml:space="preserve">
-    <value>Performance</value>
-  </data>
-  <data name="sub_title4" xml:space="preserve">
-    <value>Retrieve documents in a matter of seconds</value>
-  </data>
   <data name="Terms" xml:space="preserve">
     <value>Terms &amp;amp; Conditions</value>
   </data>
-  <data name="third_feature" xml:space="preserve">
-    <value>User friendly</value>
+  <data name="title" xml:space="preserve">
+    <value>You will never lose any document or file again.</value>
   </data>
-  <data name="Unlimited" xml:space="preserve">
-    <value>Unlimited</value>
-  </data>
-  <data name="Work" xml:space="preserve">
-    <value>Work smarter, not harder</value>
+  <data name="what" xml:space="preserve">
+    <value>This is what we do</value>
   </data>
 </root>

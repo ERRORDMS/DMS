@@ -126,6 +126,9 @@
   <data name="Control" xml:space="preserve">
     <value>التحكم</value>
   </data>
+  <data name="create" xml:space="preserve">
+    <value>إنشاء حساب</value>
+  </data>
   <data name="Dashboard" xml:space="preserve">
     <value>لوحة التحكم</value>
   </data>
@@ -151,7 +154,6 @@
   </data>
   <data name="description_question4" xml:space="preserve">
     <value>نعم!يمكنك تحميلهم ثم نشرهم على اي منصة تفضلها</value>
-    <comment> </comment>
   </data>
   <data name="description_Savetime" xml:space="preserve">
     <value>إبدا في حفط ملفاتك و وثائقك على موقعنا واشعر بالراحة بترتيب كل شيء </value>
@@ -195,11 +197,17 @@
   <data name="Free" xml:space="preserve">
     <value>مجاني</value>
   </data>
+  <data name="Getin" xml:space="preserve">
+    <value>ابداء في العمل وانشاء حساب</value>
+  </data>
   <data name="GetStarted" xml:space="preserve">
     <value>إبدا الأن</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>الصفحة الرئيسية</value>
+  </data>
+  <data name="Legal" xml:space="preserve">
+    <value>القانون</value>
   </data>
   <data name="Logo" xml:space="preserve">
     <value>ملفاتي</value>
@@ -213,6 +221,12 @@
   <data name="Pricing" xml:space="preserve">
     <value>الاسعار</value>
   </data>
+  <data name="PrivacyPolicy" xml:space="preserve">
+    <value>سياسة الخصوصية</value>
+  </data>
+  <data name="product" xml:space="preserve">
+    <value>المنتج</value>
+  </data>
   <data name="question1" xml:space="preserve">
     <value>هل يوجد تطبيق هاتف لبرنامج ملفاتي ؟</value>
   </data>
@@ -224,6 +238,9 @@
   </data>
   <data name="question4" xml:space="preserve">
     <value>هل استطيع مشاركة الوثائق والملفات  ؟ </value>
+  </data>
+  <data name="ready" xml:space="preserve">
+    <value>هل انت مستعد للبدء ؟</value>
   </data>
   <data name="Savetime" xml:space="preserve">
     <value>وفر الوقت مع ملفاتي</value>
@@ -258,6 +275,9 @@
   </data>
   <data name="sub_title4" xml:space="preserve">
     <value>استرجاع وثائق في بعض من الثواني</value>
+  </data>
+  <data name="Terms" xml:space="preserve">
+    <value>الأحكام والشروط</value>
   </data>
   <data name="third_feature" xml:space="preserve">
     <value>واجهة مستخدم سهلة</value>
