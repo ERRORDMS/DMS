@@ -102,6 +102,8 @@
         }
 
         function register() {
+            $(".btn").prop('disabled', true);
+            console.log("1");
             let email = document.getElementById('email_input').value;
             let password = document.getElementById('password_input').value;
             let confirm_password = document.getElementById('confirm_password_input').value;
