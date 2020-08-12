@@ -1,4 +1,7 @@
 ﻿@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@using System.Globalization
 @model DMS.Pages.AboutModel
 @{
     Layout = null;
@@ -17,6 +20,30 @@
     <link rel="icon" type="image/x-icon" href="assets/img/favicon.png" />
     <script data-search-pseudo-elements defer src="lib/font-awesome/5.11.2/js/all.min.js"></script>
     <script src="lib/feather-icons/4.24.1/feather.min.js"></script>
+    @if (CultureInfo.CurrentCulture.TextInfo.IsRightToLeft)
+    {
+        <style>
+            body {
+                direction: rtl
+            }
+        </style>
+    }
+    else
+    {
+        <style>
+            body {
+                direction: ltr;
+            }
+        </style>
+    }
+    <style>
+        .switchLanguage_button {
+            background: none;
+            border: none;
+            color: #919eeb;
+            outline: none;
+        }
+    </style>
 </head>
 <body>
     <div id="layoutDefault">
@@ -24,12 +51,20 @@
             <main>
                 <nav class="navbar navbar-marketing navbar-expand-lg bg-transparent navbar-dark fixed-top">
                     <div class="container">
-                        <a class="navbar-brand text-white" href="index">Malafatee</a><button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><i data-feather="menu"></i></button>
+                        <a class="navbar-brand text-white" href="index">@Localizer["Logo"]</a><button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><i data-feather="menu"></i></button>
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav ml-auto mr-lg-5">
-                                <li class="nav-item"><a class="nav-link" href="index">Home </a></li>
-                                <li class="nav-item"><a class="nav-link" href="about">About </a></li>
-                                <li class="nav-item"><a class="nav-link" href="contact">Contact Us </a></li>
+                                <li class="nav-item"><a class="nav-link" href="index">@Localizer["Home"]</a></li>
+                                <li class="nav-item"><a class="nav-link" href="about">@Localizer["About"]</a></li>
+                                <li class="nav-item"><a class="nav-link" href="contact">@Localizer["contactus"]</a></li>
+                                @if (System.Globalization.CultureInfo.CurrentCulture.Name == "en-US")
+                                {
+                                    <li class="nav-item"><button onclick="switchLanguage('ar-SA')" class="switchLanguage_button nav-link">Ar</button></li>
+                                }
+                                @if (System.Globalization.CultureInfo.CurrentCulture.Name != "en-US")
+                                {
+                                    <li class="nav-item"><button onclick="switchLanguage('en-US')" class="switchLanguage_button nav-link">En</button></li>
+                                }
                                 <li style="display:none;" class="nav-item dropdown dropdown-xl no-caret">
                                     <a class="nav-link dropdown-toggle" id="navbarDropdownDemos" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Landings<i class="fas fa-chevron-right dropdown-arrow"></i></a>
                                     <div class="dropdown-menu dropdown-menu-right animated--fade-in-up mr-lg-n15" aria-labelledby="navbarDropdownDemos">
@@ -121,10 +156,10 @@
                                     </div>
                                 </li>
                             </ul>
-                              @{ 
-                                    string text = !User.Identity.IsAuthenticated ? "SIGN UP" : "Dashboard";
+                            @{
+                                string text = !User.Identity.IsAuthenticated ? Localizer["SignUp"].Value : Localizer["Dashboard"].Value;
                                 string href = !User.Identity.IsAuthenticated ? "Register" : "Dashboard";
-                            <a class="btn-teal btn rounded-pill px-4 ml-lg-4" href="@href">@text<i class="fas fa-arrow-right ml-1"></i></a>
+                                <a class="btn-teal btn rounded-pill px-4 ml-lg-4" href="@href">@text<i class="fas fa-arrow-right ml-1"></i></a>
                             }
                         </div>
                     </div>
@@ -134,8 +169,8 @@
                         <div class="container text-center">
                             <div class="row justify-content-center">
                                 <div class="col-lg-8">
-                                    <h1 class="page-header-title mb-3">About Malafatee</h1>
-                                    <p class="page-header-text">How it works</p>
+                                    <h1 class="page-header-title mb-3">@Localizer["AboutLogo"]</h1>
+                                    <p class="page-header-text">@Localizer["How"]</p>
                                 </div>
                             </div>
                         </div>
@@ -148,14 +183,14 @@
                     <div class="container">
                         <div class="row justify-content-center">
                             <div class="col-lg-10">
-                                <h2 class="mb-4">A quick guide to our company culture</h2>
+                                <h2 class="mb-4">@Localizer["guide"]</h2>
                                 <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolor, eos quisquam expedita quo officiis porro provident laborum. Earum, consequatur provident, ipsam at excepturi rerum laborum aliquam facere molestias mollitia recusandae.</p>
                                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias, ipsam? Perspiciatis sunt voluptatum officia non harum, dolores omnis fugiat nam ad optio cumque molestiae impedit dignissimos velit commodi aliquid iure?</p>
                                 <p class="mb-0">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Exercitationem sapiente natus architecto aut porro! Vitae iusto praesentium recusandae debitis, cumque illum amet suscipit rem pariatur, magni iure laborum inventore in!</p>
                                 <hr class="my-5" />
                                 <h4 class="mb-4">
                                     <div class="icon-stack bg-primary text-white mr-2"><i data-feather="arrow-right"></i></div>
-                                    This is what we do
+                                    @Localizer["what"]
                                 </h4>
                                 <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolor, eos quisquam expedita quo officiis porro provident laborum. Earum, consequatur provident, ipsam at excepturi rerum laborum aliquam facere molestias mollitia recusandae.</p>
                                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias, ipsam? Perspiciatis sunt voluptatum officia non harum, dolores omnis fugiat nam ad optio cumque molestiae impedit dignissimos velit commodi aliquid iure?</p>
@@ -164,7 +199,7 @@
                                 <hr class="my-5" />
                                 <h4 class="mb-4">
                                     <div class="icon-stack bg-primary text-white mr-2"><i data-feather="arrow-right"></i></div>
-                                    Move with urgency and focus
+                                    @Localizer["Move"]
                                 </h4>
                                 <p class="lead">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit dolorem suscipit veniam excepturi soluta ducimus tempora quasi, itaque odit libero, eos in dolore natus, ipsam consectetur voluptate nulla provident aliquam?</p>
                                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque laboriosam consequuntur iusto vero consequatur beatae, tempore voluptatem rerum sit facilis aut ea optio eaque quaerat, libero recusandae soluta molestiae veniam.</p>
@@ -184,8 +219,8 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-3">
-                            <div class="footer-brand">Malafaee</div>
-                            <div class="mb-3">You will never lose any document or file again.</div>
+                            <div class="footer-brand">@Localizer["Logo"]</div>
+                            <div class="mb-3">@Localizer["title"]</div>
                             <div class="icon-list-social mb-5">
                                 <a class="icon-list-social-link" href="javascript:void(0);"><i class="fab fa-instagram"></i></a><a class="icon-list-social-link" href="javascript:void(0);"><i class="fab fa-facebook"></i></a><a class="icon-list-social-link" href="javascript:void(0);"><i class="fab fa-github"></i></a><a class="icon-list-social-link" href="javascript:void(0);"><i class="fab fa-twitter"></i></a>
                             </div>
@@ -193,11 +228,11 @@
                         <div class="col-lg-9">
                             <div class="row">
                                 <div class="col-lg-3 col-md-6 mb-5 mb-lg-0">
-                                    <div class="text-uppercase-expanded text-xs mb-4">Product</div>
+                                    <div class="text-uppercase-expanded text-xs mb-4">@Localizer["Product"]</div>
                                     <ul class="list-unstyled mb-0">
-                                        <li class="mb-2"><a href="index">Home</a></li>
-                                        <li class="mb-2"><a href="about">About</a></li>
-                                        <li class="mb-2"><a href="contact">Contact Us</a></li>
+                                        <li class="mb-2"><a href="index">@Localizer["Home"]</a></li>
+                                        <li class="mb-2"><a href="about">@Localizer["Abour"]</a></li>
+                                        <li class="mb-2"><a href="contact">@Localizer["contactus"]</a></li>
                                     </ul>
                                 </div>
                                 <!--
@@ -223,10 +258,10 @@
                                     </ul>
                                 </div>-->
                                 <div class="col-lg-3 col-md-6">
-                                    <div class="text-uppercase-expanded text-xs mb-4">Legal</div>
+                                    <div class="text-uppercase-expanded text-xs mb-4">@Localizer["Legal"]</div>
                                     <ul class="list-unstyled mb-0">
-                                        <li class="mb-2"><a href="privacypolicy">Privacy Policy</a></li>
-                                        <li class="mb-2"><a href="terms">Terms and Conditions</a></li>
+                                        <li class="mb-2"><a href="privacypolicy">@Localizer["PrivacyPolicy"]</a></li>
+                                        <li class="mb-2"><a href="terms">@Localizer["Terms"]</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -236,9 +271,9 @@
                     <div class="row align-items-center">
                         <div class="col-md-6 small">Copyright &#xA9; Zimam Solutions (Malafatee) 2020</div>
                         <div class="col-md-6 text-md-right small">
-                            <a href="privacypolicy">Privacy Policy</a>
+                            <a href="privacypolicy">@Localizer["PrivacyPolicy"]</a>
                             &#xB7;
-                            <a href="terms">Terms &amp; Conditions</a>
+                            <a href="terms">@Localizer["Terms"]</a>
                         </div>
                     </div>
                 </div>
@@ -248,6 +283,19 @@
     <script src="js/jquery-3.4.1.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/scripts.js"></script>
-
+    <script>
+        function switchLanguage(culture) {
+            const xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    location.reload();
+                }
+            }
+            const fd = new FormData();
+            fd.append('culture', culture);
+            xhr.open("POST", "api/Culture", true);
+            xhr.send(fd);
+        }
+    </script>
 </body>
 </html>
