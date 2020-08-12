@@ -28,7 +28,7 @@ namespace DMS.Controllers
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.UserData);
 
-            return DataSourceLoader.Load(DataManager.GetCategories(userId), new DataSourceLoadOptionsBase());
+            return DataSourceLoader.Load(new DataManager(userId).GetCategories(userId), new DataSourceLoadOptionsBase());
         }
 
         [Route("SetParent")]
@@ -38,7 +38,7 @@ namespace DMS.Controllers
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.UserData);
 
-            int i = DataManager.SetParent(cat, userId);
+            int i = new DataManager(userId).SetParent(cat, userId);
 
             AuthorizationController.Result result = new AuthorizationController.Result();
             result.StatusName = ((ErrorCodes)i).ToString();
@@ -53,7 +53,7 @@ namespace DMS.Controllers
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.UserData);
 
-            int i = DataManager.SaveCategory(cat, userId);
+            int i = new DataManager(userId).SaveCategory(cat, userId);
 
             AuthorizationController.Result result = new AuthorizationController.Result();
             result.StatusName = ((ErrorCodes)i).ToString();
@@ -64,23 +64,31 @@ namespace DMS.Controllers
 
         [Route("Name")]
         [HttpGet]
-        public string GetName(long autokey)
+        public string GetName(long autokey, string userId = null)
         {
-            return DataManager.GetCatName(autokey);
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.UserData);
+            return new DataManager(userId).GetCatName(autokey);
         }
 
         [Route("GetFather")]
         [HttpGet]
-        public string GetFather(long autokey)
+        public string GetFather(long autokey, string userId = null)
         {
-            return DataManager.GetFather(autokey);
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.UserData);
+
+            return new DataManager(userId).GetFather(autokey);
         }
 
         [Route("Delete")]
         [HttpPost]
-        public IActionResult deleteCat(long autokey)
+        public IActionResult deleteCat(long autokey, string userId = null)
         {
-            int i = DataManager.DeleteCategory(autokey);
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.UserData);
+
+            int i = new DataManager(userId).DeleteCategory(autokey);
 
             AuthorizationController.Result result = new AuthorizationController.Result();
             result.StatusName = ((ErrorCodes)i).ToString();
@@ -96,7 +104,7 @@ namespace DMS.Controllers
             if(string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.UserData);
 
-            int i =DataManager.AddCategory(category, userId);
+            int i = new DataManager(userId).AddCategory(category, userId);
 
             AuthorizationController.Result result = new AuthorizationController.Result();
             result.StatusName = ((ErrorCodes)i).ToString();

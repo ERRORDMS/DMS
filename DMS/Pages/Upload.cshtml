@@ -234,13 +234,18 @@
         margin-top: 2rem;
         font-size: 32px;
     }
-
-    .progress-bar {
-        height: 35px;
-        width: 250px;
+    /*
+    #progressBar {
+        height: 20px;
+        width: 450px;
         border: 2px solid darkblue;
     }
-
+    .progress-bar {
+        height: 20px;
+        width: 450px;
+        border: 2px solid darkblue;
+    }
+        
     .progress-bar-fill {
         height: 100%;
         width: 0%;
@@ -254,7 +259,7 @@
         margin-left: 10px;
         font-weight: bold;
     }
-
+        */
     .note {
         font-size: 10pt;
         color: #484848;
@@ -339,13 +344,16 @@
         <div id="pleaseWait" style="display:none">
             Please wait... Uploading.
         </div>
-        <div class="progress-bar" style="display:none" id="progressBar">
+
+        <div id="progressContainer"></div>
+        <!--
+        <div class="progress-bar" id="progressBar">
             <div class="progress-bar-fill">
                 <span class="progress-bar-text">0%</span>
             </div>
         </div>
 
-        <!--
+        
                        (Html.DevExtreme().TagBox()
 
     .DataSource(d => d.Mvc()
@@ -510,31 +518,37 @@
         $("#File").change(function (e) {
             files = e.target.files;
         })
-
         var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var res = JSON.parse(this.responseText);
+
+                $("#contactsTagBox").dxTagBox({
+                    dataSource: res.data,
+                    valueExpr: 'AutoKey',
+                    displayExpr: 'Name'
+                });
+            }
+        }
         xmlHttp.open("GET", "api/Contacts", true);
         xmlHttp.send();
-
-        var res = JSON.parse(xmlHttp.responseText);
-
-        $("#contactsTagBox").dxTagBox({
-            dataSource: res.data,
-            valueExpr: 'AutoKey',
-            displayExpr: 'Name'
-        });
-
+       
 
         xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var res = JSON.parse(xmlHttp.responseText);
+
+                $("#searchKeysTagBox").dxTagBox({
+                    dataSource: res.data,
+                    valueExpr: 'AutoKey',
+                    displayExpr: 'Name'
+                });
+            }
+        }
         xmlHttp.open("GET", "api/SearchKeys", false);
         xmlHttp.send();
-
-        res = JSON.parse(xmlHttp.responseText);
-
-        $("#searchKeysTagBox").dxTagBox({
-            dataSource: res.data,
-            valueExpr: 'AutoKey',
-            displayExpr: 'Name'
-        });
+        
     })
 
     const progressBarFill = document.querySelector(
@@ -567,21 +581,35 @@
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open("GET", "api/authorization/getuserstorage", false);
         xmlHttp.send();
+        var d = xmlHttp.responseText;
+        storage = JSON.parse(d);
 
-        storage = JSON.parse(xmlHttp.responseText);
+        var bar = new ProgressBar.Line('#progressContainer', {
+            strokeWidth: 2,
+            easing: 'easeInOut',
+            duration: 1400,
+            color: '#0087FF',
+            trailColor: '#eee',
+            trailWidth: 1,
+            svgStyle: null
+        });
+
+
 
         Array.from(files).forEach(file => {
-
+              
             var fileSizeMB = file.size / 1048576.0;
 
             if ((storage.UsedStorage + fileSizeMB) > storage.Storage) {
                 alert("You don't have enough space!")
                 return;
             }
+            
 
             i--;
-            progressBarFill.style.width = "0%";
-            progressBarText.textContent = "0%";
+//            progressBarFill.style.width = "0%";
+  //          progressBarText.textContent = "0%";
+            bar.animate(0);
 
             const xhr = new XMLHttpRequest();
 
@@ -602,9 +630,10 @@
 
             xhr.upload.addEventListener("progress", (e) => {
                 const percent = e.lengthComputable ? (e.loaded / e.total) * 100 : 0;
-
-                progressBarFill.style.width = percent.toFixed(2) + "%";
-                progressBarText.textContent = percent.toFixed(2) + "%";
+                console.log(percent);
+      //          progressBarFill.style.width = percent.toFixed(2) + "%";
+        //        progressBarText.textContent = percent.toFixed(2) + "%";
+                bar.animate(percent.toFixed(2) / 100);
             });
 
             xhr.send(fd);

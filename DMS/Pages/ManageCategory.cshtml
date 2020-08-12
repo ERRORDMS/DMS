@@ -441,7 +441,7 @@ else
                         //  window.location = '/';
                        // $("#treeList").dxTreeList("instance").refresh();
                         var xmlHttp = new XMLHttpRequest();
-                        xmlHttp.open("GET", "api/Categories/", true);
+                        xmlHttp.open("GET", "api/Categories/", false);
                         xmlHttp.send();
 
                         categories = JSON.parse(xmlHttp.responseText).data;

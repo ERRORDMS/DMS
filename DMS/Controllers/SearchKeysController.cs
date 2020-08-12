@@ -20,7 +20,7 @@ namespace DMS.Controllers
         {
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.UserData);
-            return DataSourceLoader.Load(DataManager.GetSearchKeys(userId), new DataSourceLoadOptionsBase());
+            return DataSourceLoader.Load(new DataManager(userId).GetSearchKeys(userId), new DataSourceLoadOptionsBase());
         }
 
         [Route("Save")]
@@ -31,7 +31,7 @@ namespace DMS.Controllers
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.UserData);
 
-            int i = DataManager.SaveKey(key, userId);
+            int i = new DataManager(userId).SaveKey(key, userId);
 
             AuthorizationController.Result result = new AuthorizationController.Result();
             result.StatusName = ((ErrorCodes)i).ToString();
@@ -42,16 +42,22 @@ namespace DMS.Controllers
 
         [Route("Name")]
         [HttpGet]
-        public string GetName(long autokey)
+        public string GetName(long autokey, string userId = null)
         {
-            return DataManager.GetKeyName(autokey);
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.UserData);
+
+            return new DataManager(userId).GetKeyName(autokey);
         }
 
         [Route("Delete")]
         [HttpPost]
-        public IActionResult saveKey(long autokey)
+        public IActionResult saveKey(long autokey, string userId =null)
         {
-            int i = DataManager.DeleteKey(autokey);
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.UserData);
+
+            int i = new DataManager(userId).DeleteKey(autokey);
 
             AuthorizationController.Result result = new AuthorizationController.Result();
             result.StatusName = ((ErrorCodes)i).ToString();
@@ -67,7 +73,7 @@ namespace DMS.Controllers
         {
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.UserData);
-            int i = DataManager.AddKey(name, userId);
+            int i = new DataManager(userId).AddKey(name, userId);
 
             AuthorizationController.Result result = new AuthorizationController.Result();
             result.StatusName = ((ErrorCodes)i).ToString();

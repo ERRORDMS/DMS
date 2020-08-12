@@ -52,6 +52,7 @@ namespace DMS.Controllers
                          ServiceEndpoint = "http://localhost:9100/AlSahlService",
                          DataSource = @".\",
                          Database = "DB",
+                          DatabasesPath = @"D:\AlSahl\Data"
                      }
 
                      ));
@@ -70,7 +71,7 @@ namespace DMS.Controllers
         [Route("GenerateTables")]
         public ActionResult GenerateTables()
         {
-            DataManager.GenerateTables();
+            new DataManager(null).GenerateTables();
 
             return Ok();
         }
@@ -78,12 +79,13 @@ namespace DMS.Controllers
 
         [HttpPost]
         [Route("Save")]
-        public  ActionResult SaveSettings(string serviceendpoint, string datasource, string database)
+        public  ActionResult SaveSettings(string serviceendpoint, string datasource, string database, string DatabasesPath)
         {
             Settings settings = new Settings();
             settings.ServiceEndpoint = serviceendpoint;
             settings.DataSource = datasource;
             settings.Database = database;
+            settings.DatabasesPath = DatabasesPath;
 
             System.IO.File.WriteAllText("settings.json", JsonConvert.SerializeObject(settings));
 
@@ -97,5 +99,6 @@ namespace DMS.Controllers
         public string ServiceEndpoint { get; set; }
         public string DataSource { get; set; }
         public string Database { get; set; }
+        public string DatabasesPath { get; set; }
     }
 }

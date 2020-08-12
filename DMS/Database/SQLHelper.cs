@@ -12,9 +12,9 @@ namespace DMS.Database
     public class SQLHelper : IDisposable
     {
         private SqlConnection sqlConnection;
-        public SQLHelper(String conString)
+        public SQLHelper(SqlConnectionStringBuilder conString)
         {
-            sqlConnection = new SqlConnection(conString);
+            sqlConnection = new SqlConnection(conString.ConnectionString);
         }
 
         /// <summary>
@@ -24,6 +24,7 @@ namespace DMS.Database
         /// <returns></returns>
         public List<T> ExecuteReader<T>(string query)
         {
+            
             if (sqlConnection.State == System.Data.ConnectionState.Closed)
                 sqlConnection.Open();
 
@@ -43,6 +44,20 @@ namespace DMS.Database
             return list;
         }
 
+        public void CreateDatabase(string name, string path)
+        {
+            string query = string.Format(@"
+CREATE DATABASE [{0}]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'MoneySql_dat', FILENAME = N'{1}\{0}.mdf' , SIZE = 786304KB , MAXSIZE = UNLIMITED, FILEGROWTH = 1024KB ), 
+ FILEGROUP [FS] CONTAINS FILESTREAM  DEFAULT
+( NAME = N'filestream', FILENAME = N'{1}\{0}_filestream' , MAXSIZE = UNLIMITED)
+ LOG ON 
+( NAME = N'MoneySql_log', FILENAME = N'{1}\{0}_log.ldf' , SIZE = 1024000KB , MAXSIZE = 1024000KB , FILEGROWTH = 10%)
+", name, path);
+            ExecuteNonQuery(query);
+        }
         /// <summary>
         /// Execute reader query
         /// </summary>

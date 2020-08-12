@@ -36,7 +36,7 @@ namespace DMS
         {
             Configuration = configuration;
             this._environment = _environment;
-            new DataManager();
+            
         }
 
         public IConfiguration Configuration { get; }

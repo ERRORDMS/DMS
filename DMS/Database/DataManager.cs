@@ -15,23 +15,24 @@ using System.ServiceModel;
 using DMS.Controllers;
 using Newtonsoft.Json;
 using System.Globalization;
-using static DMS.Controllers.AuthorizationController;
+using  static DMS.Controllers.AuthorizationController;
 using DevExpress.Web;
+using System.Text.RegularExpressions;
 
 namespace DMS.Database
 {
     public class DataManager
     {
-        private static SQLHelper sqlHelper;
-        private static ServiceReference1.AlSahlServiceClient client;
-        private static Settings settings;
-        public DataManager()
+        private  SQLHelper sqlHelper;
+        private  ServiceReference1.AlSahlServiceClient client;
+        private  Settings settings;
+        public DataManager(string userID)
         {
             try
             {
                 settings = JsonConvert.DeserializeObject<Settings>(SettingsController.GetSettings());
                 client = new ServiceReference1.AlSahlServiceClient(new BasicHttpBinding(), new EndpointAddress(new Uri(settings.ServiceEndpoint)));
-                sqlHelper = new SQLHelper(GetConnectionString());
+                sqlHelper = new SQLHelper(GetConnectionString(userID));
             }
             catch (Exception ex)
             {
@@ -39,9 +40,9 @@ namespace DMS.Database
             }
         }
 
-        public static AlSahlServiceClient GetClient() { return client; }
+        public  AlSahlServiceClient GetClient() { return client; }
         
-        public static int DeleteCategory(long autoKey)
+        public  int DeleteCategory(long autoKey)
         {
             try
             {
@@ -70,7 +71,7 @@ namespace DMS.Database
             }
         }
 
-        public static int SaveCategory(Category cat, string userId)
+        public  int SaveCategory(Category cat, string userId)
         {
             try
             {/*
@@ -113,7 +114,7 @@ namespace DMS.Database
 
         }
 
-        public static int SetParent(Category cat, string userId)
+        public  int SetParent(Category cat, string userId)
         {
             try
             {
@@ -141,20 +142,20 @@ namespace DMS.Database
 
         }
 
-        public static string GetCatName(long autokey)
+        public  string GetCatName(long autokey)
         {
             return sqlHelper.SelectWithWhere(Tables.Categories,
                 "Name",
                 "AutoKey = '" + autokey + "'");
         }
 
-        public static string GetFather(long autokey)
+        public  string GetFather(long autokey)
         {
             return sqlHelper.SelectWithWhere(Tables.Categories,
                 "FatherAutoKey",
                 "AutoKey = '" + autokey + "'");
         }
-        public static int AddCategory(Category category, string userId)
+        public  int AddCategory(Category category, string userId)
         {
             try
             {/*
@@ -209,7 +210,7 @@ namespace DMS.Database
         }
 
 
-        public static int DeleteContact(long autoKey)
+        public  int DeleteContact(long autoKey)
         {
             try
             {
@@ -232,7 +233,7 @@ namespace DMS.Database
         }
 
 
-        public static int DeleteFile(long AutoKey)
+        public  int DeleteFile(long AutoKey)
         {
             try
             {
@@ -265,7 +266,7 @@ namespace DMS.Database
             }
         }
 
-        public static int DeleteKey(long autoKey)
+        public  int DeleteKey(long autoKey)
         {
             try
             {
@@ -287,7 +288,7 @@ namespace DMS.Database
             }
         }
 
-        public static int SaveContact(Contact con, string userId)
+        public  int SaveContact(Contact con, string userId)
         {
             try
             {
@@ -322,7 +323,7 @@ namespace DMS.Database
             }
         }
 
-        public static int SaveKey(SearchKey con, string userId)
+        public  int SaveKey(SearchKey con, string userId)
         {
             try
             {
@@ -358,19 +359,19 @@ namespace DMS.Database
 
         }
 
-        public static string GetConName(long autokey)
+        public  string GetConName(long autokey)
         {
             return sqlHelper.SelectWithWhere(Tables.Contacts,
                 "Name",
                 "AutoKey = '" + autokey + "'");
         }
-        public static string GetKeyName(long autokey)
+        public  string GetKeyName(long autokey)
         {
             return sqlHelper.SelectWithWhere(Tables.SearchKeys,
                 "Name",
                 "AutoKey = '" + autokey + "'");
         }
-        public static int AddContact(Contact contact, DateTime birthDate,  string userId)
+        public  int AddContact(Contact contact, DateTime birthDate,  string userId)
         {
             try
             {
@@ -404,7 +405,7 @@ namespace DMS.Database
             }
         }
 
-        private static string GetAutoIcrementID(DateTime Birthdate, string MainCatID = "", string GenderID = "")
+        private  string GetAutoIcrementID(DateTime Birthdate, string MainCatID = "", string GenderID = "")
         {
             string NewNo = "";
 
@@ -439,7 +440,7 @@ namespace DMS.Database
             
             return NewNo;
         }
-        public static int AddKey(string name, string userId)
+        public  int AddKey(string name, string userId)
         {
             try
             {
@@ -471,7 +472,7 @@ namespace DMS.Database
 
             }
         }
-        public static List<Document> GetCatDocuments(long CatID)
+        public  List<Document> GetCatDocuments(long CatID)
         {
             try
             {
@@ -508,7 +509,7 @@ namespace DMS.Database
             }
         }
 
-        public static byte[] GetFile(long InfoAutoKey, long LineAutoKey, string Ext)
+        public  byte[] GetFile(long InfoAutoKey, long LineAutoKey, string Ext)
         {
 
             var fn = InfoAutoKey + "_" + LineAutoKey + Ext;
@@ -518,7 +519,7 @@ namespace DMS.Database
             return arr;
 
         }
-        public static string GetFileName(long AutoKey)
+        public  string GetFileName(long AutoKey)
         {
 
 
@@ -546,7 +547,7 @@ namespace DMS.Database
 
             return document.Name + document.DateTimeAdded.ToString("MM-dd-yyyy-HH-mm-ss") + document.Ext;*/
         }
-        public static Controllers.FileInfo GetFileInfo(long AutoKey)
+        public  Controllers.FileInfo GetFileInfo(long AutoKey)
         {
             try
             {
@@ -584,7 +585,7 @@ namespace DMS.Database
             }   
         }
 
-        public static int SaveFile(long AutoKey, List<long> categories, List<long> contacts, List<long> SearchKeys)
+        public  int SaveFile(long AutoKey, List<long> categories, List<long> contacts, List<long> SearchKeys)
         {
             try
             {
@@ -624,7 +625,7 @@ namespace DMS.Database
                 return (int)ErrorCodes.INTERNAL_ERROR;
             }
         }
-        public static int AddFile(List<DMSCategory> categories, List<DMSContact> contacts, List<SearchKey> SearchKeys, IFormFile file, string userID, string webRoot)
+        public  int AddFile(List<DMSCategory> categories, List<DMSContact> contacts, List<SearchKey> SearchKeys, IFormFile file, string userID, string webRoot)
         {
             try
             {
@@ -684,7 +685,7 @@ namespace DMS.Database
                     {
                         var fileSize = file.Length / 1048576.0;
 
-                        if (AddUsedStorage(Math.Round(fileSize, 2), userID))
+                        if (new DataManager(null).AddUsedStorage(Math.Round(fileSize, 2), userID))
                             return (int)ErrorCodes.SUCCESS;
                     }
                 }
@@ -701,7 +702,7 @@ namespace DMS.Database
         }
 
 
-        public static bool AddUsedStorage(double amount, string userID)
+        public  bool AddUsedStorage(double amount, string userID)
         {
 
             var oldStorage = GetUserStorage(userID);
@@ -713,7 +714,7 @@ namespace DMS.Database
         }
 
 
-        public static int AddFile(IFormFile file, string userID, out string infoAutoKey)
+        public  int AddFile(IFormFile file, string userID, out string infoAutoKey)
         {
             infoAutoKey = "";
             try
@@ -768,7 +769,7 @@ namespace DMS.Database
             }
 
         }
-        private static string AddDateDirectories()
+        private  string AddDateDirectories()
         {
             string year = DateTime.Now.Year.ToString();
             string month = DateTime.Now.Month.ToString();
@@ -781,7 +782,7 @@ namespace DMS.Database
             return GetParentPathLocator(day);
         }
 
-        private static void AddDirectory(string name, string parent, string parents)
+        private  void AddDirectory(string name, string parent, string parents)
         {
             string query;
             query = @"IF NOT EXISTS ( SELECT 1 FROM Images WHERE path_locator = GetPathLocator(FileTableRootPath() + N'\Images\" + parents + @"\" + name + "'))";
@@ -790,7 +791,7 @@ namespace DMS.Database
             sqlHelper.ExecuteNonQuery(query);
         }
 
-        private static string GetParentPathLocator(string parentName)
+        private  string GetParentPathLocator(string parentName)
         {
             string query = "DECLARE @path HIERARCHYID";
             query += " DECLARE @new_path VARCHAR(675)";
@@ -805,7 +806,7 @@ namespace DMS.Database
             return sqlHelper.ExecuteScalar<string>(query);
         }
 
-        public static bool SaveFile(IFormFile file, string rootPath, string name)
+        public  bool SaveFile(IFormFile file, string rootPath, string name)
         {
             try
             {
@@ -828,7 +829,7 @@ namespace DMS.Database
                 return false;
             }
         }
-        public static IEnumerable<Category> GetCategories(string userID)
+        public  IEnumerable<Category> GetCategories(string userID)
         {
 
             return sqlHelper.Select<Category>(Tables.Categories, new string[] { "*" });
@@ -844,11 +845,11 @@ namespace DMS.Database
             return sqlHelper.ExecuteReader<Category>(query);*/
         }
 
-        public static string GetUserAutoKey(string name)
+        public  string GetUserAutoKey(string name)
         {
             return sqlHelper.SelectWithWhere(Tables.Users, "AutoKey", "Name = '" + name + "'");
         }
-        public static IEnumerable<Contact> GetContacts(string userID)
+        public  IEnumerable<Contact> GetContacts(string userID)
         {
             //    Dictionary<string,string> wheres = new System.Collections.Generic.Dictionary<string, string>();
             //  wheres.Add("DMSUserID", userID);
@@ -856,7 +857,7 @@ namespace DMS.Database
             //return sqlHelper.SelectWithWhere<Contact>(Tables.Contacts, new string[] { "*" }, wheres);
             return sqlHelper.Select<Contact>(Tables.Contacts, "*");
         }
-        public static IEnumerable<SearchKey> GetSearchKeys(string userID)
+        public  IEnumerable<SearchKey> GetSearchKeys(string userID)
         {
             /*     Dictionary<string, string> wheres = new System.Collections.Generic.Dictionary<string, string>();
                  wheres.Add("DMSUserID", userID);
@@ -865,7 +866,7 @@ namespace DMS.Database
             return sqlHelper.Select<SearchKey>(Tables.SearchKeys, "*");
 
         }
-        public static int Login(string username, string password)
+        public  int Login(string username, string password)
         {
         //    try
         //    {
@@ -894,7 +895,7 @@ namespace DMS.Database
 //            }
         }
 
-        public static int GenerateTables()
+        public  int GenerateTables()
         {
             try
             {
@@ -950,7 +951,7 @@ END
             }
         }
         
-        public static UserStorage GetUserStorage(string UserID)
+        public  UserStorage GetUserStorage(string UserID)
         {
             try
             {
@@ -971,7 +972,7 @@ END
             }
         }
 
-        public static int Register(string email, string password)
+        public  int Register(string email, string password)
         {
             try
             {
@@ -996,25 +997,47 @@ END
                 {
                     if (sqlHelper.Insert(Tables.UserStorage,
                         new string[] { "UserID", "UsedStorage", "Storage" },
-                        new string[] { GetUserAutoKey(email), "0", "10000" }))
+                        new string[] { id, "0", "10000" }))
                     {
                         client.SetPasswordAsync(email, password);
+
+
+                        // Create DB
+                        sqlHelper.CreateDatabase(id, settings.DatabasesPath);
+
+
+                        // Configure DB
+                        string query = Queries.ConfigureDBQuery;
+
+                        query = query.Replace("DBNAME", id);
+
+                        sqlHelper.ExecuteNonQuery(query);
+
+
+                        // Add Tables
+                        query = Queries.AddTablesQuery;
+
+                        query = query.Replace("DBNAME", id);
+
+                        Logger.Log(query);
+
+                        sqlHelper.ExecuteNonQuery(query);
+
                         return (int)ErrorCodes.SUCCESS;
 
+                        /*
+                        string sql = Queries.NewDBQuery;//String.Join(Environment.NewLine, File.ReadAllLines("script.sql"));
+                        
+                        sql = sql.Replace("DBNAME", id );
+                        sql = sql.Replace("DBPATH", settings.DatabasesPath);
+
+                        Logger.Log(sql);
+                        if(sqlHelper.ExecuteNonQuery(sql) > 0)
+                            return (int)ErrorCodes.SUCCESS;
+                        else
+                            return (int)ErrorCodes.INTERNAL_ERROR;*/
+
                     }
-                    else
-                    {
-                        return (int)ErrorCodes.INTERNAL_ERROR;
-                    }
-                }
-                else
-                {
-                    return (int)ErrorCodes.INTERNAL_ERROR;
-
-
-
-
-                    
                 }
             }
             catch (Exception ex)
@@ -1023,11 +1046,12 @@ END
                 return (int)ErrorCodes.INTERNAL_ERROR;
 
             }
+            return (int)ErrorCodes.INTERNAL_ERROR;
 
         }
 
 
-        private static string GetUserAutoIcrementID()
+        private  string GetUserAutoIcrementID()
         {
             string NewNo = "";
 
@@ -1055,7 +1079,7 @@ END
 
             return NewNo;
         }
-        public static string GetConnectionString()
+        public  SqlConnectionStringBuilder GetConnectionString(string userID)
         {
             return new SqlConnectionStringBuilder()
             {
@@ -1063,8 +1087,8 @@ END
                 UserID = "test",
                 Password = "test_2008",
                 MultipleActiveResultSets = true,
-                InitialCatalog = settings.Database
-            }.ConnectionString;
+                InitialCatalog = string.IsNullOrEmpty(userID) ? settings.Database : userID
+            };
         }
     }
 

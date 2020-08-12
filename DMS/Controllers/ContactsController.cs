@@ -26,7 +26,7 @@ namespace DMS.Controllers
         {
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.UserData);
-            return DataSourceLoader.Load(DataManager.GetContacts(userId), new DataSourceLoadOptionsBase());
+            return DataSourceLoader.Load(new DataManager(userId).GetContacts(userId), new DataSourceLoadOptionsBase());
         }
 
         [Route("Save")]
@@ -37,7 +37,7 @@ namespace DMS.Controllers
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.UserData);
 
-            int i = DataManager.SaveContact(cat, userId);
+            int i = new DataManager(userId).SaveContact(cat, userId);
 
             Result result = new Result();
             result.StatusName = ((ErrorCodes)i).ToString();
@@ -47,16 +47,22 @@ namespace DMS.Controllers
         }
 
         [Route("Name")]
-        public string GetName(long autokey)
+        public string GetName(long autokey, string userId = null)
         {
-            return DataManager.GetConName(autokey);
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.UserData);
+
+            return new DataManager(userId).GetConName(autokey);
         }
 
         [Route("Delete")]
         [HttpPost]
-        public IActionResult delCon(long autokey)
+        public IActionResult delCon(long autokey, string userId = null)
         {
-            int i = DataManager.DeleteContact(autokey);
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.UserData);
+
+            int i = new DataManager(userId).DeleteContact(autokey);
 
             Result result = new Result();
             result.StatusName = ((ErrorCodes)i).ToString();
@@ -70,7 +76,7 @@ namespace DMS.Controllers
         {
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.UserData);
-            int i = DataManager.AddContact(contact,birthday, userId);
+            int i = new DataManager(userId).AddContact(contact,birthday, userId);
 
             Result result = new Result();
             result.StatusName = ((ErrorCodes)i).ToString();

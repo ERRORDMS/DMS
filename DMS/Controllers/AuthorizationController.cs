@@ -21,7 +21,7 @@ namespace DMS.Controllers
         public IActionResult Login(string Username, string Password)
         {
 
-            int i = DataManager.Login(Username, Password);
+            int i = new DataManager(null).Login(Username, Password);
 
             Result result = new Result();
             result.StatusName = ((ErrorCodes)i).ToString();
@@ -39,7 +39,7 @@ namespace DMS.Controllers
         public JsonResult Register(string Email, string Password)
         {
 
-            int i = DataManager.Register(Email, Password);
+            int i = new DataManager(null).Register(Email, Password);
 
             Result result = new Result();
             result.StatusName = ((ErrorCodes)i).ToString();
@@ -55,7 +55,7 @@ namespace DMS.Controllers
         [HttpGet]
         public string GetUserID(string Email)
         {
-            return DataManager.GetClient().GetUserIDbyNameAsync(Email).Result; 
+            return new DataManager(null).GetClient().GetUserIDbyNameAsync(Email).Result; 
         }
         private void AddCookies(string Username)
         {
@@ -83,7 +83,7 @@ namespace DMS.Controllers
         {
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.UserData);
-            return DataManager.GetUserStorage(userId);
+            return new DataManager(null).GetUserStorage(userId);
         }
 
         public class UserStorage

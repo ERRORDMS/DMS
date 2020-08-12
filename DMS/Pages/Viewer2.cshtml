@@ -21,7 +21,21 @@
     }
 
 
-    DMS.Database.SQLHelper helper = new DMS.Database.SQLHelper(DMS.Database.DataManager.GetConnectionString());
+    string userId = "";
+
+    var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
+
+    if (claimsIdentity != null)
+    {
+        var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.UserData);
+
+        userId = c.Value;
+    }
+
+    // string userId = User.FindFirst("userdata").Value;
+
+
+    DMS.Database.SQLHelper helper = new DMS.Database.SQLHelper(new DMS.Database.DataManager(userId).GetConnectionString(userId));
 
     var Ext = helper.SelectWithWhere(DMS.Database.Tables.DocumentLines,
         "Ext",
@@ -42,14 +56,14 @@
 
 
 }
-<html>
-<head>
-    <title>Document Viewer</title>
+    <html>
+    <head>
+        <title>Document Viewer</title>
 
-    @this.RenderHead(documentViewer)
-</head>
-<body>
-    @this.RenderBody(documentViewer)
+        @this.RenderHead(documentViewer)
+    </head>
+    <body>
+        @this.RenderBody(documentViewer)
 
-</body>
+    </body>
 </html>

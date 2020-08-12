@@ -31,7 +31,7 @@ namespace DMS.Controllers
         [HttpGet]
         public string GetFileName(long AutoKey)
         {
-            string fn = DataManager.GetFileName(AutoKey);
+            string fn = new DataManager(User.FindFirstValue(ClaimTypes.UserData)).GetFileName(AutoKey);
 
             return fn;
 
@@ -42,14 +42,14 @@ namespace DMS.Controllers
         [HttpGet]
         public string GetFile(long InfoAutoKey, long LineAutoKey, string Ext)
         {
-            return Convert.ToBase64String(DataManager.GetFile(InfoAutoKey, LineAutoKey, Ext));
+            return Convert.ToBase64String(new DataManager(User.FindFirstValue(ClaimTypes.UserData)).GetFile(InfoAutoKey, LineAutoKey, Ext));
         }
 
         [Route("DeleteFile")]
         [HttpPost]
         public IActionResult DeleteFile(long AutoKey)
         {
-            int i = DataManager.DeleteFile(AutoKey);
+            int i = new DataManager(User.FindFirstValue(ClaimTypes.UserData)).DeleteFile(AutoKey);
             Result result = new Result();
             result.StatusName = ((ErrorCodes)i).ToString();
             result.StatusCode = i;
@@ -65,7 +65,7 @@ namespace DMS.Controllers
             var cons = JsonConvert.DeserializeObject<List<long>>(contacts);
             var sKeys = JsonConvert.DeserializeObject<List<long>>(keys);
 
-            int i = DataManager.SaveFile(AutoKey, cats, cons, sKeys);
+            int i = new DataManager(User.FindFirstValue(ClaimTypes.UserData)).SaveFile(AutoKey, cats, cons, sKeys);
             Result result = new Result();
             result.StatusName = ((ErrorCodes)i).ToString();
             result.StatusCode = i;
@@ -77,7 +77,7 @@ namespace DMS.Controllers
         [HttpGet]
         public FileInfo GetFileInfo(long InfoAutoKey)
         {
-            return DataManager.GetFileInfo(InfoAutoKey);
+            return new DataManager(User.FindFirstValue(ClaimTypes.UserData)).GetFileInfo(InfoAutoKey);
         }
 
         [HttpPost]
@@ -93,7 +93,7 @@ namespace DMS.Controllers
                 if(string.IsNullOrEmpty(userId))
                     userId =  User.FindFirstValue(ClaimTypes.UserData);
 
-                int result = DataManager.AddFile(cats, cons,sKeys, photo, userId, _hostingEnvironment.WebRootPath);
+                int result = new DataManager(User.FindFirstValue(ClaimTypes.UserData)).AddFile(cats, cons,sKeys, photo, userId, _hostingEnvironment.WebRootPath);
 
                 if(result == (int)ErrorCodes.SUCCESS)
                 {
@@ -123,7 +123,7 @@ namespace DMS.Controllers
 
                 string autoKey = "";
 
-                int result = DataManager.AddFile(photo, userId, out autoKey);
+                int result = new DataManager(User.FindFirstValue(ClaimTypes.UserData)).AddFile(photo, userId, out autoKey);
 
                 if (result == (int)ErrorCodes.SUCCESS)
                 {
@@ -142,7 +142,7 @@ namespace DMS.Controllers
         [HttpGet]
         public List<Document> GetCatDocuments(long CatID)
         {
-            return DataManager.GetCatDocuments(CatID);
+            return new DataManager(User.FindFirstValue(ClaimTypes.UserData)).GetCatDocuments(CatID);
         }
 
     }

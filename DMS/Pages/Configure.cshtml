@@ -24,6 +24,13 @@
         .Placeholder("Database"))
 
 <br />
+@(Html.DevExtreme().TextBox()
+        .Name("txtPath")
+        .ElementAttr("class", "content-block")
+        .Placeholder("Databases Path"))
+
+<br />
+
 
 @(Html.DevExtreme().Button()
         .Text("Save")
@@ -58,6 +65,10 @@
 
         $('#txtIP').focus();
         $('#txtIP').blur();
+
+
+        $('#txtPath').focus();
+        $('#txtPath').blur();
     });
 
     function getSettings() {
@@ -97,6 +108,7 @@
         fd.append('serviceendpoint', txtIP.value);
         fd.append('datasource', txtDataSource.value);
         fd.append('database', txtDB.value);
+        fd.append('DatabasesPath', txtPath.value);
 
         xhr.send(fd);
 

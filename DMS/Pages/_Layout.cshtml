@@ -471,9 +471,9 @@
         $(document).ready(function () {
 
             var xmlHttp = new XMLHttpRequest();
+
             xmlHttp.open("GET", "api/authorization/getuserstorage", false);
             xmlHttp.send();
-
             storage = JSON.parse(xmlHttp.responseText);
 
             var usedStorageLbl = document.getElementById('usedStorage');

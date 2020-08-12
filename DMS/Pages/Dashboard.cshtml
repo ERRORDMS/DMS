@@ -227,7 +227,10 @@
         }
 
         function treeReady(e) {
-            //$('#treeList').dxTreeList('instance').deselectAll();
+            if (txtSearch.value == '' || txtSearch.value == null) {
+
+                $('#treeList').dxTreeList('instance').deselectAll();
+            }
         }
         function onValueChangedTree(e) {
             selectedID = e.selectedRowKeys[0];
@@ -238,7 +241,6 @@
 
 
         }
-
 
         function getTreeList() {
             return $("#treeList").dxTreeList("instance");
