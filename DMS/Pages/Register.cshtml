@@ -68,7 +68,7 @@
                     </div>
                 </div>
                 <a href="login">@Localizer["Login"]</a>
-                <input type="submit" class="btn" value="@Localizer["Register"]" />
+                <input type="submit" class="btn" id="Register_button" value="@Localizer["Register"]" />
                 @(Html.DevExtreme().Button()
                     .Type(ButtonType.Normal)
                     .ID("btnChangeLang")
@@ -125,6 +125,8 @@
                 $('.err100').fadeIn(100);
             } else {
                 $(".err99, .err100").fadeOut(100);
+                $('#Register_button').prop('disabled', true);
+                $('#Register_button').addClass('disabled');  
                 const xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function () {
                     if (this.readyState == 4 && this.status == 200) {
@@ -142,7 +144,6 @@
                             $(document).ready(function () {
                                 $(".err102").fadeIn(200);
                             })
-                            console.log(102)
                         }
                         if (statusCode == 103) {
                             location.reload()

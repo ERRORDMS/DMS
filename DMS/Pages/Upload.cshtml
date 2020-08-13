@@ -625,7 +625,6 @@
 
             xhr.upload.addEventListener("progress", (e) => {
                 const percent = e.lengthComputable ? (e.loaded / e.total) * 100 : 0;
-                console.log(percent);
       //          progressBarFill.style.width = percent.toFixed(2) + "%";
         //        progressBarText.textContent = percent.toFixed(2) + "%";
                 bar.animate(percent.toFixed(2) / 100);
