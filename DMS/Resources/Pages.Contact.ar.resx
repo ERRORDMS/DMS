@@ -123,14 +123,38 @@
   <data name="AboutLogo" xml:space="preserve">
     <value>معلومات عن ملفاتي</value>
   </data>
+  <data name="ContactSupport" xml:space="preserve">
+    <value>تواصل مع الدعم</value>
+  </data>
+  <data name="contactsus_title" xml:space="preserve">
+    <value>تواصل معنا وسنقوم بأفضل ما لدينا لحل كل مشاكلك</value>
+  </data>
   <data name="contactus" xml:space="preserve">
     <value>تواصل معنا</value>
+  </data>
+  <data name="contactus_form_title" xml:space="preserve">
+    <value>نحن دائما جاهزون لمساعدتك</value>
   </data>
   <data name="Dashboard" xml:space="preserve">
     <value>لوحة التحكم</value>
   </data>
+  <data name="Feedback" xml:space="preserve">
+    <value>رايك ؟</value>
+  </data>
+  <data name="For_any" xml:space="preserve">
+    <value>من اجل اي اسئلة اخرى ارسل بريد الكتروني على هذا الايميل </value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>الدعم العام</value>
+  </data>
   <data name="guide" xml:space="preserve">
     <value>دليل سريع عن شركتنا</value>
+  </data>
+  <data name="Have" xml:space="preserve">
+    <value>لديك سؤال ؟ نحن هنا لمساعدتك</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>هل تحتاج لمساعدة مع ملفاتي ؟ هل تحتاج لمساعدة مع حسابك ؟ </value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>الصفحة الرئيسية</value>
@@ -144,6 +168,9 @@
   <data name="Logo" xml:space="preserve">
     <value>ملفاتي</value>
   </data>
+  <data name="Looking" xml:space="preserve">
+    <value>نتطلع لرأيك واقترحاتك</value>
+  </data>
   <data name="Move" xml:space="preserve">
     <value>تحرك بسرعة و بتركيز</value>
   </data>
@@ -153,8 +180,17 @@
   <data name="Product" xml:space="preserve">
     <value>المنتج</value>
   </data>
+  <data name="Ready" xml:space="preserve">
+    <value>مستعد لأنشاء حساب ؟ </value>
+  </data>
+  <data name="Sales" xml:space="preserve">
+    <value>المبيعات</value>
+  </data>
   <data name="SignUp" xml:space="preserve">
     <value>إنشاء حساب</value>
+  </data>
+  <data name="Support" xml:space="preserve">
+    <value>الدعم</value>
   </data>
   <data name="Terms" xml:space="preserve">
     <value>الأحكام والشروط</value>

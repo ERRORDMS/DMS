@@ -117,23 +117,44 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="a" xml:space="preserve">
-    <value />
-  </data>
   <data name="About" xml:space="preserve">
     <value>About</value>
   </data>
   <data name="AboutLogo" xml:space="preserve">
     <value>About Malafatee</value>
   </data>
+  <data name="ContactSupport" xml:space="preserve">
+    <value>Contact Support</value>
+  </data>
+  <data name="contactsus_title" xml:space="preserve">
+    <value>Contact us and we will do our best to reply and solve all your problems in no time, your success is also our success!</value>
+  </data>
   <data name="contactus" xml:space="preserve">
     <value>Contact Us</value>
+  </data>
+  <data name="contactus_form_title" xml:space="preserve">
+    <value>We're always ready to help!</value>
   </data>
   <data name="Dashboard" xml:space="preserve">
     <value>Dashboard</value>
   </data>
+  <data name="Feedback" xml:space="preserve">
+    <value>Feedback</value>
+  </data>
+  <data name="For_any" xml:space="preserve">
+    <value>For any other support questions, please send us an email at</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>General Support</value>
+  </data>
   <data name="guide" xml:space="preserve">
     <value>A quick guide to our company culture</value>
+  </data>
+  <data name="Have" xml:space="preserve">
+    <value>Have questions? We&amp;apos;re here to help!</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Need help with Malafatee? Need help with your account?</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>Home</value>
@@ -147,6 +168,9 @@
   <data name="Logo" xml:space="preserve">
     <value>Malafatee</value>
   </data>
+  <data name="Looking" xml:space="preserve">
+    <value>Looking to give us a suggestion or feedback?</value>
+  </data>
   <data name="Move" xml:space="preserve">
     <value>Move with urgency and focus</value>
   </data>
@@ -156,8 +180,17 @@
   <data name="Product" xml:space="preserve">
     <value>Product</value>
   </data>
+  <data name="Ready" xml:space="preserve">
+    <value>Ready to open an account? Have questions about purchasing a product?</value>
+  </data>
+  <data name="Sales" xml:space="preserve">
+    <value>Sales</value>
+  </data>
   <data name="SignUp" xml:space="preserve">
     <value>Sign Up</value>
+  </data>
+  <data name="Support" xml:space="preserve">
+    <value>Support</value>
   </data>
   <data name="Terms" xml:space="preserve">
     <value>Terms &amp;amp; Conditions</value>

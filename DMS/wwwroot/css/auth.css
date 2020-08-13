@@ -263,3 +263,6 @@ a {
         justify-content: center;
     }
 }
+.disabled {
+    pointer-events: none;
+}

@@ -59,7 +59,7 @@
                 </div>
                 <a href="#">@Localizer["ForgotPassword"]</a>
                 <a href="Register">@Localizer["CreateAccount"]</a>
-                <input type="submit" class="btn" value="@Localizer["Login"]" />
+                <button type="submit" class="btn" id="login_button">@Localizer["Login"]</button>
                         
                 @(Html.DevExtreme().Button()
                     .Type(ButtonType.Normal)
@@ -118,8 +118,7 @@
                     $(".empty_password").fadeOut(200);
                 }
             })
-
-
+            
             if (email && password) {
                 const xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function () {
