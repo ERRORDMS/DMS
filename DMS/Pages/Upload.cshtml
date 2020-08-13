@@ -518,6 +518,7 @@
         $("#File").change(function (e) {
             files = e.target.files;
         })
+        
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
@@ -551,12 +552,6 @@
         
     })
 
-    const progressBarFill = document.querySelector(
-        "#progressBar > .progress-bar-fill"
-    );
-    const progressBarText = progressBarFill.querySelector(
-        ".progress-bar-text"
-    );
 
     function upload() {
         

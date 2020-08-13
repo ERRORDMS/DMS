@@ -18,6 +18,7 @@ using System.Globalization;
 using  static DMS.Controllers.AuthorizationController;
 using DevExpress.Web;
 using System.Text.RegularExpressions;
+using Dapper;
 
 namespace DMS.Database
 {
@@ -32,7 +33,18 @@ namespace DMS.Database
             {
                 settings = JsonConvert.DeserializeObject<Settings>(SettingsController.GetSettings());
                 client = new ServiceReference1.AlSahlServiceClient(new BasicHttpBinding(), new EndpointAddress(new Uri(settings.ServiceEndpoint)));
-                sqlHelper = new SQLHelper(GetConnectionString(userID));
+
+                var con = GetConnectionString("");
+
+                sqlHelper = new SQLHelper(con);
+
+
+                if (!string.IsNullOrEmpty(userID))
+                {
+                    con = GetConnectionString(userID);
+
+                    sqlHelper = new SQLHelper(con);
+                }
             }
             catch (Exception ex)
             {
@@ -440,6 +452,22 @@ namespace DMS.Database
             
             return NewNo;
         }
+
+        public void FixExt()
+        {
+            var databases = sqlHelper.GetSqlConnection().Query<string>("SELECT DBName from " + Tables.UserDatabases); // sqlHelper.Select<string>(Tables.UserDatabases, "DBName");
+
+            foreach (var db in databases)
+            {
+                string query = "USE [" + db + "]";
+
+                query += " UPDATE " + Tables.DocumentLines + " SET [Ext] = REPLACE([Ext], '.', '')";
+
+                sqlHelper.ExecuteNonQuery(query);
+
+            }
+
+        }
         public  int AddKey(string name, string userId)
         {
             try
@@ -512,7 +540,7 @@ namespace DMS.Database
         public  byte[] GetFile(long InfoAutoKey, long LineAutoKey, string Ext)
         {
 
-            var fn = InfoAutoKey + "_" + LineAutoKey + Ext;
+            var fn = InfoAutoKey + "_" + LineAutoKey + "." +  Ext;
 
             var arr = sqlHelper.ExecuteScalar<byte[]>("select TOP 1 file_stream from " + DMS.Database.Tables.Images + " where name = '" + fn + "'");
 
@@ -641,7 +669,7 @@ namespace DMS.Database
 
                 string lineAutoKey = sqlHelper.InsertWithID(Tables.DocumentLines,
                     new string[] { "InfoAutoKey", "Ext", "Name" },
-                    new string[] { infoAutoKey, Path.GetExtension(file.FileName), Path.GetFileNameWithoutExtension(file.FileName) });
+                    new string[] { infoAutoKey, Path.GetExtension(file.FileName).Replace(".", ""), Path.GetFileNameWithoutExtension(file.FileName) });
 
                 foreach (var category in categories)
                 {
@@ -675,7 +703,7 @@ namespace DMS.Database
                     query += "  values (NEWID(), @File, '" + filename + "', CAST('" + parent + "' AS hierarchyid))";
 
                     var bytes = file.GetBytes().Result;
-
+                        
                     SqlParameter param = new SqlParameter("@File", System.Data.SqlDbType.Binary, bytes.Length);
                     param.Value = bytes;
 
@@ -855,7 +883,7 @@ namespace DMS.Database
             //  wheres.Add("DMSUserID", userID);
 
             //return sqlHelper.SelectWithWhere<Contact>(Tables.Contacts, new string[] { "*" }, wheres);
-            return sqlHelper.Select<Contact>(Tables.Contacts, "*");
+            return sqlHelper.Select<Contact>(Tables.Contacts, "*").Take(10);
         }
         public  IEnumerable<SearchKey> GetSearchKeys(string userID)
         {
@@ -900,6 +928,48 @@ namespace DMS.Database
             try
             {
                 String query = @"
+
+
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'UserDB'))
+
+BEGIN
+
+CREATE TABLE [dbo].[UserStorage](
+	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+	[UserID] [nvarchar](max) NULL,
+	[UsedStorage] [float] NULL,
+	[Storage] [float] NULL,
+ CONSTRAINT [PK_UserStorage] PRIMARY KEY CLUSTERED 
+(
+	[AutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+END
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'UserDB'))
+
+BEGIN
+
+CREATE TABLE [dbo].[UserDB](
+	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+	[UserID] [nvarchar](max) NULL,
+	[DBName] [nvarchar](max) NULL,
+ CONSTRAINT [PK_UserDatabases] PRIMARY KEY CLUSTERED 
+(
+	[AutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+END
+
 IF (NOT EXISTS (SELECT * 
                  FROM INFORMATION_SCHEMA.TABLES 
                  WHERE TABLE_SCHEMA = 'dbo' 
@@ -1002,27 +1072,37 @@ END
                         client.SetPasswordAsync(email, password);
 
 
-                        // Create DB
-                        sqlHelper.CreateDatabase(id, settings.DatabasesPath);
+                        wheres = new Dictionary<string, string>();
+                        wheres.Add("UserID", "*");
+
+                        if (!sqlHelper.Exists(Tables.UserDatabases, wheres))
+                        {
+
+                            sqlHelper.Insert(Tables.UserDatabases,
+                                new string[] { "UserID", "DBName" },
+                                new string[] { id, id });
+
+                            // Create DB
+                            sqlHelper.CreateDatabase(id, settings.DatabasesPath);
 
 
-                        // Configure DB
-                        string query = Queries.ConfigureDBQuery;
+                            // Configure DB
+                            string query = Queries.ConfigureDBQuery;
 
-                        query = query.Replace("DBNAME", id);
+                            query = query.Replace("DBNAME", id);
 
-                        sqlHelper.ExecuteNonQuery(query);
+                            sqlHelper.ExecuteNonQuery(query);
 
 
-                        // Add Tables
-                        query = Queries.AddTablesQuery;
+                            // Add Tables
+                            query = Queries.AddTablesQuery;
 
-                        query = query.Replace("DBNAME", id);
+                            query = query.Replace("DBNAME", id);
 
-                        Logger.Log(query);
 
-                        sqlHelper.ExecuteNonQuery(query);
-
+                            sqlHelper.ExecuteNonQuery(query);
+                                
+                        }
                         return (int)ErrorCodes.SUCCESS;
 
                         /*
@@ -1087,7 +1167,7 @@ END
                 UserID = "test",
                 Password = "test_2008",
                 MultipleActiveResultSets = true,
-                InitialCatalog = string.IsNullOrEmpty(userID) ? settings.Database : userID
+                InitialCatalog = string.IsNullOrEmpty(userID) ? settings.Database : sqlHelper.SelectWithWhere(Tables.UserDatabases, "DBName", "UserID = '*' OR UserID = '" + userID + "'")
             };
         }
     }
