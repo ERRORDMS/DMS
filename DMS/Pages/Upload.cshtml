@@ -297,11 +297,12 @@
         margin-right: 3rem;
     }
 
+
+
     .tabpanel-item {
         height: 200px;
         -webkit-touch-callout: none;
         -webkit-user-select: none;
-        -khtml-user-select: none;
         -moz-user-select: none;
         -ms-user-select: none;
         user-select: none;
@@ -341,6 +342,9 @@
 
     .option {
         margin-top: 10px;
+    }
+    .productsDataSource {
+        width: 360px;
     }
 </style>
 
@@ -417,12 +421,32 @@
                        .SearchEnabled(true)
                         )-->
         <br />
-        <div id="productsDataSource"></div>
-            <div class="dx-field">
-                <!--
-                <div class="dx-field-label">Contacts:</div>
-                <div class="dx-field-value">
-                    @(Html.DevExtreme().TagBox()
+        <!--
+    <div>
+        @(Html.DevExtreme().TagBox()
+                        /*
+        .DataSource(d => d.Mvc()
+                   .Controller("Contacts")
+                   .LoadAction("Get")
+                   .Key("AutoKey")
+               )*/
+        .DisplayExpr("Name")
+
+    .ID("productsDataSource")
+    .Name("contactsTagBox")
+        .ValueExpr("AutoKey")
+        .HideSelectedItems(true)
+        .ShowClearButton(true)
+        .OnSelectionChanged("getContacts")
+        .SearchExpr("Name")
+                  .SearchEnabled(true)
+                        )
+    </div>
+        -->
+        <div class="dx-field">
+            <div class="dx-field-label">Contacts:</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().TagBox()
                             /*
             .DataSource(d => d.Mvc()
                        .Controller("Contacts")
@@ -431,7 +455,7 @@
                    )*/
             .DisplayExpr("Name")
 
-        .ID("contactsTagBox")
+        .ID("productsDataSource")
         .Name("contactsTagBox")
             .ValueExpr("AutoKey")
             .HideSelectedItems(true)
@@ -442,9 +466,8 @@
                             )
 
 
-                </div>
-                -->
             </div>
+        </div>
         <div class="dx-field">
             <div class="dx-field-label">Search Keys:</div>
             <div class="dx-field-value">
@@ -461,7 +484,7 @@
     .Name("searchKeysTagBox")
         .ValueExpr("AutoKey")
         .HideSelectedItems(true)
-        .ShowClearButton(true)
+        .ShowClearButton(false)
         .OnSelectionChanged("getKeys")
         .SearchExpr("Name")
                   .SearchEnabled(true)
@@ -511,96 +534,6 @@
 
 <script src="~/js/progressbar.js"></script>
 <script>
-    $(function () {
-        var viewerstore = new DevExpress.data.CustomStore({
-            load: function (loadOptions) {
-                var deferred = $.Deferred(), args = {};
-                if (loadOptions.skip != 0) {
-                    args.skip = loadOptions.skip + 1;
-                } else {
-                    args.skip = loadOptions.skip;
-                }
-                args.take = loadOptions.take + loadOptions.skip;
-                args.sv = loadOptions.searchValue;
-
-                if (isNaN(args.skip)) {
-                    args.skip = 0;
-                }
-
-                if (isNaN(args.take)) {
-                    args.take = 5;
-                }
-
-                var resultsArr = [];
-                //return only records from the search value
-                if (args.sv != null) {
-                    for (i = 0; i < jsonuserArr.length; i++) {
-                        //for this demo just simulating getting rest data with the search filter done in the rest api
-                        if (jsonuserArr[i]["name"].includes(args.sv)) {
-                            resultsArr.push(jsonuserArr[i]);
-                        }
-                    }
-                } else {
-                    //full user array
-                    //ok
-                    console.log('full');
-                    resultsArr = jsonuserArr;
-                }
-
-                resultsArr = resultsArr.slice(args.skip, args.take);
-
-                if (loadOptions.filter && loadOptions.filter.length >= 3) {
-                    var queryResult = DevExpress.data.query(jsonuserArr)
-                        .filter(loadOptions.filter)
-                        .toArray();
-                    resultsArr = queryResult;
-                };
-                //replace my ajax call here for hardcoded json 
-                deferred.resolve(resultsArr);
-                return deferred.promise();
-            }
-        });
-        $("#File").change(function (e) {
-            files = e.target.files;
-        })
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                var res = JSON.parse(this.responseText);
-                /*
-                $("#contactsTagBox").dxTagBox({
-                    dataSource: res.data,
-                    valueExpr: 'AutoKey',
-                    displayExpr: 'Name'
-                });
-                */
-                var viewerdataSource = new DevExpress.data.DataSource({
-                    store: res.data,
-                    pageSize: 5,
-                    paginate: true
-                });
-
-                $("#productsDataSource").dxTagBox({
-                    dataSource: viewerdataSource,
-                    displayExpr: "Name",
-                    valueExpr: "AutoKey",
-                    hideSelectedItems: true,
-                    searchEnabled: true,
-                    placeholder: "Select Viewers",
-                    value: [862]
-                });
-            }
-        }
-        xmlHttp.open("GET", "api/Contacts", true);
-        xmlHttp.send();
-       
-
-        
-    });
-
-
-
-
     var files;
     var categories;
     var keys;
@@ -610,7 +543,7 @@
         console.log(e);
     }
     function getContacts(e) {
-        contacts = e.component._selectedItems;
+         contacts = e.component._selectedItems;
     }
     function getKeys(e) {
         keys = e.component._selectedItems;
@@ -648,50 +581,136 @@
         }*/
         let filesUploaderContainer = document.querySelector(".dx-fileuploader-files-container");
         $('#files_div').html(filesUploaderContainer);
-    //    filesUploaderContainer.style.display = "none";
+        //    filesUploaderContainer.style.display = "none";
     }
 
     $(document).ready(function () {
-        $("#File").change(function (e) {
-            files = e.target.files;
-        })
-        
+        var viewerstore = new DevExpress.data.CustomStore({
+            load: function (loadOptions) {
+                var deferred = $.Deferred(), args = {};
+                if (loadOptions.skip != 0) {
+                    args.skip = loadOptions.skip + 1;
+                } else {
+                    args.skip = loadOptions.skip;
+                }
+                args.take = loadOptions.take + loadOptions.skip;
+                args.sv = loadOptions.searchValue;
+
+                if (isNaN(args.skip)) {
+                    args.skip = 0;
+                }
+
+                if (isNaN(args.take)) {
+                    args.take = 5;
+                }
+
+                var resultsArr = [];
+                //return only records from the search value
+                if (args.sv != null) {
+                    for (i = 0; i < jsonuserArr.length; i++) {
+                        //for this demo just simulating getting rest data with the search filter done in the rest api
+                        if (jsonuserArr[i]["name"].includes(args.sv)) {
+                            resultsArr.push(jsonuserArr[i]);
+                        }
+                    }
+                } else {
+                    //full user array
+                    //ok
+                    resultsArr = jsonuserArr;
+                }
+
+                resultsArr = resultsArr.slice(args.skip, args.take);
+
+                if (loadOptions.filter && loadOptions.filter.length >= 3) {
+                    var queryResult = DevExpress.data.query(jsonuserArr)
+                        .filter(loadOptions.filter)
+                        .toArray();
+                    resultsArr = queryResult;
+                };
+                //replace my ajax call here for hardcoded json
+                deferred.resolve(resultsArr);
+                return deferred.promise();
+            }
+        });
         var xmlHttp = new XMLHttpRequest();
+        /*
         xmlHttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 var res = JSON.parse(this.responseText);
-
                 $("#contactsTagBox").dxTagBox({
                     dataSource: res.data,
                     valueExpr: 'AutoKey',
                     displayExpr: 'Name'
                 });
-            }
-        }
-        xmlHttp.open("GET", "api/Contacts", true);
-        xmlHttp.send();
-       
+                var viewerdataSource = new DevExpress.data.DataSource({
+                    store: res.data,
+                    pageSize: 5,
+                    paginate: true
+                });
 
-        xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                var res = JSON.parse(xmlHttp.responseText);
-
-                $("#searchKeysTagBox").dxTagBox({
-                    dataSource: res.data,
-                    valueExpr: 'AutoKey',
-                    displayExpr: 'Name'
+                $("#productsDataSource").dxTagBox({
+                    dataSource: viewerdataSource,
+                    displayExpr: "Name",
+                    valueExpr: "AutoKey",
+                    OnSelectionChanged: getContacts(), //Selection
+                    hideSelectedItems: true,
+                    searchEnabled: true,
+                    placeholder: "Select Viewers",
+                    value: [862]
                 });
             }
         }
+        */
+
+        xmlHttp.open("GET", "api/Contacts", false);
+        xmlHttp.send();
+
+        var res = JSON.parse(xmlHttp.responseText);
+
+        var viewerdataSource = new DevExpress.data.DataSource({
+            store: res.data,
+            pageSize: 5,
+            paginate: true
+        });
+
+        $("#productsDataSource").dxTagBox({
+            dataSource: viewerdataSource,
+            displayExpr: "Name",
+            valueExpr: "AutoKey",
+            OnValueChanged: getContacts, //Selection
+            hideSelectedItems: true,
+            searchEnabled: true,
+            placeholder: "Select",
+          //  value: [862]
+        });
+        $("#File").change(function (e) {
+            files = e.target.files;
+        })
+
+        xmlHttp = new XMLHttpRequest();
         xmlHttp.open("GET", "api/SearchKeys", false);
         xmlHttp.send();
-        
+        var res = JSON.parse(xmlHttp.responseText);
+     
+        var viewerdataSource = new DevExpress.data.DataSource({
+            store: res.data,
+            pageSize: 5,
+            paginate: true
+        });
+
+        $("#searchKeysTagBox").dxTagBox({
+            dataSource: viewerdataSource,
+            displayExpr: "Name",
+            valueExpr: "AutoKey",
+            hideSelectedItems: true,
+            searchEnabled: true,
+            placeholder: "Select",
+            //  value: [862]
+        });
     })
 
 
     function upload() {
-        
 
         if (categories == null) {
             alert('Choose a category!');
@@ -729,18 +748,18 @@
 
 
         Array.from(files).forEach(file => {
-              
+
             var fileSizeMB = file.size / 1048576.0;
 
             if ((storage.UsedStorage + fileSizeMB) > storage.Storage) {
                 alert("You don't have enough space!")
                 return;
             }
-            
+
 
             i--;
-//            progressBarFill.style.width = "0%";
-  //          progressBarText.textContent = "0%";
+            //            progressBarFill.style.width = "0%";
+            //          progressBarText.textContent = "0%";
             bar.animate(0);
 
             const xhr = new XMLHttpRequest();
@@ -762,8 +781,8 @@
 
             xhr.upload.addEventListener("progress", (e) => {
                 const percent = e.lengthComputable ? (e.loaded / e.total) * 100 : 0;
-      //          progressBarFill.style.width = percent.toFixed(2) + "%";
-        //        progressBarText.textContent = percent.toFixed(2) + "%";
+                //          progressBarFill.style.width = percent.toFixed(2) + "%";
+                //        progressBarText.textContent = percent.toFixed(2) + "%";
                 bar.animate(percent.toFixed(2) / 100);
             });
 
