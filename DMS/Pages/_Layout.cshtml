@@ -494,9 +494,7 @@
             if (usedStorage > 1000) {
                 prefix = "GB";
                 usedStorage = usedStorage / 1000;
-            }
-
-            else {
+            } else {
                 prefix = "MB";
             }
 
@@ -509,9 +507,7 @@
             if (maxStorage == -1 ) {
                 prefix = "Unlimited";
                 maxStorage = null;
-            }
-
-            else {
+            } else {
                 prefix = "GB";
                 maxStorage = maxStorage / 1000;
             }
@@ -531,7 +527,7 @@
             });
 
 
-            var perc = (usedStorage / maxStorage) * 100;
+            var perc = (usedStorage / maxStorage);
             bar.animate(perc / 100);
 
         })
