@@ -883,7 +883,7 @@ namespace DMS.Database
             //  wheres.Add("DMSUserID", userID);
 
             //return sqlHelper.SelectWithWhere<Contact>(Tables.Contacts, new string[] { "*" }, wheres);
-            return sqlHelper.Select<Contact>(Tables.Contacts, "*").Take(10);
+            return sqlHelper.Select<Contact>(Tables.Contacts, "*");
         }
         public  IEnumerable<SearchKey> GetSearchKeys(string userID)
         {

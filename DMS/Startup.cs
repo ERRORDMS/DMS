@@ -160,6 +160,7 @@ namespace DMS
                 new CultureInfo("en-US"),
                 new CultureInfo("ar-SA"),
             };
+
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
                 DefaultRequestCulture = new RequestCulture("en-US"),
@@ -167,6 +168,8 @@ namespace DMS
                 SupportedUICultures = supportedCultures,
                  RequestCultureProviders = new[] { new CookieRequestCultureProvider() }
             });
+
+            app.UseHttpsRedirection();
 
             app.UseStaticFiles();
             //app.UseAuthentication();
