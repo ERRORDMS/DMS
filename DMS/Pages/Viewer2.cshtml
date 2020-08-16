@@ -41,7 +41,7 @@
         "Ext",
         "InfoAutoKey = '" + InfoAutoKey + "'");
 
-    var fn = InfoAutoKey + "_" + LineAutoKey + Ext;
+    var fn = InfoAutoKey + "_" + LineAutoKey + "." +  Ext;
 
     var arr = helper.ExecuteScalar<byte[]>("select TOP 1 file_stream from " + DMS.Database.Tables.Images + " where name = '" + fn + "'");
 
