@@ -76,6 +76,15 @@ namespace DMS.Controllers
             return Ok();
         }
 
+        [HttpPost]
+        [Route("FixExt")]
+        public ActionResult FixExt()
+        {
+            new DataManager(null).FixExt();
+
+            return Ok();
+        }
+
 
         [HttpPost]
         [Route("Save")]

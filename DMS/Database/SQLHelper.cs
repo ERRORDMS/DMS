@@ -17,6 +17,8 @@ namespace DMS.Database
             sqlConnection = new SqlConnection(conString.ConnectionString);
         }
 
+        public SqlConnection GetSqlConnection() { return sqlConnection; }
+
         /// <summary>
         /// Execute reader query
         /// </summary>
@@ -562,11 +564,7 @@ CREATE DATABASE [{0}]
 
         public void Dispose()
         {
-
-            {
-                
                 sqlConnection.Dispose();
-            }
         }
 
     }

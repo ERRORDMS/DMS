@@ -24,5 +24,6 @@ namespace DMS.Database
         public const string CategoryUserRel = "CategoryUserRel";
         public const string Images = "Images";
         public const string UserStorage = "UserStorage";
+        public const string UserDatabases = "UserDB";
     }
 }
