@@ -296,8 +296,52 @@
     .upload_button {
         margin-right: 3rem;
     }
-       
-    
+
+    .tabpanel-item {
+        height: 200px;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        padding-left: 25px;
+        padding-top: 55px;
+    }
+
+    .mobile .tabpanel-item {
+        padding-top: 10px;
+    }
+
+    .tabpanel-item > div {
+        float: left;
+        padding: 0 85px 10px 10px
+    }
+
+    .tabpanel-item p {
+        font-size: 16px;
+        margin: 0;
+    }
+
+    .item-box {
+        font-size: 16px;
+        margin: 15px 0 45px 10px;
+    }
+
+    .options {
+        padding: 20px;
+        background-color: rgba(191, 191, 191, 0.15);
+        margin-top: 20px;
+    }
+
+    .caption {
+        font-size: 18px;
+        font-weight: 500;
+    }
+
+    .option {
+        margin-top: 10px;
+    }
 </style>
 
 <div class="maindiv main-block">
@@ -335,9 +379,9 @@
         </div>
         <div class="files_div">
             <div class="dx-fileuploader-wrapper">
-            <div id="files_div" class="dx-fileuploader-content">
+                <div id="files_div" class="dx-fileuploader-content">
 
-            </div>
+                </div>
             </div>
         </div>
 
@@ -353,7 +397,7 @@
             </div>
         </div>
 
-        
+
                        (Html.DevExtreme().TagBox()
 
     .DataSource(d => d.Mvc()
@@ -373,31 +417,34 @@
                        .SearchEnabled(true)
                         )-->
         <br />
-        <div class="dx-field">
-            <div class="dx-field-label">Contacts:</div>
-            <div class="dx-field-value">
-                @(Html.DevExtreme().TagBox()
-                        /*
-        .DataSource(d => d.Mvc()
-                   .Controller("Contacts")
-                   .LoadAction("Get")
-                   .Key("AutoKey")
-               )*/
-        .DisplayExpr("Name")
+        <div id="productsDataSource"></div>
+            <div class="dx-field">
+                <!--
+                <div class="dx-field-label">Contacts:</div>
+                <div class="dx-field-value">
+                    @(Html.DevExtreme().TagBox()
+                            /*
+            .DataSource(d => d.Mvc()
+                       .Controller("Contacts")
+                       .LoadAction("Get")
+                       .Key("AutoKey")
+                   )*/
+            .DisplayExpr("Name")
 
-    .ID("contactsTagBox")
-    .Name("contactsTagBox")
-        .ValueExpr("AutoKey")
-        .HideSelectedItems(true)
-        .ShowClearButton(true)
-        .OnSelectionChanged("getContacts")
-        .SearchExpr("Name")
-                  .SearchEnabled(true)
-                        )
+        .ID("contactsTagBox")
+        .Name("contactsTagBox")
+            .ValueExpr("AutoKey")
+            .HideSelectedItems(true)
+            .ShowClearButton(true)
+            .OnSelectionChanged("getContacts")
+            .SearchExpr("Name")
+                      .SearchEnabled(true)
+                            )
 
 
+                </div>
+                -->
             </div>
-        </div>
         <div class="dx-field">
             <div class="dx-field-label">Search Keys:</div>
             <div class="dx-field-value">
@@ -464,6 +511,96 @@
 
 <script src="~/js/progressbar.js"></script>
 <script>
+    $(function () {
+        var viewerstore = new DevExpress.data.CustomStore({
+            load: function (loadOptions) {
+                var deferred = $.Deferred(), args = {};
+                if (loadOptions.skip != 0) {
+                    args.skip = loadOptions.skip + 1;
+                } else {
+                    args.skip = loadOptions.skip;
+                }
+                args.take = loadOptions.take + loadOptions.skip;
+                args.sv = loadOptions.searchValue;
+
+                if (isNaN(args.skip)) {
+                    args.skip = 0;
+                }
+
+                if (isNaN(args.take)) {
+                    args.take = 5;
+                }
+
+                var resultsArr = [];
+                //return only records from the search value
+                if (args.sv != null) {
+                    for (i = 0; i < jsonuserArr.length; i++) {
+                        //for this demo just simulating getting rest data with the search filter done in the rest api
+                        if (jsonuserArr[i]["name"].includes(args.sv)) {
+                            resultsArr.push(jsonuserArr[i]);
+                        }
+                    }
+                } else {
+                    //full user array
+                    //ok
+                    console.log('full');
+                    resultsArr = jsonuserArr;
+                }
+
+                resultsArr = resultsArr.slice(args.skip, args.take);
+
+                if (loadOptions.filter && loadOptions.filter.length >= 3) {
+                    var queryResult = DevExpress.data.query(jsonuserArr)
+                        .filter(loadOptions.filter)
+                        .toArray();
+                    resultsArr = queryResult;
+                };
+                //replace my ajax call here for hardcoded json 
+                deferred.resolve(resultsArr);
+                return deferred.promise();
+            }
+        });
+        $("#File").change(function (e) {
+            files = e.target.files;
+        })
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var res = JSON.parse(this.responseText);
+                /*
+                $("#contactsTagBox").dxTagBox({
+                    dataSource: res.data,
+                    valueExpr: 'AutoKey',
+                    displayExpr: 'Name'
+                });
+                */
+                var viewerdataSource = new DevExpress.data.DataSource({
+                    store: res.data,
+                    pageSize: 5,
+                    paginate: true
+                });
+
+                $("#productsDataSource").dxTagBox({
+                    dataSource: viewerdataSource,
+                    displayExpr: "Name",
+                    valueExpr: "AutoKey",
+                    hideSelectedItems: true,
+                    searchEnabled: true,
+                    placeholder: "Select Viewers",
+                    value: [862]
+                });
+            }
+        }
+        xmlHttp.open("GET", "api/Contacts", true);
+        xmlHttp.send();
+       
+
+        
+    });
+
+
+
+
     var files;
     var categories;
     var keys;

@@ -3406,3 +3406,11 @@ EXEC sys.sp_addextendedproperty @name=N'Updatable', @value=N'True' , @level0type
 
 
 INSERT INTO Images (name,is_directory,is_archive) VALUES ('Images', 1, 0)
+8/16/2020 10:37:34 AM - A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: SQL Network Interfaces, error: 26 - Error Locating Server/Instance Specified)
+8/16/2020 10:38:21 AM - Index was out of range. Must be non-negative and less than the size of the collection.
+Parameter name: index
+8/16/2020 10:40:26 AM - Index was out of range. Must be non-negative and less than the size of the collection.
+Parameter name: index
+8/16/2020 10:41:42 AM - The path '\20-00003-2_filestream' cannot be used for FILESTREAM files. For information about supported paths, see SQL Server Books Online.
+CREATE DATABASE failed. Some file names listed could not be created. Check related errors.
+The path '\20-00003-2_filestream' cannot be used for FILESTREAM files. For information about supported paths, see SQL Server Books Online.
