@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MailKit.Net.Smtp;
+using MailKit;
+using MimeKit;
 
 namespace DMS.Controllers
 {
@@ -44,8 +47,31 @@ namespace DMS.Controllers
             Result result = new Result();
             result.StatusName = ((ErrorCodes)i).ToString();
             result.StatusCode = i;
+
             if (i == (int)ErrorCodes.SUCCESS)
             {
+                /*
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress("Joey Tribbiani", "moayyadyousef6@gmail.com"));
+                message.To.Add(new MailboxAddress("Mrs. Chanandler Bong", "moayyadyousef6@gmail.com"));
+                message.Subject = "How you doin'?";
+
+                message.Body = new TextPart("plain")
+                {
+                    Text = "Hey Chandler,I just wanted Joey"
+                };
+
+                using (var client = new SmtpClient())
+                {
+                    client.Connect("smtp.friends.com", 587, false);
+
+                    // Note: only needed if the SMTP server requires authentication
+                    client.Authenticate("joey", "password");
+
+                    client.Send(message);
+                    client.Disconnect(true);
+                }
+                */
                 AddCookies(Email);
             }   
             return new JsonResult(result);
@@ -85,6 +111,7 @@ namespace DMS.Controllers
                 userId = User.FindFirstValue(ClaimTypes.UserData);
             return new DataManager(null).GetUserStorage(userId);
         }
+
 
         public class UserStorage
         {

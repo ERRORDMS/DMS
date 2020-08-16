@@ -741,7 +741,6 @@ namespace DMS.Database
                 "UserID = '" + userID + "'");
         }
 
-
         public  int AddFile(IFormFile file, string userID, out string infoAutoKey)
         {
             infoAutoKey = "";
