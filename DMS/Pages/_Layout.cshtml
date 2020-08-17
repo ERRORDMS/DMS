@@ -266,6 +266,17 @@
         #maxStorage {
             margin-left: .2rem;
         }
+        .line {
+            height: 1px;
+            width: 100%;
+            background-color:rgb(255,255,255);
+        }
+        .nav-item-upgrade {
+            background-color: #0087ff;
+            border-radius: 10px;
+            box-shadow: 2px 2px 5px black; 
+            margin: 0.5rem;
+        }
     </style>
     <script src="~/js/vendor.js" asp-append-version="true"></script>
 </head>
@@ -367,6 +378,8 @@
                 <li class="nav-item"><a href="ManageSearchKey">@Localizer["SearchKeys"]</a></li>
                 <li class="nav-item"><a href="Upload">@Localizer["Upload"]</a></li>
                 <li class="nav-item"><a href="SignOut">@Localizer["Logout"]</a></li>
+                <!--  <li class="nav-item"><div class="line">.</div></li>-->
+                <li class="nav-item-upgrade"><a href="">Upgrade</a></li>
                 <li class="nav-item">
                     <div class="progress"><div id="progressBar"></div></div>
                     <h2 class="storage">
