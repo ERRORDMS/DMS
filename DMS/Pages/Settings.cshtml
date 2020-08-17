@@ -7,3 +7,91 @@
 
 <h2 class="content-block" style="font-size:22px;margin:0;margin-right:2rem;">Settings</h2>
 
+<div>
+    <h2 class="content-block">Users</h2>
+    @(Html.DevExtreme().DataGrid()
+        .ID("userList")
+
+.DataSource(d => d.Mvc()
+    .Controller("SearchKeys")
+    .LoadAction("Get")
+    .Key("AutoKey")
+).KeyExpr("AutoKey")
+            .ShowRowLines(true)
+            .ShowBorders(true)
+            .ColumnAutoWidth(true)
+                    /*.RowDragging(rd => rd
+                        .AllowDropInsideItem(true)
+                        .AllowReordering(true)
+                        .OnDragChange("onDragChange")
+                        .OnReorder("onReorder")
+                        .ShowDragIcons(true)
+                    )*/
+                    .ElementAttr("class", "content-block")
+
+            .Columns(columns =>
+            {
+                columns.Add().DataField("Name")
+                    .Caption("User");
+                columns.Add()
+               .Caption("Manage")
+               .Width(100)
+               .Alignment(HorizontalAlignment.Center)
+               .AllowFiltering(false)
+               .AllowSorting(false)
+               .CellTemplate(new JS("cellTemplate"));
+
+
+            })
+        )
+</div>
+<br />
+<div>
+    <h2 class="content-block">Role</h2>
+    @(Html.DevExtreme().DataGrid()
+        .ID("rolesList")
+
+.DataSource(d => d.Mvc()
+    .Controller("SearchKeys")
+    .LoadAction("Get")
+    .Key("AutoKey")
+).KeyExpr("AutoKey")
+            .ShowRowLines(true)
+            .ShowBorders(true)
+            .ColumnAutoWidth(true)
+                    /*.RowDragging(rd => rd
+                        .AllowDropInsideItem(true)
+                        .AllowReordering(true)
+                        .OnDragChange("onDragChange")
+                        .OnReorder("onReorder")
+                        .ShowDragIcons(true)
+                    )*/
+                    .ElementAttr("class", "content-block")
+            .Columns(columns =>
+            {
+                columns.Add().DataField("Name")
+                    .Caption("Role");
+                columns.Add()
+               .Caption("Manage")
+               .Width(100)
+               .Alignment(HorizontalAlignment.Center)
+               .AllowFiltering(false)
+               .AllowSorting(false)
+               .CellTemplate(new JS("cellTemplate"));
+
+
+            })
+        )
+</div>
+
+<script>
+        //<![CDATA[
+    function cellTemplate(element, cellInfo) {
+        $('<a/>')
+            .text("Manage")
+            .click(function () {
+                onEdit(element, cellInfo);
+            })
+            .appendTo(element);
+    }
+</script>
