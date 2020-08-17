@@ -1040,6 +1040,62 @@ END
 
             }
         }
+        public int Verify(string id)
+        {
+
+            try
+            {
+                if (sqlHelper.Update(Tables.Users,
+                    new[] { "Activated" },
+                    new[] { "1" }, "ID = '" + id + "'"))
+                {
+
+                    var wheres = new Dictionary<string, string>();
+                    wheres.Add("UserID", "*");
+
+                    if (!sqlHelper.Exists(Tables.UserDatabases, wheres))
+                    {
+
+                        sqlHelper.Insert(Tables.UserDatabases,
+                            new string[] { "UserID", "DBName" },
+                            new string[] { id, id });
+
+                        // Create DB
+                        sqlHelper.CreateDatabase(id, settings.DatabasesPath);
+
+
+                        // Configure DB
+                        string query = Queries.ConfigureDBQuery;
+
+                        query = query.Replace("DBNAME", id);
+
+                        sqlHelper.ExecuteNonQuery(query);
+
+
+                        // Add Tables
+                        query = Queries.AddTablesQuery;
+
+                        query = query.Replace("DBNAME", id);
+
+
+                        sqlHelper.ExecuteNonQuery(query);
+
+                    }
+
+
+                    return (int)ErrorCodes.SUCCESS;
+                }
+
+            }
+
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+                return (int)ErrorCodes.INTERNAL_ERROR;
+
+            }
+            return (int)ErrorCodes.INTERNAL_ERROR;
+        }
 
         public  int Register(string email, string password)
         {
@@ -1070,38 +1126,6 @@ END
                     {
                         client.SetPasswordAsync(email, password);
 
-
-                        wheres = new Dictionary<string, string>();
-                        wheres.Add("UserID", "*");
-
-                        if (!sqlHelper.Exists(Tables.UserDatabases, wheres))
-                        {
-
-                            sqlHelper.Insert(Tables.UserDatabases,
-                                new string[] { "UserID", "DBName" },
-                                new string[] { id, id });
-
-                            // Create DB
-                            sqlHelper.CreateDatabase(id, settings.DatabasesPath);
-
-
-                            // Configure DB
-                            string query = Queries.ConfigureDBQuery;
-
-                            query = query.Replace("DBNAME", id);
-
-                            sqlHelper.ExecuteNonQuery(query);
-
-
-                            // Add Tables
-                            query = Queries.AddTablesQuery;
-
-                            query = query.Replace("DBNAME", id);
-
-
-                            sqlHelper.ExecuteNonQuery(query);
-                                
-                        }
                         return (int)ErrorCodes.SUCCESS;
 
                         /*

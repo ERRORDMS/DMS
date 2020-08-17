@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 using MailKit.Net.Smtp;
 using MailKit;
 using MimeKit;
+using DMS.Models;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace DMS.Controllers
 {
@@ -18,6 +20,12 @@ namespace DMS.Controllers
     [AllowAnonymous]
     public class AuthorizationController : Controller
     {
+        IDataProtector _protector;
+
+        public AuthorizationController(IDataProtectionProvider provider)
+        {
+            _protector = provider.CreateProtector(GetType().FullName);
+        }
 
         [Route("Login")]
         [HttpPost]
@@ -37,6 +45,21 @@ namespace DMS.Controllers
             return new JsonResult(result);
         }
 
+        [Route("Verify")]
+        [HttpPost]
+        public IActionResult Verify(string Key)
+        {
+            var email = _protector.Unprotect(Key);
+
+            int i = new DataManager(null).Verify(GetUserID(email));
+
+            Result result = new Result();
+            result.StatusName = ((ErrorCodes)i).ToString();
+            result.StatusCode = i;
+
+            return new JsonResult(result);
+        }
+
         [Route("Register")]
         [HttpPost]
         public JsonResult Register(string Email, string Password)
@@ -50,28 +73,32 @@ namespace DMS.Controllers
 
             if (i == (int)ErrorCodes.SUCCESS)
             {
-                /*
+                
                 var message = new MimeMessage();
-                message.From.Add(new MailboxAddress("Joey Tribbiani", "moayyadyousef6@gmail.com"));
-                message.To.Add(new MailboxAddress("Mrs. Chanandler Bong", "moayyadyousef6@gmail.com"));
-                message.Subject = "How you doin'?";
+                message.From.Add(new MailboxAddress("Malafatee", "support@malafatee.com"));
+                message.To.Add(new MailboxAddress(Email, Email));
+                message.Subject = "Verify your email!";
 
+
+                string link = "https://malafatee.com/VerifyEmail?Key=" + _protector.Protect(Email);
+                Logger.Log(link);
                 message.Body = new TextPart("plain")
                 {
-                    Text = "Hey Chandler,I just wanted Joey"
+                    Text = "Hello, " + Email
+                    + Environment.NewLine + "Open this link to verify your account: " + link
                 };
 
                 using (var client = new SmtpClient())
                 {
-                    client.Connect("smtp.friends.com", 587, false);
+                    client.Connect("mail.malafatee.com", 25, false);
 
                     // Note: only needed if the SMTP server requires authentication
-                    client.Authenticate("joey", "password");
+                    client.Authenticate("support@malafatee.com", "123");
 
                     client.Send(message);
                     client.Disconnect(true);
                 }
-                */
+                
                 AddCookies(Email);
             }   
             return new JsonResult(result);

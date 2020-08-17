@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace DMS.Pages
 {
-    public class EmailverifyModel : PageModel
+    public class EmailVerifyModel : PageModel
     {
         public void OnGet()
         {
