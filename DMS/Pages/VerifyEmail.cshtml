@@ -2,6 +2,8 @@
 @model DMS.Pages.EmailVerifyModel
 @{
     Layout = null;
+
+    string id = Request.Query["Key"];
 }
 
 <!DOCTYPE html>
@@ -9,33 +11,11 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Emailverify</title>
-    <link rel="stylesheet" href="~/css/auth.css"/>
+    <title>Email Verify</title>
 </head>
 <body>
-    <div class="login-content">
-        <form action="javascript:verify()">
-            <h2 class="title">Verify</h2>
-            <div class="input-div one">
-                <div class="i">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="div">
-                    <h5>Code</h5>
-                    <input type="email" class="input email_input" id="email_input" autocomplete="off" />
-                    <input type="text" name="code" class="input" id="code_input" autocomplete="off"/>
-                </div>
-            </div>
-            <br />
-            <input type="submit" class="btn" value="Verify"/>
-        </form>
-
-        <script>
+    <script>
             function verify() {
-                const code = document.getElementById('code_input').value;
-                if (!code) {
-                    alert("A");
-                }
                 const xhr = new XMLHttpRequest();
 
                 xhr.onreadystatechange = function () {
@@ -44,13 +24,11 @@
                     }
                 }
                 const fd = new FormData();
-                fd.append("code", code);
-                xhr.open("POST", "api/Authorization/", true);
+                fd.append("id", @id);
+                xhr.open("POST", "api/Authorization/Verify", true);
                 xhr.send(fd);
             }
-        </script>
-    </div>
-
+    </script>
     <script src="~/js/main.js"></script>
 </body>
 </html>
