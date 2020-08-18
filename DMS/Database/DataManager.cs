@@ -896,6 +896,13 @@ namespace DMS.Database
         
         }
 
+        public IEnumerable<Permission> GetPermissions()
+        {
+
+            return sqlHelper.Select<Permission>(Tables.Permissions, new string[] { "*" });
+
+        }
+
         public IEnumerable<Role> GetRoles(string userID)
         {
 

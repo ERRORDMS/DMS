@@ -29,7 +29,15 @@ namespace DMS.Controllers
             return new JsonResult(new DataManager(null).GetUsers(userId));
         }
 
-        
+
+        [Route("Permissions")]
+        [HttpGet]
+        public IActionResult GetPermissions()
+        {
+            return new JsonResult(new DataManager(null).GetPermissions());
+        }
+
+
         [Route("GetCode")]
         [HttpGet]
         public string GetCode(string userId = null)
