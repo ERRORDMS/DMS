@@ -381,21 +381,21 @@
                 <li class="nav-item"><a href="SignOut">@Localizer["Logout"]</a></li>
 
                 @{
-                 var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
+                    var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
 
-                string accountType = "";
-    if (claimsIdentity != null) 
-    {
-        var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.UserData);
+                    string accountType = "";
+                    if (claimsIdentity != null)
+                    {
+                        var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.UserData);
 
-        accountType = c.Value;
-    }
-                if(accountType == "Enterprise"){
-                <li class="nav-item"><a href="Settings">@Localizer["Settings"]</a></li>
-                }
+                        accountType = c.Value;
+                    }
+                    if (accountType == "Enterprise")
+                    {
+                        <li class="nav-item"><a href="Settings">@Localizer["Settings"]</a></li>
+                    }
                 }
                 <!--  <li class="nav-item"><div class="line">.</div></li>-->
-                <li class="nav-item-upgrade"><a href="">Upgrade</a></li>
                 <li class="nav-item">
                     <div class="progress"><div id="progressBar"></div></div>
                     <h2 class="storage">
@@ -405,6 +405,7 @@
                         <span class="full_size" id="maxStoragePrefix">GB</span>used
                     </h2>
                 </li>
+                <li class="nav-item-upgrade"><a href="">Upgrade</a></li>
             </ul>
         </nav>
 

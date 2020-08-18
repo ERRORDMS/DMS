@@ -3115,3 +3115,12 @@ INSERT INTO Images (name,is_directory,is_archive) VALUES ('Images', 1, 0)
 8/17/2020 9:50:18 AM - https://malafatee.com/EmailVerify?Key=CfDJ8CgIfMtilmxEjGcF6ZubxVQpN9AGbYdd3z2Qd65rbbHz81ZzFKSVD0whAtDV4w5PaAeCWqg_mkLxhel2OuNUD477ksxVliquuv3HvNqU_xhGipRDY2p-6HmyGapcgYFh-3qRIWh2C5UCzZaRjD2CsUM
 8/18/2020 10:08:30 AM - Index was out of range. Must be non-negative and less than the size of the collection.
 Parameter name: index
+8/18/2020 2:30:00 PM - Invalid URI: Invalid port specified.
+8/18/2020 2:32:59 PM - Invalid URI: Invalid port specified.
+8/18/2020 2:33:36 PM - Invalid URI: Invalid port specified.
+8/18/2020 2:34:55 PM - Invalid URI: Invalid port specified.
+8/18/2020 2:36:30 PM - Invalid URI: Invalid port specified.
+8/18/2020 2:40:25 PM - Invalid URI: Invalid port specified.
+8/18/2020 2:42:13 PM - Invalid URI: Invalid port specified.
+8/18/2020 2:43:41 PM - Invalid URI: Invalid port specified.
+8/18/2020 2:45:19 PM - Invalid URI: Invalid port specified.
