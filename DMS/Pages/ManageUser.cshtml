@@ -1,16 +1,63 @@
 ﻿@page
 @model DMS.Pages.ManageUserModel
 @{
-    Layout = null;
+
+    Layout = "~/Pages/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
+    <div>
+        <h2 class="content-block">Permissions</h2>
+        @(Html.DevExtreme().DataGrid()
+        .ID("userList")
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>ManageUser</title>
-</head>
-<body>
-</body>
-</html>
+.DataSource(d => d.Mvc()
+    .Controller("api/Permissions")
+    .LoadMethod("GET")
+    .LoadAction("Users")
+    .Key("ID")
+).KeyExpr("ID")
+            .ShowRowLines(true)
+            .ShowBorders(true)
+            .ColumnAutoWidth(true)
+                    .ElementAttr("class", "content-block")
+
+            .Columns(columns =>
+            {
+                columns.Add().DataField("Name")
+                    .Caption("permissions");
+                columns.Add()
+               .Caption("Manage")
+               .Width(100)
+               .Alignment(HorizontalAlignment.Center)
+               .AllowFiltering(false)
+               .AllowSorting(false)
+               .CellTemplate(new JS("cellTemplate"));
+
+
+            })
+    )
+        @(Html.DevExtreme().Button()
+        .Icon("save")
+        .Text("Save")
+        .OnClick("save")
+        .ElementAttr("class", "content-block")
+
+    )
+    </div>
+
+
+
+    <script>
+        //<![CDATA[
+    function cellTemplate(element, cellInfo) {
+        $('<a/>')
+            .text("Manage")
+            .click(function () {
+                onEdit(element, cellInfo);
+            })
+            .appendTo(element);
+        }
+        function save() {
+
+        }
+    </script>
