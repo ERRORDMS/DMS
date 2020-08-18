@@ -25,7 +25,7 @@ namespace DMS.Controllers
         public LoadResult Get(string userId = null)
         {
             if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.UserData);
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return DataSourceLoader.Load(new DataManager(userId).GetContacts(userId), new DataSourceLoadOptionsBase());
         }
 
@@ -35,7 +35,7 @@ namespace DMS.Controllers
         {
 
             if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.UserData);
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             int i = new DataManager(userId).SaveContact(cat, userId);
 
@@ -50,7 +50,7 @@ namespace DMS.Controllers
         public string GetName(long autokey, string userId = null)
         {
             if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.UserData);
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             return new DataManager(userId).GetConName(autokey);
         }
@@ -60,7 +60,7 @@ namespace DMS.Controllers
         public IActionResult delCon(long autokey, string userId = null)
         {
             if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.UserData);
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             int i = new DataManager(userId).DeleteContact(autokey);
 
@@ -75,7 +75,7 @@ namespace DMS.Controllers
         public IActionResult addContact(Contact contact,DateTime birthday, string userId = null)
         {
             if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.UserData);
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             int i = new DataManager(userId).AddContact(contact,birthday, userId);
 
             Result result = new Result();

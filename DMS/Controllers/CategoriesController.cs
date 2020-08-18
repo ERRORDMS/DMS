@@ -26,7 +26,7 @@ namespace DMS.Controllers
         public LoadResult Get(string userId = null)
         {
             if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.UserData);
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             return DataSourceLoader.Load(new DataManager(userId).GetCategories(userId), new DataSourceLoadOptionsBase());
         }
@@ -36,7 +36,7 @@ namespace DMS.Controllers
         public IActionResult SetParent(Category cat, string userId = null)
         {
             if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.UserData);
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             int i = new DataManager(userId).SetParent(cat, userId);
 
@@ -51,7 +51,7 @@ namespace DMS.Controllers
         public IActionResult saveCat(Category cat, string userId = null)
         {
             if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.UserData);
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             int i = new DataManager(userId).SaveCategory(cat, userId);
 
@@ -67,7 +67,7 @@ namespace DMS.Controllers
         public string GetName(long autokey, string userId = null)
         {
             if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.UserData);
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return new DataManager(userId).GetCatName(autokey);
         }
 
@@ -76,7 +76,7 @@ namespace DMS.Controllers
         public string GetFather(long autokey, string userId = null)
         {
             if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.UserData);
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             return new DataManager(userId).GetFather(autokey);
         }
@@ -86,7 +86,7 @@ namespace DMS.Controllers
         public IActionResult deleteCat(long autokey, string userId = null)
         {
             if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.UserData);
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             int i = new DataManager(userId).DeleteCategory(autokey);
 
@@ -102,7 +102,7 @@ namespace DMS.Controllers
         public IActionResult addCategory(Category category,string userId = null)
         {
             if(string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.UserData);
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             int i = new DataManager(userId).AddCategory(category, userId);
 

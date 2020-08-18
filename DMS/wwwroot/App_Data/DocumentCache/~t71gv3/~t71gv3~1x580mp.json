@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "t71gv3",
+  "CachePdfKey": "t71gv3/t71gv3-1nrwo2i.pdf",
+  "CacheXpzKey": "t71gv3/t71gv3-1x580mp.xpz",
+  "CacheInfoKey": "t71gv3/t71gv3-1x580mp.json",
+  "CacheCopyKey": "t71gv3/x8vslu.png",
+  "Document": null,
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": null,
+  "DocumentFileName": "1252054_771301.png",
+  "InputOptions": {
+    "Format": "Png",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "t71gv3",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}

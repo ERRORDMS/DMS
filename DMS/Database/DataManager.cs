@@ -19,6 +19,7 @@ using  static DMS.Controllers.AuthorizationController;
 using DevExpress.Web;
 using System.Text.RegularExpressions;
 using Dapper;
+using System.Text;
 
 namespace DMS.Database
 {
@@ -872,7 +873,40 @@ namespace DMS.Database
             return sqlHelper.ExecuteReader<Category>(query);*/
         }
 
-        public  string GetUserAutoKey(string name)
+        public string Crypt(string text)
+        {
+            return Convert.ToBase64String(
+                    Encoding.Unicode.GetBytes(text));
+        }
+        public string GetEnterpriseCode(string userID)
+        {
+            return new string(Crypt(userID).Take(6).ToArray());
+        }
+        public string GetAccountType(string userID)
+        {
+            return sqlHelper.ExecuteScalar<string>("SELECT AccountType from Users where ID = '" + userID + "'");
+        }
+        public IEnumerable<User> GetUsers(string userID)
+        {
+
+            Dictionary<string, string> wheres = new Dictionary<string, string>();
+            wheres.Add("EnterpriseCode", GetEnterpriseCode(userID));
+
+            return sqlHelper.SelectWithWhere<User>(Tables.Users, new string[] { "ID", "Name as Email", "AccountType" }, wheres);
+        
+        }
+
+        public IEnumerable<Role> GetRoles(string userID)
+        {
+
+            Dictionary<string, string> wheres = new Dictionary<string, string>();
+            wheres.Add("UserID", userID);
+
+            return sqlHelper.SelectWithWhere<Role>(Tables.Roles, new string[] { "AutoKey", "Name", "UserID" }, wheres);
+
+        }
+
+        public string GetUserAutoKey(string name)
         {
             return sqlHelper.SelectWithWhere(Tables.Users, "AutoKey", "Name = '" + name + "'");
         }
@@ -1117,8 +1151,8 @@ END
                 var id = GetUserAutoIcrementID();
 
                 if (sqlHelper.Insert(Tables.Users,
-                    new string[] {  "Name", "ID" },
-                    new string[] {  email,  id }))
+                    new string[] {  "Name", "ID", "AccountType" },
+                    new string[] {  email,  id, "Free" }))
                 {
                     if (sqlHelper.Insert(Tables.UserStorage,
                         new string[] { "UserID", "UsedStorage", "Storage" },

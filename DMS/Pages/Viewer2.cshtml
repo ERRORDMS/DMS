@@ -27,7 +27,7 @@
 
     if (claimsIdentity != null)
     {
-        var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.UserData);
+        var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
 
         userId = c.Value;
     }

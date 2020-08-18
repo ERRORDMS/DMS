@@ -117,7 +117,8 @@ namespace DMS.Controllers
                 var claims = new List<Claim>
 {
   new Claim(ClaimTypes.Name, Guid.NewGuid().ToString()),
-  new Claim(ClaimTypes.UserData, id )
+  new Claim(ClaimTypes.UserData, new DataManager(null).GetAccountType(id)),
+  new Claim(ClaimTypes.NameIdentifier, id )
 };
 
                 var claimsIdentity = new ClaimsIdentity(
@@ -135,7 +136,7 @@ namespace DMS.Controllers
         public UserStorage GetStorage(string userId = null)
         {
             if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.UserData);
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return new DataManager(null).GetUserStorage(userId);
         }
 

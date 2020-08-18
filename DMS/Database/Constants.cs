@@ -13,6 +13,7 @@ namespace DMS.Database
     public class Tables
     {
         public const string Users = "users";
+        public const string Roles = "Roles";
         public const string Categories = "DocumentCatTree";
         public const string Contacts = "Contacts";
         public const string SearchKeys = "SearchKeys";

@@ -378,6 +378,21 @@
                 <li class="nav-item"><a href="ManageSearchKey">@Localizer["SearchKeys"]</a></li>
                 <li class="nav-item"><a href="Upload">@Localizer["Upload"]</a></li>
                 <li class="nav-item"><a href="SignOut">@Localizer["Logout"]</a></li>
+
+                @{
+                 var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
+
+                string accountType = "";
+    if (claimsIdentity != null) 
+    {
+        var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.UserData);
+
+        accountType = c.Value;
+    }
+                if(accountType == "Enterprise"){
+                <li class="nav-item"><a href="Settings">@Localizer["Settings"]</a></li>
+                }
+                }
                 <!--  <li class="nav-item"><div class="line">.</div></li>-->
                 <li class="nav-item-upgrade"><a href="">Upgrade</a></li>
                 <li class="nav-item">

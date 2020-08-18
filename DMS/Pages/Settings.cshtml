@@ -3,9 +3,22 @@
 @{
     ViewData["Title"] = "Settings";
     Layout = "~/Pages/_Layout.cshtml";
+
+    string userId = "";
+    var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
+
+    if (claimsIdentity != null)
+    {
+        var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+
+        userId = c.Value;
+    }
+
 }
 
-<h2 class="content-block" style="font-size:22px;margin:0;margin-right:2rem;">Settings</h2>
+
+<h2 class="content-block" >Enterprise Settings</h2>
+<h2 class="content-block" id="enterpriseCode">Your Enterprise code: XXXXXX</h2>
 
 <div>
     <h2 class="content-block">Users</h2>
@@ -13,10 +26,11 @@
         .ID("userList")
 
 .DataSource(d => d.Mvc()
-    .Controller("SearchKeys")
-    .LoadAction("Get")
-    .Key("AutoKey")
-).KeyExpr("AutoKey")
+    .Controller("api/Permissions")
+    .LoadMethod("GET")
+    .LoadAction("Users")
+    .Key("ID")
+).KeyExpr("ID")
             .ShowRowLines(true)
             .ShowBorders(true)
             .ColumnAutoWidth(true)
@@ -31,7 +45,7 @@
 
             .Columns(columns =>
             {
-                columns.Add().DataField("Name")
+                columns.Add().DataField("Email")
                     .Caption("User");
                 columns.Add()
                .Caption("Manage")
@@ -52,8 +66,9 @@
         .ID("rolesList")
 
 .DataSource(d => d.Mvc()
-    .Controller("SearchKeys")
-    .LoadAction("Get")
+    .Controller("api/Permissions")
+    .LoadMethod("GET")
+    .LoadAction("Roles")
     .Key("AutoKey")
 ).KeyExpr("AutoKey")
             .ShowRowLines(true)
@@ -94,4 +109,12 @@
             })
             .appendTo(element);
     }
+
+    $(document).ready(function () {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", "api/Permissions/GetCode", false); 
+        xmlHttp.send();
+        $('#enterpriseCode').text("Your Enterprise code: " + xmlHttp.responseText);
+
+    });
 </script>

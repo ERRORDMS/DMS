@@ -19,7 +19,7 @@ namespace DMS.Controllers
         public LoadResult Get(string userId)
         {
             if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.UserData);
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return DataSourceLoader.Load(new DataManager(userId).GetSearchKeys(userId), new DataSourceLoadOptionsBase());
         }
 
@@ -29,7 +29,7 @@ namespace DMS.Controllers
         {
 
             if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.UserData);
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             int i = new DataManager(userId).SaveKey(key, userId);
 
@@ -45,7 +45,7 @@ namespace DMS.Controllers
         public string GetName(long autokey, string userId = null)
         {
             if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.UserData);
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             return new DataManager(userId).GetKeyName(autokey);
         }
@@ -55,7 +55,7 @@ namespace DMS.Controllers
         public IActionResult saveKey(long autokey, string userId =null)
         {
             if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.UserData);
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             int i = new DataManager(userId).DeleteKey(autokey);
 
@@ -72,7 +72,7 @@ namespace DMS.Controllers
         public IActionResult AddKey(string name, string userId = null)
         {
             if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.UserData);
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             int i = new DataManager(userId).AddKey(name, userId);
 
             AuthorizationController.Result result = new AuthorizationController.Result();
