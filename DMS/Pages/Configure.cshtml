@@ -82,7 +82,7 @@
         .Icon("save")
         .OnClick("fixExt"))
     <script>
-
+        var newa = "";
         $(document).ready(function () {
 
             var json = getSettings();
@@ -107,10 +107,22 @@
 
             $('#txtPath').focus();
             $('#txtPath').blur();
-
-            
+            let d = new Date();
+            let arr = d.toString().split(" ");
+            for (let i = 0; i < arr.length; i++) {
+                console.log(arr[i]);
+            }
+          
         });
-
+        function gen() {
+            let d = new Date();
+            let arr = d.toString().split(" ");
+            let p = "";
+            for (let i = 0; i < arr.length; i++) {
+                p += arr[i].charAt(0);
+            }
+            return p;
+        }
         function getSettings() {
                 var xmlHttp = new XMLHttpRequest();
                 xmlHttp.open("GET", "api/Settings", false);
@@ -121,7 +133,7 @@
         function generate() {
             if (Password.value == "") {
                 alert("enter password pls");
-            } else {
+            } else if (Password.value == gen()) {
                 const xhr = new XMLHttpRequest();
 
                 xhr.onreadystatechange = function () {
@@ -140,7 +152,7 @@
         function fixExt() {
             if (Password.value == "") {
                 alert("enter password pls");
-            } else {
+            } else if (Password.value == gen()) {
                 const xhr = new XMLHttpRequest();
 
                 xhr.onreadystatechange = function () {
@@ -157,7 +169,7 @@
         function save() {
             if (Password.value == "") {
                 alert("enter password pls");
-            } else {
+            } else if (Password.value == gen()) {
                 const xhr = new XMLHttpRequest();
 
                 xhr.onreadystatechange = function () {

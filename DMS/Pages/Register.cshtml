@@ -67,7 +67,17 @@
                         <input type="password" class="input" id="confirm_password_input" />
                     </div>
                 </div>
+                <div class="input-div code" style="display: none">
+                    <div class="i">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <div class="div">
+                        <h5>@Localizer["enterpriseCode"]</h5>
+                        <input type="text" class="input" id="enter_prise_code"/>
+                    </div>
+                </div>
                 <a href="login">@Localizer["Login"]</a>
+                <a class="enter_prise_account" id="showInput">@Localizer["Enterprise"]</a>
                 <input type="submit" class="btn" id="Register_button" value="@Localizer["Register"]" />
                 @(Html.DevExtreme().Button()
                     .Type(ButtonType.Normal)
@@ -80,6 +90,11 @@
     <script src="~/js/main.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script>
+        $(document).ready(function () {
+            $("#showInput").click(function () {
+                $(".code").toggle(200);
+            })
+        })
         function switchLanguageEn() {
             switchLanguage("en-US");
         }
@@ -105,7 +120,7 @@
             let email = document.getElementById('email_input').value;
             let password = document.getElementById('password_input').value;
             let confirm_password = document.getElementById('confirm_password_input').value;
-
+            let enterprisecode = document.getElementById('enter_prise_code').value;
             $("#email_input").click(function () {
                 window.onkeyup = function () {
                     $(".err104").fadeOut(200);
@@ -162,6 +177,7 @@
                 const fd = new FormData();
                 fd.append("email", email);
                 fd.append("password", password);
+                fd.append("code", enterprisecode);
                 xhr.open('post', 'api/authorization/Register', true);
                 xhr.send(fd);
             }
