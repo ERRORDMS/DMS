@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DevExpress.Utils.Text;
+using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +16,7 @@ namespace DMS.Database
     {
         public const string Users = "users";
         public const string Roles = "Roles";
+        public const string Permissions = "Permissions";
         public const string Categories = "DocumentCatTree";
         public const string Contacts = "Contacts";
         public const string SearchKeys = "SearchKeys";
