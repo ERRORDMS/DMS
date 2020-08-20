@@ -159,8 +159,8 @@
                                 </li>
                             </ul>
                             @{
-                                string text = !User.Identity.IsAuthenticated ? Localizer["SignUp"].Value : Localizer["Dashboard"].Value;
-                                string href = !User.Identity.IsAuthenticated ? "Register" : "Dashboard";
+                                string text = !User.Identity.IsAuthenticated ? Localizer["Login"].Value : Localizer["Dashboard"].Value;
+                                string href = !User.Identity.IsAuthenticated ? "Login" : "Dashboard";
                                 <a class="btn-teal btn rounded-pill px-4 ml-lg-4" href="@href">@text<i class="fas fa-arrow-right ml-1"></i></a>
                             }
                         </div>

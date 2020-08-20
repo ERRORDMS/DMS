@@ -209,6 +209,9 @@
   <data name="Legal" xml:space="preserve">
     <value>القانون</value>
   </data>
+  <data name="Login" xml:space="preserve">
+    <value>تسجيل دخول</value>
+  </data>
   <data name="Logo" xml:space="preserve">
     <value>ملفاتي</value>
   </data>
