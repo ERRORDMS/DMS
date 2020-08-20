@@ -126,6 +126,12 @@
   <data name="EmailAlreadyExists" xml:space="preserve">
     <value>البريد الالكتروني مُستخدم</value>
   </data>
+  <data name="Enterprise" xml:space="preserve">
+    <value>حساب شركة</value>
+  </data>
+  <data name="enterpriseCode" xml:space="preserve">
+    <value>كلمة المرور الشركة</value>
+  </data>
   <data name="Login" xml:space="preserve">
     <value>تسجيل الدخول</value>
   </data>
