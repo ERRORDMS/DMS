@@ -552,10 +552,14 @@ CREATE DATABASE [{0}]
          
                 foreach (PropertyInfo prop in obj.GetType().GetProperties())
                 {
-                    if (!object.Equals(dr[prop.Name], DBNull.Value))
+                    try
                     {
-                        prop.SetValue(obj, dr[prop.Name], null);
+                        if (!object.Equals(dr[prop.Name], DBNull.Value))
+                        {
+                            prop.SetValue(obj, dr[prop.Name], null);
+                        }
                     }
+                    catch (IndexOutOfRangeException) { continue; }
                 }
                 list.Add(obj);
             }

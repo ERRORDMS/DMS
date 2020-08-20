@@ -897,7 +897,10 @@ namespace DMS.Database
             else
             {
                 string query = string.Format(@"select 
-AutoKey, FatherAutoKey = 0, Name
+AutoKey, FatherAutoKey = 0, Name,
+ISNULL(CanEdit, 0) as CanEdit,
+ISNULL(CanView, 0) as CanView,
+ISNULL(CanDelete, 0) as CanDelete
  from {0}
  left join [{1}] ON [{1}].CatID = {0}.AutoKey
  where CanView = 1", Tables.Categories, userID);

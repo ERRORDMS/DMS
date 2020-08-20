@@ -134,7 +134,8 @@
 
         permissions = JSON.parse(xmlHttp.responseText);
 
-        $("#permissionsList").dxDataGrid("instance").option("value", permissions);
+        //$("#permissionsList").dxDataGrid("instance").option("value", permissions);
+        $('#permissionsList').dxDataGrid('instance').selectRows(permissions.map(a => a.AutoKey), false)
 
         /*
         var xmlHttp = new XMLHttpRequest();
