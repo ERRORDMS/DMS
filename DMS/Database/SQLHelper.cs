@@ -321,6 +321,7 @@ CREATE DATABASE [{0}]
             return rv >= 1;
         }
 
+
         /// <summary>
         /// Select specified columns from a table
         /// </summary>

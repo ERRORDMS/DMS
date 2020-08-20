@@ -3132,3 +3132,4 @@ Parameter name: index
 8/19/2020 8:06:49 PM - 20-00004-2
 8/20/2020 12:39:34 PM - A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: SQL Network Interfaces, error: 26 - Error Locating Server/Instance Specified)
 8/20/2020 12:43:13 PM - A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: SQL Network Interfaces, error: 26 - Error Locating Server/Instance Specified)
+8/20/2020 6:03:52 PM - {"Name":"Test"}

@@ -50,16 +50,16 @@ namespace DMS.Database
 
                     sqlHelper = new SQLHelper(con);
                 }
-            }
+            }   
             catch (Exception ex)
             {
                 Logger.Log(ex.Message);
             }
         }
 
-        public  AlSahlServiceClient GetClient() { return client; }
+        public AlSahlServiceClient GetClient() { return client; }
         
-        public  int DeleteCategory(long autoKey)
+        public int DeleteCategory(long autoKey)
         {
             try
             {
@@ -1023,16 +1023,85 @@ ISNULL(CanDelete, 0) as CanDelete
 
         }
 
-        public IEnumerable<Role> GetRoles(string userID)
+        public IEnumerable<Role> GetRoles()
         {
-
-            Dictionary<string, string> wheres = new Dictionary<string, string>();
-            wheres.Add("UserID", userID);
-
-            return sqlHelper.SelectWithWhere<Role>(Tables.Roles, new string[] { "AutoKey", "Name", "UserID" }, wheres);
+            return sqlHelper.Select<Role>(Tables.Roles, new string[] { "AutoKey", "Name" });
 
         }
 
+        public int AddRole(string Name)
+        {
+            try
+            {
+                Dictionary<string, string> wheres = new Dictionary<string, string>();
+                wheres.Add("Name", Name);
+
+                if (sqlHelper.Exists(Tables.Roles, wheres))
+                {
+                    return (int)ErrorCodes.ALREADY_EXISTS;
+                }
+
+
+                if (sqlHelper.Insert(Tables.Roles, new string[] { "Name"}, new string[] { Name }))
+                {
+                    return (int)ErrorCodes.SUCCESS;
+                }
+
+            }catch(Exception ex)
+            {
+                Logger.Log(ex.Message);
+            }
+
+            return (int)ErrorCodes.INTERNAL_ERROR;
+
+        }
+
+        public int UpdateRole(int AutoKey, string Name)
+        {
+            try
+            {
+                Dictionary<string, string> wheres = new Dictionary<string, string>();
+                wheres.Add("Name", Name);
+
+                if (sqlHelper.Exists(Tables.Roles, wheres))
+                {
+                    return (int)ErrorCodes.ALREADY_EXISTS;
+                }
+
+
+                if (sqlHelper.Update(Tables.Roles, new string[] { "Name"}, new string[] { Name }, "AutoKey = '" + AutoKey + "'"))
+                {
+                    return (int)ErrorCodes.SUCCESS;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+            }
+
+            return (int)ErrorCodes.INTERNAL_ERROR;
+
+        }
+
+        public int DeleteRole(long AutoKey)
+        {
+            try
+            {
+                if (sqlHelper.Delete(Tables.Roles, "AutoKey = '" + AutoKey + "'"))
+                {
+                    return (int)ErrorCodes.SUCCESS;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+            }
+
+            return (int)ErrorCodes.INTERNAL_ERROR;
+
+        }
         public string GetUserAutoKey(string name)
         {
             return sqlHelper.SelectWithWhere(Tables.Users, "AutoKey", "Name = '" + name + "'");

@@ -23,14 +23,14 @@ namespace DMS.Controllers
         [HttpGet]
         public LoadResult Get(string userId)
         {
-            return DataSourceLoader.Load(new DataManager(null).GetUserCategories(userId), new DataSourceLoadOptionsBase());
+            return DataSourceLoader.Load(new DataManager(userId).GetUserCategories(userId), new DataSourceLoadOptionsBase());
         }
 
         [Route("UpdateCat")]
         [HttpPut]
         public IActionResult UpdateCat(string userID, long key, string values)
         {
-            new DataManager(null).UpdatePermission(userID, key, values);
+            new DataManager(userID).UpdatePermission(userID, key, values);
             return Ok();
         }
 
