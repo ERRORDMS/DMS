@@ -82,8 +82,7 @@
         cursor: pointer;
         transition: .5s;
     }
-
-
+    
 </style>
 <!-- Syncfusion Essential JS 2 Scripts -->
 <script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js"></script>
@@ -304,23 +303,26 @@ else
 }
 
 <script>
+    var categories;
     //<![CDATA[
     function cellTemplate(element, cellInfo) {
-        $('<a/>')
-            .text('@Localizer["Manage"]')
-            .click(function () {
-                onEdit(element, cellInfo);
-            })
-            .appendTo(element);
+            $('<a/>')
+                .text('@Localizer["Manage"]')
+                .click(function () {
+                    onEdit(element, cellInfo);
+                })
+                .appendTo(element);
     }
 
     function onEdit(element, cellinfo) {
         var autokey = cellinfo.data.AutoKey;
-
-        window.location.href = 'ManageCategory?AutoKey=' + autokey;
+        for (var i = 0; i < categories.length; i++) {
+            if (autokey == categories[i].AutoKey && (categories[i].CanEdit == true || categories[i].CanDelete == true)) {
+               window.location.href = 'ManageCategory?AutoKey=' + autokey;
+            }
+        }
     }
 
-    var categories;
 
     $(document).ready(function () {
 
@@ -328,7 +330,9 @@ else
             xmlHttp.open("GET", "api/Categories/", false );
         xmlHttp.send();
 
+
         categories = JSON.parse(xmlHttp.responseText).data;
+
 
         $("#treeList").dxTreeList({
             dataSource: categories,
@@ -336,63 +340,68 @@ else
     });
 
     function onDragChange(e) {
-        var treeList = e.component,
-            visibleRows = treeList.getVisibleRows(),
-            sourceNode = treeList.getNodeByKey(e.itemData.AutoKey),
-            targetNode = visibleRows[e.toIndex].node;
+            var treeList = e.component,
+                visibleRows = treeList.getVisibleRows(),
+                sourceNode = treeList.getNodeByKey(e.itemData.AutoKey),
+                targetNode = visibleRows[e.toIndex].node;
 
-        while (targetNode && targetNode.data) {
-            if (targetNode.data.AutoKey === sourceNode.data.AutoKey) {
-                e.cancel = true;
-                break;
+            while (targetNode && targetNode.data) {
+                if (targetNode.data.AutoKey === sourceNode.data.AutoKey) {
+                    e.cancel = true;
+                    break;
+                }
+                targetNode = targetNode.parent;
             }
-            targetNode = targetNode.parent;
-        }
     }
 
     function onReorder(e) {
-        var treeList = e.component,
-            visibleRows = treeList.getVisibleRows(),
-            sourceData = e.itemData,
-            targetData = visibleRows[e.toIndex].data;
+        if (e.itemData.CanEdit) {
+            var treeList = e.component,
+                visibleRows = treeList.getVisibleRows(),
+                sourceData = e.itemData,
+                targetData = visibleRows[e.toIndex].data;
 
-        if (e.dropInsideItem) {
-            e.itemData.FatherAutoKey = targetData.AutoKey;
-        } else {
-            var sourceIndex = categories.indexOf(sourceData),
-                targetIndex = categories.indexOf(targetData);
+            if (e.dropInsideItem) {
+                e.itemData.FatherAutoKey = targetData.AutoKey;
+            } else {
+                var sourceIndex = categories.indexOf(sourceData),
+                    targetIndex = categories.indexOf(targetData);
 
-            if (sourceData.FatherAutoKey !== targetData.FatherAutoKey) {
-                sourceData.FatherAutoKey = targetData.FatherAutoKey;
-                if (e.toIndex > e.fromIndex) {
-                    targetIndex++;
+                if (sourceData.FatherAutoKey !== targetData.FatherAutoKey) {
+                    sourceData.FatherAutoKey = targetData.FatherAutoKey;
+                    if (e.toIndex > e.fromIndex) {
+                        targetIndex++;
+                    }
                 }
+
+                categories.splice(sourceIndex, 1);
+                categories.splice(targetIndex, 0, sourceData);
             }
 
-            categories.splice(sourceIndex, 1);
-            categories.splice(targetIndex, 0, sourceData);
-        }
-
-        const xhr = new XMLHttpRequest();
+            const xhr = new XMLHttpRequest();
 
 
             xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
 
                 }
+            }
+
+            xhr.open("POST", 'api/Categories/SetParent', true);
+
+            const fd = new FormData();
+
+            fd.append('AutoKey', sourceData.AutoKey);
+            fd.append('FatherAutoKey', sourceData.FatherAutoKey);
+            xhr.send(fd);
+
+            $("#treeList").dxTreeList({
+                dataSource: categories,
+            });
+        } else {
+            alert("You can't edit");
         }
 
-      xhr.open("POST", 'api/Categories/SetParent', true);
-
-                const fd = new FormData();
-
-                fd.append('AutoKey', sourceData.AutoKey);
-                fd.append('FatherAutoKey', sourceData.FatherAutoKey);
-        xhr.send(fd);
-
-        $("#treeList").dxTreeList({
-            dataSource: categories,
-        });
 
         //treeList.refresh();
     }
