@@ -62,10 +62,10 @@ namespace DMS.Controllers
 
         [Route("Register")]
         [HttpPost]
-        public JsonResult Register(string Email, string Password)
+        public JsonResult Register(string Email, string Password, string code)
         {
 
-            int i = new DataManager(null).Register(Email, Password);
+            int i = new DataManager(null).Register(Email, Password, code);
 
             Result result = new Result();
             result.StatusName = ((ErrorCodes)i).ToString();
@@ -73,7 +73,7 @@ namespace DMS.Controllers
 
             if (i == (int)ErrorCodes.SUCCESS)
             {
-                
+            /*    
                 var message = new MimeMessage();
                 message.From.Add(new MailboxAddress("Malafatee", "support@malafatee.com"));
                 message.To.Add(new MailboxAddress(Email, Email));
@@ -98,7 +98,7 @@ namespace DMS.Controllers
                     client.Send(message);
                     client.Disconnect(true);
                 }
-                
+                */
                 AddCookies(Email);
             }   
             return new JsonResult(result);

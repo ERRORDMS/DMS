@@ -7,6 +7,19 @@ namespace DMS.Database
 {
     public class Queries
     {
+		public static string CreateEnterpriseTable = @"
+
+IF((SELECT EnterpriseCode from Users where ID = 'UID') <> '')
+BEGIN
+CREATE TABLE [dbo].[UID](
+	[CatID] [bigint] NULL,
+	[Fathers] [nvarchar](max) NULL,
+	[CanView] [bit] NULL,
+	[CanEdit] [bit] NULL,
+	[CanDelete] [bit] NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+END";
+
 		public static string ConfigureDBQuery = @"
 ALTER DATABASE [DBNAME] SET COMPATIBILITY_LEVEL = 100
 

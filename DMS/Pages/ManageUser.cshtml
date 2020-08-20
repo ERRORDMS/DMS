@@ -150,25 +150,13 @@
         });
         */
 
-            {
+
+        $('#treeList').dxTreeList({
             dataSource: DevExpress.data.AspNet.createStore({
                 key: "AutoKey",
                 loadUrl: "api/Enterprise?userID=@ID",
                 updateUrl: "api/Enterprise/UpdateCat?userID=@ID",
-                /*
-                update: function (key, values) {
-                    console.log(key);
-                    console.log(values);
-
-                }*/
             })
-            /*     displayExpr: "Name",
-        /    valueExpr: "AutoKey",
-            OnValueChanged: getContacts, //Selection
-            hideSelectedItems: true,
-            searchEnabled: true,
-            placeholder: "Select",
-            //  value: [862]*/
         });
     });
 

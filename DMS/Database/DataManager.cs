@@ -892,7 +892,19 @@ namespace DMS.Database
         public  IEnumerable<Category> GetCategories(string userID)
         {
 
-            return sqlHelper.Select<Category>(Tables.Categories, new string[] { "*" });
+            if(!IsEnterprise(userID))
+                return sqlHelper.Select<Category>(Tables.Categories, new string[] { "*" });
+            else
+            {
+                string query = string.Format(@"select 
+AutoKey, FatherAutoKey = 0, Name
+ from {0}
+ left join [{1}] ON [{1}].CatID = {0}.AutoKey
+ where CanView = 1", Tables.Categories, userID);
+
+
+                return sqlHelper.ExecuteReader<Category>(query);
+            }
             /*
             string query = "select ";
             query += " (select Name from " + Tables.Categories + " where AutoKey = CUR.CatAutoKey) as Name,";
@@ -903,6 +915,13 @@ namespace DMS.Database
 
             
             return sqlHelper.ExecuteReader<Category>(query);*/
+        }
+
+        public bool IsEnterprise(string userID)
+        {
+            string result = sqlHelper.SelectWithWhere(Tables.Users, "EnterpriseCode", "ID = '" + userID + "' AND AccountType <> 'Enterprise'");
+
+            return !string.IsNullOrEmpty(result);
         }
 
         public IEnumerable<UserCategory> GetUserCategories(string userID)
@@ -1189,6 +1208,13 @@ END
                     new[] { "1" }, "ID = '" + id + "'"))
                 {
 
+                    // Manage enterprise
+                    string query = Queries.CreateEnterpriseTable;
+
+                    query = query.Replace("UID", id);
+
+                    sqlHelper.ExecuteNonQuery(query);
+
                     var wheres = new Dictionary<string, string>();
                     wheres.Add("UserID", "*");
 
@@ -1204,7 +1230,7 @@ END
 
 
                         // Configure DB
-                        string query = Queries.ConfigureDBQuery;
+                        query = Queries.ConfigureDBQuery;
 
                         query = query.Replace("DBNAME", id);
 
@@ -1236,7 +1262,7 @@ END
             return (int)ErrorCodes.INTERNAL_ERROR;
         }
 
-        public  int Register(string email, string password)
+        public  int Register(string email, string password, string enterpriseCode)
         {
             try
             {
@@ -1253,11 +1279,26 @@ END
                     return (int)ErrorCodes.USERNAME_EXISTS;
                 }
 
+
+                if (!string.IsNullOrEmpty(enterpriseCode))
+                {
+                    wheres = new Dictionary<string, string>();
+
+                    wheres.Add("AccountType", "Enterprise");
+                    wheres.Add("EnterpriseCode", enterpriseCode);
+
+                    if (!sqlHelper.Exists(Tables.Users, wheres))
+                    {
+                        return (int)ErrorCodes.CODE_DOES_NOT_EXIST;
+                    }
+
+                }
+
                 var id = GetUserAutoIcrementID();
 
                 if (sqlHelper.Insert(Tables.Users,
-                    new string[] {  "Name", "ID", "AccountType" },
-                    new string[] {  email,  id, "Free" }))
+                    new string[] {  "Name", "ID", "AccountType", "EnterpriseCode" },
+                    new string[] {  email,  id, "Free", string.IsNullOrEmpty(enterpriseCode) ? "NULL" : enterpriseCode  }))
                 {
                     if (sqlHelper.Insert(Tables.UserStorage,
                         new string[] { "UserID", "UsedStorage", "Storage" },
@@ -1265,7 +1306,7 @@ END
                     {
                         client.SetPasswordAsync(email, password);
 
-                        return (int)ErrorCodes.SUCCESS;
+                        return Verify(id);
 
                         /*
                         string sql = Queries.NewDBQuery;//String.Join(Environment.NewLine, File.ReadAllLines("script.sql"));
@@ -1341,7 +1382,8 @@ END
         USERNAME_EXISTS = 102,
         INTERNAL_ERROR = 103,
         EMAIL_EXISTS = 104,
-        ALREADY_EXISTS = 105
+        ALREADY_EXISTS = 105,
+        CODE_DOES_NOT_EXIST = 106
     }
 
     public static class FormFileExtensions
