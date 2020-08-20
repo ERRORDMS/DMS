@@ -220,9 +220,19 @@ a {
     color: rgb(250,82,82);
     font-weight: 400;
 }
+.err106 {
+    display: none;
+    color: rgb(250,82,82);
+    font-weight: 400;
+}
+.err1006 {
+    display: none;
+    color: rgb(250,82,82);
+    font-weight: 400;
+}
 .box {
     position: absolute;
-    left:94%;
+    left: 94%;
     top: 95%;
 }
 .empty_field {
