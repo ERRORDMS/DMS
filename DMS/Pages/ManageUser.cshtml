@@ -3,20 +3,40 @@
 @{
 
     Layout = "~/Pages/_Layout.cshtml";
+    string ID = "";
+
+    ID = Convert.ToString(Request.Query["ID"]);
+
+    
+    if (ID =="")
+    {
+        <script>
+            window.location = 'Dashboard';
+        </script>
+    }
+
 }
 
-    <div>
-        <h2 class="content-block">Permissions</h2>
-        @(Html.DevExtreme().DataGrid()
-        .ID("userList")
+
+<div>
+    <h2 class="content-block">Permissions</h2>
+    @(Html.DevExtreme().DataGrid()
+        .ID("permissionsList")
 
 .DataSource(d => d.Mvc()
     .Controller("api/Permissions")
     .LoadMethod("GET")
-    .LoadAction("Users")
-    .Key("ID")
-).KeyExpr("ID")
+    .LoadAction("Permissions")
+    .Key("AutoKey")
+).KeyExpr("AutoKey")
+
             .ShowRowLines(true)
+
+            .Selection(s=>
+            s.Mode(SelectionMode.Multiple)
+            .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
+
+            )
             .ShowBorders(true)
             .ColumnAutoWidth(true)
                     .ElementAttr("class", "content-block")
@@ -24,40 +44,157 @@
             .Columns(columns =>
             {
                 columns.Add().DataField("Name")
-                    .Caption("permissions");
-                columns.Add()
-               .Caption("Manage")
-               .Width(100)
-               .Alignment(HorizontalAlignment.Center)
-               .AllowFiltering(false)
-               .AllowSorting(false)
-               .CellTemplate(new JS("cellTemplate"));
-
+                    .Caption("Permission");
 
             })
     )
-        @(Html.DevExtreme().Button()
+
+
+    <br />
+
+    @(Html.DevExtreme().TreeList()
+            .ID("treeList")
+            /*
+    .DataSource(d => d.Mvc()
+        .Controller("Enterprise")
+        .LoadParams(new { userID = ID })
+        .LoadAction("Get")
+        .Key("AutoKey")
+        //.UpdateAction("UpdateCat")
+        //.UpdateMethod("POST")
+    ).
+            */
+            .KeyExpr("AutoKey")
+//    .OnRowUpdated("rowUpdated")
+    .SelectedRowKeys(new[] { 1 })
+    .SearchPanel(s=>s
+                        .Visible(true)
+                        .Placeholder("Search")
+                        .SearchVisibleColumnsOnly(true)
+                )
+                .ParentIdExpr("FatherAutoKey")
+                .ExpandedRowKeys(new[] { 1 })
+                .ShowRowLines(true)
+                .ShowBorders(true)
+                .ElementAttr("class", "content-block")
+                    .Editing(editing =>
+                    {
+                        editing.Mode(GridEditMode.Cell);
+                        editing.AllowUpdating(true);
+                    })
+                .ColumnAutoWidth(true)
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("Name")
+                        .AllowEditing(false)
+                        .Caption("Category Name");
+
+                    columns.Add().DataField("CanView")
+                        .Caption("Can View")
+                        .AllowEditing(true)
+                        .DataType(GridColumnDataType.Boolean);
+
+                    columns.Add().DataField("CanEdit")
+                        .Caption("Can Edit")
+                        .AllowEditing(true)
+                        .DataType(GridColumnDataType.Boolean);
+
+                    columns.Add().DataField("CanDelete")
+                        .Caption("Can Delete")
+                        .AllowEditing(true)
+                        .DataType(GridColumnDataType.Boolean);
+
+                })
+                .OnRowUpdated("rowUpdated")
+            )
+    @(Html.DevExtreme().Button()
         .Icon("save")
         .Text("Save")
         .OnClick("save")
         .ElementAttr("class", "content-block")
 
     )
-    </div>
+</div>
 
 
 
-    <script>
-        //<![CDATA[
-    function cellTemplate(element, cellInfo) {
-        $('<a/>')
-            .text("Manage")
-            .click(function () {
-                onEdit(element, cellInfo);
+<script>
+
+
+    function rowUpdated(e) {
+        console.log(e);
+    }
+    var permissions;
+
+            
+    $(document).ready(function () {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", "api/Permissions/UserPermissions?userID=@ID", false);
+        xmlHttp.send();
+
+        permissions = JSON.parse(xmlHttp.responseText);
+
+        $("#permissionsList").dxDataGrid("instance").option("value", permissions);
+
+        /*
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", "api/Enterprise?userID=", false);
+        xmlHttp.send();
+
+        var res = JSON.parse(xmlHttp.responseText);
+
+        var viewerdataSource = new DevExpress.data.DataSource({
+            store: viewerstore,
+            pageSize: 5,
+            paginate: true
+        });
+        */
+
+            {
+            dataSource: DevExpress.data.AspNet.createStore({
+                key: "AutoKey",
+                loadUrl: "api/Enterprise?userID=@ID",
+                updateUrl: "api/Enterprise/UpdateCat?userID=@ID",
+                /*
+                update: function (key, values) {
+                    console.log(key);
+                    console.log(values);
+
+                }*/
             })
-            .appendTo(element);
-        }
-        function save() {
+            /*     displayExpr: "Name",
+        /    valueExpr: "AutoKey",
+            OnValueChanged: getContacts, //Selection
+            hideSelectedItems: true,
+            searchEnabled: true,
+            placeholder: "Select",
+            //  value: [862]*/
+        });
+    });
 
+    function save() {
+
+        permissions = $('#permissionsList').dxDataGrid('instance').getSelectedRowsData();
+                        const xhr = new XMLHttpRequest();
+
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var t = this.responseText;
+                    var obj = JSON.parse(t);
+
+                    var statusCode = obj.StatusCode;
+                    if (statusCode == 0) {
+                      window.location = "Settings";
+                    }
+              }
+            }
+
+        xhr.open("POST", 'api/Permissions/Save', true);
+
+            const fd = new FormData();
+
+            fd.append('userID', '@ID');
+            fd.append('permissionsJson', JSON.stringify(permissions));
+            xhr.send(fd);
         }
-    </script>
+</script>

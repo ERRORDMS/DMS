@@ -1,1 +1,1 @@
-{"ServiceEndpoint":"http://192.168.1.77:9100.1.77/AlSahlService","DataSource":"192.168.1.77\\ALSAHL","Database":"D:\\AlSahl\\Data\\MoneySql.MDF","DatabasesPath":null}
+{"ServiceEndpoint":"http://127.0.0.1:9100/AlSahlService","DataSource":".\\ALSAHL","Database":"D:\\AlSahl\\Data\\MoneySql.MDF","DatabasesPath":"D:\\AlSahl\\Data"}

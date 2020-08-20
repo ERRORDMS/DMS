@@ -20,6 +20,10 @@ using DevExpress.Web;
 using System.Text.RegularExpressions;
 using Dapper;
 using System.Text;
+using DevExpress.Utils.Text;
+using Newtonsoft.Json.Linq;
+using System.Dynamic;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace DMS.Database
 {
@@ -127,6 +131,34 @@ namespace DMS.Database
 
         }
 
+        public int SaveUser(string userID, List<Permission> permissions)
+        {
+            try
+            {
+                sqlHelper.Delete(Tables.UserPermissions, "UserID = '" + userID + "'");
+
+                foreach(var permission in permissions)
+                {
+                    if(!sqlHelper.Insert(Tables.UserPermissions,
+                        new string[] { "PermissionID", "UserID"},
+                        new string[] { permission.AutoKey.ToString(), userID }))
+                    {
+                        return (int)ErrorCodes.INTERNAL_ERROR;
+                    }
+                }
+
+
+
+                return (int)ErrorCodes.SUCCESS;
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+                return (int)ErrorCodes.INTERNAL_ERROR;
+
+            }
+
+        }
         public  int SetParent(Category cat, string userId)
         {
             try
@@ -873,6 +905,63 @@ namespace DMS.Database
             return sqlHelper.ExecuteReader<Category>(query);*/
         }
 
+        public IEnumerable<UserCategory> GetUserCategories(string userID)
+        {
+
+            string query = string.Format(@"select 
+AutoKey, FatherAutoKey, Name,
+ISNULL(CanEdit, 0) as CanEdit,
+ISNULL(CanView, 0) as CanView,
+ISNULL(CanDelete, 0) as CanDelete
+ from {0}
+ left join [{1}] ON [{1}].CatID = {0}.AutoKey", Tables.Categories, userID);
+
+
+            return sqlHelper.ExecuteReader<UserCategory>(query);
+        }
+
+        public class UpdateInfo
+        {
+            public string CanEdit { get; set; }
+            public string CanView { get; set; }
+            public string CanDelete { get; set; }
+        }
+        public void UpdatePermission(string userId, long key, string values)
+        {
+            var d = JsonConvert.DeserializeObject<UpdateInfo>(values);
+
+            string query = "if(EXISTS(SELECT 1 from [" + userId + "] where CatID = '" + key + "'))";
+            query += " BEGIN";
+
+            query += " UPDATE [" + userId + "] SET ";
+
+            if (!string.IsNullOrEmpty(d.CanView))
+            {
+                query += " CanView = '" + d.CanView + "',";
+            }
+
+            if (!string.IsNullOrEmpty(d.CanEdit))
+            {
+                query += "CanEdit = '" + d.CanEdit + "',";
+            }
+
+            if (!string.IsNullOrEmpty(d.CanDelete))
+            {
+                query += "CanDelete = '" + d.CanDelete + "',";
+            }
+
+            query = query.Remove(query.Length - 1);
+
+            query += " where CatID = '" + key + "'";
+            query += " END";
+            query += " ELSE";
+            query += " BEGIN";
+            query += " INSERT INTO [" + userId + "] (CatID, CanView, CanEdit, CanDelete) values ('" + key + "','" + Convert.ToBoolean(d.CanView) + "','" + Convert.ToBoolean(d.CanEdit) + "','" + Convert.ToBoolean(d.CanDelete) + "')";
+            query += " END";
+
+
+            sqlHelper.ExecuteNonQuery(query);
+        }
         public string Crypt(string text)
         {
             return Convert.ToBase64String(
@@ -894,6 +983,15 @@ namespace DMS.Database
 
             return sqlHelper.SelectWithWhere<User>(Tables.Users, new string[] { "ID", "Name as Email", "AccountType" }, wheres);
         
+        }
+        public IEnumerable<Permission> GetUserPermissions(string userID)
+        {
+
+            string query = "SELECT PermissionID as AutoKey, Name FROM " + Tables.UserPermissions + " inner join " 
+                + Tables.Permissions + " ON Permissions.AutoKey = PermissionID WHERE UserID = '" + userID + "'";
+
+            return sqlHelper.ExecuteReader<Permission>(query);
+
         }
 
         public IEnumerable<Permission> GetPermissions()

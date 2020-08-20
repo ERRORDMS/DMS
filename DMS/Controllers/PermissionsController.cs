@@ -4,8 +4,10 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using DMS.Database;
+using DMS.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace DMS.Controllers
 {
@@ -35,6 +37,28 @@ namespace DMS.Controllers
         public IActionResult GetPermissions()
         {
             return new JsonResult(new DataManager(null).GetPermissions());
+        }
+
+
+        [Route("UserPermissions")]
+        [HttpGet]
+        public IActionResult GetUserPermissions(string userID)
+        {
+            return new JsonResult(new DataManager(null).GetUserPermissions(userID));
+        }
+
+        [Route("Save")]
+        [HttpPost]
+        public IActionResult save(string userID, string permissionsJson)
+        {
+            var permissions = JsonConvert.DeserializeObject<List<Permission>>(permissionsJson);
+            int i = new DataManager(null).SaveUser(userID, permissions);
+
+            AuthorizationController.Result result = new AuthorizationController.Result();
+            result.StatusName = ((ErrorCodes)i).ToString();
+            result.StatusCode = i;
+
+            return new JsonResult(result);
         }
 
 

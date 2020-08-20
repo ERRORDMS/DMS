@@ -92,7 +92,7 @@
                .Alignment(HorizontalAlignment.Center)
                .AllowFiltering(false)
                .AllowSorting(false)
-               .CellTemplate(new JS("cellTemplate"));
+               .CellTemplate(new JS("cellTemplate2"));
 
 
             })
@@ -108,6 +108,27 @@
                 onEdit(element, cellInfo);
             })
             .appendTo(element);
+    }
+
+    function onEdit(element, cellinfo) {
+        var autokey = cellinfo.data.ID;
+
+        window.location.href = 'ManageUser?ID=' + autokey;
+    }
+
+    function cellTemplate2(element, cellInfo) {
+        $('<a/>')
+            .text("Manage")
+            .click(function () {
+                onEdit2(element, cellInfo);
+            })
+            .appendTo(element);
+    }
+
+    function onEdit2(element, cellinfo) {
+        var autokey = cellinfo.data.AutoKey;
+
+        window.location.href = 'ManageContact?AutoKey=' + autokey;
     }
 
     $(document).ready(function () {
