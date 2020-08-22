@@ -149,6 +149,7 @@
             if (s == true) {
                 $("#delete_button").fadeIn(200);
             }
+           
         });
 
         function getVal()
@@ -358,6 +359,19 @@ else
         $("#treeList").dxTreeList({
             dataSource: categories,
         });
+        var xmlHttp = new XMLHttpRequest();
+     //   xmlHttp.open("GET", "api/Permissions/UserPermissions?userID=@ID", false);
+        xmlHttp.send();
+
+        permissions = JSON.parse(xmlHttp.responseText);
+
+        let result = $('#treeList').dxDataGrid('instance').getSelectedRowsData().map(a => a.Name);
+
+        var canAdd = result.includes('Add Category');
+        if (!canAdd) {
+            $("#header").hide(200);
+        }
+
     });
 
     function onDragChange(e) {
