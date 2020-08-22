@@ -3133,3 +3133,5 @@ Parameter name: index
 8/20/2020 12:39:34 PM - A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: SQL Network Interfaces, error: 26 - Error Locating Server/Instance Specified)
 8/20/2020 12:43:13 PM - A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: SQL Network Interfaces, error: 26 - Error Locating Server/Instance Specified)
 8/20/2020 6:03:52 PM - {"Name":"Test"}
+8/22/2020 10:14:14 AM - Violation of UNIQUE KEY constraint 'UQ__Images__A236CBB333D61665'. Cannot insert duplicate key in object 'dbo.Images'. The duplicate key value is (0xfc9c46dbf1c2a98fe15057aead99b4f92ebcba72bf95eec8ee40a63df84266434c82679f166a41ac4fffe6848da76886bfea494d18b32e4be7a740541e80, 22).
+The statement has been terminated.

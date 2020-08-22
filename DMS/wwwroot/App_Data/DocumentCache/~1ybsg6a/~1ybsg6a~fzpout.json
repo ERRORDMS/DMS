@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "1ybsg6a",
+  "CachePdfKey": "1ybsg6a/1ybsg6a-md9rl0.pdf",
+  "CacheXpzKey": "1ybsg6a/1ybsg6a-fzpout.xpz",
+  "CacheInfoKey": "1ybsg6a/1ybsg6a-fzpout.json",
+  "CacheCopyKey": "1ybsg6a/e30nxa.jpg",
+  "Document": null,
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": null,
+  "DocumentFileName": "1252154_771595.jpg",
+  "InputOptions": {
+    "Format": "Jpg",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "1ybsg6a",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}

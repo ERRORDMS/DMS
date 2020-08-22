@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "3pzfar",
+  "CachePdfKey": "3pzfar/3pzfar-syll83.pdf",
+  "CacheXpzKey": "3pzfar/3pzfar-lvgq9a.xpz",
+  "CacheInfoKey": "3pzfar/3pzfar-lvgq9a.json",
+  "CacheCopyKey": "3pzfar/1qbycho.gif",
+  "Document": null,
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": null,
+  "DocumentFileName": "1252152_771593.gif",
+  "InputOptions": {
+    "Format": "Gif",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "3pzfar",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}
