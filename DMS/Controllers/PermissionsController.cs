@@ -67,10 +67,11 @@ namespace DMS.Controllers
         }
         [Route("Save")]
         [HttpPost]
-        public IActionResult save(string userID, string permissionsJson)
+        public IActionResult save(string userID, string permissionsJson, string rolesJson)
         {
             var permissions = JsonConvert.DeserializeObject<List<Permission>>(permissionsJson);
-            int i = new DataManager(userID).SaveUser(userID, permissions);
+            var roles = JsonConvert.DeserializeObject<List<Role>>(rolesJson);
+            int i = new DataManager(userID).SaveUser(userID, permissions, roles);
 
             AuthorizationController.Result result = new AuthorizationController.Result();
             result.StatusName = ((ErrorCodes)i).ToString();
@@ -114,6 +115,18 @@ namespace DMS.Controllers
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             return new JsonResult(new DataManager(userId).GetRoles());
+        }
+
+
+        [Route("GetUserRoles")]
+        [HttpGet]
+        public IActionResult GetUserRoles(string userId = null)
+        {
+
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return new JsonResult(new DataManager(userId).GetUserRoles(userId));
         }
 
         [Route("AddRole")]

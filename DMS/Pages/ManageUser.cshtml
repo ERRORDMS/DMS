@@ -19,6 +19,39 @@
 
 
 <div>
+    <h2 class="content-block">Roles</h2>
+    @(Html.DevExtreme().DataGrid()
+        .ID("rolesList")
+
+.DataSource(d => d.Mvc()
+    .Controller("api/Permissions")
+    .LoadMethod("GET")
+    .LoadAction("Roles")
+    .Key("AutoKey")
+).KeyExpr("AutoKey")
+
+//.OnSelectionChanged("permissionsChanged")
+            .ShowRowLines(true)
+
+            .Selection(s=>
+            s.Mode(SelectionMode.Multiple)
+            .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
+
+            )
+            .ShowBorders(true)
+            .ColumnAutoWidth(true)
+                    .ElementAttr("class", "content-block")
+
+            .Columns(columns =>
+            {
+                columns.Add().DataField("Name")
+                    .Caption("Permission");
+
+            })
+    )
+
+
+    <br />
     <h2 class="content-block">Permissions</h2>
     @(Html.DevExtreme().DataGrid()
         .ID("permissionsList")
@@ -126,6 +159,7 @@
 
 <script>
     var permissions;
+    var roles;
     @*
     function permissionsChanged(e) {
 
@@ -196,11 +230,11 @@
                         .Caption("Can Delete")
                         .AllowEditing(true)
                         .DataType(GridColumnDataType.Boolean);
-            
+
 
     }*@
 
-    function rowUpdated(e) {    
+    function rowUpdated(e) {
         console.log(e);
     }
 
@@ -215,6 +249,14 @@
 
         //$("#permissionsList").dxDataGrid("instance").option("value", permissions);
         $('#permissionsList').dxDataGrid('instance').selectRows(permissions.map(a => a.AutoKey), false)
+
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", "api/Permissions/GetUserRoles?userID=@ID", false);
+        xmlHttp.send();
+
+        roles = JSON.parse(xmlHttp.responseText);
+
+        $('#rolesList').dxDataGrid('instance').selectRows(roles.map(a => a.AutoKey), false)
 
         /*
         var xmlHttp = new XMLHttpRequest();
@@ -243,7 +285,10 @@
     function save() {
 
         permissions = $('#permissionsList').dxDataGrid('instance').getSelectedRowsData();
+        roles = $('#rolesList').dxDataGrid('instance').getSelectedRowsData();
+
                         const xhr = new XMLHttpRequest();
+
 
             xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
@@ -259,10 +304,12 @@
 
         xhr.open("POST", 'api/Permissions/Save', true);
 
+        console.log(JSON.stringify(roles));
             const fd = new FormData();
 
             fd.append('userID', '@ID');
-            fd.append('permissionsJson', JSON.stringify(permissions));
+        fd.append('permissionsJson', JSON.stringify(permissions));
+        fd.append('rolesJson', JSON.stringify(roles));
             xhr.send(fd);
         }
 </script>

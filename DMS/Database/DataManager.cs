@@ -138,17 +138,28 @@ namespace DMS.Database
 
         }
 
-        public int SaveUser(string userID, List<Permission> permissions)
+        public int SaveUser(string userID, List<Permission> permissions, List<Role> roles)
         {
             try
             {
                 sqlHelper.Delete(Tables.UserPermissions, "UserID = '" + userID + "'");
+                sqlHelper.Delete(Tables.UserRoles, "UserID = '" + userID + "'");
 
-                foreach(var permission in permissions)
+                foreach (var permission in permissions)
                 {
                     if(!sqlHelper.Insert(Tables.UserPermissions,
                         new string[] { "PermissionID", "UserID"},
                         new string[] { permission.AutoKey.ToString(), userID }))
+                    {
+
+                        return (int)ErrorCodes.INTERNAL_ERROR;
+                    }
+                }
+                foreach(var role in roles)
+                {
+                    if (!sqlHelper.Insert(Tables.UserRoles,
+                    new string[] { "UserID", "RoleID" },
+                    new string[] { userID, role.AutoKey.ToString() }))
                     {
                         return (int)ErrorCodes.INTERNAL_ERROR;
                     }
@@ -261,6 +272,16 @@ namespace DMS.Database
                     new string[] { category.Name, category.FatherAutoKey.ToString() });
                 if (!string.IsNullOrEmpty(autoKey))
                 {
+                    if (IsEnterprise(userId))
+                    {
+                        if(sqlHelper.Insert("[" + userId + "]",
+                            new string[] { "CatID", "Fathers", "CanView", "CanEdit", "CanAdd", "CanDelete" },
+                            new string[] { autoKey, "", "true", "true", "true", "true" }))
+                        {
+                            return (int)ErrorCodes.SUCCESS;
+
+                        }
+                    }
                     /*
 
                     if (sqlHelper.Insert(Tables.CategoryUserRel,
@@ -275,11 +296,6 @@ namespace DMS.Database
                     {
                         return (int)ErrorCodes.INTERNAL_ERROR;
                     }*/
-                    return (int)ErrorCodes.SUCCESS;
-                }
-                else
-                {
-                    return (int)ErrorCodes.INTERNAL_ERROR;
                 }
             }
             catch (Exception ex)
@@ -288,6 +304,9 @@ namespace DMS.Database
                 return (int)ErrorCodes.INTERNAL_ERROR;
 
             }
+
+            return (int)ErrorCodes.INTERNAL_ERROR;
+
         }
 
 
@@ -942,18 +961,46 @@ namespace DMS.Database
 
         public IEnumerable<UserCategory> GetEnterpriseCategories(string userID)
         {
-            string query = string.Format(@"select 
+            string query = string.Format(@"
+select 
+
 AutoKey, FatherAutoKey = 0, Name,
+    CAST(MAX(CAST(CanEdit as int)) as bit) as CanEdit,
+CAST(MAX(CAST(CanAdd as int)) as bit) as CanAdd,
+CAST(MAX(CAST(CanView as int)) as bit) as CanView,
+CAST(MAX(CAST(CanDelete as int)) as bit) as CanDelete
+ 
+ from 
+(
+select 
+{0}.AutoKey, FatherAutoKey, Name,
 ISNULL(CanEdit, 0) as CanEdit,
-ISNULL(CanView, 0) as CanView,
 ISNULL(CanAdd, 0) as CanAdd,
+ISNULL(CanView, 0) as CanView,
 ISNULL(CanDelete, 0) as CanDelete
  from {0}
- left join [{1}] ON [{1}].CatID = {0}.AutoKey
- where CanView = 1", Tables.Categories, userID);
+ left join {1} ON {1}.CatID = {0}.AutoKey AND {1}.RoleID = RoleID
+ left join {2} ON {2}.UserID = '{3}'
+ where CanView = 1
 
+ UNION ALL
+
+ select 
+AutoKey, FatherAutoKey, Name,
+ISNULL(CanEdit, 0) as CanEdit,
+ISNULL(CanAdd, 0) as CanAdd,
+ISNULL(CanView, 0) as CanView,
+ISNULL(CanDelete, 0) as CanDelete
+ from {0}
+ left join [{3}] ON [{3}].CatID = {0}.AutoKey
+ where CanView = 1
+
+) as t
+
+group by AutoKey, FatherAutoKey, Name", Tables.Categories, Tables.RoleCategories, Tables.UserRoles, userID);
 
             return sqlHelper.ExecuteReader<UserCategory>(query);
+
         }
         public bool IsEnterprise(string userID)
         {
@@ -1161,6 +1208,17 @@ ISNULL(CanDelete, 0) as CanDelete
         public IEnumerable<Role> GetRoles()
         {
             return sqlHelper.Select<Role>(Tables.Roles, new string[] { "AutoKey", "Name" });
+
+        }
+        public IEnumerable<Role> GetUserRoles(string userId)
+        {
+            string query = string.Format(@"select {0}.AutoKey, {0}.Name 
+from {1}
+left join {0} on {0}.AutoKey = {1}.RoleID
+where UserID = '{2}'", Tables.Roles, Tables.UserRoles, userId);
+
+
+            return sqlHelper.ExecuteReader<Role>(query);
 
         }
 
