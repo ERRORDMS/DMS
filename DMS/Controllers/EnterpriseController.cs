@@ -43,6 +43,14 @@ namespace DMS.Controllers
             return Ok();
         }
 
+        [Route("SetAll")]
+        [HttpPost]
+        public IActionResult SetAll(string userID, bool value)
+        {
+            new DataManager(userID).SetAllCatPermissions(userID, value);
+            return Ok();
+        }
+
 
         [Route("UpdateRoleCat")]
         [HttpPut]

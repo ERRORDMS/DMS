@@ -57,6 +57,13 @@ namespace DMS.Database
             }
         }
 
+        public void SetAllCatPermissions(string userID, bool value)
+        {
+            sqlHelper.Update("[" + userID + "]",
+                new string[] { "CanEdit", "CanDelete" },
+                new string[] { value.ToString(), value.ToString() }, "");
+        }
+
         public AlSahlServiceClient GetClient() { return client; }
         
         public int DeleteCategory(long autoKey)
