@@ -48,8 +48,12 @@ namespace DMS.Controllers
 
         [Route("UserPermissions")]
         [HttpGet]
-        public IActionResult GetUserPermissions(string userID)
+        public IActionResult GetUserPermissions(string userID = null)
         {
+
+            if (string.IsNullOrEmpty(userID))
+                userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             return new JsonResult(new DataManager(userID).GetUserPermissions(userID));
         }
 
