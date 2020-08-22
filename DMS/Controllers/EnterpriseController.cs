@@ -21,16 +21,35 @@ namespace DMS.Controllers
         }
 
         [HttpGet]
-        public LoadResult Get(string userId)
+        public LoadResult Get(string userId = null, string roleId = null)
         {
-            return DataSourceLoader.Load(new DataManager(userId).GetUserCategories(userId), new DataSourceLoadOptionsBase());
+            if (!string.IsNullOrEmpty(userId))
+                return DataSourceLoader.Load(new DataManager(userId).GetUserCategories(userId), new DataSourceLoadOptionsBase());
+            else
+            {
+                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                return DataSourceLoader.Load(new DataManager(userId).GetRoleCategories(roleId), new DataSourceLoadOptionsBase());
+            }   
+
         }
+
+
 
         [Route("UpdateCat")]
         [HttpPut]
         public IActionResult UpdateCat(string userID, long key, string values)
         {
             new DataManager(userID).UpdatePermission(userID, key, values);
+            return Ok();
+        }
+
+
+        [Route("UpdateRoleCat")]
+        [HttpPut]
+        public IActionResult UpdateRoleCat(string roleId, long key, string values)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            new DataManager(userId).UpdateRolePermission(roleId, key, values);
             return Ok();
         }
 

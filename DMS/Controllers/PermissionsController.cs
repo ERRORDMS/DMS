@@ -53,12 +53,36 @@ namespace DMS.Controllers
             return new JsonResult(new DataManager(userID).GetUserPermissions(userID));
         }
 
+        [Route("RolePermissions")]
+        [HttpGet]
+        public IActionResult GetRolePermissions(string roleID)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return new JsonResult(new DataManager(userId).GetRolePermissions(roleID));
+        }
         [Route("Save")]
         [HttpPost]
         public IActionResult save(string userID, string permissionsJson)
         {
             var permissions = JsonConvert.DeserializeObject<List<Permission>>(permissionsJson);
             int i = new DataManager(userID).SaveUser(userID, permissions);
+
+            AuthorizationController.Result result = new AuthorizationController.Result();
+            result.StatusName = ((ErrorCodes)i).ToString();
+            result.StatusCode = i;
+
+            return new JsonResult(result);
+        }
+
+        [Route("SaveRole")]
+        [HttpPost]
+        public IActionResult saveRole(string roleID, string permissionsJson)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var permissions = JsonConvert.DeserializeObject<List<Permission>>(permissionsJson);
+            int i = new DataManager(userId).SaveRole(roleID, permissions);
 
             AuthorizationController.Result result = new AuthorizationController.Result();
             result.StatusName = ((ErrorCodes)i).ToString();

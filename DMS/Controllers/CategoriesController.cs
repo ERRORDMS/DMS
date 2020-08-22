@@ -27,8 +27,25 @@ namespace DMS.Controllers
         {
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var dm = new DataManager(userId);
 
-            return DataSourceLoader.Load(new DataManager(userId).GetCategories(userId), new DataSourceLoadOptionsBase());
+            if (!dm.IsEnterprise(userId)) {
+                return DataSourceLoader.Load(dm.GetCategories(), new DataSourceLoadOptionsBase());
+            }
+            else
+            {
+                return DataSourceLoader.Load(dm.GetEnterpriseCategories(userId), new DataSourceLoadOptionsBase());
+            }
+        }
+        
+        [Route("CanDelete")]
+        public bool CanDelete(long AutoKey, string userId = null)
+        {
+
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return new DataManager(userId).CanDelete(AutoKey, userId);
         }
 
         [Route("SetParent")]

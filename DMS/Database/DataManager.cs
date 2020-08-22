@@ -159,6 +159,35 @@ namespace DMS.Database
             }
 
         }
+
+        public int SaveRole(string roleID, List<Permission> permissions)
+        {
+            try
+            {
+                sqlHelper.Delete(Tables.RolePermissions, "RoleID = '" + roleID + "'");
+
+                foreach (var permission in permissions)
+                {
+                    if (!sqlHelper.Insert(Tables.RolePermissions,
+                        new string[] { "PermissionID", "RoleID" },
+                        new string[] { permission.AutoKey.ToString(), roleID }))
+                    {
+                        return (int)ErrorCodes.INTERNAL_ERROR;
+                    }
+                }
+
+
+
+                return (int)ErrorCodes.SUCCESS;
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+                return (int)ErrorCodes.INTERNAL_ERROR;
+
+            }
+
+        }
         public  int SetParent(Category cat, string userId)
         {
             try
@@ -889,25 +918,9 @@ namespace DMS.Database
                 return false;
             }
         }
-        public  IEnumerable<Category> GetCategories(string userID)
+        public  IEnumerable<Category> GetCategories()
         {
-
-            if(!IsEnterprise(userID))
                 return sqlHelper.Select<Category>(Tables.Categories, new string[] { "*" });
-            else
-            {
-                string query = string.Format(@"select 
-AutoKey, FatherAutoKey = 0, Name,
-ISNULL(CanEdit, 0) as CanEdit,
-ISNULL(CanView, 0) as CanView,
-ISNULL(CanDelete, 0) as CanDelete
- from {0}
- left join [{1}] ON [{1}].CatID = {0}.AutoKey
- where CanView = 1", Tables.Categories, userID);
-
-
-                return sqlHelper.ExecuteReader<Category>(query);
-            }
             /*
             string query = "select ";
             query += " (select Name from " + Tables.Categories + " where AutoKey = CUR.CatAutoKey) as Name,";
@@ -920,6 +933,20 @@ ISNULL(CanDelete, 0) as CanDelete
             return sqlHelper.ExecuteReader<Category>(query);*/
         }
 
+        public IEnumerable<UserCategory> GetEnterpriseCategories(string userID)
+        {
+            string query = string.Format(@"select 
+AutoKey, FatherAutoKey = 0, Name,
+ISNULL(CanEdit, 0) as CanEdit,
+ISNULL(CanView, 0) as CanView,
+ISNULL(CanDelete, 0) as CanDelete
+ from {0}
+ left join [{1}] ON [{1}].CatID = {0}.AutoKey
+ where CanView = 1", Tables.Categories, userID);
+
+
+            return sqlHelper.ExecuteReader<UserCategory>(query);
+        }
         public bool IsEnterprise(string userID)
         {
             string result = sqlHelper.SelectWithWhere(Tables.Users, "EnterpriseCode", "ID = '" + userID + "' AND AccountType <> 'Enterprise'");
@@ -937,6 +964,31 @@ ISNULL(CanView, 0) as CanView,
 ISNULL(CanDelete, 0) as CanDelete
  from {0}
  left join [{1}] ON [{1}].CatID = {0}.AutoKey", Tables.Categories, userID);
+
+
+            return sqlHelper.ExecuteReader<UserCategory>(query);
+        }
+
+        public bool CanDelete(long AutoKey, string userID)
+        {
+            string query = string.Format(@"select
+ISNULL(CanDelete, 0) as CanDelete
+ from {0}
+ left join [{1}] ON [{1}].CatID = {0}.AutoKey", Tables.Categories, userID);
+
+            return sqlHelper.ExecuteScalar<bool>(query);
+        }
+
+        public IEnumerable<UserCategory> GetRoleCategories(string roleID)
+        {
+
+            string query = string.Format(@"select 
+AutoKey, FatherAutoKey, Name,
+ISNULL(CanEdit, 0) as CanEdit,
+ISNULL(CanView, 0) as CanView,
+ISNULL(CanDelete, 0) as CanDelete
+ from {0}
+ left join {1} ON {1}.CatID = {0}.AutoKey AND RoleID = {2}", Tables.Categories, Tables.RoleCategories, roleID);
 
 
             return sqlHelper.ExecuteReader<UserCategory>(query);
@@ -984,6 +1036,42 @@ ISNULL(CanDelete, 0) as CanDelete
 
             sqlHelper.ExecuteNonQuery(query);
         }
+        public void UpdateRolePermission(string roleId, long key, string values)
+        {
+            var d = JsonConvert.DeserializeObject<UpdateInfo>(values);
+
+            string query = "if(EXISTS(SELECT 1 from " + Tables.RoleCategories + " where CatID = '" + key + "' AND RoleID = '" + roleId + "'))";
+            query += " BEGIN";
+
+            query += " UPDATE " + Tables.RoleCategories + " SET ";
+
+            if (!string.IsNullOrEmpty(d.CanView))
+            {
+                query += " CanView = '" + d.CanView + "',";
+            }
+
+            if (!string.IsNullOrEmpty(d.CanEdit))
+            {
+                query += "CanEdit = '" + d.CanEdit + "',";
+            }
+
+            if (!string.IsNullOrEmpty(d.CanDelete))
+            {
+                query += "CanDelete = '" + d.CanDelete + "',";
+            }
+
+            query = query.Remove(query.Length - 1);
+
+            query += " where CatID = '" + key + "' AND RoleID = '" + roleId + "'";
+            query += " END";
+            query += " ELSE";
+            query += " BEGIN";
+            query += " INSERT INTO " + Tables.RoleCategories + " (CatID, CanView, CanEdit, CanDelete, RoleID) values ('" + key + "','" + Convert.ToBoolean(d.CanView) + "','" + Convert.ToBoolean(d.CanEdit) + "','" + Convert.ToBoolean(d.CanDelete) + "', '" + roleId + "')";
+            query += " END";
+
+
+            sqlHelper.ExecuteNonQuery(query);
+        }
         public string Crypt(string text)
         {
             return Convert.ToBase64String(
@@ -1006,11 +1094,21 @@ ISNULL(CanDelete, 0) as CanDelete
             return sqlHelper.SelectWithWhere<User>(Tables.Users, new string[] { "ID", "Name as Email", "AccountType" }, wheres);
         
         }
-        public IEnumerable<Permission> GetUserPermissions(string userID)
+        public IEnumerable<Permission> GetUserPermissions(string roleId)
         {
 
             string query = "SELECT PermissionID as AutoKey, Name FROM " + Tables.UserPermissions + " inner join " 
-                + Tables.Permissions + " ON Permissions.AutoKey = PermissionID WHERE UserID = '" + userID + "'";
+                + Tables.Permissions + " ON Permissions.AutoKey = PermissionID WHERE UserID = '" + roleId + "'";
+
+            return sqlHelper.ExecuteReader<Permission>(query);
+
+        }
+
+        public IEnumerable<Permission> GetRolePermissions(string userID)
+        {
+
+            string query = "SELECT PermissionID as AutoKey, Name FROM " + Tables.RolePermissions + " inner join "
+                + Tables.Permissions + " ON Permissions.AutoKey = PermissionID WHERE RoleID = '" + userID + "'";
 
             return sqlHelper.ExecuteReader<Permission>(query);
 
@@ -1042,7 +1140,8 @@ ISNULL(CanDelete, 0) as CanDelete
                 }
 
 
-                if (sqlHelper.Insert(Tables.Roles, new string[] { "Name"}, new string[] { Name }))
+                var id = sqlHelper.InsertWithID(Tables.Roles, new string[] { "Name" }, new string[] { Name });
+                if (!string.IsNullOrEmpty(id))
                 {
                     return (int)ErrorCodes.SUCCESS;
                 }
@@ -1090,7 +1189,9 @@ ISNULL(CanDelete, 0) as CanDelete
             {
                 if (sqlHelper.Delete(Tables.Roles, "AutoKey = '" + AutoKey + "'"))
                 {
-                    return (int)ErrorCodes.SUCCESS;
+                    if (sqlHelper.Delete(Tables.RoleCategories, "RoleID = '" + AutoKey + "'"))
+                        return (int)ErrorCodes.SUCCESS;
+                    
                 }
 
             }
