@@ -1178,21 +1178,43 @@ ISNULL(CanDelete, 0) as CanDelete
             return sqlHelper.SelectWithWhere<User>(Tables.Users, new string[] { "ID", "Name as Email", "AccountType" }, wheres);
         
         }
-        public IEnumerable<Permission> GetUserPermissions(string roleId)
+        public IEnumerable<Permission> GetUserPermissions(string userId)
         {
-
+            /*
             string query = "SELECT PermissionID as AutoKey, Name FROM " + Tables.UserPermissions + " inner join " 
-                + Tables.Permissions + " ON Permissions.AutoKey = PermissionID WHERE UserID = '" + roleId + "'";
+                + Tables.Permissions + " ON Permissions.AutoKey = PermissionID WHERE UserID = '" + userId + "'";
+            */
+            string query = string.Format(@"
+ select AutoKey, Name
+ from
+ (
+ SELECT PermissionID as AutoKey, Name 
+ FROM {0}
+  inner join {1} 
+  ON {1}.AutoKey = PermissionID 
+  WHERE UserID = '{2}'
 
+  UNION ALL
+
+   SELECT PermissionID as AutoKey, Name 
+ FROM {3}
+  inner join {1} 
+  ON {1}.AutoKey = PermissionID 
+  left join {4} ON {4}.UserID = '{2}'
+
+  WHERE {3}.RoleID = {4}.RoleID
+
+) as t
+group by AutoKey, Name", Tables.UserPermissions, Tables.Permissions, userId, Tables.RolePermissions, Tables.UserRoles);
             return sqlHelper.ExecuteReader<Permission>(query);
 
         }
 
-        public IEnumerable<Permission> GetRolePermissions(string userID)
+        public IEnumerable<Permission> GetRolePermissions(string roleID)
         {
 
             string query = "SELECT PermissionID as AutoKey, Name FROM " + Tables.RolePermissions + " inner join "
-                + Tables.Permissions + " ON Permissions.AutoKey = PermissionID WHERE RoleID = '" + userID + "'";
+                + Tables.Permissions + " ON Permissions.AutoKey = PermissionID WHERE RoleID = '" + roleID + "'";
 
             return sqlHelper.ExecuteReader<Permission>(query);
 
