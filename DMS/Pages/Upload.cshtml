@@ -744,7 +744,17 @@
             trailWidth: 1,
             svgStyle: null
         });
+        for (var i = 0; i < files.length; i++) {
+            var fileSizeMB = files[i].size / 1048576.0;
 
+            if ((storage.UsedStorage + fileSizeMB) > storage.Storage) {
+                alert("You don't have enough space!")
+                return;
+            }
+        }
+     
+
+        /*
         Array.from(files).forEach(file => {
             var fileSizeMB = file.size / 1048576.0;
 
@@ -784,6 +794,30 @@
 
            xhr.send(fd);
         });
+        */
 
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                if (i == 0)
+                    window.location = 'Dashboard';
+            }
+        }
+        const fd = new FormData();
+        fd.append('photo', files);
+        fd.append('categories', JSON.stringify(categories))
+        fd.append('contacts', JSON.stringify(contacts));
+        fd.append('keys', JSON.stringify(keys));
+
+        xhr.open("POST", "api/upload", true);
+
+        xhr.upload.addEventListener("progress", (e) => {
+            const percent = e.lengthComputable ? (e.loaded / e.total) * 100 : 0;
+            //       progressBarFill.style.width = percent.toFixed(2) + "%";
+            //        progressBarText.textContent = percent.toFixed(2) + "%";
+            bar.animate(percent.toFixed(2) / 100);
+        });
+
+        xhr.send(fd);
     }
 </script>
