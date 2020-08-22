@@ -983,7 +983,8 @@ ISNULL(CanDelete, 0) as CanDelete
             string query = string.Format(@"select
 ISNULL(CanDelete, 0) as CanDelete
  from {0}
- left join [{1}] ON [{1}].CatID = {0}.AutoKey", Tables.Categories, userID);
+ left join [{1}] ON [{1}].CatID = {0}.AutoKey
+ WHERE {0}.AutoKey = {2}", Tables.Categories, userID, AutoKey);
 
             return sqlHelper.ExecuteScalar<bool>(query);
         }
