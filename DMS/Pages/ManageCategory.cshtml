@@ -21,15 +21,15 @@
         margin-left: 2rem;
         color: rgb(250,82,82);
     }
+
     #header {
         width: 100%;
         height: 100px;
         background: rgb(255,255,255);
-        z-index:2000;
+        z-index: 2000;
         box-shadow: 0px 2px 5px black;
-        
     }
-    /* 
+    /*
     .title2 {
         margin: 0;
         padding: 0;
@@ -39,24 +39,30 @@
     #addCatDiv {
         text-align: center;
     }
+
     #treeList {
         height: 45vh;
     }
+
     .already_exists {
         color: rgb(250,82,82);
         margin-left: 2rem;
         display: none;
     }
+
     .form_category {
         display: flex;
         align-items: center;
     }
+
     #devextreme0 {
         margin: 0;
     }
+
     .space {
         margin-left: 2rem;
     }
+
     .category_input {
         width: 360px;
         margin-right: 1rem;
@@ -82,7 +88,9 @@
         cursor: pointer;
         transition: .5s;
     }
-    
+    #delete_button {
+        display: none;
+    }
 </style>
 <!-- Syncfusion Essential JS 2 Scripts -->
 <script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js"></script>
@@ -91,19 +99,57 @@
 
 @if (AutoKey != 0)
 {
+    <div class="empty_field">
+        @Localizer["MissingArgs"]
+    </div>
+    <div class="server_error">
+        @Localizer["InternalError"]
+    </div>
+    <div class="already_exists">
+        @Localizer["Exists"]
+    </div>
+    <div class="addCategory_form_bar">
+        <div class="addCategory_form">
+            @(Html.DevExtreme().TextBox()
+
+                .Placeholder(Localizer["CategoryNameCol"].Value)
+                        .ElementAttr("class", "content-block")
+                        .Name("txtName")
+    )
+            @(Html.DevExtreme().Button()
+        .Icon("save")
+        .Text(Localizer["Save"].Value)
+        .OnClick("saveCat")
+        .ElementAttr("class", "content-block")
+
+    )
+            @(Html.DevExtreme().Button()
+        .Icon("trash")
+        .Text(Localizer["DeleteCat"].Value)
+        .OnClick("deleteCat")
+        .ElementAttr("class", "content-block")
+        .ElementAttr("id","delete_button")
+
+    )
+        </div>
+    </div>
 
     <script>
-
         $(document).ready(function () {
-
-
             $('#txtName').val(getVal());
             $('#txtName').focus();
             $('#txtName').blur();
 
+            const xhr = new XMLHttpRequest();
 
-
-            });
+            xhr.open("GET", "api/categories/CanDelete", false);
+            xhr.send();
+            var s = JSON.parse(xhr.responseText);
+            console.log(s);
+            if (s == true) {
+                $("#delete_button").fadeIn(200);
+            }
+        });
 
         function getVal()
         {
@@ -111,7 +157,7 @@
             xmlHttp.open("GET", "api/Categories/Name?AutoKey=" + @AutoKey, false );
             xmlHttp.send();
             return xmlHttp.responseText;
-    }
+        }
 
         function saveCat() {
             $(document).ready(function () {
@@ -164,8 +210,11 @@
 
         function deleteCat() {
             const xhr = new XMLHttpRequest();
-
-        xhr.onreadystatechange = function () {
+            xhr.open("GET", "api/Categories/CanDelete", false);
+            xhr.send();
+            let s = JSON.parse(xhr.responseText);
+            if (s == true) {
+                  xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
             window.location = "Index";
             }
@@ -178,43 +227,15 @@
             fd.append('AutoKey', @AutoKey);
             xhr.send(fd);
 
+            } else {
+                alert("you can't delete")
+            }
+
         }
 
     </script>
-    <div class="empty_field">
-        @Localizer["MissingArgs"]
-    </div>
-    <div class="server_error">
-        @Localizer["InternalError"]
-    </div>
-    <div class="already_exists">
-        @Localizer["Exists"]
-    </div>
-    <div class="addCategory_form_bar">
-        <div class="addCategory_form">
-            @(Html.DevExtreme().TextBox()
 
-                .Placeholder(Localizer["CategoryNameCol"].Value)
-                        .ElementAttr("class", "content-block")
-                        .Name("txtName")
-    )
-            @(Html.DevExtreme().Button()
-        .Icon("save")
-        .Text(Localizer["Save"].Value)
-        .OnClick("saveCat")
-        .ElementAttr("class", "content-block")
 
-    )
-            @(Html.DevExtreme().Button()
-        .Icon("trash")
-        .Text(Localizer["DeleteCat"].Value)
-        .OnClick("deleteCat")
-        .ElementAttr("class", "content-block")
-
-    )
-        </div>
-    </div>
-   
 }
 else
 {

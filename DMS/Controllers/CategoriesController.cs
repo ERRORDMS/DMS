@@ -39,6 +39,7 @@ namespace DMS.Controllers
         }
         
         [Route("CanDelete")]
+        [HttpGet]
         public bool CanDelete(long AutoKey, string userId = null)
         {
 
