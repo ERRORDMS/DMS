@@ -374,7 +374,7 @@
                 <nav class="main-nav" role="navigation">
                     <ul class="unstyled list-hover-slide">
                         <li class="nav-item"><a href="Dashboard">@Localizer["Home"]</a></li>
-                        <li class="nav-item"><a href="ManageCategory">@Localizer["Categories"]</a></li>
+                        <li class="nav-item categories"><a href="ManageCategory">@Localizer["Categories"]</a></li>
                         <li class="nav-item"><a href="ManageContact">@Localizer["Contacts"]</a></li>
                         <li class="nav-item"><a href="ManageSearchKey">@Localizer["SearchKeys"]</a></li>
                         <li class="nav-item"><a href="Upload">@Localizer["Upload"]</a></li>
@@ -505,7 +505,25 @@
 
     <script src="~/js/progressbar.js"></script>
     <script>
+        $(document).ready(function () {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", "api/Permissions/UserPermissions", false);
+            xmlHttp.send();
 
+            var permissions = JSON.parse(xmlHttp.responseText);
+
+            let result = permissions.map(a => a.Name);
+
+            var canAdd = result.includes('Add Categories');
+            var canManage = result.includes('Manage Categories');
+            console.log(canAdd);
+            console.log(canManage);
+            if (!canAdd && !canManage) {
+                $(".categories").hide(0);
+            } else {
+                $(".categories").show(0);
+            }
+        })
 
         function switchLanguageEn() {
             switchLanguage("en-US");
