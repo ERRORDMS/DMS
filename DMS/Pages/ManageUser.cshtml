@@ -30,7 +30,7 @@
     .Key("AutoKey")
 ).KeyExpr("AutoKey")
 
-.OnSelectionChanged("permissionsChanged")
+//.OnSelectionChanged("permissionsChanged")
             .ShowRowLines(true)
 
             .Selection(s=>
@@ -66,7 +66,7 @@
     ).
             */
             .KeyExpr("AutoKey")
-//    .OnRowUpdated("rowUpdated")
+    //    .OnRowUpdated("rowUpdated")
     .SelectedRowKeys(new[] { 1 })
     .SearchPanel(s=>s
                         .Visible(true)
@@ -105,6 +105,11 @@
                         .AllowEditing(true)
                         .DataType(GridColumnDataType.Boolean);
 
+                    columns.Add().DataField("CanAdd")
+                       .Caption("Can Add")
+                       .AllowEditing(true)
+                       .DataType(GridColumnDataType.Boolean);
+
                 })
                 .OnRowUpdated("rowUpdated")
             )
@@ -121,7 +126,7 @@
 
 <script>
     var permissions;
-
+    @*
     function permissionsChanged(e) {
 
         let result = $('#permissionsList').dxDataGrid('instance').getSelectedRowsData().map(a => a.Name);
@@ -191,11 +196,11 @@
                         .Caption("Can Delete")
                         .AllowEditing(true)
                         .DataType(GridColumnDataType.Boolean);
-            *@
+            
 
-    }
+    }*@
 
-    function rowUpdated(e) {
+    function rowUpdated(e) {    
         console.log(e);
     }
 
