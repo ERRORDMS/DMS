@@ -397,13 +397,7 @@
                         }
                         <!--  <li class="nav-item"><div class="line">.</div></li>-->
                         <li class="nav-item">
-                            <div class="progress"><div id="progressBar"></div></div>
-                            <h2 class="storage">
-                                <span id="usedStorage">588</span>
-                                <span class="size" id="usedStoragePrefix">MB</span>of
-                                <span id="maxStorage">10</span>
-                                <span class="full_size" id="maxStoragePrefix">GB</span>used
-                            </h2>
+                           <partial name="StorageProgress" /> 
                         </li>
                         <li class="nav-item-upgrade"><a href="">Upgrade</a></li>
                     </ul>
@@ -503,7 +497,6 @@
         </div>
     }
 
-    <script src="~/js/progressbar.js"></script>
     <script>
         $(document).ready(function () {
             var xmlHttp = new XMLHttpRequest();
@@ -647,7 +640,6 @@
             DMS.init();
         });
     </script>
-    <script src="~/js/storage.js"></script>
 
     @RenderSection("Scripts", required: false)
 
