@@ -359,17 +359,20 @@ else
         $("#treeList").dxTreeList({
             dataSource: categories,
         });
+
+        // Get user permissions
+
         var xmlHttp = new XMLHttpRequest();
-     //   xmlHttp.open("GET", "api/Permissions/UserPermissions?userID=@ID", false);
+        xmlHttp.open("GET", "api/Permissions/UserPermissions", false);
         xmlHttp.send();
 
-        permissions = JSON.parse(xmlHttp.responseText);
+        var permissions = JSON.parse(xmlHttp.responseText);
 
-        let result = $('#treeList').dxDataGrid('instance').getSelectedRowsData().map(a => a.Name);
+        let result = permissions.map(a => a.Name);
 
-        var canAdd = result.includes('Add Category');
+        var canAdd = result.includes('Add Categories');
         if (!canAdd) {
-            $("#header").hide(200);
+            $("#header").hide(0);
         }
 
     });
