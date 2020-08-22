@@ -989,6 +989,17 @@ ISNULL(CanDelete, 0) as CanDelete
             return sqlHelper.ExecuteScalar<bool>(query);
         }
 
+        public bool CanAdd(long AutoKey, string userID)
+        {
+            string query = string.Format(@"select
+ISNULL(CanAdd, 0) as CanAdd
+ from {0}
+ left join [{1}] ON [{1}].CatID = {0}.AutoKey
+ WHERE {0}.AutoKey = {2}", Tables.Categories, userID, AutoKey);
+
+            return sqlHelper.ExecuteScalar<bool>(query);
+        }
+
         public IEnumerable<UserCategory> GetRoleCategories(string roleID)
         {
 

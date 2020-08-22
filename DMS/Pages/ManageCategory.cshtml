@@ -387,6 +387,7 @@ else
         }
     }
 
+    var permissions;
 
     $(document).ready(function () {
 
@@ -408,7 +409,7 @@ else
 
         isEnterprise = JSON.parse(xmlHttp.responseText);
 
-        /*
+        
         if (isEnterprise) {
             // Get user permissions
 
@@ -416,11 +417,11 @@ else
             xmlHttp.open("GET", "api/Permissions/UserPermissions", false);
             xmlHttp.send();
 
-            var permissions = JSON.parse(xmlHttp.responseText);
+            var result = JSON.parse(xmlHttp.responseText);
 
-            let result = permissions.map(a => a.Name);
+            permissions = result.map(a => a.Name);
 
-        }*/
+        }
 
     });
 
@@ -503,6 +504,30 @@ else
 
     }
     function addCategory() {
+
+        if (isEnterprise) {
+            if (selectedID != null && selectedID != '') {
+
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open("GET", "api/Categories/CanAdd", false);
+                xmlHttp.send();
+
+                var canAdd = JSON.parse(xmlHttp.responseText);
+
+
+                if (!canAdd) {
+                    alert("You can't add to this category!");
+                    return;
+                }
+            } else {
+                if (!permissions.includes('Can Add Root Category')) {
+                    alert("You can't add to root!");
+                    return;
+                }
+            }
+        }
+        
+
         $(document).ready(function () {
             $('.category_input').click(function () {
                 window.onkeyup = function () {

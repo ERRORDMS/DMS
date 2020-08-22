@@ -49,6 +49,17 @@ namespace DMS.Controllers
             return new DataManager(userId).CanDelete(AutoKey, userId);
         }
 
+        [Route("CanAdd")]
+        [HttpGet]
+        public bool CanAdd(long AutoKey, string userId = null)
+        {
+
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return new DataManager(userId).CanAdd(AutoKey, userId);
+        }
+
         [Route("SetParent")]
         [HttpPost]
         public IActionResult SetParent(Category cat, string userId = null)
