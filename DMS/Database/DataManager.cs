@@ -946,6 +946,7 @@ namespace DMS.Database
 AutoKey, FatherAutoKey = 0, Name,
 ISNULL(CanEdit, 0) as CanEdit,
 ISNULL(CanView, 0) as CanView,
+ISNULL(CanAdd, 0) as CanAdd,
 ISNULL(CanDelete, 0) as CanDelete
  from {0}
  left join [{1}] ON [{1}].CatID = {0}.AutoKey
@@ -967,6 +968,7 @@ ISNULL(CanDelete, 0) as CanDelete
             string query = string.Format(@"select 
 AutoKey, FatherAutoKey, Name,
 ISNULL(CanEdit, 0) as CanEdit,
+ISNULL(CanAdd, 0) as CanAdd,
 ISNULL(CanView, 0) as CanView,
 ISNULL(CanDelete, 0) as CanDelete
  from {0}
@@ -993,6 +995,7 @@ ISNULL(CanDelete, 0) as CanDelete
 AutoKey, FatherAutoKey, Name,
 ISNULL(CanEdit, 0) as CanEdit,
 ISNULL(CanView, 0) as CanView,
+ISNULL(CanAdd, 0) as CanAdd,
 ISNULL(CanDelete, 0) as CanDelete
  from {0}
  left join {1} ON {1}.CatID = {0}.AutoKey AND RoleID = {2}", Tables.Categories, Tables.RoleCategories, roleID);
@@ -1006,10 +1009,14 @@ ISNULL(CanDelete, 0) as CanDelete
             public string CanEdit { get; set; }
             public string CanView { get; set; }
             public string CanDelete { get; set; }
+            public string CanAdd { get; set; }
         }
         public void UpdatePermission(string userId, long key, string values)
         {
             var d = JsonConvert.DeserializeObject<UpdateInfo>(values);
+
+            if (!string.IsNullOrEmpty(d.CanDelete) && Convert.ToBoolean(d.CanDelete))
+                d.CanEdit = "true";
 
             string query = "if(EXISTS(SELECT 1 from [" + userId + "] where CatID = '" + key + "'))";
             query += " BEGIN";
@@ -1026,6 +1033,12 @@ ISNULL(CanDelete, 0) as CanDelete
                 query += "CanEdit = '" + d.CanEdit + "',";
             }
 
+
+            if (!string.IsNullOrEmpty(d.CanAdd))
+            {
+                query += "CanAdd = '" + d.CanAdd + "',";
+            }
+
             if (!string.IsNullOrEmpty(d.CanDelete))
             {
                 query += "CanDelete = '" + d.CanDelete + "',";
@@ -1037,7 +1050,7 @@ ISNULL(CanDelete, 0) as CanDelete
             query += " END";
             query += " ELSE";
             query += " BEGIN";
-            query += " INSERT INTO [" + userId + "] (CatID, CanView, CanEdit, CanDelete) values ('" + key + "','" + Convert.ToBoolean(d.CanView) + "','" + Convert.ToBoolean(d.CanEdit) + "','" + Convert.ToBoolean(d.CanDelete) + "')";
+            query += " INSERT INTO [" + userId + "] (CatID, CanView, CanEdit, CanAdd, CanDelete) values ('" + key + "','" + Convert.ToBoolean(d.CanView) + "','" + Convert.ToBoolean(d.CanEdit) + "','" + Convert.ToBoolean(d.CanAdd) + "','" + Convert.ToBoolean(d.CanDelete) + "')";
             query += " END";
 
 
@@ -1062,6 +1075,11 @@ ISNULL(CanDelete, 0) as CanDelete
                 query += "CanEdit = '" + d.CanEdit + "',";
             }
 
+            if (!string.IsNullOrEmpty(d.CanAdd))
+            {
+                query += "CanAdd = '" + d.CanAdd + "',";
+            }
+
             if (!string.IsNullOrEmpty(d.CanDelete))
             {
                 query += "CanDelete = '" + d.CanDelete + "',";
@@ -1073,7 +1091,7 @@ ISNULL(CanDelete, 0) as CanDelete
             query += " END";
             query += " ELSE";
             query += " BEGIN";
-            query += " INSERT INTO " + Tables.RoleCategories + " (CatID, CanView, CanEdit, CanDelete, RoleID) values ('" + key + "','" + Convert.ToBoolean(d.CanView) + "','" + Convert.ToBoolean(d.CanEdit) + "','" + Convert.ToBoolean(d.CanDelete) + "', '" + roleId + "')";
+            query += " INSERT INTO " + Tables.RoleCategories + " (CatID, CanView, CanEdit, CanDelete, CanAdd, RoleID) values ('" + key + "','" + Convert.ToBoolean(d.CanView) + "','" + Convert.ToBoolean(d.CanEdit) + "','" + Convert.ToBoolean(d.CanDelete) + "', '" + Convert.ToBoolean(d.CanAdd) + "','" + roleId + "')";
             query += " END";
 
 

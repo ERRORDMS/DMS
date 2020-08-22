@@ -16,6 +16,7 @@ CREATE TABLE [dbo].[UID](
 	[Fathers] [nvarchar](max) NULL,
 	[CanView] [bit] NULL,
 	[CanEdit] [bit] NULL,
+	[CanAdd] [bit] NULL,
 	[CanDelete] [bit] NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 END";

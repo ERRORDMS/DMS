@@ -65,7 +65,7 @@
     ).
             */
             .KeyExpr("AutoKey")
-//    .OnRowUpdated("rowUpdated")
+    //    .OnRowUpdated("rowUpdated")
     .SelectedRowKeys(new[] { 1 })
     .SearchPanel(s=>s
                         .Visible(true)
@@ -103,6 +103,12 @@
                         .Caption("Can Delete")
                         .AllowEditing(true)
                         .DataType(GridColumnDataType.Boolean);
+
+
+                    columns.Add().DataField("CanAdd")
+                       .Caption("Can Add")
+                       .AllowEditing(true)
+                       .DataType(GridColumnDataType.Boolean);
 
                 })
                 .OnRowUpdated("rowUpdated")
