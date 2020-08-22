@@ -23,7 +23,6 @@
     }
 
     #header {
-        display: none;
         width: 100%;
         height: 100px;
         background: rgb(255,255,255);
@@ -371,10 +370,6 @@ else
 
         let result = permissions.map(a => a.Name);
 
-        var canAdd = result.includes('Add Categories');
-        if (canAdd) {
-            $("#header").show(0);
-        }
 
     });
 

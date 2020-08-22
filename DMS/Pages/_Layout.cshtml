@@ -248,6 +248,12 @@
             width: 100px;
             height: 100px;
         }
+            svg:nth-child(odd) {
+                display: none;
+            }
+            #progressBar:nth-child(even) {
+                display: none;
+            }
         .storage {
             display: flex;
             justify-content: center;
@@ -401,7 +407,6 @@
                         </li>
                     </ul>
                 </nav>
-
             </div>
             @*
                  @functions{
@@ -495,29 +500,12 @@
 
         </div>
     }
-
     <script>
-        $(document).ready(function () {
-            var xmlHttp = new XMLHttpRequest();
-            xmlHttp.open("GET", "api/Permissions/UserPermissions", false);
-            xmlHttp.send();
-
-            var permissions = JSON.parse(xmlHttp.responseText);
-
-            let result = permissions.map(a => a.Name);
-
-            var canAdd = result.includes('Add Categories');
-            var canManage = result.includes('Manage Categories');
-            if (!canAdd && !canManage) {
-                $(".categories").hide(0);
-            } else {
-                $(".categories").show(0);
-            }
-        })
 
         function switchLanguageEn() {
             switchLanguage("en-US");
         }
+
 
         function switchLanguageAr() {
 
