@@ -20,13 +20,13 @@ namespace DMS.Controllers
     [Route("api/[controller]")]
     public class UploadController : Controller
     {
-        
+
         HostingEnvironment _hostingEnvironment;
         public UploadController(HostingEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
         }
-        
+
         [Route("GetFileName")]
         [HttpGet]
         public string GetFileName(long AutoKey)
@@ -36,7 +36,7 @@ namespace DMS.Controllers
             return fn;
 
         }
-        
+
 
         [Route("GetFile")]
         [HttpGet]
@@ -53,7 +53,7 @@ namespace DMS.Controllers
             Result result = new Result();
             result.StatusName = ((ErrorCodes)i).ToString();
             result.StatusCode = i;
-            
+
             return new JsonResult(result);
         }
 
@@ -84,18 +84,21 @@ namespace DMS.Controllers
         public ActionResult FileSelection(string categories, string contacts, string keys, IFormFile photo, string userId = null)
         {
 
-            
+
             if (photo != null)
             {
-                var cats = JsonConvert.DeserializeObject<List<DMSCategory>>(categories);   
+
+                var cats = JsonConvert.DeserializeObject<List<DMSCategory>>(categories);
                 var cons = JsonConvert.DeserializeObject<List<DMSContact>>(contacts);
                 var sKeys = JsonConvert.DeserializeObject<List<SearchKey>>(keys);
-                if(string.IsNullOrEmpty(userId))
-                    userId =  User.FindFirstValue(ClaimTypes.NameIdentifier);
+                //var photos = JsonConvert.DeserializeObject<List<IFormFile>>(photosJson);
 
-                int result = new DataManager(User.FindFirstValue(ClaimTypes.NameIdentifier)).AddFile(cats, cons,sKeys, photo, userId, _hostingEnvironment.WebRootPath);
+                if (string.IsNullOrEmpty(userId))
+                    userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                if(result == (int)ErrorCodes.SUCCESS)
+                int result = new DataManager(User.FindFirstValue(ClaimTypes.NameIdentifier)).AddFile(cats, cons, sKeys, photo, userId, _hostingEnvironment.WebRootPath);
+
+                if (result == (int)ErrorCodes.SUCCESS)
                 {
                     return Ok();
                 }
@@ -108,7 +111,7 @@ namespace DMS.Controllers
 
             return Ok();
         }
-        
+
 
         /*
         [HttpPost]

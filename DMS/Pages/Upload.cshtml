@@ -804,7 +804,7 @@
             }
         }
         const fd = new FormData();
-        fd.append('photo', files);
+        fd.append('photo', Array.from(files));
         fd.append('categories', JSON.stringify(categories))
         fd.append('contacts', JSON.stringify(contacts));
         fd.append('keys', JSON.stringify(keys));
