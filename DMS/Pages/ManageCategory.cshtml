@@ -385,7 +385,7 @@ else
         } else {
             window.location.href = 'ManageCategory?AutoKey=' + autokey;
         }
-    }
+    }   
 
     var permissions;
 
@@ -509,7 +509,7 @@ else
             if (selectedID != null && selectedID != '') {
 
                 var xmlHttp = new XMLHttpRequest();
-                xmlHttp.open("GET", "api/Categories/CanAdd", false);
+                xmlHttp.open("GET", "api/Categories/CanAdd?AutoKey=" + selectedID, false);
                 xmlHttp.send();
 
                 var canAdd = JSON.parse(xmlHttp.responseText);
