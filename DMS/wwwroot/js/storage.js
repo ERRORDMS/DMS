@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+﻿//$(document).ready(function () {
 
     var xmlHttp = new XMLHttpRequest();
 
@@ -50,11 +50,9 @@
 
 
     var perc = (storage.UsedStorage / storage.Storage);
-    console.log(storage.UsedStorage);
-    console.log(storage.Storage);
     bar.animate(perc);
 
-})
+//})
 
 function calc(num) {
     var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]
