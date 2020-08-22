@@ -43,6 +43,16 @@ namespace DMS.Controllers
             return Ok();
         }
 
+        [Route("IsEnterprise")]
+        [HttpGet]
+        public bool IsEnterprise(string userId)
+        {
+            if (!string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return new DataManager(null).IsEnterprise(userId);
+
+        }
         [Route("SetAll")]
         [HttpPost]
         public IActionResult SetAll(string userID, bool value)

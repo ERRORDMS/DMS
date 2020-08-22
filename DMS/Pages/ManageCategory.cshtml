@@ -88,9 +88,7 @@
         cursor: pointer;
         transition: .5s;
     }
-    #delete_button {
-        display: none;
-    }
+
 </style>
 <!-- Syncfusion Essential JS 2 Scripts -->
 <script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js"></script>
@@ -108,48 +106,84 @@
     <div class="already_exists">
         @Localizer["Exists"]
     </div>
-    <div class="addCategory_form_bar">
-        <div class="addCategory_form">
-            @(Html.DevExtreme().TextBox()
+    @*  <div class="addCategory_form_bar">
+            <div class="addCategory_form">
+                @(Html.DevExtreme().TextBox()
 
+                    .Placeholder(Localizer["CategoryNameCol"].Value)
+                            .ElementAttr("class", "content-block")
+                            .Name("txtName")
+        )
+                @(Html.DevExtreme().Button()
+            .Icon("save")
+            .Text(Localizer["Save"].Value)
+            .OnClick("saveCat")
+            .ElementAttr("class", "content-block")
+
+        )
+                @(Html.DevExtreme().Button()
+            .Icon("trash")
+            .Text(Localizer["DeleteCat"].Value)
+            .OnClick("deleteCat")
+            .ElementAttr("class", "content-block")
+            .ID("delete_button")
+
+        )
+            </div>
+        </div>*@
+
+<div class="content-block">
+    <h2 >@Localizer["ManageCategory"]</h2>
+
+    @(Html.DevExtreme().TextBox()
                 .Placeholder(Localizer["CategoryNameCol"].Value)
-                        .ElementAttr("class", "content-block")
                         .Name("txtName")
+                        //.ID("txtName")
     )
-            @(Html.DevExtreme().Button()
+    <br />
+
+    @(Html.DevExtreme().Button()
         .Icon("save")
+
         .Text(Localizer["Save"].Value)
         .OnClick("saveCat")
-        .ElementAttr("class", "content-block")
 
     )
-            @(Html.DevExtreme().Button()
+    @(Html.DevExtreme().Button()
+        .ID("delete_button")
         .Icon("trash")
+
         .Text(Localizer["DeleteCat"].Value)
         .OnClick("deleteCat")
-        .ElementAttr("class", "content-block")
-        .ElementAttr("id","delete_button")
-
-    )
-        </div>
-    </div>
+        )
+</div>
 
     <script>
+        var isEnterprise;
         $(document).ready(function () {
             $('#txtName').val(getVal());
             $('#txtName').focus();
             $('#txtName').blur();
 
-            const xhr = new XMLHttpRequest();
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", "api/Enterprise/IsEnterprise", false);
+            xmlHttp.send();
 
-            xhr.open("GET", "api/categories/CanDelete?AutoKey=" + @AutoKey, false);
-            xhr.send();
-            var s = JSON.parse(xhr.responseText);
-            console.log(s);
-            if (s == true) {
+            isEnterprise = JSON.parse(xmlHttp.responseText);
+
+            if (isEnterprise == true) {
+                const xhr = new XMLHttpRequest();
+
+                xhr.open("GET", "api/categories/CanDelete?AutoKey=" + @AutoKey, false);
+                xhr.send();
+                var s = JSON.parse(xhr.responseText);
+
+                if (s == true) {
+                    $("#delete_button").fadeIn(200);
+                }
+            } else {
                 $("#delete_button").fadeIn(200);
             }
-           
         });
 
         function getVal()
@@ -214,12 +248,13 @@
             xhr.open("GET", "api/Categories/CanDelete", false);
             xhr.send();
             let s = JSON.parse(xhr.responseText);
-            if (s == true) {
+
+            if (s == true || !isEnterprise) {
                   xhr.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-            window.location = "Index";
-            }
-        }
+                        if (this.readyState == 4 && this.status == 200) {
+                           window.location = "Index";
+                         }
+                    }
 
         xhr.open("POST", 'api/Categories/Delete', true);
 
@@ -326,6 +361,7 @@ else
 
 <script>
     var categories;
+    var isEnterprise;
     //<![CDATA[
     function cellTemplate(element, cellInfo) {
             $('<a/>')
@@ -338,10 +374,15 @@ else
 
     function onEdit(element, cellinfo) {
         var autokey = cellinfo.data.AutoKey;
-        for (var i = 0; i < categories.length; i++) {
-            if (autokey == categories[i].AutoKey && (categories[i].CanEdit == true || categories[i].CanDelete == true)) {
-               window.location.href = 'ManageCategory?AutoKey=' + autokey;
+
+        if (isEnterprise == true) {
+            for (var i = 0; i < categories.length; i++) {
+                if (autokey == categories[i].AutoKey && (categories[i].CanEdit == true || categories[i].CanDelete == true)) {
+                    window.location.href = 'ManageCategory?AutoKey=' + autokey;
+                }
             }
+        } else {
+            window.location.href = 'ManageCategory?AutoKey=' + autokey;
         }
     }
 
@@ -360,16 +401,26 @@ else
             dataSource: categories,
         });
 
-        // Get user permissions
-
         var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("GET", "api/Permissions/UserPermissions", false);
+        xmlHttp.open("GET", "api/Enterprise/IsEnterprise", false);
         xmlHttp.send();
 
-        var permissions = JSON.parse(xmlHttp.responseText);
+        isEnterprise = JSON.parse(xmlHttp.responseText);
 
-        let result = permissions.map(a => a.Name);
+        console.log(isEnterprise);
+        /*
+        if (isEnterprise) {
+            // Get user permissions
 
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", "api/Permissions/UserPermissions", false);
+            xmlHttp.send();
+
+            var permissions = JSON.parse(xmlHttp.responseText);
+
+            let result = permissions.map(a => a.Name);
+
+        }*/
 
     });
 
@@ -389,7 +440,8 @@ else
     }
 
     function onReorder(e) {
-        if (e.itemData.CanEdit) {
+
+        if (isEnterprise == false || e.itemData.CanEdit) {
             var treeList = e.component,
                 visibleRows = treeList.getVisibleRows(),
                 sourceData = e.itemData,
