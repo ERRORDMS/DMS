@@ -64,10 +64,19 @@
     <h2 class="content-block">Role</h2>
     @(Html.DevExtreme().DataGrid()
         .ID("rolesList")
-
+         .Editing(editing =>
+         {
+             editing.Mode(GridEditMode.Row);
+             editing.AllowAdding(true);
+             editing.AllowDeleting(true);
+             editing.AllowUpdating(true);
+         })
 .DataSource(d => d.Mvc()
     .Controller("api/Permissions")
     .LoadMethod("GET")
+    .UpdateAction("UpdateRole")
+        .InsertAction("AddRole")
+        .DeleteAction("DeleteRole")
     .LoadAction("Roles")
     .Key("AutoKey")
 ).KeyExpr("AutoKey")
@@ -133,9 +142,10 @@
 
     $(document).ready(function () {
         var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("GET", "api/Permissions/GetCode", false); 
+        xmlHttp.open("GET", "api/Permissions/GetCode", false);
         xmlHttp.send();
         $('#enterpriseCode').text("Your Enterprise code: " + xmlHttp.responseText);
+
 
     });
 </script>
