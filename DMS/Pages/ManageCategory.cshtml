@@ -88,7 +88,6 @@
         cursor: pointer;
         transition: .5s;
     }
-
 </style>
 <!-- Syncfusion Essential JS 2 Scripts -->
 <script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js"></script>
@@ -132,31 +131,31 @@
             </div>
         </div>*@
 
-<div class="content-block">
-    <h2 >@Localizer["ManageCategory"]</h2>
+    <div class="content-block">
+        <h2>@Localizer["ManageCategory"]</h2>
 
-    @(Html.DevExtreme().TextBox()
+        @(Html.DevExtreme().TextBox()
                 .Placeholder(Localizer["CategoryNameCol"].Value)
                         .Name("txtName")
                         //.ID("txtName")
     )
-    <br />
+        <br />
 
-    @(Html.DevExtreme().Button()
+        @(Html.DevExtreme().Button()
         .Icon("save")
 
         .Text(Localizer["Save"].Value)
         .OnClick("saveCat")
 
     )
-    @(Html.DevExtreme().Button()
+        @(Html.DevExtreme().Button()
         .ID("delete_button")
         .Icon("trash")
 
         .Text(Localizer["DeleteCat"].Value)
         .OnClick("deleteCat")
         )
-</div>
+    </div>
 
     <script>
         var isEnterprise;
@@ -180,9 +179,11 @@
 
                 if (s == true) {
                     $("#delete_button").fadeIn(200);
+                } else if (s == false) {
+                    $("#delete_button").fadeOut(200);
+                } else {
+                    $("#delete_button").fadeIn(200);
                 }
-            } else {
-                $("#delete_button").fadeIn(200);
             }
         });
 
@@ -407,7 +408,6 @@ else
 
         isEnterprise = JSON.parse(xmlHttp.responseText);
 
-        console.log(isEnterprise);
         /*
         if (isEnterprise) {
             // Get user permissions

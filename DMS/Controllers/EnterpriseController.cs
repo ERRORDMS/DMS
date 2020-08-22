@@ -45,9 +45,9 @@ namespace DMS.Controllers
 
         [Route("IsEnterprise")]
         [HttpGet]
-        public bool IsEnterprise(string userId)
+        public bool IsEnterprise(string userId= null)
         {
-            if (!string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             return new DataManager(null).IsEnterprise(userId);
