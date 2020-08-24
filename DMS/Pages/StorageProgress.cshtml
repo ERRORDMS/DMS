@@ -63,7 +63,12 @@
 
 
             var perc = (storage.UsedStorage / storage.Storage);
-            bar.animate(perc);
+        bar.animate(perc);
+
+        let pro = $("#progressBar");
+        $(pro[0].children[1]).css("display", "none");
+        $(pro[0].children[2]).css("display", "none");
+        $(pro[0].children[3]).css("display", "none");
     })
 
     function calc(num) {
