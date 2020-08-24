@@ -3137,3 +3137,5 @@ Parameter name: index
 The statement has been terminated.
 8/22/2020 8:02:31 PM - Timeout expired.  The timeout period elapsed prior to obtaining a connection from the pool.  This may have occurred because all pooled connections were in use and max pool size was reached.
 8/22/2020 8:02:47 PM - Timeout expired.  The timeout period elapsed prior to obtaining a connection from the pool.  This may have occurred because all pooled connections were in use and max pool size was reached.
+8/24/2020 4:41:12 PM - Violation of UNIQUE KEY constraint 'UQ__Images__A236CBB333D61665'. Cannot insert duplicate key in object 'dbo.Images'. The duplicate key value is (0xfc9c46dbf1c2a98fe15057aead99b4f92ebcba72bf95eec8ee40a63df84266434c82679f166a41ac4fffe6848da76886bfea494d18b32e4be7a740541e80, 24).
+The statement has been terminated.

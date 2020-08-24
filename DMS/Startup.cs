@@ -36,7 +36,9 @@ namespace DMS
         {
             Configuration = configuration;
             this._environment = _environment;
-            
+
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(@"MTExMUAzMTM4MmUzMjJlMzBJaWF3ZHF1ZHBMa1lvQmRCUHZlWThOSWhjNlNSVkxjVE92VGVmZ0F5akQ0PQ==");
+
         }
 
         public IConfiguration Configuration { get; }

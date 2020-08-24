@@ -224,8 +224,8 @@
 
 <style>
     .maindiv {
-        font-family: 'Roboto';
-        font-weight: 100;
+       /* font-family: 'Roboto';
+        font-weight: 100;*/
         width: 100%;
         text-align: center;
     }
@@ -245,7 +245,7 @@
         width: 450px;
         border: 2px solid darkblue;
     }
-        
+
     .progress-bar-fill {
         height: 100%;
         width: 0%;
@@ -281,14 +281,17 @@
         justify-content: center;
         align-items: center;
     }
+
     .files_div {
         overflow: auto;
         width: 70%;
         margin-left: 3rem;
     }
+
     .select_button {
         margin-left: 3rem;
     }
+
     .dx-fileuploader-files-container {
         overflow: auto;
     }
@@ -343,10 +346,18 @@
     .option {
         margin-top: 10px;
     }
+
     .productsDataSource {
         width: 360px;
     }
 </style>
+
+<!-- Syncfusion Essential JS 2 Styles -->
+<link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/material.css" />
+
+<!-- Syncfusion Essential JS 2 Scripts -->
+<script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js"></script>
+
 
 <div class="maindiv main-block">
 
@@ -355,6 +366,12 @@
         <br />
 
 
+        @{
+            var asyncSettings = new Syncfusion.EJ2.Inputs.UploaderAsyncSettings { SaveUrl = "api/Upload/Save", RemoveUrl = "api/Upload/Remove", ChunkSize = 10200400 };
+        }
+        <ejs-uploader success="onUploadSuccess" data-required-message="* Choose your image to upload" required data-msg-containerid="uploadError" id="uploadFiles" beforeUpload="onBeforeUpload" uploading="onFileUpload" maxFileSize="1000000000" asyncSettings="@asyncSettings" autoUpload="false"></ejs-uploader>
+        <br />
+        @*
         <div class="buttons">
 
             <div class="select_button">
@@ -392,8 +409,8 @@
         <div id="pleaseWait" style="display:none">
             Please wait... Uploading.
         </div>
-        <div id="progressContainer"></div>
-        
+        <div id="progressContainer"></div>*@
+
         <!--
         <div class="progress-bar" id="progressBar">
             <div class="progress-bar-fill">
@@ -543,7 +560,7 @@
         console.log(e);
     }
     function getContacts(e) {
-         contacts = e.component._selectedItems;
+        contacts = e.component._selectedItems;
     }
     function getKeys(e) {
         keys = e.component._selectedItems;
@@ -566,101 +583,10 @@
     function treeReady(e) {
         $('#treeList').dxTreeList('instance').deselectAll();
     }
-    window.onchange = function () { getfiles() }
-    function getfiles() {
-        /*
-        let filesUploaderContainer = document.querySelector(".dx-fileuploader-files-container");
-        filesUploaderContainer.style.display = "none";
-        let fileUploader = document.getElementsByClassName("dx-fileuploader-file-container");
-        let arr = Array.from(fileUploader);
-        console.log(fileUploader);
-        for (let i = 0; i < arr.length; i++) {
-            console.log(arr[i]);
-            $('#files_div').append(arr[i]);
-          //  $("#files_div").html(arr[i]);
-        }*/
-        let filesUploaderContainer = document.querySelector(".dx-fileuploader-files-container");
-        $('#files_div').html(filesUploaderContainer);
-        //    filesUploaderContainer.style.display = "none";
-    }
 
     $(document).ready(function () {
-        var viewerstore = new DevExpress.data.CustomStore({
-            load: function (loadOptions) {
-                var deferred = $.Deferred(), args = {};
-                if (loadOptions.skip != 0) {
-                    args.skip = loadOptions.skip + 1;
-                } else {
-                    args.skip = loadOptions.skip;
-                }
-                args.take = loadOptions.take + loadOptions.skip;
-                args.sv = loadOptions.searchValue;
-
-                if (isNaN(args.skip)) {
-                    args.skip = 0;
-                }
-
-                if (isNaN(args.take)) {
-                    args.take = 5;
-                }
-
-                var resultsArr = [];
-                //return only records from the search value
-                if (args.sv != null) {
-                    for (i = 0; i < jsonuserArr.length; i++) {
-                        //for this demo just simulating getting rest data with the search filter done in the rest api
-                        if (jsonuserArr[i]["name"].includes(args.sv)) {
-                            resultsArr.push(jsonuserArr[i]);
-                        }
-                    }
-                } else {
-                    //full user array
-                    //ok
-                    resultsArr = jsonuserArr;
-                }
-
-                resultsArr = resultsArr.slice(args.skip, args.take);
-
-                if (loadOptions.filter && loadOptions.filter.length >= 3) {
-                    var queryResult = DevExpress.data.query(jsonuserArr)
-                        .filter(loadOptions.filter)
-                        .toArray();
-                    resultsArr = queryResult;
-                };
-                //replace my ajax call here for hardcoded json
-                deferred.resolve(resultsArr);
-                return deferred.promise();
-            }
-        });
+        
         var xmlHttp = new XMLHttpRequest();
-        /*
-        xmlHttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                var res = JSON.parse(this.responseText);
-                $("#contactsTagBox").dxTagBox({
-                    dataSource: res.data,
-                    valueExpr: 'AutoKey',
-                    displayExpr: 'Name'
-                });
-                var viewerdataSource = new DevExpress.data.DataSource({
-                    store: res.data,
-                    pageSize: 5,
-                    paginate: true
-                });
-
-                $("#productsDataSource").dxTagBox({
-                    dataSource: viewerdataSource,
-                    displayExpr: "Name",
-                    valueExpr: "AutoKey",
-                    OnSelectionChanged: getContacts(), //Selection
-                    hideSelectedItems: true,
-                    searchEnabled: true,
-                    placeholder: "Select Viewers",
-                    value: [862]
-                });
-            }
-        }
-        */
 
         xmlHttp.open("GET", "api/Contacts", false);
         xmlHttp.send();
@@ -681,17 +607,14 @@
             hideSelectedItems: true,
             searchEnabled: true,
             placeholder: "Select",
-          //  value: [862]
+            //  value: [862]
         });
-        $("#File").change(function (e) {
-            files = e.target.files;
-        })
 
         xmlHttp = new XMLHttpRequest();
         xmlHttp.open("GET", "api/SearchKeys", false);
         xmlHttp.send();
         var res = JSON.parse(xmlHttp.responseText);
-     
+
         var viewerdataSource = new DevExpress.data.DataSource({
             store: res.data,
             pageSize: 5,
@@ -708,8 +631,60 @@
             //  value: [862]
         });
     })
+    function onBeforeUpload(args) {
+        var uploadObj = document.getElementById("uploadFiles").ej2_instances[0];
+        var files = uploadObj.filesData;
+
+        if (categories == null || categories == '') {
+            alert('Choose a category!');
+            args.cancel = true;
+            return;
+        }
 
 
+        var allSize = 0;
+        for (var i = 0; i < files.length; i++) {
+            var fileSizeMB = files[i].size / 1048576.0;
+
+            allSize = allSize + fileSizeMB;
+        }
+
+        
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", "api/authorization/getuserstorage", false);
+        xmlHttp.send();
+        var d = xmlHttp.responseText;
+        storage = JSON.parse(d);
+
+        if ((storage.UsedStorage + allSize) > storage.Storage) {
+            alert("You don't have enough space!")
+            return;
+        }
+
+
+
+    }
+    function onFileUpload(args) {
+
+        args.customFormData = [{
+            'categories': JSON.stringify(categories)
+        },
+        {
+            'contacts': JSON.stringify(contacts)
+        },
+            {
+                'keys': JSON.stringify(keys)
+        }];
+
+    }
+
+    function onUploadSuccess(args) {
+        if (args.operation === 'upload') {
+            window.location = 'Dashboard';
+        }
+    }
+
+    @*
     function upload() {
 
         if (categories == null || categories == '') {
@@ -752,7 +727,7 @@
                 return;
             }
         }
-     
+
 
         /*
         Array.from(files).forEach(file => {
@@ -820,4 +795,7 @@
 
         xhr.send(fd);
     }
+    *@
 </script>
+
+<ejs-scripts></ejs-scripts>

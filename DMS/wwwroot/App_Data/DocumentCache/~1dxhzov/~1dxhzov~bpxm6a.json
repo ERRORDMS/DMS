@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "1dxhzov",
+  "CachePdfKey": "1dxhzov/1dxhzov-1nrwo2i.pdf",
+  "CacheXpzKey": "1dxhzov/1dxhzov-bpxm6a.xpz",
+  "CacheInfoKey": "1dxhzov/1dxhzov-bpxm6a.json",
+  "CacheCopyKey": "1dxhzov/1k2cfpt.png",
+  "Document": null,
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": null,
+  "DocumentFileName": "1252200_771721.png",
+  "InputOptions": {
+    "Format": "Png",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "1dxhzov",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}
