@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 using DMS.Database;
 using DMS.Models;
@@ -24,9 +25,11 @@ namespace DMS.Controllers
     {
 
         HostingEnvironment _hostingEnvironment;
-        public UploadController(HostingEnvironment hostingEnvironment)
+        UploadFileTask uploadTask;
+        public UploadController(HostingEnvironment hostingEnvironment, UploadFileTask _task)
         {
             _hostingEnvironment = hostingEnvironment;
+            uploadTask = _task;
         }
 
         [Route("GetFileName")]
@@ -156,20 +159,23 @@ namespace DMS.Controllers
         {
             try
             {
-                var cats = JsonConvert.DeserializeObject<List<DMSCategory>>(categories);
-                var cons = JsonConvert.DeserializeObject<List<DMSContact>>(contacts);
-                var sKeys = JsonConvert.DeserializeObject<List<SearchKey>>(keys);
-
-                if (string.IsNullOrEmpty(userId))
-                    userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-                foreach (var file in uploadFiles)
+                uploadTask.AddTask(Task.Run(() => { }));
+                if (uploadFiles != null && uploadFiles.Count > 0 && !string.IsNullOrEmpty(categories))
                 {
+                    var cats = JsonConvert.DeserializeObject<List<DMSCategory>>(categories);
+                    var cons = JsonConvert.DeserializeObject<List<DMSContact>>(contacts);
+                    var sKeys = JsonConvert.DeserializeObject<List<SearchKey>>(keys);
 
-                   
+                    if (string.IsNullOrEmpty(userId))
+                        userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                 new DataManager(userId).AddFile(cats, cons, sKeys, file, userId, _hostingEnvironment.WebRootPath);
+                    foreach (var file in uploadFiles)
+                    {
 
+
+                        new DataManager(userId).AddFile(cats, cons, sKeys, file, userId, uploadTask);
+
+                    }
                 }
             }
             catch (Exception e)

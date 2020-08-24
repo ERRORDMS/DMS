@@ -171,6 +171,9 @@
             text-align: center;
         }
 
+        .main-nav a i {
+            margin-right:1rem;
+        }
             .main-nav a:hover {
                 color: #0087FF;
             }
@@ -294,7 +297,7 @@
             @(Html.DevExtreme().Toolbar()
                 .Items(items =>
                 {
-
+                    /*
                         items.Add()
                             .Widget(w => w
                                 .Button()
@@ -302,12 +305,16 @@
                                 .OnClick("DMS.onMenuButtonClick")
                             )
                             .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.After : ToolbarItemLocation.Before)
+                            .CssClass("menu-button");*/
+                    items.Add()
+                            .Html(@"<i class='fas fa-folder' style='color: #0087ff'></i>")
+                            .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.After : ToolbarItemLocation.Before)
                             .CssClass("menu-button");
 
-                        items.Add()
-                            .Html("<div>" + Localizer["Title"].Value + "</div>")
-                            .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.After : ToolbarItemLocation.Before)
-                            .CssClass("header-title");
+                    items.Add()
+                        .Html("<div>" + Localizer["Title"].Value + "</div>")
+                        .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.After : ToolbarItemLocation.Before)
+                        .CssClass("header-title");
 
                     items.Add()
                        .Widget(w => w
@@ -378,12 +385,11 @@
             <div class="nav-wrap">
                 <nav class="main-nav" role="navigation">
                     <ul class="unstyled list-hover-slide">
-                        <li class="nav-item"><a href="Dashboard">@Localizer["Home"]</a></li>
-                        <li class="nav-item categories"><a href="ManageCategory">@Localizer["Categories"]</a></li>
-                        <li class="nav-item"><a href="ManageContact">@Localizer["Contacts"]</a></li>
-                        <li class="nav-item"><a href="ManageSearchKey">@Localizer["SearchKeys"]</a></li>
-                        <li class="nav-item"><a href="Upload">@Localizer["Upload"]</a></li>
-                        <li class="nav-item"><a href="SignOut">@Localizer["Logout"]</a></li>
+                        <li class="nav-item"><a href="Dashboard"><i class="fas fa-home"></i>@Localizer["Home"]</a></li>
+                        <li class="nav-item categories"><a href="ManageCategory"><i class="fas fa-tag"></i>@Localizer["Categories"]</a></li>
+                        <li class="nav-item"><a href="ManageContact"><i class="fas fa-users"></i>@Localizer["Contacts"]</a></li>
+                        <li class="nav-item"><a href="ManageSearchKey"><i class="fas fa-key"></i>@Localizer["SearchKeys"]</a></li>
+                        <li class="nav-item"><a href="Upload"><i class="fas fa-upload"></i>@Localizer["Upload"]</a></li>
 
                         @{
                             var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
@@ -397,9 +403,11 @@
                             }
                             if (accountType == "Enterprise")
                             {
-                                <li class="nav-item"><a href="Settings">@Localizer["Settings"]</a></li>
+                                <li class="nav-item"><a href="Settings"><i class="fas fa-user-cog"></i>@Localizer["Settings"]</a></li>
                             }
                         }
+                        <li class="nav-item"><a href="SignOut"><i class="fas fa-sign-out-alt"></i>@Localizer["Logout"]</a></li>
+
                         <!--  <li class="nav-item"><div class="line">.</div></li>-->
                         <li class="nav-item">
                             <div class="progress"><div id="progressBar"></div></div>
@@ -411,7 +419,7 @@
                             </h2>
                             <!-- <partial name="StorageProgress" />-->
                         </li>
-                        <li class="nav-item-upgrade"><a href="">Upgrade</a></li>
+                        <li class="nav-item-upgrade"><a href="">@Localizer["Upgrade"]</a></li>
                     </ul>
                 </nav>
             </div>

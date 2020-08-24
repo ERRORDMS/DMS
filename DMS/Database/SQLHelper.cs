@@ -109,6 +109,22 @@ CREATE DATABASE [{0}]
             return sqlCommand.ExecuteNonQuery();
         }
 
+        public Task<int> ExecuteNonQueryAsync(string query, params SqlParameter[] parameters)
+        {
+            if (sqlConnection.State == System.Data.ConnectionState.Closed)
+                sqlConnection.OpenAsync();
+
+            var sqlCommand = sqlConnection.CreateCommand();
+            sqlCommand.CommandType = System.Data.CommandType.Text;
+
+            sqlCommand.CommandText = query;
+            if (parameters.Length != 0)
+                sqlCommand.Parameters.AddRange(parameters);
+
+
+            return sqlCommand.ExecuteNonQueryAsync();
+        }
+
         public T ExecuteScalar<T>(string query)
         {
             if (sqlConnection.State == System.Data.ConnectionState.Closed)

@@ -53,6 +53,7 @@ namespace DMS
                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver())
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization();
+            services.AddSingleton<UploadFileTask>();
 
             /*
             services.AddDbContext<DMSContext>(options =>

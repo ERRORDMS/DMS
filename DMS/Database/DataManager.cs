@@ -24,6 +24,8 @@ using DevExpress.Utils.Text;
 using Newtonsoft.Json.Linq;
 using System.Dynamic;
 using Microsoft.CSharp.RuntimeBinder;
+using System.Threading;
+using Microsoft.AspNetCore.Http.Internal;
 
 namespace DMS.Database
 {
@@ -741,7 +743,7 @@ namespace DMS.Database
                 return (int)ErrorCodes.INTERNAL_ERROR;
             }
         }
-        public  int AddFile(List<DMSCategory> categories, List<DMSContact> contacts, List<SearchKey> SearchKeys, IFormFile file, string userID, string webRoot)
+        public  int AddFile(List<DMSCategory> categories, List<DMSContact> contacts, List<SearchKey> SearchKeys, IFormFile file, string userID, UploadFileTask uploadFileTask)
         {
             try
             {
@@ -780,32 +782,46 @@ namespace DMS.Database
                 }
 
 
-                if (!string.IsNullOrEmpty(infoAutoKey) && !string.IsNullOrEmpty(lineAutoKey))
+                uploadFileTask.AddTask(new Task(() =>
                 {
-                    string filename = infoAutoKey + "_" + lineAutoKey + Path.GetExtension(file.FileName);
-
-
-                    string parent = AddDateDirectories(); // GetParentPathLocator(TmpAdo, "Images");
-                    string query
-                        = " INSERT into Images (stream_id, file_stream, name, path_locator) ";
-                    query += "  values (NEWID(), @File, '" + filename + "', CAST('" + parent + "' AS hierarchyid))";
-
-                    var bytes = file.GetBytes().Result;
-                        
-                    SqlParameter param = new SqlParameter("@File", System.Data.SqlDbType.Binary, bytes.Length);
-                    param.Value = bytes;
-
-                    int i = sqlHelper.ExecuteNonQuery(query, param);
-
-                    if (i > 0)
+                    try
                     {
-                        var fileSize = file.Length / 1048576.0;
+                        Logger.Log("Task run");
+                        if (!string.IsNullOrEmpty(infoAutoKey) && !string.IsNullOrEmpty(lineAutoKey))
+                        {
+                            string filename = infoAutoKey + "_" + lineAutoKey + Path.GetExtension(file.FileName);
 
-                        if (new DataManager(null).AddUsedStorage(Math.Round(fileSize, 2), userID))
-                            return (int)ErrorCodes.SUCCESS;
+
+                            string parent = AddDateDirectories(); // GetParentPathLocator(TmpAdo, "Images");
+                            string query
+                                = " INSERT into Images (stream_id, file_stream, name, path_locator) ";
+                            query += "  values (NEWID(), @File, '" + filename + "', CAST('" + parent + "' AS hierarchyid))";
+
+                            var bytes = file.GetBytes().Result;
+
+                            SqlParameter param = new SqlParameter("@File", System.Data.SqlDbType.Binary, bytes.Length);
+                            param.Value = bytes;
+
+                            int i =  sqlHelper.ExecuteNonQuery(query, param);
+
+                            if (i > 0)
+                            {
+                                var fileSize = file.Length / 1048576.0;
+
+                                new DataManager(null).AddUsedStorage(Math.Round(fileSize, 2), userID);
+                            }
+                        }
+
+                        Logger.Log("Task end");
+                    }catch(Exception ex)
+                    {
+                        Logger.Log(ex.Message + " - " + ex.InnerException);
                     }
-                }
 
+                }));
+
+                    
+             
                 return (int)ErrorCodes.INTERNAL_ERROR;
             }
             catch (Exception ex)
@@ -816,7 +832,6 @@ namespace DMS.Database
             }
 
         }
-
 
         public  bool AddUsedStorage(double amount, string userID)
         {
