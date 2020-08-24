@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using DMS.Database;
@@ -9,6 +10,7 @@ using DMS.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ServiceReference1;
@@ -79,7 +81,7 @@ namespace DMS.Controllers
         {
             return new DataManager(User.FindFirstValue(ClaimTypes.NameIdentifier)).GetFileInfo(InfoAutoKey);
         }
-
+        /*
         [HttpPost]
         public ActionResult FileSelection(string categories, string contacts, string keys, IFormFile photo, string userId = null)
         {
@@ -113,7 +115,7 @@ namespace DMS.Controllers
         }
 
 
-        /*
+        
         [HttpPost]
         public ActionResult FileSelection(IFormFile photo, string userId = null)
         {
@@ -146,6 +148,62 @@ namespace DMS.Controllers
         public List<Document> GetCatDocuments(long CatID)
         {
             return new DataManager(User.FindFirstValue(ClaimTypes.NameIdentifier)).GetCatDocuments(CatID);
+        }
+
+        [Route("Save")]
+        [HttpPost]
+        public void Save(IList<IFormFile> uploadFiles, string categories, string contacts, string keys, string userId = null)
+        {
+            try
+            {
+                var cats = JsonConvert.DeserializeObject<List<DMSCategory>>(categories);
+                var cons = JsonConvert.DeserializeObject<List<DMSContact>>(contacts);
+                var sKeys = JsonConvert.DeserializeObject<List<SearchKey>>(keys);
+
+                if (string.IsNullOrEmpty(userId))
+                    userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                foreach (var file in uploadFiles)
+                {
+
+                   
+
+                 new DataManager(userId).AddFile(cats, cons, sKeys, file, userId, _hostingEnvironment.WebRootPath);
+
+                }
+            }
+            catch (Exception e)
+            {
+                Response.Clear();
+                Response.StatusCode = 204;
+                Response.HttpContext.Features.Get<IHttpResponseFeature>().ReasonPhrase = "File failed to upload";
+                Response.HttpContext.Features.Get<IHttpResponseFeature>().ReasonPhrase = e.Message;
+            }
+        }
+
+        public void Remove(IList<IFormFile> UploadFiles)
+        {
+            /*
+            try
+            {
+                foreach (var file in UploadFiles)
+                {
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    var filePath = Path.Combine(hostingEnv.WebRootPath);
+                    var fileSavePath = filePath + "\\" + fileName;
+                    if (System.IO.File.Exists(fileSavePath))
+                    {
+                        System.IO.File.Delete(fileSavePath);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Response.Clear();
+                Response.StatusCode = 200;
+                Response.HttpContext.Features.Get<IHttpResponseFeature>().ReasonPhrase = "File removed successfully";
+                Response.HttpContext.Features.Get<IHttpResponseFeature>().ReasonPhrase = e.Message;
+            }*/
         }
 
     }
