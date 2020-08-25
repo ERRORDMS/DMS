@@ -27,6 +27,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace DMS
 {
@@ -70,6 +73,7 @@ namespace DMS
             //----------------------
             services.AddGleamTech();
             //----------------------
+            /*
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
   .AddCookie(options =>
   {
@@ -81,6 +85,8 @@ namespace DMS
         ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
       options.Cookie.SameSite = SameSiteMode.Lax;
   });
+            */
+
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -90,6 +96,21 @@ namespace DMS
                 options.Secure = _environment.IsDevelopment()
                   ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
             });
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+   .AddJwtBearer(options =>
+   {
+       options.TokenValidationParameters = new TokenValidationParameters
+       {
+           ValidateIssuer = true,
+           ValidateAudience = true,
+           ValidateLifetime = true,
+           ValidateIssuerSigningKey = true,
+           ValidIssuer = Configuration["Jwt:Issuer"],
+           ValidAudience = Configuration["Jwt:Issuer"],
+           IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+       };
+   });
 
             services.Configure<FormOptions>(x =>
             {

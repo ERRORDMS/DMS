@@ -243,7 +243,7 @@
     $(document).ready(function () {
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open("GET", "api/Permissions/UserPermissions?userID=@ID", false);
-        xmlHttp.send();
+        xmlHttp.send 
 
         permissions = JSON.parse(xmlHttp.responseText);
 
