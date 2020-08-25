@@ -121,15 +121,16 @@
             
             if (email && password) {
                 const xhr = new XMLHttpRequest();
+
                 xhr.onreadystatechange = function () {
                     if (this.readyState == 4 && this.status == 200) {
-                        var t = this.responseText;
+                        var t = this.response;
                         var obj = JSON.parse(t);
-
                         var statusCode = obj.StatusCode;
 
                         if (statusCode == 0) {
-                            window.location = 'Dashboard';
+                            console.log("1");
+                            //window.location = 'Dashboard';
                         }
                         if (statusCode == 101) {
                             $(document).ready(function () {
