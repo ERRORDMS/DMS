@@ -297,7 +297,6 @@
             @(Html.DevExtreme().Toolbar()
                 .Items(items =>
                 {
-                    /*
                         items.Add()
                             .Widget(w => w
                                 .Button()
@@ -305,11 +304,13 @@
                                 .OnClick("DMS.onMenuButtonClick")
                             )
                             .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.After : ToolbarItemLocation.Before)
-                            .CssClass("menu-button");*/
+                            .CssClass("menu-button");
+                    /*
                     items.Add()
                             .Html(@"<i class='fas fa-folder' style='color: #0087ff'></i>")
                             .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.After : ToolbarItemLocation.Before)
                             .CssClass("menu-button");
+                    */
 
                     items.Add()
                         .Html("<div>" + Localizer["Title"].Value + "</div>")
@@ -357,31 +358,6 @@
     @using (Html.DevExtreme().NamedTemplate("navigation-menu"))
     {
         <div class="menu-container dx-swatch-additional" style="background-color:#363640">
-            <!--
-            <div class="navBar">
-                <ul class="list">
-                    <li class="nav-item">
-                        <div class="icon">
-                            <i class="fas fa-home"></i>
-                            <div class="nav-link">
-                                <a href="" class="link-text">Dashboard</a>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <div class="icon">
-                            <i class="fas fa-tag"></i>
-                            <div class="nav-link">
-                                <a href="" class="link-text">@Localizer["Categories"]</a>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="nav-item"><div class="icon"><i class="fas fa-users"></i><div class="nav-link"><a href="" class="link-text">@Localizer["Contacts"]</a></div></div></li>
-                    <li class="nav-item"><div class="icon"><i class="fas fa-upload"></i><div class="nav-link"><a href="" class="link-text">@Localizer["Upload"]</a></div></div></li>
-                    <li class="n\av-item"><div class="icon"><i class="fas fa-sign-out-alt"></i><div class="nav-link"><a href="" class="link-text">@Localizer["Logout"]</a></div></div></li>
-                </ul>
-            </div>
-                -->
             <div class="nav-wrap">
                 <nav class="main-nav" role="navigation">
                     <ul class="unstyled list-hover-slide">
@@ -407,10 +383,10 @@
                             }
                         }
                         <li class="nav-item"><a href="SignOut"><i class="fas fa-sign-out-alt"></i>@Localizer["Logout"]</a></li>
-                        <li class="nav-item-upgrade"><a href="">@Localizer["Upgrade"]</a></li>
                         <li class="nav-item">
                             <partial name="StorageProgress" />
                         </li>
+                        <li class="nav-item-upgrade upgrade"><a href="">@Localizer["Upgrade"]</a></li>
                     </ul>
                 </nav>
             </div>
@@ -509,7 +485,9 @@
     <script src="~/js/progressbar.js"></script>
     <script>
         $(document).ready(function () {
-
+            let list = $(".list-hover-slide");
+            let upgrade = $(".upgrade");
+            list.append(upgrade);
             var xmlHttp = new XMLHttpRequest();
 
             xmlHttp.open("GET", "api/authorization/getuserstorage", false);
@@ -561,6 +539,9 @@
 
             var perc = (storage.UsedStorage / storage.Storage);
             bar.animate(perc);
+
+            //saveDrawerOpened
+            $("#layout-drawer").dxDrawer("instance").toggle();
         })
 
         function calc(num) {
@@ -604,6 +585,7 @@
             function getDrawer() {
                 return $("#layout-drawer").dxDrawer("instance");
             }
+         //   console.log(getDrawer());
 
             function restoreDrawerOpened() {
                 var isLarge = breakpoints.largeMedia.matches;
@@ -625,11 +607,11 @@
             function updateDrawer() {
                 var isXSmall = breakpoints.xSmallMedia.matches,
                     isLarge = breakpoints.largeMedia.matches;
-
+                let d = $("#layout-drawer").dxDrawer("instance");
                 getDrawer().option({
                     openedStateMode: isLarge ? "shrink" : "overlap",
                     revealMode: isXSmall ? "slide" : "expand",
-                    minSize: isXSmall ? 0 : 60,
+                    minSize: isXSmall ? 0 : 0,
                     shading: !isLarge,
                 });
             }
