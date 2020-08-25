@@ -25,8 +25,7 @@ namespace DMS.Controllers
                          ServiceEndpoint = "http://localhost:9100/AlSahlService",
                          DataSource = @".\",
                          Database = "DB",
-                         DatabasesPath = @"D:\AlSahl\Data",
-                         FileTablePath = @"\\127.0.0.1\alsahl\Images\Images\"
+                         DatabasesPath = @"D:\AlSahl\Data"
                      }
 
                      ));
@@ -54,8 +53,7 @@ namespace DMS.Controllers
                          ServiceEndpoint = "http://localhost:9100/AlSahlService",
                          DataSource = @".\",
                          Database = "DB",
-                          DatabasesPath = @"D:\AlSahl\Data",
-                          FileTablePath = @"\\127.0.0.1\alsahl\Images\Images\"
+                          DatabasesPath = @"D:\AlSahl\Data"
                      }
 
                      ));
@@ -98,7 +96,6 @@ namespace DMS.Controllers
             settings.DataSource = datasource;
             settings.Database = database;
             settings.DatabasesPath = DatabasesPath;
-            settings.FileTablePath = FileTablePath;
 
             System.IO.File.WriteAllText("settings.json", JsonConvert.SerializeObject(settings));
 
@@ -113,6 +110,5 @@ namespace DMS.Controllers
         public string DataSource { get; set; }
         public string Database { get; set; }
         public string DatabasesPath { get; set; }
-        public string FileTablePath { get; set; }
     }
 }

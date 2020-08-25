@@ -58,12 +58,6 @@
         .Name("txtPath")
         .ElementAttr("class", "content-block")
         .Placeholder("Databases Path"))
-
-    <br />
-    @(Html.DevExtreme().TextBox()
-        .Name("txtFileTablePath")
-        .ElementAttr("class", "content-block")
-        .Placeholder("FileTable Path"))
     <br />
     @(Html.DevExtreme().TextBox()
         .Name("Password")
@@ -102,7 +96,6 @@
             $('#txtDataSource').val(settings.DataSource);
             $('#txtDB').val(settings.Database);
             $('#txtPath').val(settings.DatabasesPath);
-            $('#txtFileTablePath').val(settings.FileTablePath);
 
 
             $('#txtDB').focus();
@@ -117,9 +110,6 @@
 
             $('#txtPath').focus();
             $('#txtPath').blur();
-
-            $('#txtFileTablePath').focus();
-            $('#txtFileTablePath').blur();
 
             let d = new Date();
             let arr = d.toString().split(" ");
@@ -200,7 +190,6 @@
                 fd.append('datasource', txtDataSource.value);
                 fd.append('database', txtDB.value);
                 fd.append('DatabasesPath', txtPath.value);
-                fd.append('FileTablePath', txtFileTablePath.value);
                 xhr.send(fd);
             }
         }

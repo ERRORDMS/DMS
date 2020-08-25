@@ -32,7 +32,7 @@ namespace DMS.Controllers
             if(string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            SQLHelper helper = new SQLHelper(new DataManager(userId).GetConnectionString(userId));
+            SQLHelper helper = new DataManager(userId).SQLHelper;
             string[] words = sQuery.Split(' ');
 
             string query = "SELECT";
@@ -189,7 +189,7 @@ namespace DMS.Controllers
             if(string.IsNullOrEmpty(userId))
              userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            SQLHelper helper = new SQLHelper(new DataManager(userId).GetConnectionString(userId));
+            SQLHelper helper = new DataManager(userId).SQLHelper;
             string[] words = sQuery.Split(' ');
 
             string query = "SELECT";

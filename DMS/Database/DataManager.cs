@@ -59,6 +59,8 @@ namespace DMS.Database
             }
         }
 
+
+        public SQLHelper SQLHelper { get { return sqlHelper; } }
         public void SetAllCatPermissions(string userID, bool value)
         {
             sqlHelper.Update("[" + userID + "]",
@@ -283,6 +285,11 @@ namespace DMS.Database
                             return (int)ErrorCodes.SUCCESS;
 
                         }
+                    }
+                    else
+                    {
+                        return (int)ErrorCodes.SUCCESS;
+
                     }
                     /*
 
@@ -791,7 +798,10 @@ namespace DMS.Database
                     string day = DateTime.Now.Day.ToString();
 
                     string filename = infoAutoKey + "_" + lineAutoKey + Path.GetExtension(file.FileName);
-                    string path = Path.Combine(settings.FileTablePath, $@"Images\{year}\{month}\{day}");
+
+                    string fileTablePath = sqlHelper.ExecuteScalar<string>("select FileTableRootPath()");
+
+                    string path = Path.Combine(fileTablePath, fileTablePath.Split('\\').Last(),  $@"Images\{year}\{month}\{day}");
 
                     filename = Path.Combine(path + $@"\{filename}");
 
@@ -968,8 +978,11 @@ namespace DMS.Database
 
         private  void AddDirectory(string name, string parent, string parents)
         {
+            string fileTablePath = sqlHelper.ExecuteScalar<string>("select FileTableRootPath()");
+
             string query;
-            query = @"IF NOT EXISTS ( SELECT 1 FROM Images WHERE path_locator = GetPathLocator(FileTableRootPath() + N'\Images\" + parents + @"\" + name + "'))";
+            
+            query = @"IF NOT EXISTS ( SELECT 1 FROM Images WHERE path_locator = GetPathLocator(FileTableRootPath() + N'\" + fileTablePath.Split('\\').Last() + @"\" + parents + @"\" + name + "'))";
             query += " INSERT INTO Images (name,is_directory,is_archive,path_locator) VALUES ('" + name + "', 1, 0, CAST('" + GetParentPathLocator( parent) + "' AS hierarchyid))";
 
             sqlHelper.ExecuteNonQuery(query);
@@ -1443,88 +1456,7 @@ where UserID = '{2}'", Tables.Roles, Tables.UserRoles, userId);
         {
             try
             {
-                String query = @"
-
-
-
-IF (NOT EXISTS (SELECT * 
-                 FROM INFORMATION_SCHEMA.TABLES 
-                 WHERE TABLE_SCHEMA = 'dbo' 
-                 AND  TABLE_NAME = 'UserDB'))
-
-BEGIN
-
-CREATE TABLE [dbo].[UserStorage](
-	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
-	[UserID] [nvarchar](max) NULL,
-	[UsedStorage] [float] NULL,
-	[Storage] [float] NULL,
- CONSTRAINT [PK_UserStorage] PRIMARY KEY CLUSTERED 
-(
-	[AutoKey] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-
-END
-
-IF (NOT EXISTS (SELECT * 
-                 FROM INFORMATION_SCHEMA.TABLES 
-                 WHERE TABLE_SCHEMA = 'dbo' 
-                 AND  TABLE_NAME = 'UserDB'))
-
-BEGIN
-
-CREATE TABLE [dbo].[UserDB](
-	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
-	[UserID] [nvarchar](max) NULL,
-	[DBName] [nvarchar](max) NULL,
- CONSTRAINT [PK_UserDatabases] PRIMARY KEY CLUSTERED 
-(
-	[AutoKey] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-
-END
-
-IF (NOT EXISTS (SELECT * 
-                 FROM INFORMATION_SCHEMA.TABLES 
-                 WHERE TABLE_SCHEMA = 'dbo' 
-                 AND  TABLE_NAME = 'CategoryUserRel'))
-BEGIN
-
-CREATE TABLE [dbo].[CategoryUserRel](
-	[RelAutoKey] [bigint] IDENTITY(1,1) NOT NULL,
-	[CatAutoKey] [bigint] NULL,
-	[UserID] [nvarchar](max) NULL,
- CONSTRAINT [PK_CategoryUserRel] PRIMARY KEY CLUSTERED 
-(
-	[RelAutoKey] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-
-END
-
-
-IF COL_LENGTH('dbo.Contacts', 'DMSUserID') IS NULL
-BEGIN
-  ALTER TABLE [Contacts]
-    ADD [DMSUserID] NVARCHAR(MAX) NULL
-END
-
-
-IF COL_LENGTH('dbo.DocumentLine', 'Name') IS NULL
-BEGIN
-  ALTER TABLE [DocumentLine]
-    ADD [Name] NVARCHAR(MAX) NULL
-END
-
-IF COL_LENGTH('dbo.SearchKeys', 'DMSUserID') IS NULL
-BEGIN
-  ALTER TABLE [SearchKeys]
-    ADD [DMSUserID] NVARCHAR(MAX) NULL
-END
-
-";
+                String query = Queries.UpdateTables;
 
                 sqlHelper.ExecuteNonQuery(query);
                 return (int)ErrorCodes.SUCCESS;
@@ -1573,39 +1505,49 @@ END
                     query = query.Replace("UID", id);
 
                     sqlHelper.ExecuteNonQuery(query);
-
-                    var wheres = new Dictionary<string, string>();
-                    wheres.Add("UserID", "*");
-
-                    if (!sqlHelper.Exists(Tables.UserDatabases, wheres))
+                    if (IsEnterprise(id))
                     {
+                        string enterpriseCode = sqlHelper.SelectWithWhere(Tables.Users, "EnterpriseCode", "ID = '" + id + "'");
+                        string enterpriseAccountID = sqlHelper.SelectWithWhere(Tables.Users, "ID", "EnterpriseCode = '" + enterpriseCode + "'");
 
                         sqlHelper.Insert(Tables.UserDatabases,
-                            new string[] { "UserID", "DBName" },
-                            new string[] { id, id });
-
-                        // Create DB
-                        sqlHelper.CreateDatabase(id, settings.DatabasesPath);
-
-
-                        // Configure DB
-                        query = Queries.ConfigureDBQuery;
-
-                        query = query.Replace("DBNAME", id);
-
-                        sqlHelper.ExecuteNonQuery(query);
-
-
-                        // Add Tables
-                        query = Queries.AddTablesQuery;
-
-                        query = query.Replace("DBNAME", id);
-
-
-                        sqlHelper.ExecuteNonQuery(query);
-
+                              new string[] { "UserID", "DBName" },
+                              new string[] { id, enterpriseCode });
                     }
+                    else
+                    {
+                        var wheres = new Dictionary<string, string>();
+                        wheres.Add("UserID", "*");
 
+                        if (!sqlHelper.Exists(Tables.UserDatabases, wheres))
+                        {
+
+                            sqlHelper.Insert(Tables.UserDatabases,
+                                new string[] { "UserID", "DBName" },
+                                new string[] { id, id });
+
+                            // Create DB
+                            sqlHelper.CreateDatabase(id, settings.DatabasesPath);
+
+
+                            // Configure DB
+                            query = Queries.ConfigureDBQuery;
+
+                            query = query.Replace("DBNAME", id);
+
+                            sqlHelper.ExecuteNonQuery(query);
+
+
+                            // Add Tables
+                            query = Queries.AddTablesQuery;
+
+                            query = query.Replace("DBNAME", id);
+
+
+                            sqlHelper.ExecuteNonQuery(query);
+
+                        }
+                    }
 
                     return (int)ErrorCodes.SUCCESS;
                 }
@@ -1657,7 +1599,7 @@ END
 
                 if (sqlHelper.Insert(Tables.Users,
                     new string[] {  "Name", "ID", "AccountType", "EnterpriseCode" },
-                    new string[] {  email,  id, "Free", string.IsNullOrEmpty(enterpriseCode) ? "NULL" : enterpriseCode  }))
+                    new string[] {  email,  id, "Free", string.IsNullOrEmpty(enterpriseCode) ? null : enterpriseCode  }))
                 {
                     if (sqlHelper.Insert(Tables.UserStorage,
                         new string[] { "UserID", "UsedStorage", "Storage" },

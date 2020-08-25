@@ -35,7 +35,7 @@
     // string userId = User.FindFirst("userdata").Value;
 
 
-    DMS.Database.SQLHelper helper = new DMS.Database.SQLHelper(new DMS.Database.DataManager(userId).GetConnectionString(userId));
+    DMS.Database.SQLHelper helper = new DMS.Database.DataManager(userId).SQLHelper;
 
     var Ext = helper.SelectWithWhere(DMS.Database.Tables.DocumentLines,
         "Ext",

@@ -7,6 +7,213 @@ namespace DMS.Database
 {
     public class Queries
     {
+
+		public static string UpdateTables = @"
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'UserRoles'))
+
+BEGIN
+
+CREATE TABLE [dbo].[UserRoles](
+	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+	[UserID] [nvarchar](max) NULL,
+	[RoleID] [bigint] NULL,
+ CONSTRAINT [PK_UserRoles] PRIMARY KEY CLUSTERED 
+(
+	[AutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+END
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'RoleCategories'))
+
+BEGIN
+
+CREATE TABLE [dbo].[RoleCategories](
+	[CatID] [bigint] NULL,
+	[Fathers] [nvarchar](max) NULL,
+	[CanView] [bit] NULL,
+	[CanEdit] [bit] NULL,
+	[CanDelete] [bit] NULL,
+	[RoleID] [bigint] NULL,
+	[CanAdd] [bit] NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+END
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'UserPermissions'))
+
+BEGIN
+CREATE TABLE [dbo].[UserPermissions](
+	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+	[PermissionID] [bigint] NULL,
+	[UserID] [nvarchar](max) NULL,
+ CONSTRAINT [PK_UserPermissions] PRIMARY KEY CLUSTERED 
+(
+	[AutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+END
+
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'Permissions'))
+
+BEGIN
+
+CREATE TABLE [dbo].[Permissions](
+	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](max) NULL,
+ CONSTRAINT [PK_Permissions] PRIMARY KEY CLUSTERED 
+(
+	[AutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+END
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'RolePermissions'))
+
+BEGIN
+
+CREATE TABLE [dbo].[RolePermissions](
+	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+	[PermissionID] [bigint] NULL,
+	[RoleID] [bigint] NULL,
+ CONSTRAINT [PK_RolePermissions] PRIMARY KEY CLUSTERED 
+(
+	[AutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+END
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'Roles'))
+
+BEGIN
+
+CREATE TABLE [dbo].[Roles](
+	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](max) NULL,
+ CONSTRAINT [PK_Roles] PRIMARY KEY CLUSTERED 
+(
+	[AutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+END
+
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'UserStorage'))
+
+BEGIN
+
+CREATE TABLE [dbo].[UserStorage](
+	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+	[UserID] [nvarchar](max) NULL,
+	[UsedStorage] [float] NULL,
+	[Storage] [float] NULL,
+ CONSTRAINT [PK_UserStorage] PRIMARY KEY CLUSTERED 
+(
+	[AutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+END
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'UserDB'))
+
+BEGIN
+
+CREATE TABLE [dbo].[UserDB](
+	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+	[UserID] [nvarchar](max) NULL,
+	[DBName] [nvarchar](max) NULL,
+ CONSTRAINT [PK_UserDatabases] PRIMARY KEY CLUSTERED 
+(
+	[AutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+END
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'CategoryUserRel'))
+BEGIN
+
+CREATE TABLE [dbo].[CategoryUserRel](
+	[RelAutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+	[CatAutoKey] [bigint] NULL,
+	[UserID] [nvarchar](max) NULL,
+ CONSTRAINT [PK_CategoryUserRel] PRIMARY KEY CLUSTERED 
+(
+	[RelAutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+END
+
+
+IF COL_LENGTH('dbo.Contacts', 'DMSUserID') IS NULL
+BEGIN
+  ALTER TABLE [Contacts]
+    ADD [DMSUserID] NVARCHAR(MAX) NULL
+END
+
+
+IF COL_LENGTH('dbo.DocumentLine', 'Name') IS NULL
+BEGIN
+  ALTER TABLE [DocumentLine]
+    ADD [Name] NVARCHAR(MAX) NULL
+END
+
+IF COL_LENGTH('dbo.SearchKeys', 'DMSUserID') IS NULL
+BEGIN
+  ALTER TABLE [SearchKeys]
+    ADD [DMSUserID] NVARCHAR(MAX) NULL
+END
+
+
+IF COL_LENGTH('dbo.Users', 'AccountType') IS NULL
+BEGIN
+  ALTER TABLE [Users]
+    ADD [AccountType] NVARCHAR(MAX) NULL
+END
+
+
+IF COL_LENGTH('dbo.Users', 'EnterpriseCode') IS NULL
+BEGIN
+  ALTER TABLE [Users]
+    ADD [EnterpriseCode] NVARCHAR(MAX) NULL
+END
+
+";
 		public static string CreateEnterpriseTable = @"
 
 IF((SELECT EnterpriseCode from Users where ID = 'UID') <> '')
@@ -774,7 +981,12 @@ EXEC sys.sp_addextendedproperty @name=N'RecordCount', @value=N'4' , @level0type=
 EXEC sys.sp_addextendedproperty @name=N'Updatable', @value=N'True' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Users'
 
 
-INSERT INTO Images (name,is_directory,is_archive) VALUES ('Images', 1, 0)";
+INSERT INTO Images (name,is_directory,is_archive) VALUES ('Images', 1, 0) 
+
+" + Queries.UpdateTables;
+
+
+
 
 	}
 }

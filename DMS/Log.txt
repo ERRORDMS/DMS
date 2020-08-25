@@ -8,3 +8,10 @@
 8/25/2020 1:20:01 PM - 1
 8/25/2020 1:20:18 PM - 1
 8/25/2020 1:31:50 PM - Timeout expired.  The timeout period elapsed prior to completion of the operation or the server is not responding.
+8/25/2020 8:15:26 PM - A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: SQL Network Interfaces, error: 26 - Error Locating Server/Instance Specified)
+8/25/2020 10:21:46 PM - A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: SQL Network Interfaces, error: 26 - Error Locating Server/Instance Specified)
+8/25/2020 11:05:35 PM - Violation of UNIQUE KEY constraint 'UQ__Images__A236CBB3EF351259'. Cannot insert duplicate key in object 'dbo.Images'. The duplicate key value is (0xff9a24c5aa8a896feb113665b4a392faac9e867260, 2020).
+The statement has been terminated.
+8/25/2020 11:19:45 PM - Incorrect syntax near '\'.
+Unclosed quotation mark after the character string ' AS hierarchyid))'.
+8/25/2020 11:22:35 PM - Invalid FileTable path name or format.
