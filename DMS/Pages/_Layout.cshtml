@@ -378,7 +378,7 @@
                     </li>
                     <li class="nav-item"><div class="icon"><i class="fas fa-users"></i><div class="nav-link"><a href="" class="link-text">@Localizer["Contacts"]</a></div></div></li>
                     <li class="nav-item"><div class="icon"><i class="fas fa-upload"></i><div class="nav-link"><a href="" class="link-text">@Localizer["Upload"]</a></div></div></li>
-                    <li class="nav-item"><div class="icon"><i class="fas fa-sign-out-alt"></i><div class="nav-link"><a href="" class="link-text">@Localizer["Logout"]</a></div></div></li>
+                    <li class="n\av-item"><div class="icon"><i class="fas fa-sign-out-alt"></i><div class="nav-link"><a href="" class="link-text">@Localizer["Logout"]</a></div></div></li>
                 </ul>
             </div>
                 -->
@@ -407,19 +407,10 @@
                             }
                         }
                         <li class="nav-item"><a href="SignOut"><i class="fas fa-sign-out-alt"></i>@Localizer["Logout"]</a></li>
-
-                        <!--  <li class="nav-item"><div class="line">.</div></li>-->
-                        <li class="nav-item">
-                            <div class="progress"><div id="progressBar"></div></div>
-                            <h2 class="storage">
-                                <span id="usedStorage">0</span>
-                                <span class="size" id="usedStoragePrefix">MB</span>of
-                                <span id="maxStorage">10</span>
-                                <span class="full_size" id="maxStoragePrefix">GB</span>used
-                            </h2>
-                            <!-- <partial name="StorageProgress" />-->
-                        </li>
                         <li class="nav-item-upgrade"><a href="">@Localizer["Upgrade"]</a></li>
+                        <li class="nav-item">
+                            <partial name="StorageProgress" />
+                        </li>
                     </ul>
                 </nav>
             </div>
