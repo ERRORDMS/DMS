@@ -13,10 +13,6 @@ using MailKit;
 using MimeKit;
 using DMS.Models;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace DMS.Controllers
 {
@@ -25,12 +21,10 @@ namespace DMS.Controllers
     public class AuthorizationController : Controller
     {
         IDataProtector _protector;
-        private IConfiguration _config;
 
-        public AuthorizationController(IDataProtectionProvider provider, IConfiguration config)
+        public AuthorizationController(IDataProtectionProvider provider)
         {
             _protector = provider.CreateProtector(GetType().FullName);
-            _config = config;
         }
 
         [Route("Login")]
@@ -45,11 +39,10 @@ namespace DMS.Controllers
             result.StatusCode = i;
             if (i == (int)ErrorCodes.SUCCESS)
             {
-                return Ok(GenerateJSONWebToken(GetUserID(Username)));
+                AddCookies(Username);
             }
 
             return new JsonResult(result);
-            
         }
 
         [Route("Verify")]
@@ -69,7 +62,7 @@ namespace DMS.Controllers
 
         [Route("Register")]
         [HttpPost]
-        public IActionResult Register(string Email, string Password, string code)
+        public JsonResult Register(string Email, string Password, string code)
         {
 
             int i = new DataManager(null).Register(Email, Password, code);
@@ -106,9 +99,9 @@ namespace DMS.Controllers
                     client.Disconnect(true);
                 }
                 */
-                //AddCookies(Email);
-            }
-            return Ok(GenerateJSONWebToken(GetUserID(Email)));//new JsonResult(result);
+                AddCookies(Email);
+            }   
+            return new JsonResult(result);
         }
 
         [Route("GetUserID")]
@@ -145,26 +138,6 @@ namespace DMS.Controllers
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return new DataManager(null).GetUserStorage(userId);
-        }
-        private string GenerateJSONWebToken(string id)
-        {
-            var claims = new List<Claim>
-{
-  new Claim(ClaimTypes.Name, Guid.NewGuid().ToString()),
-  new Claim(ClaimTypes.UserData, new DataManager(null).GetAccountType(id)),
-  new Claim(ClaimTypes.NameIdentifier, id )
-};
-
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
-              _config["Jwt:Issuer"],
-              claims,
-              expires: DateTime.Now.AddMinutes(120),
-              signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
 
