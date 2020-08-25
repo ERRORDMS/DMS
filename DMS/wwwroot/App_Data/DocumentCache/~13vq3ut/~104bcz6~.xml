@@ -1,0 +1,14 @@
+<report>
+  <customer>
+    <name>Peter Jackson</name>
+    <sex>m</sex>
+  </customer>
+  <customer>
+    <name>Abby Walton</name>
+    <sex>f</sex>
+  </customer>
+  <customer>
+    <name>Joe Petersen</name>
+    <sex>m</sex>
+  </customer>
+</report>

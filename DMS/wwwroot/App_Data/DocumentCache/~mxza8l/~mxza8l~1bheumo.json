@@ -1,0 +1,31 @@
+{
+  "CacheSourceKey": "mxza8l",
+  "CachePdfKey": "mxza8l/mxza8l-1dfpt68.pdf",
+  "CacheXpzKey": "mxza8l/mxza8l-1bheumo.xpz",
+  "CacheInfoKey": "mxza8l/mxza8l-1bheumo.json",
+  "CacheCopyKey": "mxza8l/zl54tm.txt",
+  "Document": null,
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": null,
+  "DocumentFileName": "1252246_771767.txt",
+  "InputOptions": {
+    "$type": "GleamTech.DocumentUltimate.WordProcessingInputOptions, GleamTech.DocumentUltimate",
+    "FieldFileName": "1252246_771767.txt",
+    "UpdateFields": true,
+    "Encoding": null,
+    "Format": "Txt",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "mxza8l",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}

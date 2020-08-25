@@ -26,6 +26,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace DMS
 {
@@ -53,7 +54,6 @@ namespace DMS
                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver())
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization();
-            services.AddSingleton<UploadFileTask>();
 
             /*
             services.AddDbContext<DMSContext>(options =>
@@ -91,6 +91,11 @@ namespace DMS
                   ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
             });
 
+            services.Configure<FormOptions>(x =>
+            {
+                x.ValueLengthLimit = int.MaxValue;
+                x.MultipartBodyLengthLimit = int.MaxValue; // In case of multipart
+            });
 
             /*
             services.ConfigureApplicationCookie(options =>
@@ -138,7 +143,7 @@ namespace DMS
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime lifetime)
         {
             if (env.IsDevelopment())
             {
@@ -171,6 +176,7 @@ namespace DMS
                 SupportedUICultures = supportedCultures,
                  RequestCultureProviders = new[] { new CookieRequestCultureProvider() }
             });
+
 
             app.UseHttpsRedirection();
 

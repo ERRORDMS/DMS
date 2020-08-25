@@ -23,13 +23,12 @@ namespace DMS.Controllers
     [Route("api/[controller]")]
     public class UploadController : Controller
     {
-
+        private TaskQueue queue;
         HostingEnvironment _hostingEnvironment;
-        UploadFileTask uploadTask;
-        public UploadController(HostingEnvironment hostingEnvironment, UploadFileTask _task)
+        public UploadController(HostingEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
-            uploadTask = _task;
+            queue = new TaskQueue();
         }
 
         [Route("GetFileName")]
@@ -155,12 +154,11 @@ namespace DMS.Controllers
 
         [Route("Save")]
         [HttpPost]
-        public void Save(IList<IFormFile> uploadFiles, string categories, string contacts, string keys, string userId = null)
+        public IActionResult Save(IList<IFormFile> uploadFiles, string categories, string contacts, string keys, string userId = null)
         {
             try
             {
-                uploadTask.AddTask(Task.Run(() => { }));
-                if (uploadFiles != null && uploadFiles.Count > 0 && !string.IsNullOrEmpty(categories))
+                if (uploadFiles != null && uploadFiles.Count != 0 && !string.IsNullOrEmpty(categories))
                 {
                     var cats = JsonConvert.DeserializeObject<List<DMSCategory>>(categories);
                     var cons = JsonConvert.DeserializeObject<List<DMSContact>>(contacts);
@@ -171,10 +169,20 @@ namespace DMS.Controllers
 
                     foreach (var file in uploadFiles)
                     {
+                        
+                        var i = new DataManager(userId).AddFile(cats, cons, sKeys, file, userId);
+
+                        if (file == uploadFiles.Last())
+                        {
+                            Result result = new Result();
+                            result.StatusName = ((ErrorCodes)i).ToString();
+                            result.StatusCode = i;
+
+                            return new JsonResult(result);
+                        }
 
 
-                        new DataManager(userId).AddFile(cats, cons, sKeys, file, userId, uploadTask);
-
+                        
                     }
                 }
             }
@@ -185,6 +193,8 @@ namespace DMS.Controllers
                 Response.HttpContext.Features.Get<IHttpResponseFeature>().ReasonPhrase = "File failed to upload";
                 Response.HttpContext.Features.Get<IHttpResponseFeature>().ReasonPhrase = e.Message;
             }
+
+            return BadRequest();
         }
 
         public void Remove(IList<IFormFile> UploadFiles)
@@ -219,5 +229,39 @@ namespace DMS.Controllers
         public List<Category> Categories { get; set; }
         public List<Contact> Contacts { get; set; }
         public List<SearchKey> SearchKeys { get; set; }
+    }
+
+    public class TaskQueue
+    {
+        private SemaphoreSlim semaphore;
+        public TaskQueue()
+        {
+            semaphore = new SemaphoreSlim(1);
+        }
+
+        public async Task<T> Enqueue<T>(Func<Task<T>> taskGenerator)
+        {
+            await semaphore.WaitAsync();
+            try
+            {
+                return await taskGenerator();
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+        }
+        public async Task Enqueue(Func<Task> taskGenerator)
+        {
+            await semaphore.WaitAsync();
+            try
+            {
+                await taskGenerator();
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+        }
     }
 }

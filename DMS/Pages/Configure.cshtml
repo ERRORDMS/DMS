@@ -28,6 +28,9 @@
         #devextreme4 {
             height: 40px;
         }
+        #devextreme5 {
+            height: 40px;
+        }
     </style>
 </head>
 <body>
@@ -58,9 +61,15 @@
 
     <br />
     @(Html.DevExtreme().TextBox()
+        .Name("txtFileTablePath")
+        .ElementAttr("class", "content-block")
+        .Placeholder("FileTable Path"))
+    <br />
+    @(Html.DevExtreme().TextBox()
         .Name("Password")
         .ElementAttr("class", "content-block")
         .Placeholder("Password"))
+
 
     <br />
     @(Html.DevExtreme().Button()
@@ -93,6 +102,7 @@
             $('#txtDataSource').val(settings.DataSource);
             $('#txtDB').val(settings.Database);
             $('#txtPath').val(settings.DatabasesPath);
+            $('#txtFileTablePath').val(settings.FileTablePath);
 
 
             $('#txtDB').focus();
@@ -107,12 +117,16 @@
 
             $('#txtPath').focus();
             $('#txtPath').blur();
+
+            $('#txtFileTablePath').focus();
+            $('#txtFileTablePath').blur();
+
             let d = new Date();
             let arr = d.toString().split(" ");
             for (let i = 0; i < arr.length; i++) {
                 console.log(arr[i]);
             }
-          
+
         });
         function gen() {
             let d = new Date();
@@ -124,10 +138,10 @@
             return p;
         }
         function getSettings() {
-                var xmlHttp = new XMLHttpRequest();
-                xmlHttp.open("GET", "api/Settings", false);
-                xmlHttp.send();
-                return xmlHttp.responseText;
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", "api/Settings", false);
+            xmlHttp.send();
+            return xmlHttp.responseText;
         }
 
         function generate() {
@@ -145,7 +159,7 @@
                 xhr.open("POST", 'api/Settings/GenerateTables', true);
                 xhr.send();
             }
-           
+
         }
 
 
@@ -186,7 +200,7 @@
                 fd.append('datasource', txtDataSource.value);
                 fd.append('database', txtDB.value);
                 fd.append('DatabasesPath', txtPath.value);
-
+                fd.append('FileTablePath', txtFileTablePath.value);
                 xhr.send(fd);
             }
         }

@@ -1,0 +1,45 @@
+{
+  "CacheSourceKey": "eoiwlp",
+  "CachePdfKey": "eoiwlp/eoiwlp-1n7v2k5.pdf",
+  "CacheXpzKey": "eoiwlp/eoiwlp-pplea9.xpz",
+  "CacheInfoKey": "eoiwlp/eoiwlp-pplea9.json",
+  "CacheCopyKey": "eoiwlp/xlilhq.xlsx",
+  "Document": null,
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": null,
+  "DocumentFileName": "1252244_771765.xlsx",
+  "InputOptions": {
+    "$type": "GleamTech.DocumentUltimate.SpreadsheetInputOptions, GleamTech.DocumentUltimate",
+    "OutputSheetRange": "visible",
+    "RenderColumnsFitToPages": 1,
+    "RenderRowsFitToPages": 0,
+    "RenderHeadings": false,
+    "RenderGridlines": false,
+    "RenderTitleColumns": null,
+    "RenderTitleRows": null,
+    "RenderArea": null,
+    "RenderBlackAndWhite": false,
+    "RenderCenterHorizontally": false,
+    "RenderCenterVertically": false,
+    "RenderLeftHeader": null,
+    "RenderCenterHeader": null,
+    "RenderRightHeader": null,
+    "RenderLeftFooter": null,
+    "RenderCenterFooter": null,
+    "RenderRightFooter": null,
+    "Format": "Xlsx",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "eoiwlp",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}

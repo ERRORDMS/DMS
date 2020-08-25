@@ -1,0 +1,31 @@
+{
+  "CacheSourceKey": "1s57qcs",
+  "CachePdfKey": "1s57qcs/1s57qcs-4ulemg.pdf",
+  "CacheXpzKey": "1s57qcs/1s57qcs-1jz57v4.xpz",
+  "CacheInfoKey": "1s57qcs/1s57qcs-1jz57v4.json",
+  "CacheCopyKey": "1s57qcs/hlpbo5.txt",
+  "Document": null,
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": null,
+  "DocumentFileName": "1252241_771762.txt",
+  "InputOptions": {
+    "$type": "GleamTech.DocumentUltimate.WordProcessingInputOptions, GleamTech.DocumentUltimate",
+    "FieldFileName": "1252241_771762.txt",
+    "UpdateFields": true,
+    "Encoding": null,
+    "Format": "Txt",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "1s57qcs",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}

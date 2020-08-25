@@ -743,7 +743,7 @@ namespace DMS.Database
                 return (int)ErrorCodes.INTERNAL_ERROR;
             }
         }
-        public  int AddFile(List<DMSCategory> categories, List<DMSContact> contacts, List<SearchKey> SearchKeys, IFormFile file, string userID, UploadFileTask uploadFileTask)
+        public  int AddFile(List<DMSCategory> categories, List<DMSContact> contacts, List<SearchKey> SearchKeys, IFormFile file, string userID)
         {
             try
             {
@@ -781,7 +781,61 @@ namespace DMS.Database
                         new string[] { infoAutoKey, key.AutoKey.ToString() });
                 }
 
+                if (!string.IsNullOrEmpty(infoAutoKey) && !string.IsNullOrEmpty(lineAutoKey))
+                {
 
+                    AddDateDirectories();
+
+                    string year = DateTime.Now.Year.ToString();
+                    string month = DateTime.Now.Month.ToString();
+                    string day = DateTime.Now.Day.ToString();
+
+                    string filename = infoAutoKey + "_" + lineAutoKey + Path.GetExtension(file.FileName);
+                    string path = Path.Combine(settings.FileTablePath, $@"Images\{year}\{month}\{day}");
+
+                    filename = Path.Combine(path + $@"\{filename}");
+
+                    if (!System.IO.File.Exists(filename))
+                    {
+                        using (FileStream fs = System.IO.File.Create(filename))
+                        {
+                            file.CopyTo(fs);
+                            fs.Flush();
+                        }
+                    }
+                    else
+                    {
+                        using (FileStream fs = System.IO.File.Open(filename, FileMode.Append))
+                        {
+                            file.CopyTo(fs);
+                            fs.Flush();
+                        }
+                    }
+                    
+                    /*
+                    string parent = AddDateDirectories(); // GetParentPathLocator(TmpAdo, "Images");
+                    string query
+                        = " INSERT into Images (stream_id, file_stream, name, path_locator) ";
+                    query += "  values (NEWID(), @File, '" + filename + "', CAST('" + parent + "' AS hierarchyid))";
+
+                    var bytes = file.GetBytes().Result;
+
+                    SqlParameter param = new SqlParameter("@File", System.Data.SqlDbType.Binary, bytes.Length);
+                    param.Value = bytes;
+                    
+                    int i = sqlHelper.ExecuteNonQuery(query, param);
+
+                    if (i > 0)
+                    {
+                    */
+                    var fileSize = file.Length / 1048576.0;
+
+                        new DataManager(null).AddUsedStorage(Math.Round(fileSize, 2), userID);
+                   // }
+                }
+
+
+                /*
                 uploadFileTask.AddTask(new Task(() =>
                 {
                     try
@@ -820,7 +874,7 @@ namespace DMS.Database
 
                 }));
 
-                    
+                    */
              
                 return (int)ErrorCodes.INTERNAL_ERROR;
             }
@@ -972,7 +1026,7 @@ namespace DMS.Database
 
             
             return sqlHelper.ExecuteReader<Category>(query);*/
-        }
+            }
 
         public IEnumerable<UserCategory> GetEnterpriseCategories(string userID)
         {
