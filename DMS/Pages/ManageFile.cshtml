@@ -139,19 +139,46 @@
     var keys;
         var contacts;
     $(document).ready(function () {
-        $('#contactsTagBox').dxTagBox({
-            dataSource: DevExpress.data.AspNet.createStore({
-                key: "AutoKey",
-                loadUrl: "api/Contacts",
-            })
-        });
-        $('#searchKeysTagBox').dxTagBox({
-            dataSource: DevExpress.data.AspNet.createStore({
-                key: "AutoKey",
-                loadUrl: "api/SearchKeys",
-            })
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "api/Contacts", false);
+        xhr.send();
+        var r = JSON.parse(xhr.responseText);
+        var viewerdataSource = new DevExpress.data.DataSource({
+            store: r.data,
+            pageSize: 5,
+            paginate: true
         });
 
+        $("#contactsTagBox").dxTagBox({
+            dataSource: viewerdataSource,
+            displayExpr: "Name",
+            valueExpr: "AutoKey",
+            hideSelectedItems: true,
+            searchEnabled: true,
+            placeholder: "Select",
+            //  value: [862]
+        });
+      
+        xhr = new XMLHttpRequest();
+        xhr.open("GET", "api/SearchKeys", false);
+        xhr.send();
+
+        r = JSON.parse(xhr.responseText);
+        viewerdataSource = new DevExpress.data.DataSource({
+            store: r.data,
+            pageSize: 5,
+            paginate: true
+        });
+
+        $("#searchKeysTagBox").dxTagBox({
+            dataSource: viewerdataSource,
+            displayExpr: "Name",
+            valueExpr: "AutoKey",
+            hideSelectedItems: true,
+            searchEnabled: true,
+            placeholder: "Select",
+            //  value: [862]
+        });
 
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open("GET", "api/Upload/GetFileInfo?InfoAutoKey=" + @AutoKey, false);
@@ -162,6 +189,7 @@
         keys = res.SearchKeys;
         contacts = res.Contacts;
 
+        
         $("#contactsTagBox").dxTagBox("instance").option("value", contacts);
         $("#searchKeysTagBox").dxTagBox("instance").option("value", keys);
         //$('#treeList').dxTreeList('instance').selectRows(, false);

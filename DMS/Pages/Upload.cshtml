@@ -594,13 +594,14 @@
             pageSize: 5,
             paginate: true
         });
+        /*
         $('#productsDataSource').dxTagBox({
             dataSource: DevExpress.data.AspNet.createStore({
                 key: "AutoKey",
                 loadUrl: "api/Contacts",
             })
         });
-        /*
+        */
         $("#productsDataSource").dxTagBox({
             dataSource: viewerdataSource,
             displayExpr: "Name",
@@ -611,7 +612,6 @@
             placeholder: "Select",
             //  value: [862]
         });
-        */
         xmlHttp = new XMLHttpRequest();
         xmlHttp.open("GET", "api/SearchKeys", false);
         xmlHttp.send();
