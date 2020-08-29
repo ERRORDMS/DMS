@@ -99,7 +99,23 @@ namespace DMS.Database
             }
         }
 
-        public  int SaveCategory(Category cat, string userId)
+        public Info GetInfo()
+        {
+            try
+            {
+                string query = "select COUNT(*) as Users, (SELECT COUNT(*) from " + Tables.DocumentInfo + ") as Files from " + Tables.Users;
+
+
+                return sqlHelper.ExecuteReader<Info>(query)[0];
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+                return null;
+
+            }
+        }
+            public  int SaveCategory(Category cat, string userId)
         {
             try
             {/*

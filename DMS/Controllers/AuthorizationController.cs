@@ -141,6 +141,19 @@ namespace DMS.Controllers
         }
 
 
+        [Route("GetInfo")]
+        [HttpGet]
+        public IActionResult GetInfo()
+        {
+            return new JsonResult(new DataManager(null).GetInfo());
+        }
+
+        public class Info
+        {
+            public long Users { get; set; }
+            public long Files { get; set; }
+        }
+
         public class UserStorage
         {
             public double UsedStorage { get; set; }
