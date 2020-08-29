@@ -348,7 +348,6 @@
             function updateDrawer() {
                 var isXSmall = breakpoints.xSmallMedia.matches,
                     isLarge = breakpoints.largeMedia.matches;
-                let d = $("#layout-drawer").dxDrawer("instance");
                 getDrawer().option({
                     openedStateMode: isLarge ? "shrink" : "overlap",
                     revealMode: isXSmall ? "slide" : "expand",
