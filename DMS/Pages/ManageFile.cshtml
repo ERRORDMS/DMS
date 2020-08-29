@@ -39,36 +39,50 @@
 <div class="main-block">
 <div class="dx-fieldset">
     <div class="dx-field">
-        <div class="dx-field-label">Categories:</div>
-        <div class="dx-field-value">
-            @(Html.DevExtreme().TagBox()
+            @(Html.DevExtreme().TreeList()
+            .ID("treeList")
 
-.DataSource(d => d.Mvc()
-    .Controller("Categories")
-    .LoadAction("Get")
-    .Key("AutoKey")
-)
-.DisplayExpr("Name")
-.ValueExpr("AutoKey")
-.ID("categoriesTagBox")
-.Name("categoriesTagBox")
-         .SearchExpr("Name")
-         .HideSelectedItems(true)
-         .ShowClearButton(true)
-                   .SearchEnabled(true)
-                    )
-        </div>
+    .DataSource(d => d.Mvc()
+        .Controller("Categories")
+        .LoadAction("Get")
+        .Key("AutoKey")
+    ).KeyExpr("AutoKey")
+    //.OnSelectionChanged("onValueChangedTree")
+    .ElementAttr("class","categoriesTreeList")
+    .SelectedRowKeys(new[] { 1 })
+    .SearchPanel(s=>s
+                        .Visible(true)
+                        .Placeholder("Search")
+                        .SearchVisibleColumnsOnly(true)
+                )
+                //.OnContentReady("treeReady")
+
+                .ParentIdExpr("FatherAutoKey")
+                .ExpandedRowKeys(new[] { 1 })
+                .ShowRowLines(true)
+        .Selection(s => s.Mode(SelectionMode.Multiple))
+                .ShowBorders(true)
+                .ColumnAutoWidth(true)
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("Name")
+                        .Caption("Category Name");
+
+                })
+            )
     </div>
     <div class="dx-field">
         <div class="dx-field-label">Contacts:</div>
         <div class="dx-field-value">
             @(Html.DevExtreme().TagBox()
     .DisplayExpr("Name")
+    /*
         .DataSource(d => d.Mvc()
                .Controller("Contacts")
                .LoadAction("Get")
                .Key("AutoKey")
            )
+        */
 .ID("contactsTagBox")
 .Name("contactsTagBox")
     .ValueExpr("AutoKey")
@@ -83,21 +97,22 @@
         <div class="dx-field-label">Search Keys:</div>
         <div class="dx-field-value">
             @(Html.DevExtreme().TagBox()
-            .ID("searchKeysTagBox")
-            .Name("searchKeysTagBox")
+                        /*
+        .DataSource(d => d.Mvc()
+                   .Controller("SearchKeys")
+                   .LoadAction("Get")
+                   .Key("AutoKey")
+               )*/
+        .DisplayExpr("Name")
 
-    .DataSource(d => d.Mvc()
-               .Controller("SearchKeys")
-               .LoadAction("Get")
-               .Key("AutoKey")
-           )
-            .ValueExpr("AutoKey")
-            .DisplayExpr("Name")
-            .HideSelectedItems(true)
-            .ShowClearButton(true)
-            .SearchExpr("Name")
-            .SearchEnabled(true)
-          )
+    .ID("searchKeysTagBox")
+    .Name("searchKeysTagBox")
+        .ValueExpr("AutoKey")
+        .HideSelectedItems(true)
+        .ShowClearButton(false)
+        .SearchExpr("Name")
+                  .SearchEnabled(true)
+                        )
         </div>
     </div>
     </div>
@@ -123,7 +138,21 @@
     var categories;
     var keys;
         var contacts;
-
+        $(document).ready(function () {
+            $('#contactsTagBox').dxTagBox({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "AutoKey",
+                    loadUrl: "api/Contacts",
+                })
+            });
+            $('#searchKeysTagBox').dxTagBox({
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "AutoKey",
+                    loadUrl: "api/SearchKeys",
+                })
+            });
+        })
+      
         function saveFile() {
             categories = $("#categoriesTagBox").dxTagBox("instance").option("value");
 
@@ -175,7 +204,6 @@
                     return this;
             });*/
 
-            console.log(outputCats);
 
 
                const xhr = new XMLHttpRequest();
