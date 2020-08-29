@@ -30,7 +30,7 @@ namespace DMS.Controllers
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return new JsonResult(new DataManager(userId).GetUsers(userId));
+            return new JsonResult(new DataManager(null).GetUsers(userId));
         }
 
 

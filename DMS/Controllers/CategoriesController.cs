@@ -29,7 +29,7 @@ namespace DMS.Controllers
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var dm = new DataManager(userId);
 
-            if (!dm.IsEnterprise(userId)) {
+            if (!new DataManager(null).IsEnterpriseSubUser(userId)) {
                 return DataSourceLoader.Load(dm.GetCategories(), new DataSourceLoadOptionsBase());
             }
             else

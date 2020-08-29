@@ -10,6 +10,26 @@ namespace DMS.Database
 
 		public static string UpdateTables = @"
 
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'EnterpriseCodes'))
+
+BEGIN
+
+CREATE TABLE [dbo].[EnterpriseCodes](
+	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+	[UserID] [nvarchar](max) NULL,
+	[Code] [nvarchar](max) NULL,
+ CONSTRAINT [PK_EnterpriseCodes] PRIMARY KEY CLUSTERED 
+(
+	[AutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+END
+
 IF (NOT EXISTS (SELECT * 
                  FROM INFORMATION_SCHEMA.TABLES 
                  WHERE TABLE_SCHEMA = 'dbo' 
@@ -80,6 +100,9 @@ CREATE TABLE [dbo].[Permissions](
 	[AutoKey] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+
+insert into Permissions (Name) values ('Can Add Root Category')
 
 END
 
@@ -213,11 +236,18 @@ BEGIN
     ADD [EnterpriseCode] NVARCHAR(MAX) NULL
 END
 
+IF COL_LENGTH('dbo.Users', 'Activated') IS NULL
+BEGIN
+  ALTER TABLE [Users]
+    ADD [Activated] bit NULL
+END
+
+
 ";
 		public static string CreateEnterpriseTable = @"
 
-IF((SELECT EnterpriseCode from Users where ID = 'UID') <> '')
-BEGIN
+USE [DBNAME]
+
 CREATE TABLE [dbo].[UID](
 	[CatID] [bigint] NULL,
 	[Fathers] [nvarchar](max) NULL,
@@ -226,7 +256,7 @@ CREATE TABLE [dbo].[UID](
 	[CanAdd] [bit] NULL,
 	[CanDelete] [bit] NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-END";
+";
 
 		public static string ConfigureDBQuery = @"
 ALTER DATABASE [DBNAME] SET COMPATIBILITY_LEVEL = 100
@@ -366,16 +396,16 @@ ALTER DATABASE [DBNAME] SET  READ_WRITE
 		public static string AddTablesQuery = @"
 USE [DBNAME]
 
-/****** Object:  Table [dbo].[CateryUserRel]    Script Date: 8/10/2020 8:53:43 PM ******/
+/****** Object:  Table [dbo].[CategoryUserRel]    Script Date: 8/10/2020 8:53:43 PM ******/
 SET ANSI_NULLS ON
 
 SET QUOTED_IDENTIFIER ON
 
-CREATE TABLE [dbo].[CateryUserRel](
+CREATE TABLE [dbo].[CategoryUserRel](
 	[RelAutoKey] [bigint] IDENTITY(1,1) NOT NULL,
 	[CatAutoKey] [bigint] NULL,
 	[UserID] [nvarchar](max) NULL,
- CONSTRAINT [PK_CateryUserRel] PRIMARY KEY CLUSTERED 
+ CONSTRAINT [PK_CategoryUserRel] PRIMARY KEY CLUSTERED 
 (
 	[RelAutoKey] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -567,9 +597,9 @@ CREATE TABLE [dbo].[DocumentsInfo](
 	[DateTimeAdded] [smalldatetime] NULL,
 	[CreatedByUserID] [nvarchar](50) NULL,
 	[DateTimeCreated] [smalldatetime] NULL,
-	[CateryID] [nvarchar](50) NULL,
-	[SubCateryID] [nvarchar](50) NULL,
-	[CateryID2] [nvarchar](50) NULL,
+	[CategoryID] [nvarchar](50) NULL,
+	[SubCategoryID] [nvarchar](50) NULL,
+	[CategoryID2] [nvarchar](50) NULL,
 	[ManualFileNo] [nvarchar](50) NULL,
 	[IsApproved] [bit] NULL,
 	[Approvedby] [nvarchar](50) NULL,
@@ -651,7 +681,7 @@ CREATE TABLE [dbo].[Users](
 	[SectionID] [nvarchar](50) NULL,
 	[HasMinQtyWarn] [bit] NULL,
 	[ReportID] [nvarchar](50) NULL,
-	[ContactCateryID] [nvarchar](50) NULL,
+	[ContactCategoryID] [nvarchar](50) NULL,
 	[ShowReportToolbar] [bit] NULL,
 	[HasChecksWarn] [bit] NULL,
 	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
@@ -980,13 +1010,22 @@ EXEC sys.sp_addextendedproperty @name=N'RecordCount', @value=N'4' , @level0type=
 
 EXEC sys.sp_addextendedproperty @name=N'Updatable', @value=N'True' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Users'
 
-
 INSERT INTO Images (name,is_directory,is_archive) VALUES ('Images', 1, 0) 
 
-" + Queries.UpdateTables;
+" + Queries.UpdateTables + @"
+
+USE [master]
+
+CREATE LOGIN [IIS APPPOOL\Malafatee] FROM WINDOWS WITH DEFAULT_DATABASE=[MyDatabase]
 
 
+USE [DBNAME]
+CREATE USER [MyUserName] FOR LOGIN [IIS APPPool\Malafatee]
 
+GRANT INSERT TO [DBNAME]
+GRANT SELECT TO [DBNAME]
+GRANT UPDATE TO [DBNAME]
+";
 
 	}
 }

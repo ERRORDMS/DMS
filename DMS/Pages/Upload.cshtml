@@ -659,8 +659,9 @@
         var d = xmlHttp.responseText;
         storage = JSON.parse(d);
 
-        if ((storage.UsedStorage + allSize) > storage.Storage) {
+        if (storage.Storage != -1 && (storage.UsedStorage + allSize) > storage.Storage) {
             alert("You don't have enough space!")
+            args.cancel = true;
             return;
         }
 

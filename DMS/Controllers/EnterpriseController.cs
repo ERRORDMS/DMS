@@ -50,7 +50,7 @@ namespace DMS.Controllers
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return new DataManager(null).IsEnterprise(userId);
+            return new DataManager(null).IsEnterpriseSubUser(userId);
 
         }
         [Route("SetAll")]

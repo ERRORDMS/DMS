@@ -276,7 +276,7 @@ namespace DMS.Database
                     new string[] { category.Name, category.FatherAutoKey.ToString() });
                 if (!string.IsNullOrEmpty(autoKey))
                 {
-                    if (IsEnterprise(userId))
+                    if (IsEnterpriseSubUser(userId))
                     {
                         if(sqlHelper.Insert("[" + userId + "]",
                             new string[] { "CatID", "Fathers", "CanView", "CanEdit", "CanAdd", "CanDelete" },
@@ -1084,9 +1084,9 @@ group by AutoKey, FatherAutoKey, Name", Tables.Categories, Tables.RoleCategories
             return sqlHelper.ExecuteReader<UserCategory>(query);
 
         }
-        public bool IsEnterprise(string userID)
+        public bool IsEnterpriseSubUser(string userID)
         {
-            string result = sqlHelper.SelectWithWhere(Tables.Users, "EnterpriseCode", "ID = '" + userID + "' AND AccountType <> 'Enterprise'");
+            string result = sqlHelper.SelectWithWhere(Tables.Users, "EnterpriseCode", "ID = '" + userID + "'");
 
             return !string.IsNullOrEmpty(result);
         }
@@ -1245,20 +1245,24 @@ ISNULL(CanDelete, 0) as CanDelete
         }
         public string GetEnterpriseCode(string userID)
         {
-            return new string(Crypt(userID).Take(6).ToArray());
+            var res = sqlHelper.SelectWithWhere(Tables.EnterpriseCodes, "Code", "UserID = '" + userID + "'");// Crypt(userID.Split('-')[1]);
+            return res;//new string(Crypt(userID).Take(6).ToArray());
         }
         public string GetAccountType(string userID)
         {
             return sqlHelper.ExecuteScalar<string>("SELECT AccountType from Users where ID = '" + userID + "'");
         }
         public IEnumerable<User> GetUsers(string userID)
-        {
+        {/*
 
             Dictionary<string, string> wheres = new Dictionary<string, string>();
             wheres.Add("EnterpriseCode", GetEnterpriseCode(userID));
 
             return sqlHelper.SelectWithWhere<User>(Tables.Users, new string[] { "ID", "Name as Email", "AccountType" }, wheres);
-        
+        */
+            var enterpriseCode = GetEnterpriseCode(userID);
+            return sqlHelper.ExecuteReader<User>("SELECT ID, Name as Email, AccountType from Users where EnterpriseCode <> '' AND EnterpriseCode = '" + enterpriseCode + "'");
+
         }
         public IEnumerable<Permission> GetUserPermissions(string userId)
         {
@@ -1500,22 +1504,35 @@ where UserID = '{2}'", Tables.Roles, Tables.UserRoles, userId);
                 {
 
                     // Manage enterprise
-                    string query = Queries.CreateEnterpriseTable;
-
-                    query = query.Replace("UID", id);
-
-                    sqlHelper.ExecuteNonQuery(query);
-                    if (IsEnterprise(id))
+                   
+                    if (IsEnterpriseSubUser(id))
                     {
+
+
                         string enterpriseCode = sqlHelper.SelectWithWhere(Tables.Users, "EnterpriseCode", "ID = '" + id + "'");
-                        string enterpriseAccountID = sqlHelper.SelectWithWhere(Tables.Users, "ID", "EnterpriseCode = '" + enterpriseCode + "'");
+                        string enterpriseAccountID = sqlHelper.SelectWithWhere(Tables.EnterpriseCodes, "UserID", "Code = '" + enterpriseCode + "'");
 
                         sqlHelper.Insert(Tables.UserDatabases,
                               new string[] { "UserID", "DBName" },
-                              new string[] { id, enterpriseCode });
+                              new string[] { id, enterpriseAccountID });
+
+                        sqlHelper.Insert(Tables.UserStorage,
+    new string[] { "UserID", "UsedStorage", "Storage" },
+    new string[] { id, "0", "-1" });
+
+                        string query = Queries.CreateEnterpriseTable;
+
+                        query = query.Replace("UID", id);
+                        query = query.Replace("DBNAME", enterpriseAccountID);
+
+                        sqlHelper.ExecuteNonQuery(query);
                     }
                     else
                     {
+                        sqlHelper.Insert(Tables.UserStorage,
+new string[] { "UserID", "UsedStorage", "Storage" },
+new string[] { id, "0", "10000" });
+
                         var wheres = new Dictionary<string, string>();
                         wheres.Add("UserID", "*");
 
@@ -1531,7 +1548,7 @@ where UserID = '{2}'", Tables.Roles, Tables.UserRoles, userId);
 
 
                             // Configure DB
-                            query = Queries.ConfigureDBQuery;
+                            string query = Queries.ConfigureDBQuery;
 
                             query = query.Replace("DBNAME", id);
 
@@ -1547,6 +1564,8 @@ where UserID = '{2}'", Tables.Roles, Tables.UserRoles, userId);
                             sqlHelper.ExecuteNonQuery(query);
 
                         }
+
+
                     }
 
                     return (int)ErrorCodes.SUCCESS;
@@ -1585,10 +1604,9 @@ where UserID = '{2}'", Tables.Roles, Tables.UserRoles, userId);
                 {
                     wheres = new Dictionary<string, string>();
 
-                    wheres.Add("AccountType", "Enterprise");
-                    wheres.Add("EnterpriseCode", enterpriseCode);
+                    wheres.Add("Code", enterpriseCode);
 
-                    if (!sqlHelper.Exists(Tables.Users, wheres))
+                    if (!sqlHelper.Exists(Tables.EnterpriseCodes, wheres))
                     {
                         return (int)ErrorCodes.CODE_DOES_NOT_EXIST;
                     }
@@ -1601,10 +1619,7 @@ where UserID = '{2}'", Tables.Roles, Tables.UserRoles, userId);
                     new string[] {  "Name", "ID", "AccountType", "EnterpriseCode" },
                     new string[] {  email,  id, "Free", string.IsNullOrEmpty(enterpriseCode) ? null : enterpriseCode  }))
                 {
-                    if (sqlHelper.Insert(Tables.UserStorage,
-                        new string[] { "UserID", "UsedStorage", "Storage" },
-                        new string[] { id, "0", "10000" }))
-                    {
+
                         client.SetPasswordAsync(email, password);
 
                         return Verify(id);
@@ -1621,7 +1636,6 @@ where UserID = '{2}'", Tables.Roles, Tables.UserRoles, userId);
                         else
                             return (int)ErrorCodes.INTERNAL_ERROR;*/
 
-                    }
                 }
             }
             catch (Exception ex)

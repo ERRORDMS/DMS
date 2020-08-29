@@ -16,6 +16,7 @@ namespace DMS.Database
     {
         public const string Users = "users";
         public const string Roles = "Roles";
+        public const string EnterpriseCodes = "EnterpriseCodes";
         public const string Permissions = "Permissions";
         public const string UserPermissions = "UserPermissions";
         public const string RoleCategories = "RoleCategories";

@@ -14,7 +14,7 @@
     "platform": "",
     "allowUnsafe": false,
     "warningsAsErrors": false,
-    "optimize": true,
+    "optimize": false,
     "keyFile": "",
     "emitEntryPoint": true,
     "xmlDoc": false,
@@ -39,6 +39,7 @@
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "2.1.10",
           "MimeKit": "2.9.1",
           "Newtonsoft.Json": "12.0.3",
+          "Syncfusion.EJ2.AspNet.Core": "18.2.0.54",
           "System.ServiceModel.Duplex": "4.4.4",
           "System.ServiceModel.Http": "4.4.4",
           "System.ServiceModel.NetTcp": "4.4.4",
@@ -606,6 +607,32 @@
       "runtime.ubuntu.14.04-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {},
       "runtime.ubuntu.16.04-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {},
       "runtime.ubuntu.16.10-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {},
+      "Syncfusion.EJ2.AspNet.Core/18.2.0.54": {
+        "dependencies": {
+          "Newtonsoft.Json": "12.0.3",
+          "Syncfusion.Licensing": "18.2.0.54"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Syncfusion.EJ2.dll": {
+            "assemblyVersion": "18.2.0.54",
+            "fileVersion": "18.2.0.54"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Syncfusion.EJ2.dll": {}
+        }
+      },
+      "Syncfusion.Licensing/18.2.0.54": {
+        "runtime": {
+          "lib/netstandard2.0/Syncfusion.Licensing.dll": {
+            "assemblyVersion": "18.2.0.54",
+            "fileVersion": "18.2.0.54"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Syncfusion.Licensing.dll": {}
+        }
+      },
       "System.Composition/1.0.31": {
         "dependencies": {
           "System.Composition.AttributedModel": "1.0.31",
@@ -4458,6 +4485,20 @@
       "sha512": "sha512-leXiwfiIkW7Gmn7cgnNcdtNAU70SjmKW3jxGj1iKHOvdn0zRWsgv/l2OJUO5zdGdiv2VRFnAsxxhDgMzofPdWg==",
       "path": "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl/4.3.2",
       "hashPath": "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512"
+    },
+    "Syncfusion.EJ2.AspNet.Core/18.2.0.54": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UJQsvkkbzVjUkRMtNxX9iJz4EwZDoANxWZoKzJZkIQTqA+XFz6yTfCt8UV6MqJjSHmHkCguq+uF2WT0k8sx50A==",
+      "path": "syncfusion.ej2.aspnet.core/18.2.0.54",
+      "hashPath": "syncfusion.ej2.aspnet.core.18.2.0.54.nupkg.sha512"
+    },
+    "Syncfusion.Licensing/18.2.0.54": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-xrf92qSI4E2B+HCHqolNqp+bAVgh1XGOq4NrciNP6rDMUBm0oS1mZtuxEwBLUE1FUMsngXxIR76t0SackRK/QQ==",
+      "path": "syncfusion.licensing/18.2.0.54",
+      "hashPath": "syncfusion.licensing.18.2.0.54.nupkg.sha512"
     },
     "System.Composition/1.0.31": {
       "type": "package",
