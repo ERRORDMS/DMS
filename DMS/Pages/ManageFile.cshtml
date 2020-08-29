@@ -36,45 +36,29 @@
 
 
 <br />
+@(Html.DevExtreme().Button()
+        .Icon("save")
+        .Text(Localizer["Save"].Value)
+        .OnClick("saveFile")
+        .ElementAttr("class", "content-block")
+
+    )
+@(Html.DevExtreme().Button()
+        .Icon("trash")
+        .Text(Localizer["DeleteFile"].Value)
+        .OnClick("deleteFile")
+        .ElementAttr("class", "content-block")
+
+    )
+<br />
+
 <div class="main-block">
-<div class="dx-fieldset">
-    <div class="dx-field">
-            @(Html.DevExtreme().TreeList()
-            .ID("treeList")
+    <div class="dx-fieldset">
 
-    .DataSource(d => d.Mvc()
-        .Controller("Categories")
-        .LoadAction("Get")
-        .Key("AutoKey")
-    ).KeyExpr("AutoKey")
-    //.OnSelectionChanged("onValueChangedTree")
-    .ElementAttr("class","categoriesTreeList")
-    .SelectedRowKeys(new[] { 1 })
-    .SearchPanel(s=>s
-                        .Visible(true)
-                        .Placeholder("Search")
-                        .SearchVisibleColumnsOnly(true)
-                )
-                //.OnContentReady("treeReady")
-
-                .ParentIdExpr("FatherAutoKey")
-                .ExpandedRowKeys(new[] { 1 })
-                .ShowRowLines(true)
-        .Selection(s => s.Mode(SelectionMode.Multiple))
-                .ShowBorders(true)
-                .ColumnAutoWidth(true)
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("Name")
-                        .Caption("Category Name");
-
-                })
-            )
-    </div>
-    <div class="dx-field">
-        <div class="dx-field-label">Contacts:</div>
-        <div class="dx-field-value">
-            @(Html.DevExtreme().TagBox()
+        <div class="dx-field">
+            <div class="dx-field-label">Contacts:</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().TagBox()
     .DisplayExpr("Name")
     /*
         .DataSource(d => d.Mvc()
@@ -91,12 +75,12 @@
     .SearchExpr("Name")
               .SearchEnabled(true)
                     )
+            </div>
         </div>
-    </div>
-    <div class="dx-field">
-        <div class="dx-field-label">Search Keys:</div>
-        <div class="dx-field-value">
-            @(Html.DevExtreme().TagBox()
+        <div class="dx-field">
+            <div class="dx-field-label">Search Keys:</div>
+            <div class="dx-field-value">
+                @(Html.DevExtreme().TagBox()
                         /*
         .DataSource(d => d.Mvc()
                    .Controller("SearchKeys")
@@ -113,52 +97,86 @@
         .SearchExpr("Name")
                   .SearchEnabled(true)
                         )
+            </div>
+        </div>
+        <div class="dx-field">
+            @(Html.DevExtreme().TreeList()
+            .ID("treeList")
+
+    .DataSource(d => d.Mvc()
+        .Controller("Categories")
+        .LoadAction("Get")
+        .Key("AutoKey")
+    ).KeyExpr("AutoKey")
+    //.OnSelectionChanged("onValueChangedTree")
+    .ElementAttr("class","categoriesTreeList")
+    .SearchPanel(s=>s
+                        .Visible(true)
+                        .Placeholder("Search")
+                        .SearchVisibleColumnsOnly(true)
+                )
+                //.OnContentReady("treeReady")
+
+                .ParentIdExpr("FatherAutoKey")
+                .ShowRowLines(true)
+        .Selection(s => s.Mode(SelectionMode.Multiple))
+                .ShowBorders(true)
+                .ColumnAutoWidth(true)
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("Name")
+                        .Caption("Category Name");
+
+                })
+            )
         </div>
     </div>
-    </div>
 
-    <br />
-    @(Html.DevExtreme().Button()
-        .Icon("save")
-        .Text(Localizer["Save"].Value)
-        .OnClick("saveFile")
-        .ElementAttr("class", "content-block")
 
-    )
-    @(Html.DevExtreme().Button()
-        .Icon("trash")
-        .Text(Localizer["DeleteFile"].Value)
-        .OnClick("deleteFile")
-        .ElementAttr("class", "content-block")
-
-    )
-
-    </div>
-    <script>
+</div>
+<script>
     var categories;
     var keys;
         var contacts;
-        $(document).ready(function () {
-            $('#contactsTagBox').dxTagBox({
-                dataSource: DevExpress.data.AspNet.createStore({
-                    key: "AutoKey",
-                    loadUrl: "api/Contacts",
-                })
-            });
-            $('#searchKeysTagBox').dxTagBox({
-                dataSource: DevExpress.data.AspNet.createStore({
-                    key: "AutoKey",
-                    loadUrl: "api/SearchKeys",
-                })
-            });
-        })
-      
-        function saveFile() {
-            categories = $("#categoriesTagBox").dxTagBox("instance").option("value");
+    $(document).ready(function () {
+        $('#contactsTagBox').dxTagBox({
+            dataSource: DevExpress.data.AspNet.createStore({
+                key: "AutoKey",
+                loadUrl: "api/Contacts",
+            })
+        });
+        $('#searchKeysTagBox').dxTagBox({
+            dataSource: DevExpress.data.AspNet.createStore({
+                key: "AutoKey",
+                loadUrl: "api/SearchKeys",
+            })
+        });
+
+
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", "api/Upload/GetFileInfo?InfoAutoKey=" + @AutoKey, false);
+        xmlHttp.send();
+
+        var res = JSON.parse(xmlHttp.responseText);
+        categories = res.Categories;
+        keys = res.SearchKeys;
+        contacts = res.Contacts;
+
+        $("#contactsTagBox").dxTagBox("instance").option("value", contacts);
+        $("#searchKeysTagBox").dxTagBox("instance").option("value", keys);
+        //$('#treeList').dxTreeList('instance').selectRows(, false);
+        $('#treeList').dxTreeList({
+            selectedRowKeys: categories.map(a => a.AutoKey),
+            autoExpandAll: true
+        });
+    });
+
+    function saveFile() {
+        categories = $('#treeList').dxTreeList('instance').getSelectedRowsData();
 
             keys = $("#searchKeysTagBox").dxTagBox("instance").option("value");
-            contacts = $("#contactsTagBox").dxTagBox("instance").option("value"); 
-            
+            contacts = $("#contactsTagBox").dxTagBox("instance").option("value");
+
             var outputCats = []
             $.each(categories, function (i, e) {
                 if (e.AutoKey != null)
@@ -253,22 +271,6 @@
 
     }
 
-    $(document).ready(function () {
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("GET", "api/Upload/GetFileInfo?InfoAutoKey=" + @AutoKey, false);
-        xmlHttp.send();
-
-        var res = JSON.parse(xmlHttp.responseText);
-        categories = res.Categories;
-        keys = res.SearchKeys;
-        contacts = res.Contacts;
-
-        $("#contactsTagBox").dxTagBox("instance").option("value", contacts);  
-        $("#searchKeysTagBox").dxTagBox("instance").option("value", keys);  
-        $("#categoriesTagBox").dxTagBox("instance").option("value", categories);  
-        
-    });
 
 
-
-    </script>
+</script>
