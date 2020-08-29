@@ -21,6 +21,10 @@
     <link rel="stylesheet" href="aos/dist/aos.css" />
     <link rel="icon" type="image/x-icon" href="assets/img/favicon.png" />
     <link rel="stylesheet" href="~/css/Site.css" />
+    <link rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+          integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+          crossorigin="anonymous" />
     <script src="lib/font-awesome/5.11.2/js/all.min.js"></script>
     <script src="lib/feather-icons/4.24.1/feather.min.js"></script>
     @if (CultureInfo.CurrentCulture.TextInfo.IsRightToLeft)
@@ -31,12 +35,14 @@
                 direction: rtl
             }
         </style>
-    } else {
-       <style>
-           body {
-               direction: ltr;
-           }
-       </style>
+    }
+    else
+    {
+        <style>
+            body {
+                direction: ltr;
+            }
+        </style>
     }
     <style>
         .switchLanguage_button {
@@ -242,7 +248,43 @@
                         </div>
                     </div>
                 </section>
-                <hr class="m-0" />
+                <section class="pt-10">
+                    <div class="container">
+                        <div class="text-center mb-5">
+                            <h2>Users & Files</h2>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 mb-lg-n10 mb-5 mb-lg-0 z-1">
+                                <a class="card text-decoration-none h-100 lift">
+                                    <div class="card-body py-5">
+                                        <div class="d-flex align-items-center">
+                                            <div class="icon-stack icon-stack-xl bg-primary text-white flex-shrink-0"><i class="far fa-user"></i></div>
+                                            <div class="ml-4">
+                                                <h5 class="text-primary">Users</h5>
+                                                <p class="card-text text-gray-600">+10000 Users</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-lg-6 mb-lg-n10 z-1">
+                                <a class="card text-decoration-none h-100 lift">
+                                    <div class="card-body py-5">
+                                        <div class="d-flex align-items-center">
+                                            <div class="icon-stack icon-stack-xl bg-secondary text-white flex-shrink-0"><i class="far fa-file"></i></div>
+                                            <div class="ml-4">
+                                                <h5 class="text-secondary">Files</h5>
+                                                <p class="card-text text-gray-600">+2000000 Files</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <br />
+                <br />
                 <section class="bg-light pt-10">
                     <div class="container">
                         <div class="text-center mb-5">
