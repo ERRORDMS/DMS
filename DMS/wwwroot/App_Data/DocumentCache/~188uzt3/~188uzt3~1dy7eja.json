@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "188uzt3",
+  "CachePdfKey": "188uzt3/188uzt3-1k3kk2s.pdf",
+  "CacheXpzKey": "188uzt3/188uzt3-1dy7eja.xpz",
+  "CacheInfoKey": "188uzt3/188uzt3-1dy7eja.json",
+  "CacheCopyKey": "188uzt3/tc832c.pdf",
+  "Document": null,
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": null,
+  "DocumentFileName": "8_8.pdf",
+  "InputOptions": {
+    "Format": "Pdf",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "188uzt3",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}

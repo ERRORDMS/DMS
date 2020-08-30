@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "or1rog",
+  "CachePdfKey": "or1rog/or1rog-1k3kk2s.pdf",
+  "CacheXpzKey": "or1rog/or1rog-ynvyv1.xpz",
+  "CacheInfoKey": "or1rog/or1rog-ynvyv1.json",
+  "CacheCopyKey": "or1rog/18kou2h.pdf",
+  "Document": null,
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": null,
+  "DocumentFileName": "9_9.pdf",
+  "InputOptions": {
+    "Format": "Pdf",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "or1rog",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}
