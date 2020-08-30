@@ -89,13 +89,16 @@ namespace DMS.Controllers
 
         [HttpPost]
         [Route("Save")]
-        public  ActionResult SaveSettings(string serviceendpoint, string datasource, string database, string DatabasesPath, string FileTablePath)
+        public  ActionResult SaveSettings(string serviceendpoint, string datasource, string database, string DatabasesPath, string FtpUrl,string FtpUsername,string FtpPassword)
         {
             Settings settings = new Settings();
             settings.ServiceEndpoint = serviceendpoint;
             settings.DataSource = datasource;
             settings.Database = database;
             settings.DatabasesPath = DatabasesPath;
+            settings.FtpUrl = FtpUrl;
+            settings.FtpUsername = FtpUsername;
+            settings.FtpPassword = FtpPassword;
 
             System.IO.File.WriteAllText("settings.json", JsonConvert.SerializeObject(settings));
 
@@ -110,5 +113,8 @@ namespace DMS.Controllers
         public string DataSource { get; set; }
         public string Database { get; set; }
         public string DatabasesPath { get; set; }
+        public string FtpUrl { get; set; }
+        public string FtpUsername { get; set; }
+        public string FtpPassword { get; set; }
     }
 }
