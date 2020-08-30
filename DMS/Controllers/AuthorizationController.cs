@@ -141,6 +141,17 @@ namespace DMS.Controllers
         }
 
 
+        [Route("GetAccountType")]
+        [HttpGet]
+        public string GetAccountType(string userId = null)
+        {
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return new DataManager(null).GetAccountType(userId);
+        }
+
+
         [Route("GetInfo")]
         [HttpGet]
         public IActionResult GetInfo()

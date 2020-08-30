@@ -26,6 +26,7 @@ using System.Dynamic;
 using Microsoft.CSharp.RuntimeBinder;
 using System.Threading;
 using Microsoft.AspNetCore.Http.Internal;
+using System.Net;
 
 namespace DMS.Database
 {
@@ -817,6 +818,28 @@ namespace DMS.Database
 
                     string fileTablePath = sqlHelper.ExecuteScalar<string>("select FileTableRootPath()");
 
+                    string path = Path.Combine("ftp://127.0.0.1", fileTablePath.Split('\\').Last(), fileTablePath.Split('\\').Last(), $@"Images\{year}\{month}\{day}").Replace("\\", "//");
+
+                    // Get the object used to communicate with the server.
+                    FtpWebRequest request = (FtpWebRequest)WebRequest.Create(Path.Combine(path, filename));
+                    request.Method = WebRequestMethods.Ftp.UploadFile;
+
+                    // This example assumes the FTP site uses anonymous logon.
+                    request.Credentials = new NetworkCredential("YOGA L380", "gepowered321");
+
+                    request.ContentLength = file.Length;
+
+                    using (Stream requestStream = request.GetRequestStream())
+                    {
+                        //requestStream.Write(file., 0, fileContents.Length);
+                        file.CopyTo(requestStream);
+                    }
+
+                    using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+                    {
+                        Console.WriteLine($"Upload File Complete, status {response.StatusDescription}");
+                    }
+                    /*
                     string path = Path.Combine(fileTablePath, fileTablePath.Split('\\').Last(),  $@"Images\{year}\{month}\{day}");
 
                     filename = Path.Combine(path + $@"\{filename}");
@@ -838,7 +861,7 @@ namespace DMS.Database
                         }
                     }
                     
-                    /*
+                    
                     string parent = AddDateDirectories(); // GetParentPathLocator(TmpAdo, "Images");
                     string query
                         = " INSERT into Images (stream_id, file_stream, name, path_locator) ";
@@ -859,48 +882,6 @@ namespace DMS.Database
                         new DataManager(null).AddUsedStorage(Math.Round(fileSize, 2), userID);
                    // }
                 }
-
-
-                /*
-                uploadFileTask.AddTask(new Task(() =>
-                {
-                    try
-                    {
-                        Logger.Log("Task run");
-                        if (!string.IsNullOrEmpty(infoAutoKey) && !string.IsNullOrEmpty(lineAutoKey))
-                        {
-                            string filename = infoAutoKey + "_" + lineAutoKey + Path.GetExtension(file.FileName);
-
-
-                            string parent = AddDateDirectories(); // GetParentPathLocator(TmpAdo, "Images");
-                            string query
-                                = " INSERT into Images (stream_id, file_stream, name, path_locator) ";
-                            query += "  values (NEWID(), @File, '" + filename + "', CAST('" + parent + "' AS hierarchyid))";
-
-                            var bytes = file.GetBytes().Result;
-
-                            SqlParameter param = new SqlParameter("@File", System.Data.SqlDbType.Binary, bytes.Length);
-                            param.Value = bytes;
-
-                            int i =  sqlHelper.ExecuteNonQuery(query, param);
-
-                            if (i > 0)
-                            {
-                                var fileSize = file.Length / 1048576.0;
-
-                                new DataManager(null).AddUsedStorage(Math.Round(fileSize, 2), userID);
-                            }
-                        }
-
-                        Logger.Log("Task end");
-                    }catch(Exception ex)
-                    {
-                        Logger.Log(ex.Message + " - " + ex.InnerException);
-                    }
-
-                }));
-
-                    */
              
                 return (int)ErrorCodes.INTERNAL_ERROR;
             }
@@ -911,7 +892,11 @@ namespace DMS.Database
 
             }
 
+
+
         }
+
+
 
         public  bool AddUsedStorage(double amount, string userID)
         {

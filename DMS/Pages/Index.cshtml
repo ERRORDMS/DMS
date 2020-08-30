@@ -578,9 +578,9 @@
             xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     var res = JSON.parse(xhr.responseText);
-                    $("#users_counter").text("Up to +" + res.Users + " " + "Users");
-                    $("#files_counter").text("Up to +" + res.Files + " " + "Files");
-                }
+                    $("#users_counter").text(`Up to ${res.Users}+ Users`);
+                    $("#files_counter").text(`Up to ${res.Files}+ Files`);
+                }   
             }
             xhr.open("GET", "api/Authorization/GetInfo", true);
             xhr.send();
