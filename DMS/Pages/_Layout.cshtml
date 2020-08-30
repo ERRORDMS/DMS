@@ -17,10 +17,10 @@
           integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
           crossorigin="anonymous" />
     <link rel="stylesheet" href="~/css/vendor.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Navbar.css"/>
     <link rel="stylesheet" href="~/css/Site.css" />
-    <link rel="stylesheet" href="~/css/Navbar.css" />
     <link href="~/css/Roboto.css" rel='stylesheet' type='text/css'>
-        
+     
     @if (CultureInfo.CurrentCulture.TextInfo.IsRightToLeft)
     {
         <style>
@@ -98,135 +98,137 @@
 
     @using (Html.DevExtreme().NamedTemplate("navigation-menu"))
     {
-        <div class="menu-container dx-swatch-additional" style="background-color:#363640">
-            <div class="nav-wrap">
-                <nav class="main-nav" role="navigation">
-                    <ul class="unstyled list-hover-slide">
-                        <li class="nav-item"><a href="Dashboard"><i class="fas fa-home"></i>@Localizer["Home"]</a></li>
-                        <li class="nav-item categories"><a href="ManageCategory"><i class="fas fa-tag"></i>@Localizer["Categories"]</a></li>
-                        <li class="nav-item"><a href="ManageContact"><i class="fas fa-users"></i>@Localizer["Contacts"]</a></li>
-                        <li class="nav-item"><a href="ManageSearchKey"><i class="fas fa-key"></i>@Localizer["SearchKeys"]</a></li>
-                        <li class="nav-item"><a href="Upload"><i class="fas fa-upload"></i>@Localizer["Upload"]</a></li>
+<div class="menu-container dx-swatch-additional" style="background-color:#363640">
+        <div class="nav-wrap">
+            <nav class="main-nav" role="navigation">
+                <ul class="unstyled list-hover-slide">
+                    <li class="nav-item"><a href="Dashboard"><i class="fas fa-home"></i>@Localizer["Home"]</a></li>
+                    <li class="nav-item categories"><a href="ManageCategory"><i class="fas fa-tag"></i>@Localizer["Categories"]</a></li>
+                    <li class="nav-item"><a href="ManageContact"><i class="fas fa-users"></i>@Localizer["Contacts"]</a></li>
+                    <li class="nav-item"><a href="ManageSearchKey"><i class="fas fa-key"></i>@Localizer["SearchKeys"]</a></li>
+                    <li class="nav-item"><a href="Upload"><i class="fas fa-upload"></i>@Localizer["Upload"]</a></li>
 
-                        @{
-                            var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
+                    @{
+                        var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
 
-                            string accountType = "";
-                            if (claimsIdentity != null)
-                            {
-                                var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.UserData);
+                        string accountType = "";
+                        if (claimsIdentity != null)
+                        {
+                            var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.UserData);
 
-                                accountType = c.Value;
-                            }
-                            if (accountType == "Enterprise")
-                            {
-                                <li class="nav-item"><a href="Settings"><i class="fas fa-user-cog"></i>@Localizer["Settings"]</a></li>
-                            }
+                            accountType = c.Value;
                         }
-                        <li class="nav-item"><a href="SignOut"><i class="fas fa-sign-out-alt"></i>@Localizer["Logout"]</a></li>
-                        <li class="nav-item">
-                            <partial name="StorageProgress" />
-                        </li>
-                        @{
-                            if (accountType == "Free")
-                            {
-                                <li class="nav-item-upgrade upgrade"><a href="">@Localizer["Upgrade"]</a></li>
-                            }
+                        if (accountType == "Enterprise")
+                        {
+                            <li class="nav-item"><a href="Settings"><i class="fas fa-user-cog"></i>@Localizer["Settings"]</a></li>
                         }
-                    </ul>
-                </nav>
-            </div>
-            @*
-                 @functions{
-                     bool IsCurrentPage(string pageName)
-                     {
-                         var pageUrl = Url.Page(pageName);
-                         var currentPageUrl = Url.Page(ViewContext.RouteData.Values["page"].ToString());
-                         return pageUrl == currentPageUrl;
-                     }
-                 }
-
-                 @(Html.DevExtreme().TreeView()
-                     .Items(items =>
-                     {
-                         items.Add()
-                         .Text(Localizer["Home"].Value)
-                         .Icon("home")
-                         .Option("path", Url.Page("Index"))
-                         .Selected(IsCurrentPage("Index"));
-
-
-                         items.Add()
-                    .Text(Localizer["Categories"].Value)
-                    .Icon("tags")
-                //    .ParentId(2)
-                    .Option("path", Url.Page("ManageCategory"))
-                    .Selected(IsCurrentPage("ManageCategory"));
-
-
-                         items.Add()
-                    .Text(Localizer["Contacts"].Value)
-                    .Icon("user")
-                    .Option("path", Url.Page("ManageContact"))
-                    .Selected(IsCurrentPage("ManageContact"));
-
-                         items.Add()
-                     .Text(Localizer["SearchKeys"].Value)
-                    .Icon("key")
-                    .Option("path", Url.Page("ManageSearchKey"))
-                    .Selected(IsCurrentPage("ManageSearchKey"));
-
-
-                         items.Add()
-                .Text(Localizer["Upload"].Value)
-                .Icon("upload")
-                .Option("path", Url.Page("Upload"))
-                         .Selected(IsCurrentPage("upload"));
-
-
-
-                         items.Add()
-                             .Text(Localizer["Settings"].Value)
-                             .Icon("preferences")
-                             .Option("path", Url.Page("Settings"))
-                 .Visible(false)
-                             .Selected(IsCurrentPage("Settings"));
-
-                         if (!User.Identity.IsAuthenticated)
-                         {
-                             items.Add()
-                             .Text(Localizer["Register"].Value)
-                             .Icon("plus")
-                             .Option("path", Url.Page("Register"))
-                             .Selected(IsCurrentPage("register"));
-
-                             items.Add()
-                               .Text(Localizer["Login"].Value)
-                               .Icon("user")
-                               .Option("path", Url.Page("Login"))
-                               .Selected(IsCurrentPage("Login"));
-
-                         }
-                         else
-                         {
-                             items.Add()
-                               .Text(Localizer["Logout"].Value)
-                               .Icon("export")
-                               .Option("path", Url.Page("SignOut"))
-                               .Selected(IsCurrentPage("SignOut"));
-                         }
-                     }
-                        )
-                     .DataStructure(TreeViewDataStructure.Plain)
-                     .SelectionMode(NavSelectionMode.Single)
-                     .SelectedExpr("selected")
-                     .FocusStateEnabled(false)
-                     .Width(250)
-                     .OnItemClick("DMS.onTreeViewItemClick")
-                 )
-            *@
-
+                    }
+                    <li class="nav-item"><a href="SignOut"><i class="fas fa-sign-out-alt"></i>@Localizer["Logout"]</a></li>
+                    <li class="nav-item">
+                        <partial name="StorageProgress" />
+                    </li>
+                    @{
+                        if (accountType == "Free")
+                        {
+                            <li class="nav-item-upgrade upgrade"><a href="">@Localizer["Upgrade"]</a></li>
+                        }
+                    }
+                </ul>
+            </nav>
         </div>
+     
+    
+    @*
+         @functions{
+             bool IsCurrentPage(string pageName)
+             {
+                 var pageUrl = Url.Page(pageName);
+                 var currentPageUrl = Url.Page(ViewContext.RouteData.Values["page"].ToString());
+                 return pageUrl == currentPageUrl;
+             }
+         }
+
+         @(Html.DevExtreme().TreeView()
+             .Items(items =>
+             {
+                 items.Add()
+                 .Text(Localizer["Home"].Value)
+                 .Icon("home")
+                 .Option("path", Url.Page("Index"))
+                 .Selected(IsCurrentPage("Index"));
+
+
+                 items.Add()
+            .Text(Localizer["Categories"].Value)
+            .Icon("tags")
+        //    .ParentId(2)
+            .Option("path", Url.Page("ManageCategory"))
+            .Selected(IsCurrentPage("ManageCategory"));
+
+
+                 items.Add()
+            .Text(Localizer["Contacts"].Value)
+            .Icon("user")
+            .Option("path", Url.Page("ManageContact"))
+            .Selected(IsCurrentPage("ManageContact"));
+
+                 items.Add()
+             .Text(Localizer["SearchKeys"].Value)
+            .Icon("key")
+            .Option("path", Url.Page("ManageSearchKey"))
+            .Selected(IsCurrentPage("ManageSearchKey"));
+
+
+                 items.Add()
+        .Text(Localizer["Upload"].Value)
+        .Icon("upload")
+        .Option("path", Url.Page("Upload"))
+                 .Selected(IsCurrentPage("upload"));
+
+
+
+                 items.Add()
+                     .Text(Localizer["Settings"].Value)
+                     .Icon("preferences")
+                     .Option("path", Url.Page("Settings"))
+         .Visible(false)
+                     .Selected(IsCurrentPage("Settings"));
+
+                 if (!User.Identity.IsAuthenticated)
+                 {
+                     items.Add()
+                     .Text(Localizer["Register"].Value)
+                     .Icon("plus")
+                     .Option("path", Url.Page("Register"))
+                     .Selected(IsCurrentPage("register"));
+
+                     items.Add()
+                       .Text(Localizer["Login"].Value)
+                       .Icon("user")
+                       .Option("path", Url.Page("Login"))
+                       .Selected(IsCurrentPage("Login"));
+
+                 }
+                 else
+                 {
+                     items.Add()
+                       .Text(Localizer["Logout"].Value)
+                       .Icon("export")
+                       .Option("path", Url.Page("SignOut"))
+                       .Selected(IsCurrentPage("SignOut"));
+                 }
+             }
+                )
+             .DataStructure(TreeViewDataStructure.Plain)
+             .SelectionMode(NavSelectionMode.Single)
+             .SelectedExpr("selected")
+             .FocusStateEnabled(false)
+             .Width(250)
+             .OnItemClick("DMS.onTreeViewItemClick")
+         )
+    *@
+
+</div>
     }
     <script src="~/js/progressbar.js"></script>
     <script>
