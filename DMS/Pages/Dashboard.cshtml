@@ -99,7 +99,7 @@
                 .OnContentReady("treeReady")
                 .SearchPanel(s => s
                     .Visible(true)
-                    .Placeholder("Search")
+                    .Placeholder(Localizer["SearchOfcategory"].Value)
                     .SearchVisibleColumnsOnly(true)
             )
     .Selection(s => s.Mode(SelectionMode.Single))
@@ -164,7 +164,7 @@
                    .Caption(Localizer["DateAddedCol"].Value);
 
                 columns.Add()
-                      .Caption("View")
+                      .Caption(Localizer["View"].Value)
                       .Width(100)
                       .Alignment(HorizontalAlignment.Center)
                       .AllowFiltering(false)
@@ -172,7 +172,7 @@
                       .CellTemplate(new JS("cellTemplate"));
 
                 columns.Add()
-                      .Caption("Edit")
+                      .Caption(Localizer["Edit"].Value)
                       .Width(100)
                       .Alignment(HorizontalAlignment.Center)
                       .AllowFiltering(false)

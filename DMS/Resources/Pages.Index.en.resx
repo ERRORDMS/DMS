@@ -186,6 +186,9 @@
   <data name="Enterprise" xml:space="preserve">
     <value>Enterprise</value>
   </data>
+  <data name="Files" xml:space="preserve">
+    <value>Files</value>
+  </data>
   <data name="first_feature" xml:space="preserve">
     <value>Never lose a file again. Period.</value>
   </data>
@@ -284,6 +287,12 @@
   </data>
   <data name="Unlimited" xml:space="preserve">
     <value>Unlimited</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="Users&amp;Files" xml:space="preserve">
+    <value>Users &amp; Files</value>
   </data>
   <data name="Work" xml:space="preserve">
     <value>Work smarter, not harder</value>

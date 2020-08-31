@@ -123,17 +123,26 @@
   <data name="DateAddedCol" xml:space="preserve">
     <value>التاريخ</value>
   </data>
+  <data name="Edit" xml:space="preserve">
+    <value>تعديل</value>
+  </data>
   <data name="EditCol" xml:space="preserve">
     <value>تعديل الملف</value>
   </data>
   <data name="NameCol" xml:space="preserve">
     <value>الاسم</value>
   </data>
+  <data name="SearchOfcategory" xml:space="preserve">
+    <value>بحث</value>
+  </data>
   <data name="SearchText" xml:space="preserve">
     <value>ابحث الملفات عن اسم الملف، او فئة او جهة تعامل او مفتاح بحث</value>
   </data>
   <data name="TypeCol" xml:space="preserve">
     <value>نوع الملف</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>مشاهدة</value>
   </data>
   <data name="ViewCol" xml:space="preserve">
     <value>فتح الملف</value>
