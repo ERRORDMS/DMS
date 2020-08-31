@@ -104,8 +104,17 @@ namespace DMS.Database
         {
             try
             {
-                string query = "select COUNT(*) as Users, (SELECT COUNT(*) from " + Tables.DocumentInfo + ") as Files from " + Tables.Users;
 
+                string query = string.Format(@"DECLARE @sql varchar(max);
+
+SELECT @sql = Coalesce(@sql + ' UNION ALL ', '') + 'SELECT count(InfoAutoKey) as Files FROM ' + QuoteName(name) + '.dbo.DocumentLine'
+
+FROM   sys.databases
+where database_id > 4 AND name like '20%'
+;
+
+EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as Users FROM (' + @sql +  ') dt')
+", GetConnectionString(null).InitialCatalog);
 
                 return sqlHelper.ExecuteReader<Info>(query)[0];
             }
@@ -818,14 +827,14 @@ namespace DMS.Database
 
                     string fileTablePath = sqlHelper.ExecuteScalar<string>("select FileTableRootPath()");
 
-                    string path = Path.Combine("ftp://127.0.0.1", fileTablePath.Split('\\').Last(), fileTablePath.Split('\\').Last(), $@"Images\{year}\{month}\{day}").Replace("\\", "//");
+                    string path = Path.Combine(settings.FtpUrl, fileTablePath.Split('\\').Last(), fileTablePath.Split('\\').Last(), $@"Images\{year}\{month}\{day}").Replace("\\", "//");
 
                     // Get the object used to communicate with the server.
                     FtpWebRequest request = (FtpWebRequest)WebRequest.Create(Path.Combine(path, filename));
                     request.Method = WebRequestMethods.Ftp.UploadFile;
 
                     // This example assumes the FTP site uses anonymous logon.
-                    request.Credentials = new NetworkCredential("YOGA L380", "gepowered321");
+                    request.Credentials = new NetworkCredential(settings.FtpUsername, settings.FtpPassword);
 
                     request.ContentLength = file.Length;
 

@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "17dug5z",
+  "CachePdfKey": "17dug5z/17dug5z-md9rl0.pdf",
+  "CacheXpzKey": "17dug5z/17dug5z-10g5cji.xpz",
+  "CacheInfoKey": "17dug5z/17dug5z-10g5cji.json",
+  "CacheCopyKey": "17dug5z/1ujs9gh.jpg",
+  "Document": null,
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": null,
+  "DocumentFileName": "11_11.jpg",
+  "InputOptions": {
+    "Format": "Jpg",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "17dug5z",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}
