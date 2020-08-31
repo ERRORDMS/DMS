@@ -1,4 +1,5 @@
-﻿*,
+﻿/* 
+*,
 :before,
 :after {
     box-sizing: border-box;
@@ -197,13 +198,12 @@ svg:nth-child(odd) {
     width: 80%;
 }
 
+    */
 
 
 
 
 
-
-/*
 *,
 :before,
 :after {
@@ -231,7 +231,7 @@ svg:nth-child(odd) {
 }
 
 .main-nav a {
-    text-align: center;
+    width: 80%;
     padding: 1.1em 0;
     color: #ffffff;
     font: 400 1.125em "Source Sans Pro", Helvetica, Arial, sans-serif;
@@ -239,12 +239,12 @@ svg:nth-child(odd) {
 }
 
 .main-nav i {
-    width: 60px;
-    color: #7c7c7c;
+    width: 20%;
+    color: #ffffff;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 22px;
+    font-size: 20px;
 }
 
 .main-nav a i {
@@ -259,15 +259,13 @@ svg:nth-child(odd) {
     position: relative;
     overflow: hidden;
 }
-
 .list-hover-slide a {
     display: block;
     position: relative;
     z-index: 1;
     transition: 0.35s ease color;
 }
-
-.list-hover-slide li:before {
+.list-hover-slide a:before {
     content: "";
     display: block;
     z-index: -1;
@@ -281,8 +279,8 @@ svg:nth-child(odd) {
     transition: 0.35s ease left;
 }
 
-.list-hover-slide li.is-current:before,
-.list-hover-slide li:hover:before {
+.list-hover-slide a.is-current:before,
+.list-hover-slide a:hover:before {
     left: 0;
 }
 
@@ -310,7 +308,6 @@ svg:nth-child(odd) {
 #progressBar:nth-child(even) {
     display: none;
 }
-*/
 .storage {
     display: flex;
     justify-content: center;
@@ -318,6 +315,7 @@ svg:nth-child(odd) {
     font-weight: 100;
     font-size: 18px;
 }
+*/
 
 .size {
     margin-left: 0.2rem;
@@ -346,4 +344,3 @@ svg:nth-child(odd) {
     margin-left: 1.5rem;
     width: 80%;
 }
-*/
