@@ -8,6 +8,8 @@ using DevExtreme.AspNet.Data.ResponseModel;
 using DMS.Database;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using static DMS.Database.DataManager;
 
 namespace DMS.Controllers
 {
@@ -39,7 +41,9 @@ namespace DMS.Controllers
         [HttpPut]
         public IActionResult UpdateCat(string userID, long key, string values)
         {
-            new DataManager(userID).UpdatePermission(userID, key, values);
+            var d = JsonConvert.DeserializeObject<UpdateInfo>(values);
+            d.CatID = key;
+            new DataManager(userID).UpdatePermission(userID, d);
             return Ok();
         }
 
@@ -67,7 +71,36 @@ namespace DMS.Controllers
         public IActionResult UpdateRoleCat(string roleId, long key, string values)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            new DataManager(userId).UpdateRolePermission(roleId, key, values);
+            var d = JsonConvert.DeserializeObject<UpdateInfo>(values);
+            d.CatID = key;
+
+            new DataManager(userId).UpdateRolePermission(roleId, d);
+            return Ok();
+        }
+        
+        [Route("UpdateCats")]
+        [HttpPost]
+        public IActionResult UpdateCats(string userID, string catsJson)
+        {
+            List<UpdateInfo> cats = JsonConvert.DeserializeObject<List<UpdateInfo>>(catsJson);
+            foreach (var cat in cats)
+            {
+                new DataManager(userID).UpdatePermission(userID, cat);
+            }
+            return Ok();
+        }
+        [Route("UpdateRoleCats")]
+        [HttpPost]
+        public IActionResult UpdateRoleCats(string roleId, string  catsJson,string userId = null)
+        {
+            if(string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            List<UpdateInfo> cats = JsonConvert.DeserializeObject<List<UpdateInfo>>(catsJson);
+    
+            foreach (var cat in cats)
+            {
+                new DataManager(userId).UpdateRolePermission(roleId, cat);
+            }
             return Ok();
         }
 

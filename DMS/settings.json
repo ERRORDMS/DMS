@@ -1,1 +1,1 @@
-{"ServiceEndpoint":"http://192.168.1.77:9100/AlSahlService","DataSource":"192.168.1.77\\Alsahl","Database":"D:\\AlSahl\\Data\\MoneySql.MDF","DatabasesPath":"D:\\AlSahl\\Data","FtpUrl":null,"FtpUsername":null,"FtpPassword":null}
+{"ServiceEndpoint":"http://127.0.0.1:9100/AlSahlService","DataSource":"127.0.0.1\\Alsahl","Database":"D:\\AlSahl\\Data\\MoneySql.MDF","DatabasesPath":"D:\\AlSahl\\Data","FtpUrl":"ftp:\\127.0.0.1","FtpUsername":"Yoga L380","FtpPassword":"gepowered321"}

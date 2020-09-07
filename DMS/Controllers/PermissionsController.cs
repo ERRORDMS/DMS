@@ -59,9 +59,10 @@ namespace DMS.Controllers
 
         [Route("RolePermissions")]
         [HttpGet]
-        public IActionResult GetRolePermissions(string roleID)
+        public IActionResult GetRolePermissions(string roleID, string userId = null)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             return new JsonResult(new DataManager(userId).GetRolePermissions(roleID));
         }
@@ -82,9 +83,10 @@ namespace DMS.Controllers
 
         [Route("SaveRole")]
         [HttpPost]
-        public IActionResult saveRole(string roleID, string permissionsJson)
+        public IActionResult saveRole(string roleID, string permissionsJson, string userId = null)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(string.IsNullOrEmpty(userId))
+            userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var permissions = JsonConvert.DeserializeObject<List<Permission>>(permissionsJson);
             int i = new DataManager(userId).SaveRole(roleID, permissions);

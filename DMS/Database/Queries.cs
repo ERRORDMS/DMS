@@ -1012,20 +1012,6 @@ EXEC sys.sp_addextendedproperty @name=N'Updatable', @value=N'True' , @level0type
 
 INSERT INTO Images (name,is_directory,is_archive) VALUES ('Images', 1, 0) 
 
-" + Queries.UpdateTables + @"
-
-USE [master]
-
-CREATE LOGIN [IIS APPPOOL\Malafatee] FROM WINDOWS WITH DEFAULT_DATABASE=[MyDatabase]
-
-
-USE [DBNAME]
-CREATE USER [MyUserName] FOR LOGIN [IIS APPPool\Malafatee]
-
-GRANT INSERT TO [DBNAME]
-GRANT SELECT TO [DBNAME]
-GRANT UPDATE TO [DBNAME]
-";
-
+" + Queries.UpdateTables;
 	}
 }

@@ -1157,19 +1157,19 @@ ISNULL(CanDelete, 0) as CanDelete
 
         public class UpdateInfo
         {
+             public long CatID { get; set; }
             public string CanEdit { get; set; }
             public string CanView { get; set; }
             public string CanDelete { get; set; }
             public string CanAdd { get; set; }
         }
-        public void UpdatePermission(string userId, long key, string values)
+        public void UpdatePermission(string userId, UpdateInfo d)
         {
-            var d = JsonConvert.DeserializeObject<UpdateInfo>(values);
 
             if (!string.IsNullOrEmpty(d.CanDelete) && Convert.ToBoolean(d.CanDelete))
                 d.CanEdit = "true";
 
-            string query = "if(EXISTS(SELECT 1 from [" + userId + "] where CatID = '" + key + "'))";
+            string query = "if(EXISTS(SELECT 1 from [" + userId + "] where CatID = '" + d.CatID + "'))";
             query += " BEGIN";
 
             query += " UPDATE [" + userId + "] SET ";
@@ -1197,21 +1197,20 @@ ISNULL(CanDelete, 0) as CanDelete
 
             query = query.Remove(query.Length - 1);
 
-            query += " where CatID = '" + key + "'";
+            query += " where CatID = '" + d.CatID + "'";
             query += " END";
             query += " ELSE";
             query += " BEGIN";
-            query += " INSERT INTO [" + userId + "] (CatID, CanView, CanEdit, CanAdd, CanDelete) values ('" + key + "','" + Convert.ToBoolean(d.CanView) + "','" + Convert.ToBoolean(d.CanEdit) + "','" + Convert.ToBoolean(d.CanAdd) + "','" + Convert.ToBoolean(d.CanDelete) + "')";
+            query += " INSERT INTO [" + userId + "] (CatID, CanView, CanEdit, CanAdd, CanDelete) values ('" + d.CatID + "','" + Convert.ToBoolean(d.CanView) + "','" + Convert.ToBoolean(d.CanEdit) + "','" + Convert.ToBoolean(d.CanAdd) + "','" + Convert.ToBoolean(d.CanDelete) + "')";
             query += " END";
 
 
             sqlHelper.ExecuteNonQuery(query);
         }
-        public void UpdateRolePermission(string roleId, long key, string values)
+        public void UpdateRolePermission(string roleId, UpdateInfo d)
         {
-            var d = JsonConvert.DeserializeObject<UpdateInfo>(values);
 
-            string query = "if(EXISTS(SELECT 1 from " + Tables.RoleCategories + " where CatID = '" + key + "' AND RoleID = '" + roleId + "'))";
+            string query = "if(EXISTS(SELECT 1 from " + Tables.RoleCategories + " where CatID = '" + d.CatID + "' AND RoleID = '" + roleId + "'))";
             query += " BEGIN";
 
             query += " UPDATE " + Tables.RoleCategories + " SET ";
@@ -1238,11 +1237,11 @@ ISNULL(CanDelete, 0) as CanDelete
 
             query = query.Remove(query.Length - 1);
 
-            query += " where CatID = '" + key + "' AND RoleID = '" + roleId + "'";
+            query += " where CatID = '" + d.CatID + "' AND RoleID = '" + roleId + "'";
             query += " END";
             query += " ELSE";
             query += " BEGIN";
-            query += " INSERT INTO " + Tables.RoleCategories + " (CatID, CanView, CanEdit, CanDelete, CanAdd, RoleID) values ('" + key + "','" + Convert.ToBoolean(d.CanView) + "','" + Convert.ToBoolean(d.CanEdit) + "','" + Convert.ToBoolean(d.CanDelete) + "', '" + Convert.ToBoolean(d.CanAdd) + "','" + roleId + "')";
+            query += " INSERT INTO " + Tables.RoleCategories + " (CatID, CanView, CanEdit, CanDelete, CanAdd, RoleID) values ('" + d.CatID + "','" + Convert.ToBoolean(d.CanView) + "','" + Convert.ToBoolean(d.CanEdit) + "','" + Convert.ToBoolean(d.CanDelete) + "', '" + Convert.ToBoolean(d.CanAdd) + "','" + roleId + "')";
             query += " END";
 
 
