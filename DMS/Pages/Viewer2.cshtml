@@ -6,52 +6,52 @@
 @{
 
 
-    string InfoAutoKey = "";
-    string LineAutoKey = "";
-    Microsoft.Extensions.Primitives.StringValues queryVal;
+        string InfoAutoKey = "";
+        string LineAutoKey = "";
+        Microsoft.Extensions.Primitives.StringValues queryVal;
 
-    if (Context.Request.Query.TryGetValue("InfoAutoKey", out queryVal))
-    {
-        InfoAutoKey = queryVal.FirstOrDefault();
-    }
+        if (Context.Request.Query.TryGetValue("InfoAutoKey", out queryVal))
+        {
+            InfoAutoKey = queryVal.FirstOrDefault();
+        }
 
-    if (Context.Request.Query.TryGetValue("LineAutoKey", out queryVal))
-    {
-        LineAutoKey = queryVal.FirstOrDefault();
-    }
-
-
-    string userId = "";
-
-    var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
-
-    if (claimsIdentity != null)
-    {
-        var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-
-        userId = c.Value;
-    }
-
-    // string userId = User.FindFirst("userdata").Value;
+        if (Context.Request.Query.TryGetValue("LineAutoKey", out queryVal))
+        {
+            LineAutoKey = queryVal.FirstOrDefault();
+        }
 
 
-    DMS.Database.SQLHelper helper = new DMS.Database.DataManager(userId).SQLHelper;
+        string userId = "";
 
-    var Ext = helper.SelectWithWhere(DMS.Database.Tables.DocumentLines,
-        "Ext",
-        "InfoAutoKey = '" + InfoAutoKey + "'");
+        var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
 
-    var fn = InfoAutoKey + "_" + LineAutoKey + "." +  Ext;
+        if (claimsIdentity != null)
+        {
+            var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
 
-    var arr = helper.ExecuteScalar<byte[]>("select TOP 1 file_stream from " + DMS.Database.Tables.Images + " where name = '" + fn + "'");
+            userId = c.Value;
+        }
 
-    var documentViewer = new DocumentViewer
-    {
-        //Width = GleamTech.AspNet.UI.CssLength.Percentage(100),
-        //Height = GleamTech.AspNet.UI.CssLength.Percentage(100),
-        // DisplayMode = GleamTech.AspNet.UI.DisplayMode.Viewport,
-        //        Document = "~/uploads/" + fn
-        
+        // string userId = User.FindFirst("userdata").Value;
+
+
+        DMS.Database.SQLHelper helper = new DMS.Database.DataManager(userId).SQLHelper;
+
+        var Ext = helper.SelectWithWhere(DMS.Database.Tables.DocumentLines,
+            "Ext",
+            "InfoAutoKey = '" + InfoAutoKey + "'");
+
+        var fn = InfoAutoKey + "_" + LineAutoKey + "." +  Ext;
+
+        var arr = helper.ExecuteScalar<byte[]>("select TOP 1 file_stream from " + DMS.Database.Tables.Images + " where name = '" + fn + "'");
+
+        var documentViewer = new DocumentViewer
+        {
+            //Width = GleamTech.AspNet.UI.CssLength.Percentage(100),
+            //Height = GleamTech.AspNet.UI.CssLength.Percentage(100),
+            // DisplayMode = GleamTech.AspNet.UI.DisplayMode.Viewport,
+
+            ClientEvents = new DocumentViewerClientEvents() { DocumentLoaded = "documentViewerDocumentLoaded" },
         DocumentSource = new DocumentSource(new DocumentInfo(fn), arr)
     };
 
@@ -65,6 +65,11 @@
     </head>
     <body>
         @this.RenderBody(documentViewer)
-
+        <script>
+            function documentViewerDocumentLoaded(sender, e) {
+                console.log(sender);
+            }
+        </script>
+        <button class="shareButton">Share on Whatsapp</button>
     </body>
 </html>

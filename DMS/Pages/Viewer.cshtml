@@ -14,7 +14,7 @@
     if (AutoKey == 0)
     {
         Redirect("Dashboard");
-    }  
+    }
 }
 
 
@@ -26,19 +26,31 @@
                 width: 100%;
                 height: 85vh;
             }
+
             #documentViewer {
                 width: 100%;
                 height: 85vh;
             }
+
             .content-block {
                 display: none;
             }
+            .shareButton {
+                background-color: #0087ff;
+                border-radius: 10px;
+                box-shadow: 2px 2px 5px black;
+                margin-left: 1rem;
+                width: 140px;
+                color: #FFF;
+                height: 40px;
+            }
         </style>
+    
     </head>
 
 
-        <div class="document">
-            <partial name="Viewer2" />
-        </div>
-
-    }
+    <div class="document">
+        <partial name="Viewer2" />
+    </div>
+ 
+}
