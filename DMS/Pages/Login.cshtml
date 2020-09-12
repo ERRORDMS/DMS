@@ -36,7 +36,7 @@
             <img src="~/images/download1.svg" />
         </div>
         <div class="login-content">
-            <form action="javascript:Login()">
+            <form action="javascript:Login()" id="login_form">
                 <img src="~/images/download2(1).svg" />
                 <h2 class="title">@Localizer["Welcome"]</h2>
                 <div class="input-div one">
@@ -46,26 +46,44 @@
                     <div class="div">
                         <h5>@Localizer["Email"]<span class="empty_field">@Localizer["FieldRequired"]</span><span class="err101">@Localizer["WrongCredentials"]</span></h5>
                         <input type="email" class="input email_input" id="email_input" autocomplete="off" />
-                    </div>  
+                    </div>
                 </div>
                 <div class="input-div pass">
                     <div class="i">
                         <i class="fas fa-lock"></i>
                     </div>
                     <div class="div">
-                        <h5 >@Localizer["Password"]<span class="empty_password">@Localizer["FieldRequired"]</span></h5>
+                        <h5>@Localizer["Password"]<span class="empty_password">@Localizer["FieldRequired"]</span></h5>
                         <input type="password" class="input " id="password_input" />
                     </div>
                 </div>
+
                 <a href="#">@Localizer["ForgotPassword"]</a>
                 <a href="Register">@Localizer["CreateAccount"]</a>
                 <button type="submit" class="btn" id="login_button">@Localizer["Login"]</button>
-                        
+
                 @(Html.DevExtreme().Button()
                     .Type(ButtonType.Normal)
                     .ID("btnChangeLang")
                     .OnClick(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "switchLanguageEn" : "switchLanguageAr")
                     .Text(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "English" : "عربي"))
+            </form>
+            <form action="javascript:checkCode()" id="code_form">
+                <img src="~/images/download2(1).svg" />
+                <h2 class="title">@Localizer["Welcome"]</h2>
+                <div class="input-div code">
+                    <div class="i">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="div">
+                        <h5>Code<span class="empty_password">@Localizer["FieldRequired"]</span></h5>
+                        <input type="text" class="input" id="code_input" />
+                    </div>
+                </div>
+                <button type="submit" class="btn">@Localizer["Login"]</button>
+            </form>
+            <form action="javascript:resendSMS()" id="resend_form">
+                <button id="resend">Resend</button>
             </form>
         </div>
     </div>
@@ -73,14 +91,47 @@
     </div>
 
     <script src="~/js/main.js"></script>
+    <script src="~/js/jsOTP.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script>
+        var doge;
+        var Username;
+        $(document).ready(function () {
+            $("#code_form").css("display", "none");
+            $("#resend_form").css("display", "none");
+        });
+        var secret = "23TplPdS46Juzcyx";
+        var totp = new jsOTP.totp();
+        var code = totp.getOtp(secret);
+        var hotp = new jsOTP.hotp();
+        var doge2 = hotp.getOtp(secret, 0);
+        var totpCode;
+
+        var updateTotp = function (secret) {
+            console.log(totp.getOtp(secret));
+            totpCode = totp.getOtp(secret);
+        }
+
+        updateTotp(secret);
+
+        var timeLoop = function () {
+
+            console.log(Math.round(10));
+            var epoch = Math.round(new Date().getTime() / 1000.0);
+            var countDown = 30 - (epoch % 30);
+            if (epoch % 600 == 0) {
+                updateTotp(secret);
+                $("#resend").fadeIn(40);
+            }
+        }
+
+        setInterval(timeLoop, 1000);
+
         function switchLanguageEn() {
             switchLanguage("en-US");
         }
 
         function switchLanguageAr() {
-
             switchLanguage("ar-SA");
         }
 
@@ -97,6 +148,37 @@
             xhr.send(fd);
         }
 
+        function checkCode() {
+            let code = document.getElementById("code_input").value;
+            if (code != totpCode) {
+                alert("The code is wrong");
+            } else {
+                const xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        window.location = 'Dashboard';
+                    }
+                }
+                const fd = new FormData();
+                fd.append("Username", Username);
+                xhr.open("post", "api/Authorization/Code", true);
+                xhr.send(fd);
+            }
+        }
+        function resendSMS() {
+            console.log(1);
+            const xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log(this.response);
+                }
+            }
+            console.log(totpCode);
+            const fd = new FormData();
+            fd.append("Code", totpCode);
+            xhr.open("POST", "api/Authorization/ResendSMS", true);
+            xhr.send(fd);
+        }
         function Login() {
             let email = document.getElementById('email_input').value;
             let password = document.getElementById('password_input').value;
@@ -120,6 +202,7 @@
             })
             
             if (email && password) {
+                Username = email;
                 const xhr = new XMLHttpRequest();
 
                 xhr.onreadystatechange = function () {
@@ -127,10 +210,13 @@
                         var t = this.response;
                         var obj = JSON.parse(t);
                         var statusCode = obj.StatusCode;
-
+                        $("#login_form").fadeOut();
+                        $("#code_form").fadeIn();
+                        $("#resend_form").fadeIn();
                         if (statusCode == 0) {
                             //console.log("1");
-                            window.location = 'Dashboard';
+                            //window.location = 'Dashboard';
+                            
                         }
                         if (statusCode == 101) {
                             $(document).ready(function () {
@@ -149,6 +235,7 @@
                 const fd = new FormData();
                 fd.append('username', email);
                 fd.append('password', password);
+                fd.append('Code', totpCode);
                 xhr.open('Post', 'api/authorization/Login', true);
                 xhr.send(fd);
             }

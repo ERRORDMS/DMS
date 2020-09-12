@@ -13,6 +13,8 @@ using MailKit;
 using MimeKit;
 using DMS.Models;
 using Microsoft.AspNetCore.DataProtection;
+using Twilio;
+using Twilio.Rest.Api.V2010.Account;
 
 namespace DMS.Controllers
 {
@@ -29,7 +31,7 @@ namespace DMS.Controllers
 
         [Route("Login")]
         [HttpPost]
-        public IActionResult Login(string Username, string Password)
+        public IActionResult Login(string Username, string Password, string Code)
         {
 
             int i = new DataManager(null).Login(Username, Password);
@@ -39,12 +41,44 @@ namespace DMS.Controllers
             result.StatusCode = i;
             if (i == (int)ErrorCodes.SUCCESS)
             {
-                AddCookies(Username);
+                const string accountSid = "AC6564ebab2c68998d58211af1bc4a3632";
+                const string authToken = "dbef227a4c489ddc1217070ede678efa";
+
+                TwilioClient.Init(accountSid, authToken);
+
+                var message = MessageResource.Create(
+                    body: "Your Code: " + Code,
+                    from: new Twilio.Types.PhoneNumber("+14064125307"),
+                    to: new Twilio.Types.PhoneNumber("+970599877376")
+                );
             }
 
             return new JsonResult(result);
         }
+        [Route("Code")]
+        [HttpPost]
+        public IActionResult Code(string Username)
+        {
+            AddCookies(Username);
+            return Ok();
+        }
 
+        [Route("ResendSMS")]
+        [HttpPost]
+        public IActionResult Resend(string Code)
+        {
+            const string accountSid = "AC6564ebab2c68998d58211af1bc4a3632";
+            const string authToken = "dbef227a4c489ddc1217070ede678efa";
+
+            TwilioClient.Init(accountSid, authToken);
+
+            var message = MessageResource.Create(
+                body: "Your Code: " + Code,
+                from: new Twilio.Types.PhoneNumber("+14064125307"),
+                to: new Twilio.Types.PhoneNumber("+970599877376")
+            );
+            return Ok();
+        }
         [Route("Verify")]
         [HttpPost]
         public IActionResult Verify(string Key)
@@ -62,7 +96,7 @@ namespace DMS.Controllers
 
         [Route("Register")]
         [HttpPost]
-        public JsonResult Register(string Email, string Password, string code)
+        public JsonResult Register(string Email, string Password, string code, string phone)
         {
 
             int i = new DataManager(null).Register(Email, Password, code);
