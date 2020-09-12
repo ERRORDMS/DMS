@@ -6,7 +6,7 @@
 @{
     ViewData["Title"] = "Document Viewer";
     Layout = "~/Pages/_Layout.cshtml";
-
+    /*
     long AutoKey = 0;
 
     AutoKey = Convert.ToInt64(Request.Query["InfoAutoKey"]);
@@ -14,63 +14,53 @@
     if (AutoKey == 0)
     {
         Redirect("Dashboard");
+    }*/
+
+    string EncryptedString = "";
+
+    EncryptedString = Convert.ToString(Request.Query["f"]);
+
+    if (EncryptedString == "")
+    {
+        Redirect("Dashboard");
     }
 }
 
 
-@if (AutoKey != 0)
+@if (EncryptedString != "")
 {
-    <head>
-        <style>
-            #DocumentViewer {
-                width: 100%;
-                height: 85vh;
-            }
-            #documentViewer {
-                width: 100%;
-                height: 85vh;
-            }
-            .content-block {
-                display: none;
-            }
-            .shareButton {
-                background-color: #0087ff;
-                border-radius: 10px;
-                box-shadow: 2px 2px 5px black;
-                margin-left: 1rem;
-                width: 140px;
-                color: #FFF;
-                height: 40px;
-                outline: none;
-            }
-            .dx-scrollable-scroll-content {
-                display: none;
-            }
-            .all {
-                display: flex;
-            }
-            #list_of_apps {
-                display: none;
-            }
-            .app_list {
-                display: inline;
-            }
-            .app_list_item {
-                display: inline;
-                list-style-type: none;
-            }
-            .app_list_item button {
-                background: none;
-                border: none;
-                outline: none;
-            }
-        </style>
-    
-    </head>
+<head>
+    <style>
+        #DocumentViewer {
+            width: 100%;
+            height: 85vh;
+        }
+
+        #documentViewer {
+            width: 100%;
+            height: 85vh;
+        }
+
+        .content-block {
+            display: none;
+        }
+
+        .shareButton {
+            background-color: #0087ff;
+            border-radius: 10px;
+            box-shadow: 2px 2px 5px black;
+            margin-left: 1rem;
+            width: 140px;
+            color: #FFF;
+            height: 40px;
+        }
+    </style>
+
+</head>
 
 
-    <div class="document">
-        <partial name="Viewer2" />
-    </div>
- 
+<div class="document">
+    <partial name="Viewer2" />
+</div>
+
 }

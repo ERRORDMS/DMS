@@ -195,12 +195,24 @@
                 .appendTo(element)
                 .addClass("view")
         }
-
         function onEdit(element, cellinfo) {
             var infoAutoKey = cellinfo.data.DocumentAutoKey;
             var lineAutoKey = cellinfo.data.LineAutoKey;
 
-            window.location.href = 'Viewer?InfoAutoKey=' + infoAutoKey + '&LineAutoKey=' + lineAutoKey;
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", "api/Upload/GetEncryptedString?key=" + infoAutoKey + "|" + lineAutoKey, false);
+            xmlHttp.send();
+
+            var str = xmlHttp.responseText;
+
+            console.log(str);
+            str = str.replace(/\//g, "convslash");
+            str = str.replace(/\&/g, "convand");
+            str = str.replace(/\#/g, "convhash");
+            str = str.replace(/\?/g, "convqmark");
+            str = str.replace(/\+/g, "convplus");
+            console.log(str);
+            window.location.href = 'Viewer?f=' + str;//?InfoAutoKey=' + infoAutoKey + '&LineAutoKey=' + lineAutoKey;
         }
 
          function cellTemplate2(element, cellInfo) {

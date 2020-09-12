@@ -1,0 +1,32 @@
+﻿@page
+@model DMS.Pages.ShareModel
+@using GleamTech.AspNet.Core
+@using GleamTech.DocumentUltimate
+@using GleamTech.DocumentUltimate.AspNet
+@using GleamTech.DocumentUltimate.AspNet.UI
+@{
+    ViewData["Title"] = "Malafatee - Share";
+    Layout = null;
+    /*
+
+    string EncryptedString = Convert.ToString(Request.Query["f"]);
+
+    if (string.IsNullOrEmpty(EncryptedString))
+    {
+        Redirect("Index");
+        return;
+    }
+
+    var documentViewer = new DocumentViewer
+    {
+        //Width = GleamTech.AspNet.UI.CssLength.Percentage(100),
+        //Height = GleamTech.AspNet.UI.CssLength.Percentage(100),
+        // DisplayMode = GleamTech.AspNet.UI.DisplayMode.Viewport,
+
+        //ClientEvents = new DocumentViewerClientEvents() { DocumentLoaded = "documentViewerDocumentLoaded" },
+        DocumentSource = new DocumentSource(new DocumentInfo(fn), arr)
+    };*/
+}
+
+<partial name="Viewer2" />
+

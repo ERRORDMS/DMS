@@ -4,7 +4,7 @@
 @using GleamTech.DocumentUltimate.AspNet.UI
 
 @{
-
+    /*
 
         string InfoAutoKey = "";
         string LineAutoKey = "";
@@ -20,8 +20,64 @@
             LineAutoKey = queryVal.FirstOrDefault();
         }
 
+     string userId = "";
 
-        string userId = "";
+    var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
+
+    if (claimsIdentity != null)
+    {
+        var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+
+        userId = c.Value;
+    }
+
+
+
+
+
+    // string userId = User.FindFirst("userdata").Value;
+
+
+    DMS.Database.SQLHelper helper = new DMS.Database.DataManager(userId).SQLHelper;
+
+    var Ext = helper.SelectWithWhere(DMS.Database.Tables.DocumentLines,
+        "Ext",
+        "InfoAutoKey = '" + InfoAutoKey + "'");
+
+    var fn = InfoAutoKey + "_" + LineAutoKey + "." +  Ext;
+
+    var arr = helper.ExecuteScalar<byte[]>("select TOP 1 file_stream from " + DMS.Database.Tables.Images + " where name = '" + fn + "'");
+
+    var documentViewer = new DocumentViewer
+    {
+        //Width = GleamTech.AspNet.UI.CssLength.Percentage(100),
+        //Height = GleamTech.AspNet.UI.CssLength.Percentage(100),
+        // DisplayMode = GleamTech.AspNet.UI.DisplayMode.Viewport,
+
+        ClientEvents = new DocumentViewerClientEvents() { DocumentLoaded = "documentViewerDocumentLoaded" },
+        DocumentSource = new DocumentSource(new DocumentInfo(fn), arr)
+    };
+    */
+
+    Microsoft.Extensions.Primitives.StringValues queryVal;
+
+
+    string EncryptedString = "";
+
+
+    if (Context.Request.Query.TryGetValue("f", out queryVal))
+    {
+        EncryptedString = queryVal.FirstOrDefault();
+    }
+
+
+    EncryptedString = EncryptedString.Replace("convhash", "#").Replace("convslash", "/").Replace("convand", "&").Replace("convqmark", "?").Replace("convplus", "+");
+    string DecryptedString = DMS.Models.StringCipher.Decrypt(EncryptedString, "Yom@1234");
+
+    string userId = DecryptedString.Split("|")[0];
+
+    if(userId == "-1")
+    {
 
         var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
 
@@ -32,29 +88,29 @@
             userId = c.Value;
         }
 
-        // string userId = User.FindFirst("userdata").Value;
+    }
+    string InfoAutoKey = DecryptedString.Split("|")[1];
+    string LineAutoKey = DecryptedString.Split("|")[2];
 
+    DMS.Database.SQLHelper helper = new DMS.Database.DataManager(userId).SQLHelper;
 
-        DMS.Database.SQLHelper helper = new DMS.Database.DataManager(userId).SQLHelper;
+    var Ext = helper.SelectWithWhere(DMS.Database.Tables.DocumentLines,
+        "Ext",
+        "InfoAutoKey = '" + InfoAutoKey + "'");
 
-        var Ext = helper.SelectWithWhere(DMS.Database.Tables.DocumentLines,
-            "Ext",
-            "InfoAutoKey = '" + InfoAutoKey + "'");
+    var fn = InfoAutoKey + "_" + LineAutoKey + "." + Ext;
 
-        var fn = InfoAutoKey + "_" + LineAutoKey + "." +  Ext;
+    var arr = helper.ExecuteScalar<byte[]>("select TOP 1 file_stream from " + DMS.Database.Tables.Images + " where name = '" + fn + "'");
 
-        var arr = helper.ExecuteScalar<byte[]>("select TOP 1 file_stream from " + DMS.Database.Tables.Images + " where name = '" + fn + "'");
+    var documentViewer = new DocumentViewer
+    {
+        //Width = GleamTech.AspNet.UI.CssLength.Percentage(100),
+        //Height = GleamTech.AspNet.UI.CssLength.Percentage(100),
+        // DisplayMode = GleamTech.AspNet.UI.DisplayMode.Viewport,
 
-        var documentViewer = new DocumentViewer
-        {
-            //Width = GleamTech.AspNet.UI.CssLength.Percentage(100),
-            //Height = GleamTech.AspNet.UI.CssLength.Percentage(100),
-            // DisplayMode = GleamTech.AspNet.UI.DisplayMode.Viewport,
-
-            ClientEvents = new DocumentViewerClientEvents() { DocumentLoaded = "documentViewerDocumentLoaded" },
+        ClientEvents = new DocumentViewerClientEvents() { DocumentLoaded = "documentViewerDocumentLoaded" },
         DocumentSource = new DocumentSource(new DocumentInfo(fn), arr)
     };
-
 
 }
     <html>
