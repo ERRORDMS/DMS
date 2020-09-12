@@ -145,6 +145,18 @@ namespace DMS.Controllers
 
             return Ok();
         }*/
+
+        [Route("GetEncryptedString")]
+        [HttpGet]
+        public string GetEncryptedString(string key, string userId = "-1")
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+
+            return StringCipher.Encrypt(userId + "|" + key, "Yom@1234");
+        }
         [Route("GetDocuments")]
         [HttpGet]
         public List<Document> GetCatDocuments(long CatID)
