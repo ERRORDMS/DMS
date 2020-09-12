@@ -210,8 +210,8 @@
                         items.Add()
                          .Widget(w => w
                              .Button()
-                             .Text(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "Share" : "نشر")
-                             .OnClick("")
+                             .Text(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "نشر" : "Share")
+                             .OnClick("share")
                          )
                          .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.Before : ToolbarItemLocation.After)
                          .CssClass("menu-button");

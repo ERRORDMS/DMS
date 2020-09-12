@@ -76,19 +76,6 @@
 
     string userId = DecryptedString.Split("|")[0];
 
-    if(userId == "-1")
-    {
-
-        var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
-
-        if (claimsIdentity != null)
-        {
-            var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-
-            userId = c.Value;
-        }
-
-    }
     string InfoAutoKey = DecryptedString.Split("|")[1];
     string LineAutoKey = DecryptedString.Split("|")[2];
 
@@ -108,7 +95,6 @@
         //Height = GleamTech.AspNet.UI.CssLength.Percentage(100),
         // DisplayMode = GleamTech.AspNet.UI.DisplayMode.Viewport,
 
-        ClientEvents = new DocumentViewerClientEvents() { DocumentLoaded = "documentViewerDocumentLoaded" },
         DocumentSource = new DocumentSource(new DocumentInfo(fn), arr)
     };
 
@@ -121,47 +107,72 @@
     </head>
     <body>
         @this.RenderBody(documentViewer)
-        <div class="all">
-            <div>
-                <button class="shareButton">Share on </button>
-            </div>
-            <div id="list_of_apps">
-                <ul class="app_list">
-                    <li class="app_list_item"><button>Whatsapp</button></li>
-                    <li class="app_list_item"><button>Messenger</button></li>
-                </ul>
-            </div>
-        </div>
         <script>
-            function documentViewerDocumentLoaded(sender, e) {
-                console.log(sender);
+
+            function getUrl() {
+                  var base_url = window.location.origin;
+
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open("GET", "api/Upload/GetEncryptedString?key=" + @InfoAutoKey + "|" + @LineAutoKey, false);
+                xmlHttp.send();
+
+                var str = xmlHttp.responseText;
+
+                str = str.replace(/\//g, "convslash");
+                str = str.replace(/\&/g, "convand");
+                str = str.replace(/\#/g, "convhash");
+                str = str.replace(/\?/g, "convqmark");
+                str = str.replace(/\+/g, "convplus");
+
+                var url = base_url + '/Share?f=' + str;
+
+                return url;
             }
-            $(document).ready(function () {
-                $(".shareButton").click(function () {
-                    $("#list_of_apps").toggle();
-                }) 
-            });
-            function shareOnWhatsapp() {
-                const xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function () {
-                    if (this.readyState == 4 && this.status == 200) {
-                        console.log(this.responseText);
-                    }
+            function copyLink(e) {
+
+
+                var url = getUrl();
+                var input = document.getElementById('copyInput');
+                input.value = url;
+
+                input.focus();
+                input.select();
+
+                try {
+                    document.execCommand('copy');
+                    DevExpress.ui.notify({ message: 'Link was copied to clipboard', width: 320 }, "success", 2000);
+
+                } catch (err) {
+                    DevExpress.ui.notify({ message: 'Unable to copy link', width: 320 }, "error", 2000);
                 }
-                xhr.open("POST", "api/Share/ShareOnWhatsApp", true);
-                xhr.send();
             }
-            function shareOnMessenger() {
-                const xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function () {
-                    if (this.readyState == 4 && this.status == 200) {
-                        console.log(this.responseText);
-                    }
-                }
-                xhr.open("POST", "api/Share/ShareOnMessenger", true);
-                xhr.send();
+
+            function share() {
+                $("#shareModal").dxPopup("instance").show();
             }
-            function share
+            function shareOnFacebook() {
+                FB.ui(
+                    {
+                        method: 'feed',
+                        name: 'Share file',
+                        link: getUrl(),
+                        caption: 'Enter text here',
+                        description: "Enter description here",
+                        message: ""
+                    });
+            }
+
+
+            window.fbAsyncInit = function () {
+                FB.init({
+                    appId: '345399346816803',
+                    autoLogAppEvents: false,
+                    xfbml: true,
+                    version: 'v8.0'
+                });
+            };
         </script>
+        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+
     </body>
 </html>

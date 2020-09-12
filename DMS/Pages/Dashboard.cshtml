@@ -205,13 +205,12 @@
 
             var str = xmlHttp.responseText;
 
-            console.log(str);
             str = str.replace(/\//g, "convslash");
             str = str.replace(/\&/g, "convand");
             str = str.replace(/\#/g, "convhash");
             str = str.replace(/\?/g, "convqmark");
             str = str.replace(/\+/g, "convplus");
-            console.log(str);
+
             window.location.href = 'Viewer?f=' + str;//?InfoAutoKey=' + infoAutoKey + '&LineAutoKey=' + lineAutoKey;
         }
 

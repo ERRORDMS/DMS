@@ -29,66 +29,83 @@
 
 @if (EncryptedString != "")
 {
-<head>
-    <style>
-        #DocumentViewer {
-            width: 100%;
-            height: 85vh;
-        }
+    <head>
+        <style>
+            #DocumentViewer {
+                width: 100%;
+                height: 85vh;
+            }
 
-        #documentViewer {
-            width: 100%;
-            height: 85vh;
-        }
+            #documentViewer {
+                width: 100%;
+                height: 85vh;
+            }
 
-        .content-block {
-            display: none;
-        }
+            .content-block {
+                display: none;
+            }
 
-        .shareButton {
-            background-color: #0087ff;
-            border-radius: 10px;
-            box-shadow: 2px 2px 5px black;
-            margin-left: 1rem;
-            width: 140px;
-            color: #FFF;
-            height: 40px;
-            outline: none;
-        }
-
-        .dx-scrollable-scroll-content {
-            display: none;
-        }
-
-        .all {
-            display: flex;
-        }
-
-        #list_of_apps {
-            display: none;
-        }
-
-        .app_list {
-            display: inline;
-        }
-
-        .app_list_item {
-            display: inline;
-            list-style-type: none;
-        }
-
-            .app_list_item button {
-                background: none;
-                border: none;
+            .shareButton {
+                background-color: #0087ff;
+                border-radius: 10px;
+                box-shadow: 2px 2px 5px black;
+                margin-left: 1rem;
+                width: 140px;
+                color: #FFF;
+                height: 40px;
                 outline: none;
             }
-    </style>
 
-</head>
+            .dx-scrollable-scroll-content {
+                display: none;
+            }
 
+            .btn-group {
+                display: block;
+                justify-content: center;
+                align-items: center;
+            }
+        </style>
 
-<div class="document">
-    <partial name="Viewer2" />
-</div>
+    </head>
+
+    @(Html.DevExtreme().Popup()
+        .ID("shareModal")
+        .Width(500)
+        .Height(400)
+        .ShowTitle(true)
+        .Title("Share")
+        .Visible(false)
+        .ContentTemplate(new TemplateName("popup-template"))
+        .DragEnabled(false)
+        .CloseOnOutsideClick(true)
+    )
+
+    @using (Html.DevExtreme().NamedTemplate("popup-template"))
+    {
+        <div class="buttongroups-container">
+
+            <div class="btn-group">
+                @(Html.DevExtreme().Button()
+            .Text("Share to Facebook")
+            .Type(ButtonType.Normal)
+            .OnClick("shareOnFacebook")
+            )
+                <br />
+                <br />
+                @(Html.DevExtreme().Button()
+            .Text("Copy link to clipboard")
+            .Type(ButtonType.Normal)
+            .OnClick("copyLink")
+            )
+            </div>
+        </div>
+    }
+    <input style="position: absolute; top:-100px" id="copyInput" />
+
+    <div class="document">
+        <partial name="Viewer2" />
+
+    </div>
 
 }

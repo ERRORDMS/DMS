@@ -148,7 +148,7 @@ namespace DMS.Controllers
 
         [Route("GetEncryptedString")]
         [HttpGet]
-        public string GetEncryptedString(string key, string userId = "-1")
+        public string GetEncryptedString(string key, string userId = null)
         {
             if (string.IsNullOrEmpty(userId))
             {
