@@ -121,11 +121,47 @@
     </head>
     <body>
         @this.RenderBody(documentViewer)
+        <div class="all">
+            <div>
+                <button class="shareButton">Share on </button>
+            </div>
+            <div id="list_of_apps">
+                <ul class="app_list">
+                    <li class="app_list_item"><button>Whatsapp</button></li>
+                    <li class="app_list_item"><button>Messenger</button></li>
+                </ul>
+            </div>
+        </div>
         <script>
             function documentViewerDocumentLoaded(sender, e) {
                 console.log(sender);
             }
+            $(document).ready(function () {
+                $(".shareButton").click(function () {
+                    $("#list_of_apps").toggle();
+                }) 
+            });
+            function shareOnWhatsapp() {
+                const xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        console.log(this.responseText);
+                    }
+                }
+                xhr.open("POST", "api/Share/ShareOnWhatsApp", true);
+                xhr.send();
+            }
+            function shareOnMessenger() {
+                const xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        console.log(this.responseText);
+                    }
+                }
+                xhr.open("POST", "api/Share/ShareOnMessenger", true);
+                xhr.send();
+            }
+            function share
         </script>
-        <button class="shareButton">Share on Whatsapp</button>
     </body>
 </html>
