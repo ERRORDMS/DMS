@@ -173,17 +173,27 @@
 <body>
     <div id="app-side-nav-outer-toolbar">
         <div class="layout-header" style="height:60px;overflow: hidden;">
+
+            @functions{
+                bool IsCurrentPage(string pageName)
+                {
+                    var pageUrl = Url.Page(pageName);
+                    var currentPageUrl = Url.Page(ViewContext.RouteData.Values["page"].ToString());
+                    return pageUrl == currentPageUrl;
+                }
+            }
+
             @(Html.DevExtreme().Toolbar()
                 .Items(items =>
                 {
-                        items.Add()
-                            .Widget(w => w
-                                .Button()
-                                .Icon("menu")
-                                .OnClick("DMS.onMenuButtonClick")
-                            )
-                            .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.After : ToolbarItemLocation.Before)
-                            .CssClass("menu-button");
+                    items.Add()
+                        .Widget(w => w
+                            .Button()
+                            .Icon("menu")
+                            .OnClick("DMS.onMenuButtonClick")
+                        )
+                        .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.After : ToolbarItemLocation.Before)
+                        .CssClass("menu-button");
                     /*
                     items.Add()
                             .Html(@"<i class='fas fa-folder' style='color: #0087ff'></i>")
@@ -195,6 +205,18 @@
                         .Html("<div>" + Localizer["Title"].Value + "</div>")
                         .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.After : ToolbarItemLocation.Before)
                         .CssClass("header-title");
+
+                    if (IsCurrentPage("Viewer")) {
+                        items.Add()
+                         .Widget(w => w
+                             .Button()
+                             .Text(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "Share" : "نشر")
+                             .OnClick("")
+                         )
+                         .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.Before : ToolbarItemLocation.After)
+                         .CssClass("menu-button");
+                         
+                     }
 
                     items.Add()
                        .Widget(w => w
