@@ -1261,6 +1261,27 @@ ISNULL(CanDelete, 0) as CanDelete
         {
             return sqlHelper.ExecuteScalar<string>("SELECT AccountType from Users where ID = '" + userID + "'");
         }
+        public string GetPhoneNumber(string userID)
+        {
+            return sqlHelper.ExecuteScalar<string>("SELECT Phone from Users where ID = '" + userID + "'");
+        }
+        public bool Get2FAEnabled(string userID)
+        {
+            return sqlHelper.ExecuteScalar<bool>("SELECT 2FA from Users where ID = '" + userID + "'");
+        }
+
+        public bool IsIPTrusted(string userID)
+        {
+            Dictionary<string, string> wheres = new Dictionary<string, string>();
+            wheres.Add("UserID", userID);
+            return sqlHelper.Exists(Tables.TrustedIPs, wheres);
+        }
+
+        public void TrustIP(string userID, string IP) {
+            sqlHelper.Insert(Tables.TrustedIPs,
+            new string[] { "UserID", "IP" },
+            new string[] { userID, IP });
+        }
         public IEnumerable<User> GetUsers(string userID)
         {/*
 
@@ -1270,7 +1291,7 @@ ISNULL(CanDelete, 0) as CanDelete
             return sqlHelper.SelectWithWhere<User>(Tables.Users, new string[] { "ID", "Name as Email", "AccountType" }, wheres);
         */
             var enterpriseCode = GetEnterpriseCode(userID);
-            return sqlHelper.ExecuteReader<User>("SELECT ID, Name as Email, AccountType from Users where EnterpriseCode <> '' AND EnterpriseCode = '" + enterpriseCode + "'");
+            return sqlHelper.ExecuteReader<User>("SELECT ID, Name as Email, AccountType, Phone from Users where EnterpriseCode <> '' AND EnterpriseCode = '" + enterpriseCode + "'");
 
         }
         public IEnumerable<Permission> GetUserPermissions(string userId)
@@ -1591,7 +1612,7 @@ new string[] { id, "0", "10000" });
             return (int)ErrorCodes.INTERNAL_ERROR;
         }
 
-        public  int Register(string email, string password, string enterpriseCode)
+        public  int Register(string email, string password, string phone, string enterpriseCode)
         {
             try
             {
@@ -1625,8 +1646,8 @@ new string[] { id, "0", "10000" });
                 var id = GetUserAutoIcrementID();
 
                 if (sqlHelper.Insert(Tables.Users,
-                    new string[] {  "Name", "ID", "AccountType", "EnterpriseCode" },
-                    new string[] {  email,  id, "Free", string.IsNullOrEmpty(enterpriseCode) ? null : enterpriseCode  }))
+                    new string[] {  "Name", "ID", "AccountType", "EnterpriseCode", "Phone" },
+                    new string[] {  email,  id, "Free", string.IsNullOrEmpty(enterpriseCode) ? null : enterpriseCode, phone  }))
                 {
 
                         client.SetPasswordAsync(email, password);

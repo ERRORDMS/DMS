@@ -33,6 +33,25 @@ END
 IF (NOT EXISTS (SELECT * 
                  FROM INFORMATION_SCHEMA.TABLES 
                  WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'TrustedIPs'))
+
+BEGIN
+
+CREATE TABLE [dbo].[TrustedIPs](
+	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+	[UserID] [nvarchar](max) NULL,
+	[IP] [nvarchar](max) NULL,
+ CONSTRAINT [PK_TrustedIPs] PRIMARY KEY CLUSTERED 
+(
+	[AutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+END
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
                  AND  TABLE_NAME = 'UserRoles'))
 
 BEGIN
@@ -243,6 +262,18 @@ BEGIN
 END
 
 
+IF COL_LENGTH('dbo.Users', 'Phone') IS NULL
+BEGIN
+  ALTER TABLE [Users]
+    ADD [Phone] NVARCHAR(MAX) NULL
+END
+
+
+IF COL_LENGTH('dbo.Users', '2FA') IS NULL
+BEGIN
+  ALTER TABLE [Users]
+    ADD [2FA] bit NULL
+END
 ";
 		public static string CreateEnterpriseTable = @"
 

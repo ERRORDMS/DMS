@@ -37,7 +37,7 @@
             <img src="~/images/download1.svg" />
         </div>
         <div class="login-content">
-            <form action="javascript:Login()" id="login_form">
+            <form action="javascript:Login()" id="login_form" onsubmit="return validateRecaptcha();">
                 <img src="~/images/download2(1).svg" />
                 <h2 class="title">@Localizer["Welcome"]</h2>
                 <div class="input-div one">
@@ -95,42 +95,23 @@
     </div>
 
     <script src="~/js/main.js"></script>
-    <script src="~/js/jsOTP.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script>
-        var doge;
         var Username;
         $(document).ready(function () {
             $("#code_form").css("display", "none");
             $("#resend_form").css("display", "none");
         });
-        var secret = "23TplPdS46Juzcyx";
-        var totp = new jsOTP.totp();
-        var code = totp.getOtp(secret);
-        var hotp = new jsOTP.hotp();
-        var doge2 = hotp.getOtp(secret, 0);
-        var totpCode;
 
-        var updateTotp = function (secret) {
-            console.log(totp.getOtp(secret));
-            totpCode = totp.getOtp(secret);
-        }
-
-        updateTotp(secret);
-
-        var timeLoop = function () {
-
-            console.log(Math.round(10));
-            var epoch = Math.round(new Date().getTime() / 1000.0);
-            var countDown = 30 - (epoch % 30);
-            if (epoch % 600 == 0) {
-                updateTotp(secret);
-                $("#resend").fadeIn(40);
+        function validateRecaptcha() {
+            var response = grecaptcha.getResponse();
+            if (response.length === 0) {
+                alert("You need to fill the captcha");
+                return false;
+            } else {
+                return true;
             }
         }
-
-        setInterval(timeLoop, 1000);
-
         function switchLanguageEn() {
             switchLanguage("en-US");
         }
@@ -154,32 +135,30 @@
 
         function checkCode() {
             let code = document.getElementById("code_input").value;
-            if (code != totpCode) {
-                alert("The code is wrong");
-            } else {
+
                 const xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function () {
-                    if (this.readyState == 4 && this.status == 200) {
-                        window.location = 'Dashboard';
-                    }
+                    if (this.readyState == 4) {
+                        if (this.status == 200) {
+                            window.location = 'Dashboard';
+                        }
+                        else {
+                        alert('Code entered is incorrect');
+                        }
+                    } 
                 }
-                const fd = new FormData();
-                fd.append("Username", Username);
-                xhr.open("post", "api/Authorization/Code", true);
-                xhr.send(fd);
-            }
+                xhr.open("GET", "api/Authorization/CheckCode?Username=" + Username + "&Code=" + code, true);
+                xhr.send();
         }
         function resendSMS() {
-            console.log(1);
             const xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     console.log(this.response);
                 }
             }
-            console.log(totpCode);
             const fd = new FormData();
-            fd.append("Code", totpCode);
+            fd.append('Username', Username);
             xhr.open("POST", "api/Authorization/ResendSMS", true);
             xhr.send(fd);
         }
@@ -239,7 +218,6 @@
                 const fd = new FormData();
                 fd.append('username', email);
                 fd.append('password', password);
-                fd.append('Code', totpCode);
                 xhr.open('Post', 'api/authorization/Login', true);
                 xhr.send(fd);
             }

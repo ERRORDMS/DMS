@@ -10,5 +10,6 @@ namespace DMS.Models
         public string ID { get; set; }
         public string Email { get; set; }
         public string AccountType { get; set; }
+        public string Phone { get; set; }
     }
 }

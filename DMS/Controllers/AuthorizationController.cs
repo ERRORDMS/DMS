@@ -9,12 +9,16 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MailKit.Net.Smtp;
+using OtpNet;
+
 using MailKit;
 using MimeKit;
 using DMS.Models;
 using Microsoft.AspNetCore.DataProtection;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
+using System.Text;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace DMS.Controllers
 {
@@ -22,16 +26,20 @@ namespace DMS.Controllers
     [AllowAnonymous]
     public class AuthorizationController : Controller
     {
-        IDataProtector _protector;
+        private const string accountSid = "AC6564ebab2c68998d58211af1bc4a3632";
+        private const string authToken = "dbef227a4c489ddc1217070ede678efa";
+        private string secretKey = "Yom@1234";
+        private IDataProtector _protector;
 
         public AuthorizationController(IDataProtectionProvider provider)
         {
             _protector = provider.CreateProtector(GetType().FullName);
+
         }
 
         [Route("Login")]
         [HttpPost]
-        public IActionResult Login(string Username, string Password, string Code)
+        public IActionResult Login(string Username, string Password)
         {
 
             int i = new DataManager(null).Login(Username, Password);
@@ -39,45 +47,115 @@ namespace DMS.Controllers
             Result result = new Result();
             result.StatusName = ((ErrorCodes)i).ToString();
             result.StatusCode = i;
+            
             if (i == (int)ErrorCodes.SUCCESS)
             {
-                const string accountSid = "AC6564ebab2c68998d58211af1bc4a3632";
-                const string authToken = "dbef227a4c489ddc1217070ede678efa";
-
-                TwilioClient.Init(accountSid, authToken);
-
-                var message = MessageResource.Create(
-                    body: "Your Code: " + Code,
-                    from: new Twilio.Types.PhoneNumber("+14064125307"),
-                    to: new Twilio.Types.PhoneNumber("+970599877376")
-                );
+                if (Get2FAEnabled(Username))
+                {
+                    SendSMS(GetPhoneNumber(Username));
+                    result.Extra = LoginStatus.TFA.ToString();
+                }
+                else 
+                {
+                    if(!new DataManager(null).IsIPTrusted(GetUserID(Username)))
+                    {
+                        result.Extra = LoginStatus.IPNotTrusted.ToString();
+                    }
+                }
+                
             }
 
             return new JsonResult(result);
         }
-        [Route("Code")]
+
+        [Route("Register")]
         [HttpPost]
-        public IActionResult Code(string Username)
+        public JsonResult Register(string Email, string Password, string code, string phone)
         {
-            AddCookies(Username);
-            return Ok();
+
+            int i = new DataManager(null).Register(Email, Password, phone, code);
+
+            Result result = new Result();
+            result.StatusName = ((ErrorCodes)i).ToString();
+            result.StatusCode = i;
+
+            if (i == (int)ErrorCodes.SUCCESS)
+            {
+                /*    
+                    var message = new MimeMessage();
+                    message.From.Add(new MailboxAddress("Malafatee", "support@malafatee.com"));
+                    message.To.Add(new MailboxAddress(Email, Email));
+                    message.Subject = "Verify your email!";
+
+
+                    string link = "https://malafatee.com/VerifyEmail?Key=" + _protector.Protect(Email);
+                    Logger.Log(link);
+                    message.Body = new TextPart("plain")
+                    {
+                        Text = "Hello, " + Email
+                        + Environment.NewLine + "Open this link to verify your account: " + link
+                    };
+
+                    using (var client = new SmtpClient())
+                    {
+                        client.Connect("mail.malafatee.com", 25, false);
+
+                        // Note: only needed if the SMTP server requires authentication
+                        client.Authenticate("support@malafatee.com", "123");
+
+                        client.Send(message);
+                        client.Disconnect(true);
+                    }
+                    */
+                AddCookies(Email);
+            }
+            return new JsonResult(result);
+        }
+
+        [Route("GetOTP")]
+        [HttpGet]
+        public string GetOTP()
+        {
+            return StringCipher.Encrypt(GenerateCode(), secretKey);
+        }
+
+        [Route("CheckCode")]
+        [HttpGet]
+        public IActionResult CheckCode(string code, string username)
+        {
+            if (code == GenerateCode())
+            {
+                AddCookies(username);
+                return Ok();
+            }
+
+            return BadRequest();
         }
 
         [Route("ResendSMS")]
         [HttpPost]
-        public IActionResult Resend(string Code)
+        public IActionResult Resend(string username)
         {
-            const string accountSid = "AC6564ebab2c68998d58211af1bc4a3632";
-            const string authToken = "dbef227a4c489ddc1217070ede678efa";
+            SendSMS(GetPhoneNumber(username));
+          
+            return Ok();
+        }
 
+        public string GenerateCode()
+        {
+            var totp = new Totp(Encoding.UTF8.GetBytes(secretKey), step: 5 * 60);
+            return totp.ComputeTotp();
+        }
+
+        public void SendSMS(string phoneNumber)
+        {
             TwilioClient.Init(accountSid, authToken);
 
-            var message = MessageResource.Create(
-                body: "Your Code: " + Code,
-                from: new Twilio.Types.PhoneNumber("+14064125307"),
-                to: new Twilio.Types.PhoneNumber("+970599877376")
-            );
-            return Ok();
+            MessageResource.Create(
+              body: "You have five minutes to use this code to authorize access to Malafatee: " + GenerateCode(),
+              from: new Twilio.Types.PhoneNumber("+14064125307"),
+              to: new Twilio.Types.PhoneNumber(phoneNumber)
+          );
         }
         [Route("Verify")]
         [HttpPost]
@@ -94,49 +172,7 @@ namespace DMS.Controllers
             return new JsonResult(result);
         }
 
-        [Route("Register")]
-        [HttpPost]
-        public JsonResult Register(string Email, string Password, string code, string phone)
-        {
 
-            int i = new DataManager(null).Register(Email, Password, code);
-
-            Result result = new Result();
-            result.StatusName = ((ErrorCodes)i).ToString();
-            result.StatusCode = i;
-
-            if (i == (int)ErrorCodes.SUCCESS)
-            {
-            /*    
-                var message = new MimeMessage();
-                message.From.Add(new MailboxAddress("Malafatee", "support@malafatee.com"));
-                message.To.Add(new MailboxAddress(Email, Email));
-                message.Subject = "Verify your email!";
-
-
-                string link = "https://malafatee.com/VerifyEmail?Key=" + _protector.Protect(Email);
-                Logger.Log(link);
-                message.Body = new TextPart("plain")
-                {
-                    Text = "Hello, " + Email
-                    + Environment.NewLine + "Open this link to verify your account: " + link
-                };
-
-                using (var client = new SmtpClient())
-                {
-                    client.Connect("mail.malafatee.com", 25, false);
-
-                    // Note: only needed if the SMTP server requires authentication
-                    client.Authenticate("support@malafatee.com", "123");
-
-                    client.Send(message);
-                    client.Disconnect(true);
-                }
-                */
-                AddCookies(Email);
-            }   
-            return new JsonResult(result);
-        }
 
         [Route("GetUserID")]
         [HttpGet]
@@ -144,14 +180,30 @@ namespace DMS.Controllers
         {
             return new DataManager(null).GetClient().GetUserIDbyNameAsync(Email).Result; 
         }
+
+        [Route("GetPhoneNumber")]
+        [HttpGet]
+        public string GetPhoneNumber(string Email)
+        {
+            return new DataManager(null).GetPhoneNumber(GetUserID(Email));
+        }
+        [Route("IsTFAEnabled")]
+        [HttpGet]
+        public bool Get2FAEnabled(string Email)
+        {
+            return new DataManager(null).Get2FAEnabled(GetUserID(Email));
+        }
+
+
         private void AddCookies(string Username)
         {
+            var dm = new DataManager(null);
             var id = GetUserID(Username);
 
                 var claims = new List<Claim>
 {
   new Claim(ClaimTypes.Name, Guid.NewGuid().ToString()),
-  new Claim(ClaimTypes.UserData, new DataManager(null).GetAccountType(id)),
+  new Claim(ClaimTypes.UserData, dm.GetAccountType(id)),
   new Claim(ClaimTypes.NameIdentifier, id )
 };
 
@@ -163,6 +215,8 @@ namespace DMS.Controllers
                   CookieAuthenticationDefaults.AuthenticationScheme,
                   new ClaimsPrincipal(claimsIdentity),
                   authProperties);
+            dm.TrustIP(id, HttpContext.Connection.RemoteIpAddress.ToString());
+
         }
 
         [Route("GetUserStorage")]
@@ -203,6 +257,11 @@ namespace DMS.Controllers
         {
             public double UsedStorage { get; set; }
             public double Storage { get; set; }
+        }
+        public enum LoginStatus
+        {
+            TFA=0,
+            IPNotTrusted=1
         }
 
         public class Result
