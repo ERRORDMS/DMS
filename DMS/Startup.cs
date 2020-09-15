@@ -28,6 +28,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using AspNetCoreRateLimit;
 
 namespace DMS
 {
@@ -56,6 +57,31 @@ namespace DMS
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization();
 
+
+            // needed to load configuration from appsettings.json
+            services.AddOptions();
+
+            // needed to store rate limit counters and ip rules
+            services.AddMemoryCache();
+
+            //load general configuration from appsettings.json
+            services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
+
+            //load ip rules from appsettings.json
+            services.Configure<IpRateLimitPolicies>(Configuration.GetSection("IpRateLimitPolicies"));
+
+            // inject counter and rules stores
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+
+            services.AddHttpContextAccessor();
+
+            // configuration (resolvers, counter key builders)
+         //   services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
+            services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
+
             /*
             services.AddDbContext<DMSContext>(options =>
                   options.UseSqlServer(
@@ -65,7 +91,6 @@ namespace DMS
                 .AddEntityFrameworkStores<DMSContext>();
                 */
 
-            services.AddHttpContextAccessor();
 
             //Add GleamTech to the ASP.NET Core services container. 
             //----------------------
@@ -164,6 +189,7 @@ namespace DMS
 
             app.UseCookiePolicy();
             app.UseAuthentication();
+            app.UseIpRateLimiting();
 
             var supportedCultures = new[]
             {
