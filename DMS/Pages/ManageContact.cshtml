@@ -4,9 +4,27 @@
     ViewData["Title"] = Localizer["Title"];
     Layout = "~/Pages/_Layout.cshtml";
 
+
+    Microsoft.Extensions.Primitives.StringValues queryVal;
+
+
+    string EncryptedString = "";
+
+
+    if (Request.Query.TryGetValue("f", out queryVal))
+    {
+        EncryptedString = queryVal.FirstOrDefault();
+    }
+
+
+
     long AutoKey = 0;
 
-    AutoKey = Convert.ToInt64(Request.Query["AutoKey"]);
+    if (!string.IsNullOrEmpty(EncryptedString))
+    {
+        AutoKey = Convert.ToInt64(DMS.Models.StringCipher.Decrypt(EncryptedString).Split("|")[1]);
+    }
+
 
 
 }
@@ -326,7 +344,13 @@ else
     function onEdit(element, cellinfo) {
         var autokey = cellinfo.data.AutoKey;
 
-        window.location.href = 'ManageContact?AutoKey=' + autokey;
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", "api/Upload/GetEncryptedString?key=" + autokey, false);
+        xmlHttp.send();
+
+        var str = xmlHttp.responseText;
+
+        window.location.href = 'ManageContact?f=' + str;
     }
     function addContact() {
         if (!ContactName.value) {

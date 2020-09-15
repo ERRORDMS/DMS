@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Authorization" xml:space="preserve">
+    <value>تعريف الهوية</value>
+  </data>
+  <data name="Code" xml:space="preserve">
+    <value>الرقم</value>
+  </data>
   <data name="CreateAccount" xml:space="preserve">
     <value>انشاء حساب جديد</value>
   </data>
@@ -129,11 +135,20 @@
   <data name="ForgotPassword" xml:space="preserve">
     <value>هل نسيت كلمة المرور؟</value>
   </data>
+  <data name="IPNotTrusted" xml:space="preserve">
+    <value>تم تسجيل الدخول من منطقة جديدة، الرجاء ادخل الرقم المرسل الى بريدك الألكتروني</value>
+  </data>
   <data name="Login" xml:space="preserve">
     <value>تسجيل الدخول</value>
   </data>
   <data name="Password" xml:space="preserve">
     <value>كلمة المرور</value>
+  </data>
+  <data name="Resend" xml:space="preserve">
+    <value>ارسال مرة اخرة</value>
+  </data>
+  <data name="TFA" xml:space="preserve">
+    <value>تعريف الهوية الثنائي مفعل، الرجاء ادخل الرقم المرسل الى الهاتف</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>تسجيل الدخول - ملفاتي</value>

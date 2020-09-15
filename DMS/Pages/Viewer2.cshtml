@@ -71,8 +71,8 @@
     }
 
 
-    EncryptedString = EncryptedString.Replace("convhash", "#").Replace("convslash", "/").Replace("convand", "&").Replace("convqmark", "?").Replace("convplus", "+");
-    string DecryptedString = DMS.Models.StringCipher.Decrypt(EncryptedString, "Yom@1234");
+    //EncryptedString = EncryptedString.Replace("convhash", "#").Replace("convslash", "/").Replace("convand", "&").Replace("convqmark", "?").Replace("convplus", "+");
+    string DecryptedString = DMS.Models.StringCipher.Decrypt(EncryptedString);
 
     string userId = DecryptedString.Split("|")[0];
 
@@ -117,12 +117,6 @@
                 xmlHttp.send();
 
                 var str = xmlHttp.responseText;
-
-                str = str.replace(/\//g, "convslash");
-                str = str.replace(/\&/g, "convand");
-                str = str.replace(/\#/g, "convhash");
-                str = str.replace(/\?/g, "convqmark");
-                str = str.replace(/\+/g, "convplus");
 
                 var url = base_url + '/Share?f=' + str;
 

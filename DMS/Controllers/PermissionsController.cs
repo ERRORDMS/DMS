@@ -20,7 +20,7 @@ namespace DMS.Controllers
         public IActionResult Index()
         {
             return View();
-        }
+        } 
 
         [Route("Users")]
         [HttpGet]

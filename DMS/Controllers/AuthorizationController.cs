@@ -34,6 +34,7 @@ namespace DMS.Controllers
         public AuthorizationController(IDataProtectionProvider provider)
         {
             _protector = provider.CreateProtector(GetType().FullName);
+            TwilioClient.Init(accountSid, authToken);
 
         }
 
@@ -47,7 +48,7 @@ namespace DMS.Controllers
             Result result = new Result();
             result.StatusName = ((ErrorCodes)i).ToString();
             result.StatusCode = i;
-            
+
             if (i == (int)ErrorCodes.SUCCESS)
             {
                 if (Get2FAEnabled(Username))
@@ -55,14 +56,25 @@ namespace DMS.Controllers
                     SendSMS(GetPhoneNumber(Username));
                     result.Extra = LoginStatus.TFA.ToString();
                 }
-                else 
+                else
                 {
-                    if(!new DataManager(null).IsIPTrusted(GetUserID(Username)))
+                    if (!new DataManager(null).IsIPTrusted(GetUserID(Username)))
                     {
+
+                        MessageResource.Create(
+                          body: "IP not trusted: You have five minutes to use this code to authorize access to Malafatee: " + GenerateCode(),
+                          from: new Twilio.Types.PhoneNumber("+14064125307"),
+                          to: new Twilio.Types.PhoneNumber(GetPhoneNumber(Username))
+                      );
+
                         result.Extra = LoginStatus.IPNotTrusted.ToString();
                     }
+                    else
+                    {
+                        AddCookies(Username, false);
+                    }
                 }
-                
+
             }
 
             return new JsonResult(result);
@@ -116,7 +128,7 @@ namespace DMS.Controllers
         [HttpGet]
         public string GetOTP()
         {
-            return StringCipher.Encrypt(GenerateCode(), secretKey);
+            return StringCipher.Encrypt(GenerateCode());
         }
 
         [Route("CheckCode")]
@@ -137,7 +149,7 @@ namespace DMS.Controllers
         public IActionResult Resend(string username)
         {
             SendSMS(GetPhoneNumber(username));
-          
+
             return Ok();
         }
 
@@ -149,7 +161,6 @@ namespace DMS.Controllers
 
         public void SendSMS(string phoneNumber)
         {
-            TwilioClient.Init(accountSid, authToken);
 
             MessageResource.Create(
               body: "You have five minutes to use this code to authorize access to Malafatee: " + GenerateCode(),
@@ -178,7 +189,7 @@ namespace DMS.Controllers
         [HttpGet]
         public string GetUserID(string Email)
         {
-            return new DataManager(null).GetClient().GetUserIDbyNameAsync(Email).Result; 
+            return new DataManager(null).GetClient().GetUserIDbyNameAsync(Email).Result;
         }
 
         [Route("GetPhoneNumber")]
@@ -195,26 +206,27 @@ namespace DMS.Controllers
         }
 
 
-        private void AddCookies(string Username)
+        private void AddCookies(string Username, bool addIP = true)
         {
             var dm = new DataManager(null);
             var id = GetUserID(Username);
 
-                var claims = new List<Claim>
+            var claims = new List<Claim>
 {
   new Claim(ClaimTypes.Name, Guid.NewGuid().ToString()),
   new Claim(ClaimTypes.UserData, dm.GetAccountType(id)),
   new Claim(ClaimTypes.NameIdentifier, id )
 };
 
-                var claimsIdentity = new ClaimsIdentity(
-                  claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var authProperties = new AuthenticationProperties();
+            var claimsIdentity = new ClaimsIdentity(
+              claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = new AuthenticationProperties();
 
-                HttpContext.SignInAsync(
-                  CookieAuthenticationDefaults.AuthenticationScheme,
-                  new ClaimsPrincipal(claimsIdentity),
-                  authProperties);
+            HttpContext.SignInAsync(
+              CookieAuthenticationDefaults.AuthenticationScheme,
+              new ClaimsPrincipal(claimsIdentity),
+              authProperties);
+            if(addIP)
             dm.TrustIP(id, HttpContext.Connection.RemoteIpAddress.ToString());
 
         }
@@ -260,8 +272,8 @@ namespace DMS.Controllers
         }
         public enum LoginStatus
         {
-            TFA=0,
-            IPNotTrusted=1
+            TFA = 0,
+            IPNotTrusted = 1
         }
 
         public class Result

@@ -67,24 +67,25 @@
                 <button type="submit" class="btn" id="login_button">@Localizer["Login"]</button>
 
                 @(Html.DevExtreme().Button()
-                    .Type(ButtonType.Normal)
-                    .ID("btnChangeLang")
-                    .OnClick(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "switchLanguageEn" : "switchLanguageAr")
-                    .Text(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "English" : "عربي"))
+        .Type(ButtonType.Normal)
+        .ID("btnChangeLang")
+        .OnClick(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "switchLanguageEn" : "switchLanguageAr")
+        .Text(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "English" : "عربي"))
             </form>
             <form action="javascript:checkCode()" id="code_form">
                 <img src="~/images/download2(1).svg" />
-                <h2 class="title" id="Title"></h2>
+                <h2 class="title">@Localizer["Authorization"]</h2>
+                <a id="Title"></a>
                 <div class="input-div code">
                     <div class="i">
                         <i class="fas fa-lock"></i>
                     </div>
                     <div class="div">
-                        <h5>Code<span class="empty_password">@Localizer["FieldRequired"]</span></h5>
+                        <h5>@Localizer["Code"]<span class="empty_password">@Localizer["FieldRequired"]</span></h5>
                         <input type="text" class="input" id="code_input" />
                     </div>
                 </div>
-                <a onclick="resendSMS(); return false;">Resend</a>
+                <a onclick="resendSMS(); return false;">@Localizer["Resend"]</a>
                 <button type="submit" class="btn">@Localizer["Login"]</button>
             </form>
         </div>
@@ -193,16 +194,24 @@
                         var statusCode = obj.StatusCode;
                         var Extra = obj.Extra;
                         $("#login_form").fadeOut();
-                        $("#code_form").fadeIn();
-                        $("#resend_form").fadeIn();
+
                         if (statusCode == 0) {
                             //console.log("1");
-                            //window.location = 'Dashboard';
-                            if (Extra == "TFA") {
-                                $("#Title").text("2FA");
+                          
+                            if (Extra == null || Extra == '') {
+                                window.location = 'Dashboard';
                             }
-                            if (Extra == "IPNotTrusted") {
-                                $("#Title").text("Please check your Email for code");
+                            else {
+
+                                if (Extra == "TFA") {
+                                    $("#Title").text('@Localizer["TFA"]');
+                                }
+                                if (Extra == "IPNotTrusted") {
+                                    $("#Title").text('@Localizer["IPNotTrusted"]');
+                                }
+
+                                $("#code_form").fadeIn();
+                                $("#resend_form").fadeIn();
                             }
                         }
                         if (statusCode == 101) {

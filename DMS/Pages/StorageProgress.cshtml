@@ -1,14 +1,13 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@using System.Globalization
+
 <div class="progress"><div id="progressBar"></div></div>
 <h2 class="storage_text">
+    <!--
     <span id="usedStorage">0</span>
     <span class="size" id="usedStoragePrefix">MB</span>of
     <span id="maxStorage">10</span>
-    <span class="full_size" id="maxStoragePrefix">GB</span>used
+    <span class="full_size" id="maxStoragePrefix">GB</span>used-->
+    <span id="storageText" dir="ltr">{0} {1} of {2} {3} used</span>
 </h2>
 <script>
     $(document).ready(function () {
@@ -19,11 +18,10 @@
         xmlHttp.send();
         storage = JSON.parse(xmlHttp.responseText);
 
-        var usedStorageLbl = document.getElementById('usedStorage');
-        var maxStorageLbl = document.getElementById('maxStorage');
-        var usedStoragePrefix = document.getElementById('usedStoragePrefix');
-        var maxStoragePrefix = document.getElementById('maxStoragePrefix');
+        var storageTextLbl = document.getElementById('storageText');
+
         var prefix;
+        var maxPrefix;
         var usedStorage = storage.UsedStorage;
 
         if (usedStorage >= 1000) {
@@ -33,36 +31,31 @@
             prefix = "MB";
         }
 
-
-        usedStorageLbl.innerHTML = calc(usedStorage);
-        usedStoragePrefix.innerHTML = prefix;
-
         var maxStorage = storage.Storage;
 
         if (maxStorage == -1) {
-            prefix = '<i class="fas fa-infinity" style="color: #0087FF"></i>';
+            maxPrefix = '<i class="fas fa-infinity" style="color: #0087FF"></i>';
             maxStorage = null;
         } else {
-            prefix = "GB";
+            maxPrefix = "GB";
             maxStorage = maxStorage / 1000;
         }
 
+        console.log(storageTextLbl.innerHTML);
+        storageTextLbl.innerHTML = String.format(storageTextLbl.innerHTML, calc(usedStorage), prefix, maxStorage, maxPrefix);
 
-        maxStorageLbl.innerHTML = maxStorage;
-        maxStoragePrefix.innerHTML = prefix;
-
-            var bar = new ProgressBar.Circle('#progressBar', {
-                strokeWidth: 2,
-                easing: 'easeInOut',
-                duration: 1400,
-                color: '#0087FF',
-                trailColor: '#eee',
-                trailWidth: 1,
-            });
-
+        var bar = new ProgressBar.Circle('#progressBar', {
+            strokeWidth: 2,
+            easing: 'easeInOut',
+            duration: 1400,
+            color: '#0087FF',
+            trailColor: '#eee',
+            trailWidth: 1,
+        });
 
 
-            var perc = (storage.UsedStorage / storage.Storage);
+
+        var perc = (storage.UsedStorage / storage.Storage);
         bar.animate(perc);
 
         let pro = $("#progressBar");
@@ -74,6 +67,18 @@
     function calc(num) {
         var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]
         return with2Decimals;
+    }
+
+    if (!String.format) {
+        String.format = function (format) {
+            var args = Array.prototype.slice.call(arguments, 1);
+            return format.replace(/{(\d+)}/g, function (match, number) {
+                return typeof args[number] != 'undefined'
+                    ? args[number]
+                    : match
+                    ;
+            });
+        };
     }
 
 </script>

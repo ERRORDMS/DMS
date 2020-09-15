@@ -136,12 +136,12 @@
     <value>التحكم الكامل في ملفات و وثائق عملك او عائلتك بدون الحاجة الى وحدات تخزين عملاقة او ادراج لا نهاية لها</value>
   </data>
   <data name="description_first_feature" xml:space="preserve">
-    <value>محرك البحث الخاص بنا يقوم بالبحث عن ملفاتك بسرعة وسهولة!
-يربط كل ملفاتك مع اشخاص محددين، و مفاتيح بحث محددة
+    <value>باستخدام محرك البحث الخاص بنا يمكنك البحث عن ملفاتك بسرعة وسهولة!
+يمكنك ربط كل ملفاتك مع اشخاص ، و مفاتيح بحث
 وفئات محددة</value>
   </data>
   <data name="description_first_title" xml:space="preserve">
-    <value>مع ملفاتي،لن تحتاج الى المرور عبر كل درج في عملك/منزلك لتجد وثيقة منذ 10 سنوات</value>
+    <value>مع ملفاتي،لن تحتاج الى المرور عبر كل درج في عملك/منزلك لتجد تلك الوثيقة منذ 10 سنوات</value>
   </data>
   <data name="description_question1" xml:space="preserve">
     <value>نعم يوجد،يمكنك تحميل تطبيق ملفاتي لتستطيع الوصول الى الملفات في اي وقت</value>
@@ -177,7 +177,7 @@
     <value>مع ملفاتي بامكانك العثور على اي وثيقة بدون مجهود</value>
   </data>
   <data name="description_third_feature" xml:space="preserve">
-    <value>مع واجهة مستخدم سهلة ،ملفاتي يتخلص من كل التعب والمجهود اللازم للبحث عن فواتيرك الشهرية ،عقودك،شهادة ميلادك الخ</value>
+    <value>مع واجهة مستخدم سهلة ،ملفاتي يتخلص من كل التعب والمجهود اللازم للبحث عن فواتيرك الشهرية ،عقودك،شهادة ميلادك، الخ</value>
   </data>
   <data name="description_work" xml:space="preserve">
     <value>ملفاتي يحفظ الوقت والجهد</value>
@@ -240,10 +240,10 @@
     <value>هل وثائقي آمنة على برنامج ملفاتي ؟</value>
   </data>
   <data name="question3" xml:space="preserve">
-    <value>هل استطيع تحمل الملفات والوثائق من ملفاتي ؟</value>
+    <value>هل استطيع تحميل الملفات والوثائق من ملفاتي ؟</value>
   </data>
   <data name="question4" xml:space="preserve">
-    <value>هل استطيع مشاركة الوثائق والملفات  ؟ </value>
+    <value>هل استطيع مشاركة و نشر الوثائق والملفات  ؟ </value>
   </data>
   <data name="ready" xml:space="preserve">
     <value>هل انت مستعد للبدء ؟</value>
@@ -252,7 +252,7 @@
     <value>وفر الوقت مع ملفاتي</value>
   </data>
   <data name="second_feature" xml:space="preserve">
-    <value>حرية الوصول الى الملفات من اي مكان في العالم</value>
+    <value>قدرة الوصول الى الملفات من اي مكان في العالم</value>
   </data>
   <data name="second_title" xml:space="preserve">
     <value>ماذا نقدم</value>

@@ -5,9 +5,25 @@
 
     Layout = "~/Pages/_Layout.cshtml";
 
+    Microsoft.Extensions.Primitives.StringValues queryVal;
+
+
+    string EncryptedString = "";
+
+
+    if (Request.Query.TryGetValue("f", out queryVal))
+    {
+        EncryptedString = queryVal.FirstOrDefault();
+    }
+
+
+
     long AutoKey = 0;
 
-    AutoKey = Convert.ToInt64(Request.Query["AutoKey"]);
+    if (!string.IsNullOrEmpty(EncryptedString))
+    {
+        AutoKey = Convert.ToInt64(DMS.Models.StringCipher.Decrypt(EncryptedString).Split("|")[1]);
+    }
 
 
     if (AutoKey == 0)

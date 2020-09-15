@@ -38,16 +38,6 @@ namespace DMS.Controllers
             }
         }
         
-        [Route("CanDelete")]
-        [HttpGet]
-        public bool CanDelete(long AutoKey, string userId = null)
-        {
-
-            if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            return new DataManager(userId).CanDelete(AutoKey, userId);
-        }
 
         [Route("CanAdd")]
         [HttpGet]

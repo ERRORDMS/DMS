@@ -275,6 +275,7 @@ BEGIN
     ADD [2FA] bit NULL
 END
 ";
+		/*
 		public static string CreateEnterpriseTable = @"
 
 USE [DBNAME]
@@ -287,7 +288,7 @@ CREATE TABLE [dbo].[UID](
 	[CanAdd] [bit] NULL,
 	[CanDelete] [bit] NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-";
+";*/
 
 		public static string ConfigureDBQuery = @"
 ALTER DATABASE [DBNAME] SET COMPATIBILITY_LEVEL = 100
@@ -426,6 +427,17 @@ ALTER DATABASE [DBNAME] SET  READ_WRITE
 
 		public static string AddTablesQuery = @"
 USE [DBNAME]
+
+
+CREATE TABLE [dbo].[UserCategories](
+	[CatID] [bigint] NULL,
+	[UserID] [nvarchar](max) NULL,
+	[Fathers] [nvarchar](max) NULL,
+	[CanView] [bit] NULL,
+	[CanEdit] [bit] NULL,
+	[CanAdd] [bit] NULL,
+	[CanDelete] [bit] NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
 /****** Object:  Table [dbo].[CategoryUserRel]    Script Date: 8/10/2020 8:53:43 PM ******/
 SET ANSI_NULLS ON

@@ -155,7 +155,7 @@ namespace DMS.Controllers
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             }
 
-            return StringCipher.Encrypt(userId + "|" + key, "Yom@1234");
+            return StringCipher.Encrypt(userId + "|" + key);
         }
         [Route("GetDocuments")]
         [HttpGet]

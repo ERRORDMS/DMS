@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Authorization" xml:space="preserve">
+    <value>Authorization</value>
+  </data>
+  <data name="Code" xml:space="preserve">
+    <value>Code</value>
+  </data>
   <data name="CreateAccount" xml:space="preserve">
     <value>Create Account</value>
   </data>
@@ -129,11 +135,20 @@
   <data name="ForgotPassword" xml:space="preserve">
     <value>Forgot Password?</value>
   </data>
+  <data name="IPNotTrusted" xml:space="preserve">
+    <value>New location detected, please check your Email for the sent code.</value>
+  </data>
   <data name="Login" xml:space="preserve">
     <value>Login</value>
   </data>
   <data name="Password" xml:space="preserve">
     <value>Password</value>
+  </data>
+  <data name="Resend" xml:space="preserve">
+    <value>Resend</value>
+  </data>
+  <data name="TFA" xml:space="preserve">
+    <value>Two-Factor Authentication is enabled, please check your phone for the sent code.</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>Login - Malafatee</value>
