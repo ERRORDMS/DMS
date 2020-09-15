@@ -74,7 +74,7 @@
             </form>
             <form action="javascript:checkCode()" id="code_form">
                 <img src="~/images/download2(1).svg" />
-                <h2 class="title">@Localizer["Welcome"]</h2>
+                <h2 class="title" id="Title"></h2>
                 <div class="input-div code">
                     <div class="i">
                         <i class="fas fa-lock"></i>
@@ -191,13 +191,19 @@
                         var t = this.response;
                         var obj = JSON.parse(t);
                         var statusCode = obj.StatusCode;
+                        var Extra = obj.Extra;
                         $("#login_form").fadeOut();
                         $("#code_form").fadeIn();
                         $("#resend_form").fadeIn();
                         if (statusCode == 0) {
                             //console.log("1");
                             //window.location = 'Dashboard';
-                            
+                            if (Extra == "TFA") {
+                                $("#Title").text("2FA");
+                            }
+                            if (Extra == "IPNotTrusted") {
+                                $("#Title").text("Please check your Email for code");
+                            }
                         }
                         if (statusCode == 101) {
                             $(document).ready(function () {
