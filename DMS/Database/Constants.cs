@@ -24,6 +24,7 @@ namespace DMS.Database
         public const string UserRoles = "UserRoles";
         public const string RolePermissions = "RolePermissions";
         public const string Categories = "DocumentCatTree";
+        public const string UserCategories = "UserCategories";
         public const string Contacts = "Contacts";
         public const string SearchKeys = "SearchKeys";
         public const string DocumentInfo = "DocumentsInfo";

@@ -64,9 +64,10 @@ namespace DMS.Database
         public SQLHelper SQLHelper { get { return sqlHelper; } }
         public void SetAllCatPermissions(string userID, bool value)
         {
-            sqlHelper.Update("[" + userID + "]",
-                new string[] { "CanEdit", "CanDelete" },
-                new string[] { value.ToString(), value.ToString() }, "");
+            sqlHelper.Update("[" + Tables.UserCategories + "]",
+                new string[] { "CanView", "CanEdit", "CanDelete", "CanAdd"},
+                new string[] { value.ToString(), value.ToString(), value.ToString(), value.ToString() },
+                "UserID = '" + userID + "'");
         }
 
         public AlSahlServiceClient GetClient() { return client; }
@@ -1074,7 +1075,7 @@ ISNULL(CanDelete, 0) as CanDelete
  left join {1} ON {1}.CatID = {0}.AutoKey AND {1}.RoleID = RoleID
  left join {2} ON {2}.UserID = '{3}'
  where CanView = 1
-
+ where UserID = '{4}'
  UNION ALL
 
  select 
@@ -1086,10 +1087,11 @@ ISNULL(CanDelete, 0) as CanDelete
  from {0}
  left join [{3}] ON [{3}].CatID = {0}.AutoKey
  where CanView = 1
+ where UserID = '{4}'
 
 ) as t
 
-group by AutoKey, FatherAutoKey, Name", Tables.Categories, Tables.RoleCategories, Tables.UserRoles, userID);
+group by AutoKey, FatherAutoKey, Name", Tables.Categories, Tables.RoleCategories, Tables.UserRoles, Tables.UserCategories, userID);
 
             return sqlHelper.ExecuteReader<UserCategory>(query);
 
@@ -1111,7 +1113,8 @@ ISNULL(CanAdd, 0) as CanAdd,
 ISNULL(CanView, 0) as CanView,
 ISNULL(CanDelete, 0) as CanDelete
  from {0}
- left join [{1}] ON [{1}].CatID = {0}.AutoKey", Tables.Categories, userID);
+ left join [{1}] ON [{1}].CatID = {0}.AutoKey
+ WHERE UserID = '{2}'", Tables.Categories, Tables.UserCategories, userID);
 
 
             return sqlHelper.ExecuteReader<UserCategory>(query);
@@ -1123,7 +1126,8 @@ ISNULL(CanDelete, 0) as CanDelete
 ISNULL(CanDelete, 0) as CanDelete
  from {0}
  left join [{1}] ON [{1}].CatID = {0}.AutoKey
- WHERE {0}.AutoKey = {2}", Tables.Categories, userID, AutoKey);
+ WHERE {0}.AutoKey = {3}
+ AND UserID = '{2}'", Tables.Categories, Tables.UserCategories, userID, AutoKey);
 
             return sqlHelper.ExecuteScalar<bool>(query);
         }
@@ -1134,10 +1138,12 @@ ISNULL(CanDelete, 0) as CanDelete
 ISNULL(CanAdd, 0) as CanAdd
  from {0}
  left join [{1}] ON [{1}].CatID = {0}.AutoKey
- WHERE {0}.AutoKey = {2}", Tables.Categories, userID, AutoKey);
+ WHERE {0}.AutoKey = {3}
+ AND UserID = '{2}'", Tables.Categories, Tables.UserCategories, userID, AutoKey);
 
             return sqlHelper.ExecuteScalar<bool>(query);
         }
+
 
         public IEnumerable<UserCategory> GetRoleCategories(string roleID)
         {
@@ -1169,10 +1175,10 @@ ISNULL(CanDelete, 0) as CanDelete
             if (!string.IsNullOrEmpty(d.CanDelete) && Convert.ToBoolean(d.CanDelete))
                 d.CanEdit = "true";
 
-            string query = "if(EXISTS(SELECT 1 from [" + userId + "] where CatID = '" + d.CatID + "'))";
+            string query = "if(EXISTS(SELECT 1 from [" + Tables.UserCategories + "] where CatID = '" + d.CatID + "' AND UserID = '" + userId +  "'))";
             query += " BEGIN";
 
-            query += " UPDATE [" + userId + "] SET ";
+            query += " UPDATE [" + Tables.UserCategories + "] SET ";
 
             if (!string.IsNullOrEmpty(d.CanView))
             {
@@ -1197,11 +1203,11 @@ ISNULL(CanDelete, 0) as CanDelete
 
             query = query.Remove(query.Length - 1);
 
-            query += " where CatID = '" + d.CatID + "'";
+            query += " where CatID = '" + d.CatID + "' AND UserID = '" + userId + "'";
             query += " END";
             query += " ELSE";
             query += " BEGIN";
-            query += " INSERT INTO [" + userId + "] (CatID, CanView, CanEdit, CanAdd, CanDelete) values ('" + d.CatID + "','" + Convert.ToBoolean(d.CanView) + "','" + Convert.ToBoolean(d.CanEdit) + "','" + Convert.ToBoolean(d.CanAdd) + "','" + Convert.ToBoolean(d.CanDelete) + "')";
+            query += " INSERT INTO [" + Tables.UserCategories + "] (CatID, CanView, CanEdit, CanAdd, CanDelete, UserID) values ('" + d.CatID + "','" + Convert.ToBoolean(d.CanView) + "','" + Convert.ToBoolean(d.CanEdit) + "','" + Convert.ToBoolean(d.CanAdd) + "','" + Convert.ToBoolean(d.CanDelete) + "', '" + userId + "')";
             query += " END";
 
 
@@ -1267,13 +1273,14 @@ ISNULL(CanDelete, 0) as CanDelete
         }
         public bool Get2FAEnabled(string userID)
         {
-            return sqlHelper.ExecuteScalar<bool>("SELECT 2FA from Users where ID = '" + userID + "'");
+            return sqlHelper.ExecuteScalar<bool>("SELECT [2FA] from Users where ID = '" + userID + "'");
         }
 
-        public bool IsIPTrusted(string userID)
+        public bool IsIPTrusted(string userID, string IP)
         {
             Dictionary<string, string> wheres = new Dictionary<string, string>();
             wheres.Add("UserID", userID);
+            wheres.Add("IP", IP);
             return sqlHelper.Exists(Tables.TrustedIPs, wheres);
         }
 
@@ -1549,19 +1556,19 @@ where UserID = '{2}'", Tables.Roles, Tables.UserRoles, userId);
                         sqlHelper.Insert(Tables.UserStorage,
     new string[] { "UserID", "UsedStorage", "Storage" },
     new string[] { id, "0", "-1" });
-
+                        /*
                         string query = Queries.CreateEnterpriseTable;
 
                         query = query.Replace("UID", id);
                         query = query.Replace("DBNAME", enterpriseAccountID);
 
-                        sqlHelper.ExecuteNonQuery(query);
+                        sqlHelper.ExecuteNonQuery(query);*/
                     }
                     else
                     {
                         sqlHelper.Insert(Tables.UserStorage,
 new string[] { "UserID", "UsedStorage", "Storage" },
-new string[] { id, "0", "10000" });
+new string[] { id, "0", "3000" });
 
                         var wheres = new Dictionary<string, string>();
                         wheres.Add("UserID", "*");

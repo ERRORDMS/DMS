@@ -4,9 +4,27 @@
     ViewData["Title"] = Localizer["Title"];
     Layout = "~/Pages/_Layout.cshtml";
 
+
+    Microsoft.Extensions.Primitives.StringValues queryVal;
+
+
+    string EncryptedString = "";
+
+
+    if (Request.Query.TryGetValue("f", out queryVal))
+    {
+        EncryptedString = queryVal.FirstOrDefault();
+    }
+
+
+
     long AutoKey = 0;
 
-    AutoKey = Convert.ToInt64(Request.Query["AutoKey"]);
+    if (!string.IsNullOrEmpty(EncryptedString)) 
+    {
+        AutoKey = Convert.ToInt64(DMS.Models.StringCipher.Decrypt(EncryptedString).Split("|")[1]); 
+    }
+
 
 
 }
@@ -246,7 +264,7 @@
             if (s == true || !isEnterprise) {
                   xhr.onreadystatechange = function () {
                         if (this.readyState == 4 && this.status == 200) {
-                           window.location = "Index";
+                           window.location = "Dashboard";
                          }
                     }
 
@@ -372,11 +390,22 @@ else
         if (isEnterprise == true) {
             for (var i = 0; i < categories.length; i++) {
                 if (autokey == categories[i].AutoKey && (categories[i].CanEdit == true || categories[i].CanDelete == true)) {
-                    window.location.href = 'ManageCategory?AutoKey=' + autokey;
+
+                    var xmlHttp = new XMLHttpRequest();
+                    xmlHttp.open("GET", "api/Upload/GetEncryptedString?key=" + autokey, false);
+                    xmlHttp.send();
+
+                    var str = xmlHttp.responseText;
+                    window.location.href = 'ManageCategory?f=' + str;
                 }
             }
         } else {
-            window.location.href = 'ManageCategory?AutoKey=' + autokey;
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", "api/Upload/GetEncryptedString?key=" + autokey, false);
+            xmlHttp.send();
+
+            var str = xmlHttp.responseText;
+            window.location.href = 'ManageCategory?f=' + str;
         }
     }   
 

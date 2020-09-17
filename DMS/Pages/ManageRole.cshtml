@@ -3,11 +3,29 @@
 @{
 
     Layout = "~/Pages/_Layout.cshtml";
+
+
+    Microsoft.Extensions.Primitives.StringValues queryVal;
+
+
+    string EncryptedString = "";
+
+
+    if (Request.Query.TryGetValue("f", out queryVal))
+    {
+        EncryptedString = queryVal.FirstOrDefault();
+    }
+
+
+
     string ID = "";
 
-    ID = Convert.ToString(Request.Query["ID"]);
+    if (!string.IsNullOrEmpty(EncryptedString))
+    {
+        ID = Convert.ToString(DMS.Models.StringCipher.Decrypt(EncryptedString).Split("|")[1]);
+    }
 
-    
+
     if (ID =="")
     {
         <script>

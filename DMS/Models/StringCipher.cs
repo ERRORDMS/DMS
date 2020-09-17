@@ -9,7 +9,8 @@ namespace DMS.Models
 {
     public class StringCipher
     {
-        public static string Encrypt(string text, string key)
+        private static string key = "Yom@1234";
+        public static string Encrypt(string text)
         {
             if (string.IsNullOrEmpty(key))
                 throw new ArgumentException("Key must have valid value.", nameof(key));
@@ -42,17 +43,21 @@ namespace DMS.Models
                     Array.ConstrainedCopy(aes.IV, 0, combined, 0, aes.IV.Length);
                     Array.ConstrainedCopy(result, 0, combined, aes.IV.Length, result.Length);
 
-                    return Convert.ToBase64String(combined);
+                    return Convert.ToBase64String(combined)
+                        .Replace("#", "convhash").Replace("/", "convslash").Replace("&", "convand").Replace("?", "convqmark").Replace("+", "convplus");
                 }
             }
         }
 
-        public static string Decrypt(string encryptedText, string key)
+        public static string Decrypt(string encryptedText)
         {
             if (string.IsNullOrEmpty(key))
                 throw new ArgumentException("Key must have valid value.", nameof(key));
             if (string.IsNullOrEmpty(encryptedText))
                 throw new ArgumentException("The encrypted text must have valid value.", nameof(encryptedText));
+
+            encryptedText = encryptedText
+                .Replace("convhash", "#").Replace("convslash", "/").Replace("convand", "&").Replace("convqmark", "?").Replace("convplus", "+");
 
             var combined = Convert.FromBase64String(encryptedText);
             var buffer = new byte[combined.Length];

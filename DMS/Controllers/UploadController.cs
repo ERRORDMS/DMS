@@ -44,9 +44,12 @@ namespace DMS.Controllers
 
         [Route("GetFile")]
         [HttpGet]
-        public string GetFile(long InfoAutoKey, long LineAutoKey, string Ext)
+        public string GetFile(long InfoAutoKey, long LineAutoKey, string Ext, string userId = null)
         {
-            return Convert.ToBase64String(new DataManager(User.FindFirstValue(ClaimTypes.NameIdentifier)).GetFile(InfoAutoKey, LineAutoKey, Ext));
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return Convert.ToBase64String(new DataManager(userId).GetFile(InfoAutoKey, LineAutoKey, Ext));
         }
 
         [Route("DeleteFile")]
@@ -155,13 +158,17 @@ namespace DMS.Controllers
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             }
 
-            return StringCipher.Encrypt(userId + "|" + key, "Yom@1234");
+            return StringCipher.Encrypt(userId + "|" + key);
         }
         [Route("GetDocuments")]
         [HttpGet]
-        public List<Document> GetCatDocuments(long CatID)
+        public List<Document> GetCatDocuments(long CatID, string userId = null)
         {
-            return new DataManager(User.FindFirstValue(ClaimTypes.NameIdentifier)).GetCatDocuments(CatID);
+            if (string.IsNullOrEmpty(userId))
+            {
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier); 
+            }
+            return new DataManager(userId).GetCatDocuments(CatID);
         }
 
         [Route("Save")]

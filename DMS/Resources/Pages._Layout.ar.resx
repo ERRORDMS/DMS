@@ -159,6 +159,9 @@
   <data name="Settings" xml:space="preserve">
     <value>الاعدادات</value>
   </data>
+  <data name="StorageText" xml:space="preserve">
+    <value>{3} {2} مستخدم من   {1} {0}</value>
+  </data>
   <data name="Title" xml:space="preserve">
     <value>ملفاتي</value>
   </data>
