@@ -1,102 +1,91 @@
 ﻿@page
-@model DMS.Pages.ProfileModel
+@model DMS.Models.User
 @{
     ViewData["Title"] = "Profile";
 }
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
-    <style>
-    a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
-}
+<style>
+        a.navbar-brand {
+            white-space: normal;
+            text-align: center;
+            word-break: break-all;
+        }
 
-/* Provide sufficient contrast against white background */
-a {
-  color: #0366d6;
-}
+        /* Provide sufficient contrast against white background */
+        a {
+            color: #0366d6;
+        }
 
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
-}
+        .btn-primary {
+            color: #fff;
+            background-color: #1b6ec2;
+            border-color: #1861ac;
+        }
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
-}
+        .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+            color: #fff;
+            background-color: #1b6ec2;
+            border-color: #1861ac;
+        }
 
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  font-size: 14px;
-}
+        /* Sticky footer styles
+    -------------------------------------------------- */
+        html {
+            font-size: 14px;
+        }
 
-.border-top {
-  border-top: 1px solid #e5e5e5;
-}
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
-}
+        .border-top {
+            border-top: 1px solid #e5e5e5;
+        }
 
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
-}
+        .border-bottom {
+            border-bottom: 1px solid #e5e5e5;
+        }
 
-button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
-}
+        .box-shadow {
+            box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+        }
 
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  position: relative;
-  min-height: 100%;
-}
+        button.accept-policy {
+            font-size: 1rem;
+            line-height: inherit;
+        }
 
-body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
-}
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
-}
-    </style>
+        /* Sticky footer styles
+    -------------------------------------------------- */
+        html {
+            position: relative;
+            min-height: 100%;
+        }
+
+        body {
+            /* Margin bottom by footer height */
+            margin-bottom: 60px;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            white-space: nowrap;
+            line-height: 60px; /* Vertically center the text there */
+        }
+</style>
 <h2 class="content-block">Manage your account</h2>
 
 <div>
-    <div class="row">
-        <div class="col-md-3">
-            <partial name="_ManageNav" />
-        </div>
-        <div class="col-md-9">
-            <h4>@ViewData["Title"]</h4>
-            <div class="row">
-                <div class="col-md-6">
-                    <form id="profile-form" method="post">
-                        <div class="text-danger"></div>
-                        <div class="form-group">
-                            <label></label>
-                            <input class="form-control" disabled />
-                        </div>
-                        <div class="form-group">
-                            <label></label>
-                            <input class="form-control" />
-                            <span class="text-danger"></span>
-                        </div>
-                        <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    @*
+        @(Html.DevExtreme().Form()
+                .ID("form")
+                .ColCount(2)
+                .FormData(User)
+                .LabelLocation(FormLabelLocation.Left)
+                .MinColWidth(300)
+                .ReadOnly(false) 
+                .ShowColonAfterLabel(true)
+            )
+    *@
+
 </div>
