@@ -1276,10 +1276,11 @@ ISNULL(CanDelete, 0) as CanDelete
             return sqlHelper.ExecuteScalar<bool>("SELECT [2FA] from Users where ID = '" + userID + "'");
         }
 
-        public bool IsIPTrusted(string userID)
+        public bool IsIPTrusted(string userID, string IP)
         {
             Dictionary<string, string> wheres = new Dictionary<string, string>();
             wheres.Add("UserID", userID);
+            wheres.Add("IP", IP);
             return sqlHelper.Exists(Tables.TrustedIPs, wheres);
         }
 

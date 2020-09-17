@@ -24,6 +24,7 @@
     ".NETCoreApp,Version=v2.1": {
       "DMS/1.0.0": {
         "dependencies": {
+          "AspNetCoreRateLimit": "2.1.0",
           "BuildBundlerMinifier": "2.9.406",
           "Dapper": "2.0.35",
           "DevExpress.AspNetCore.Common": "20.1.6",
@@ -60,6 +61,21 @@
         },
         "compile": {
           "DMS.dll": {}
+        }
+      },
+      "AspNetCoreRateLimit/2.1.0": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Mvc": "2.1.1",
+          "NETStandard.Library": "2.0.3"
+        },
+        "runtime": {
+          "lib/netstandard1.6/AspNetCoreRateLimit.dll": {
+            "assemblyVersion": "1.0.6.0",
+            "fileVersion": "1.0.6.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard1.6/AspNetCoreRateLimit.dll": {}
         }
       },
       "BuildBundlerMinifier/2.9.406": {},
@@ -4215,6 +4231,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "AspNetCoreRateLimit/2.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-emVk7+fPhweDWG7aIinm3ymJ5AtctGt8EqJohmNX/vS/NxOp0JH/fEDUuI8BouTZgH0dSDuyPARN2z65HpZIJQ==",
+      "path": "aspnetcoreratelimit/2.1.0",
+      "hashPath": "aspnetcoreratelimit.2.1.0.nupkg.sha512"
     },
     "BuildBundlerMinifier/2.9.406": {
       "type": "package",

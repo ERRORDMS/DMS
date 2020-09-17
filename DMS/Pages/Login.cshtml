@@ -193,11 +193,12 @@
                         var obj = JSON.parse(t);
                         var statusCode = obj.StatusCode;
                         var Extra = obj.Extra;
-                        $("#login_form").fadeOut();
 
                         if (statusCode == 0) {
                             //console.log("1");
-                          
+
+                            $("#login_form").fadeOut();
+
                             if (Extra == null || Extra == '') {
                                 window.location = 'Dashboard';
                             }

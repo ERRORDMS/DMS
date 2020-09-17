@@ -35,13 +35,12 @@
 
         if (maxStorage == -1) {
             maxPrefix = '<i class="fas fa-infinity" style="color: #0087FF"></i>';
-            maxStorage = null;
+            maxStorage = '';
         } else {
             maxPrefix = "GB";
             maxStorage = maxStorage / 1000;
         }
 
-        console.log(storageTextLbl.innerHTML);
         storageTextLbl.innerHTML = String.format(storageTextLbl.innerHTML, calc(usedStorage), prefix, maxStorage, maxPrefix);
 
         var bar = new ProgressBar.Circle('#progressBar', {

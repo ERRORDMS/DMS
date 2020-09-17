@@ -26,8 +26,8 @@ namespace DMS.Controllers
     [AllowAnonymous]
     public class AuthorizationController : Controller
     {
-        private const string accountSid = "AC6564ebab2c68998d58211af1bc4a3632";
-        private const string authToken = "dbef227a4c489ddc1217070ede678efa";
+        private const string accountSid = "AC8fa5eeeefcb205673553285d103b9092";
+        private const string authToken = "c5b856d32e2d892ba1d78318c2269139";
         private string secretKey = "Yom@1234";
         private IDataProtector _protector;
 
@@ -58,15 +58,12 @@ namespace DMS.Controllers
                 }
                 else
                 {
-                    if (!new DataManager(null).IsIPTrusted(GetUserID(Username)))
+
+                    if (!new DataManager(null).IsIPTrusted(GetUserID(Username), HttpContext.Connection.RemoteIpAddress.ToString()))
                     {
 
-                        MessageResource.Create(
-                          body: "IP not trusted: You have five minutes to use this code to authorize access to Malafatee: " + GenerateCode(),
-                          from: new Twilio.Types.PhoneNumber("+14064125307"),
-                          to: new Twilio.Types.PhoneNumber(GetPhoneNumber(Username))
-                      );
 
+                        SendCodeEmail(Username);
                         result.Extra = LoginStatus.IPNotTrusted.ToString();
                     }
                     else
@@ -93,7 +90,7 @@ namespace DMS.Controllers
 
             if (i == (int)ErrorCodes.SUCCESS)
             {
-                /*    
+                   
                     var message = new MimeMessage();
                     message.From.Add(new MailboxAddress("Malafatee", "support@malafatee.com"));
                     message.To.Add(new MailboxAddress(Email, Email));
@@ -118,10 +115,35 @@ namespace DMS.Controllers
                         client.Send(message);
                         client.Disconnect(true);
                     }
-                    */
-                AddCookies(Email);
+                    
+                //AddCookies(Email);
             }
             return new JsonResult(result);
+        }
+
+        public void SendCodeEmail(string Username)
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Malafatee", "support@malafatee.com"));
+            message.To.Add(new MailboxAddress(Username, Username));
+            message.Subject = "New location detected, please verify access!";
+
+            message.Body = new TextPart("plain")
+            {
+                Text = "Hello, " + Username
+                + Environment.NewLine + "You have five minutes to use this code to verify access to Malafatee: " + GenerateCode()
+            };
+
+            using (var client = new SmtpClient())
+            {
+                client.Connect("mail.malafatee.com", 25, false);
+
+                // Note: only needed if the SMTP server requires authentication
+                client.Authenticate("support@malafatee.com", "123");
+
+                client.Send(message);
+                client.Disconnect(true);
+            }
         }
 
         [Route("GetOTP")]
@@ -148,9 +170,16 @@ namespace DMS.Controllers
         [HttpPost]
         public IActionResult Resend(string username)
         {
-            SendSMS(GetPhoneNumber(username));
+            if (Get2FAEnabled(username))
+            {
+                SendSMS(GetPhoneNumber(username));
+            }
+            else // ip not verified
+            {
+                SendCodeEmail(username);
+            }
 
-            return Ok();
+                return Ok();
         }
 
         public string GenerateCode()
@@ -161,10 +190,9 @@ namespace DMS.Controllers
 
         public void SendSMS(string phoneNumber)
         {
-
             MessageResource.Create(
               body: "You have five minutes to use this code to authorize access to Malafatee: " + GenerateCode(),
-              from: new Twilio.Types.PhoneNumber("+14064125307"),
+              from: new Twilio.Types.PhoneNumber("+12107917549"),
               to: new Twilio.Types.PhoneNumber(phoneNumber)
           );
         }
