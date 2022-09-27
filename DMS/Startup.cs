@@ -29,6 +29,10 @@ using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using AspNetCoreRateLimit;
+using GleamTech.AspNet;
+using System.IO;
+using GleamTech.DocumentUltimate;
+using System.Text;
 
 namespace DMS
 {
@@ -40,7 +44,37 @@ namespace DMS
             Configuration = configuration;
             this._environment = _environment;
 
+
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(@"MTExMUAzMTM4MmUzMjJlMzBJaWF3ZHF1ZHBMa1lvQmRCUHZlWThOSWhjNlNSVkxjVE92VGVmZ0F5akQ0PQ==");
+
+            var bytes = System.Text.Encoding.UTF8.GetBytes(@"<License>
+<Data>
+<LicensedTo>Fluor Federal Services</LicensedTo>
+<EmailTo>t.j.tumlin@fluor.com</EmailTo>
+<LicenseType>Site Small Business</LicenseType>
+<LicenseNote>Limited to 10 physical locations, not to exceed 10 developers</LicenseNote>
+<OrderID>190501090513</OrderID>
+<UserID>412577</UserID>
+<OEM>This is not a redistributable license</OEM>
+<Products>
+<Product>Aspose.Total for .NET</Product>
+</Products>
+<EditionType>Enterprise</EditionType>
+<SerialNumber>57cbdcb5-e657-4ed1-aed2-b2613bdd3517</SerialNumber>
+<SubscriptionExpiry>20210106</SubscriptionExpiry>
+<LicenseVersion>3.0</LicenseVersion>
+<LicenseInstructions>https://purchase.aspose.com/policies/use-license</LicenseInstructions>
+</Data>
+<Signature>GNczbuoKwEEKCQJaQlTugFt30pBwgAEfPAfICZ6v6+CE+ABgm6cblP8I/KMqJiWFAMTf1/jRXR61SqKRFppFl+W1rvnd26YX9fQkI3b/4Vq2JHDr15cZbFNxHmRAAjW6W/bGRcfVBsnIG8XsD7yrp8146G8zbyX2BJ05JTCT2Yc=</Signature>
+</License>");
+
+
+            new Aspose.Imaging.License().SetLicense(new MemoryStream(bytes));//("Aspose.Total.lic");
+
+
+            
+//            new Aspose.Imaging.License().SetLicense(@"C:\Users\YOGA L380\source\repos\Aspose.Imaging\bin\Debug\Aspose.Total.lic");
+
 
         }
 
@@ -106,13 +140,13 @@ namespace DMS
       options.Cookie.HttpOnly = true;
       options.Cookie.SecurePolicy = _environment.IsDevelopment()
         ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
-      options.Cookie.SameSite = SameSiteMode.Lax;
+      options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
   });
 
             services.Configure<CookiePolicyOptions>(options =>
             {
             
-                options.MinimumSameSitePolicy = SameSiteMode.Strict;
+                options.MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
                 options.HttpOnly = HttpOnlyPolicy.None;
                 options.Secure = _environment.IsDevelopment()
                   ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
@@ -182,9 +216,18 @@ namespace DMS
                 app.UseExceptionHandler("/Home/Error");
             }
 
-             //Register GleamTech to the ASP.NET Core HTTP request pipeline.
+            //Register GleamTech to the ASP.NET Core HTTP request pipeline.
             //----------------------
             app.UseGleamTech();
+
+            var gleamTechConfig = Hosting.ResolvePhysicalPath("~/App_Data/GleamTech.config");
+            if (File.Exists(gleamTechConfig))
+                GleamTechConfiguration.Current.Load(gleamTechConfig);
+
+            var documentUltimateConfig = Hosting.ResolvePhysicalPath("~/App_Data/DocumentUltimate.config");
+            if (File.Exists(documentUltimateConfig))
+                DocumentUltimateConfiguration.Current.Load(documentUltimateConfig);
+
             //----------------------
 
             app.UseCookiePolicy();

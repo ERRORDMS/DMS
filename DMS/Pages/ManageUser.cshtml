@@ -35,7 +35,7 @@
 }
 
 
-<div>
+<div style="margin-left:120px;margin-right:310px;margin-top:100px">
     <h2 class="content-block">Roles</h2>
     @(Html.DevExtreme().DataGrid()
         .ID("rolesList")
@@ -100,6 +100,14 @@
             })
     )
 
+    <br />
+    @(Html.DevExtreme().Button()
+        .Icon("save")
+        .Text("Save")
+        .OnClick("save")
+        .ElementAttr("class", "content-block")
+
+    )
 
     <br />
 
@@ -130,7 +138,7 @@
                 .ElementAttr("class", "content-block")
                     .Editing(editing =>
                     {
-                        editing.Mode(GridEditMode.Cell);
+                        editing.Mode(GridEditMode.Batch);
                         editing.AllowUpdating(true);
                     })
                 .ColumnAutoWidth(true)
@@ -142,6 +150,7 @@
 
                     columns.Add().DataField("CanView")
                         .Caption("Can View")
+
                         .AllowEditing(true)
                         .DataType(GridColumnDataType.Boolean);
 
@@ -160,16 +169,40 @@
                        .AllowEditing(true)
                        .DataType(GridColumnDataType.Boolean);
 
+                    columns.Add().DataField("CanDownload")
+                     .Caption("Can Download")
+                     .AllowEditing(true)
+                     .DataType(GridColumnDataType.Boolean);
+
+
                 })
+                .OnToolbarPreparing("toolbar_preparing")
                 .OnRowUpdated("rowUpdated")
             )
+    <br />
+
+    <br />
+    <br />
+    <h2 class="content-block">Change Password</h2>
+    @(Html.DevExtreme().TextBox()
+        .Name("txtPassword")
+        .ElementAttr("class", "content-block")
+        .Mode(TextBoxMode.Password)
+        .Placeholder("New Password"))
+    <br />
+
     @(Html.DevExtreme().Button()
         .Icon("save")
-        .Text("Save")
-        .OnClick("save")
+        .Text("Change Password")
+        .OnClick("changePassword")
         .ElementAttr("class", "content-block")
 
-    )
+    ) 
+    <br />
+
+    <br />
+    <br />
+
 </div>
 
 
@@ -254,7 +287,52 @@
     function rowUpdated(e) {
         console.log(e);
     }
+    function toolbar_preparing(e) {
+        var treeList = e.component;
 
+        e.toolbarOptions.items.unshift({
+
+            location: "before",
+            widget: "dxButton",
+            options: {
+                text: "Select All",
+                width: 136,
+                onClick: function (e) {
+
+                    var selecting = e.component.option("text") === "Select All";
+
+                    e.component.option("text", selecting ? "Unselect All" : "Select All");
+
+                       const xhr = new XMLHttpRequest();
+
+                        xhr.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 200) {
+                                $("#treeList").dxTreeList('instance').refresh();
+                            }
+                        }
+
+                        xhr.open("POST", 'api/Enterprise/SetAll', true);
+
+                        const fd = new FormData();
+                        fd.append('userID', '@ID');
+
+                        fd.append('value', selecting);
+
+                        xhr.send(fd);
+
+                }
+            }
+        }, {
+            location: "after",
+            widget: "dxButton",
+            options: {
+                icon: "refresh",
+                onClick: function () {
+                    treeList.refresh();
+                }
+            }
+        });
+    }
 
 
     $(document).ready(function () {
@@ -328,5 +406,40 @@
         fd.append('permissionsJson', JSON.stringify(permissions));
         fd.append('rolesJson', JSON.stringify(roles));
             xhr.send(fd);
+    }
+
+    function changePassword() {
+          if (txtPassword.value == '') {
+            DevExpress.ui.notify({ message: "Please enter the password!", width: 320 }, "error", 2000);
+            return;
         }
+
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var t = this.responseText;
+                    var obj = JSON.parse(t);
+
+                    var statusCode = obj.StatusCode;
+                    if (statusCode == 0) {
+                        swal("Password has been successfully changed!", {
+                            icon: "success",
+                        });
+                    }
+                    else {
+                        swal("There was an error changing the password!", {
+                            icon: "error",
+                        });
+                    }
+              }
+            }
+
+        xhr.open("POST", 'api/Authorization/ChangePass', true);
+
+            const fd = new FormData();
+
+            fd.append('userID', '@ID');
+        fd.append('newPassword', txtPassword.value);
+            xhr.send(fd);
+    }
 </script>

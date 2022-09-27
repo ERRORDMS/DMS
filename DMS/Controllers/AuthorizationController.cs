@@ -38,42 +38,70 @@ namespace DMS.Controllers
 
         }
 
+        [Route("ChangePass")]
+        [HttpPost]
+        public IActionResult ChangePass(string userID, string newPassword)
+        {
+            Result result = new Result();
+            try
+            {
+                using (var dm = new DataManager(null))
+                {
+                    dm.ChangePasword(userID, newPassword);
+
+
+                    result.StatusName = ErrorCodes.SUCCESS.ToString();
+                    result.StatusCode = 0;
+
+                }
+            }
+            catch(Exception ex)
+            {
+                result.StatusName = ErrorCodes.INTERNAL_ERROR.ToString();
+                result.StatusCode = 103;
+            }
+
+                return new JsonResult(result);
+        }
         [Route("Login")]
         [HttpPost]
         public IActionResult Login(string Username, string Password)
         {
-
-            int i = new DataManager(null).Login(Username, Password);
-
             Result result = new Result();
-            result.StatusName = ((ErrorCodes)i).ToString();
-            result.StatusCode = i;
 
-            if (i == (int)ErrorCodes.SUCCESS)
+            using (var dm = new DataManager(null))
             {
-                if (Get2FAEnabled(Username))
-                {
-                    SendSMS(GetPhoneNumber(Username));
-                    result.Extra = LoginStatus.TFA.ToString();
-                }
-                else
-                {
+                int i = dm.Login(Username, Password);
 
-                    if (!new DataManager(null).IsIPTrusted(GetUserID(Username), HttpContext.Connection.RemoteIpAddress.ToString()))
+                result.StatusName = ((ErrorCodes)i).ToString();
+                result.StatusCode = i;
+
+                if (i == (int)ErrorCodes.SUCCESS)
+                {
+                    if (Get2FAEnabled(Username))
                     {
-
-
-                        SendCodeEmail(Username);
-                        result.Extra = LoginStatus.IPNotTrusted.ToString();
+                        SendSMS(GetPhoneNumber(Username));
+                        result.Extra = LoginStatus.TFA.ToString();
                     }
                     else
                     {
-                        AddCookies(Username, false);
+
+                        if (!SettingsController.GetSettingsPARSED().IsCompany && !dm.IsIPTrusted(GetUserID(Username), HttpContext.Connection.RemoteIpAddress.ToString()))
+                        {
+
+
+                            SendCodeEmail(Username);
+                            result.Extra = LoginStatus.IPNotTrusted.ToString();
+                        }
+                        else
+                        {
+                            AddCookies(Username, false);
+                        }
                     }
+
                 }
 
             }
-
             return new JsonResult(result);
         }
 
@@ -81,44 +109,29 @@ namespace DMS.Controllers
         [HttpPost]
         public JsonResult Register(string Email, string Password, string code, string phone)
         {
-
-            int i = new DataManager(null).Register(Email, Password, phone, code);
-
+            var stngs = SettingsController.GetSettingsPARSED();
+            if (stngs.IsCompany) code = stngs.CompanyCode;
+            
             Result result = new Result();
-            result.StatusName = ((ErrorCodes)i).ToString();
-            result.StatusCode = i;
-
-            if (i == (int)ErrorCodes.SUCCESS)
+            using (var dm = new DataManager(null))
             {
-                   
-                    var message = new MimeMessage();
-                    message.From.Add(new MailboxAddress("Malafatee", "support@malafatee.com"));
-                    message.To.Add(new MailboxAddress(Email, Email));
-                    message.Subject = "Verify your email!";
+                int i = dm.Register(Email, Password, phone, code);
 
+                result.StatusName = ((ErrorCodes)i).ToString();
+                result.StatusCode = i;
 
-                    string link = "https://malafatee.com/VerifyEmail?Key=" + _protector.Protect(Email);
-                    Logger.Log(link);
-                    message.Body = new TextPart("plain")
-                    {
-                        Text = "Hello, " + Email
-                        + Environment.NewLine + "Open this link to verify your account: " + link
-                    };
+                if (i == (int)ErrorCodes.SUCCESS)
+                {
 
-                    using (var client = new SmtpClient())
-                    {
-                        client.Connect("mail.malafatee.com", 25, false);
-
-                        // Note: only needed if the SMTP server requires authentication
-                        client.Authenticate("support@malafatee.com", "123");
-
-                        client.Send(message);
-                        client.Disconnect(true);
-                    }
-                    
-                //AddCookies(Email);
+                    if (stngs.IsCompany)
+                        dm.Verify(GetUserID(Email));
+                    else
+                        SendVerificationEmail(Email);
+                    //AddCookies(Email);
+                }
             }
             return new JsonResult(result);
+
         }
 
         public void SendCodeEmail(string Username)
@@ -138,8 +151,9 @@ namespace DMS.Controllers
             {
                 client.Connect("mail.malafatee.com", 25, false);
 
+
                 // Note: only needed if the SMTP server requires authentication
-                client.Authenticate("support@malafatee.com", "123");
+                client.Authenticate("support@malafatee.com", "Yom@123");
 
                 client.Send(message);
                 client.Disconnect(true);
@@ -182,6 +196,38 @@ namespace DMS.Controllers
                 return Ok();
         }
 
+        [Route("SendVerificationEmail")]
+        [HttpPost]
+        public IActionResult SendVerificationEmail(string Email)
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Malafatee", "support@malafatee.com"));
+            message.To.Add(new MailboxAddress(Email, Email));
+            message.Subject = "Verify your email!";
+
+
+            string link = "https://malafatee.com/VerifyEmail?Key=" + _protector.Protect(Email);
+            Logger.Log(link);
+            message.Body = new TextPart("plain")
+            {
+                Text = "Hello, " + Email
+                + Environment.NewLine + "Open this link to verify your account: " + link
+            };
+
+            using (var client = new SmtpClient())
+            {
+                client.Connect("mail.malafatee.com", 25, false);
+
+                // Note: only needed if the SMTP server requires authentication
+                client.Authenticate("support@malafatee.com", "Yom@123");
+
+                client.Send(message);
+                client.Disconnect(true);
+            }
+
+            return Ok();
+        }
+
         public string GenerateCode()
         {
             var totp = new Totp(Encoding.UTF8.GetBytes(secretKey), step: 5 * 60);
@@ -200,15 +246,24 @@ namespace DMS.Controllers
         [HttpPost]
         public IActionResult Verify(string Key)
         {
-            var email = _protector.Unprotect(Key);
+            using (var dm = new DataManager(null))
+            {
 
-            int i = new DataManager(null).Verify(GetUserID(email));
+                var email = _protector.Unprotect(Key);
 
-            Result result = new Result();
-            result.StatusName = ((ErrorCodes)i).ToString();
-            result.StatusCode = i;
+            AddCookies(email);
 
-            return new JsonResult(result);
+                int i = dm.Verify(GetUserID(email));
+                Result result = new Result();
+
+                result.StatusName = ((ErrorCodes)i).ToString();
+                result.StatusCode = i;
+
+                return new JsonResult(result);
+
+
+            }
+
         }
 
 
@@ -217,14 +272,20 @@ namespace DMS.Controllers
         [HttpGet]
         public string GetUserID(string Email)
         {
-            return new DataManager(null).GetClient().GetUserIDbyNameAsync(Email).Result;
+            using (var dm = new DataManager(null))
+            {
+                return dm.GetClient().GetUserIDbyNameAsync(Email).Result;
+            }
         }
 
         [Route("GetPhoneNumber")]
         [HttpGet]
         public string GetPhoneNumber(string Email)
         {
-            return new DataManager(null).GetPhoneNumber(GetUserID(Email));
+            using (var dm = new DataManager(null))
+            {
+                return dm.GetPhoneNumber(GetUserID(Email));
+            }
         }
         [Route("IsTFAEnabled")]
         [HttpGet]
@@ -236,26 +297,34 @@ namespace DMS.Controllers
 
         private void AddCookies(string Username, bool addIP = true)
         {
-            var dm = new DataManager(null);
-            var id = GetUserID(Username);
+            using (var dm = new DataManager(null))
+            {
+                var id = GetUserID(Username);
 
-            var claims = new List<Claim>
+                var claims = new List<Claim>
 {
   new Claim(ClaimTypes.Name, Guid.NewGuid().ToString()),
   new Claim(ClaimTypes.UserData, dm.GetAccountType(id)),
   new Claim(ClaimTypes.NameIdentifier, id )
 };
 
-            var claimsIdentity = new ClaimsIdentity(
-              claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var authProperties = new AuthenticationProperties();
+                var claimsIdentity = new ClaimsIdentity(
+                  claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var authProperties = new AuthenticationProperties();
 
-            HttpContext.SignInAsync(
-              CookieAuthenticationDefaults.AuthenticationScheme,
-              new ClaimsPrincipal(claimsIdentity),
-              authProperties);
-            if(addIP)
-            dm.TrustIP(id, HttpContext.Connection.RemoteIpAddress.ToString());
+                HttpContext.SignInAsync(
+                  CookieAuthenticationDefaults.AuthenticationScheme,
+                  new ClaimsPrincipal(claimsIdentity),
+                  authProperties);
+                if (addIP)
+                    dm.TrustIP(id, HttpContext.Connection.RemoteIpAddress.ToString());
+
+                using (var dm2 = new DataManager(id))
+                {
+                    dm2.GenerateTables();
+                }
+
+            }
 
         }
 
@@ -263,9 +332,11 @@ namespace DMS.Controllers
         [HttpGet]
         public UserStorage GetStorage(string userId = null)
         {
-            if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return new DataManager(null).GetUserStorage(userId);
+            using (var dm = new DataManager(null)) {
+                if (string.IsNullOrEmpty(userId))
+                    userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                return dm.GetUserStorage(userId);
+            }
         }
 
 
@@ -273,10 +344,13 @@ namespace DMS.Controllers
         [HttpGet]
         public string GetAccountType(string userId = null)
         {
-            if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            using (var dm = new DataManager(null))
+            {
+                if (string.IsNullOrEmpty(userId))
+                    userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return new DataManager(null).GetAccountType(userId);
+                return dm.GetAccountType(userId);
+            }
         }
 
 
@@ -284,7 +358,10 @@ namespace DMS.Controllers
         [HttpGet]
         public IActionResult GetInfo()
         {
-            return new JsonResult(new DataManager(null).GetInfo());
+            using (var dm = new DataManager(null))
+            {
+                return new JsonResult(dm.GetInfo());
+            }
         }
 
         public class Info

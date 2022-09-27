@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "1jscuwo",
+  "CachePdfKey": "1jscuwo/1jscuwo-1k3kk2s.pdf",
+  "CacheXpzKey": "1jscuwo/1jscuwo-4tgh9p.xpz",
+  "CacheInfoKey": "1jscuwo/1jscuwo-4tgh9p.json",
+  "CacheCopyKey": "1jscuwo/1unjb86.cdr",
+  "Document": null,
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": null,
+  "DocumentFileName": "10075_10075.cdr",
+  "InputOptions": {
+    "Format": "Pdf",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "1jscuwo",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}

@@ -9,6 +9,7 @@ using DMS.Database;
 using DMS.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace DMS.Controllers
 {
@@ -22,16 +23,30 @@ namespace DMS.Controllers
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return DataSourceLoader.Load(new DataManager(userId).GetSearchKeys(userId), new DataSourceLoadOptionsBase());
         }
+        [Route("GetDocumentSearchKeys")]
+        [HttpGet]
+        public LoadResult GetDocumentSearchKeys(long AutoKey, string userId = null)
+        {
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        [Route("Save")]
-        [HttpPost]
-        public IActionResult saveKey(SearchKey key, string userId)
+            using (var dm = new DataManager(userId))
+            {
+                return DataSourceLoader.Load(dm.GetDocumentSearchKeys(AutoKey), new DataSourceLoadOptionsBase());
+            }
+        }
+
+        [Route("UpdateKey")]
+        [HttpPut]
+        public IActionResult UpdateKey(int key, string values, string userId = null)
         {
 
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            int i = new DataManager(userId).SaveKey(key, userId);
+            var sk = JsonConvert.DeserializeObject<SearchKey>(values);
+            sk.AutoKey = Convert.ToInt64(key);
+            int i = new DataManager(userId).SaveKey(sk, userId);
 
             AuthorizationController.Result result = new AuthorizationController.Result();
             result.StatusName = ((ErrorCodes)i).ToString();
@@ -50,14 +65,14 @@ namespace DMS.Controllers
             return new DataManager(userId).GetKeyName(autokey);
         }
 
-        [Route("Delete")]
-        [HttpPost]
-        public IActionResult saveKey(long autokey, string userId =null)
+        [Route("DeleteKey")]
+        [HttpDelete]
+        public IActionResult DeleteKey(int key, string userId =null)
         {
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            int i = new DataManager(userId).DeleteKey(autokey);
+            int i = new DataManager(userId).DeleteKey(Convert.ToInt64(key));
 
             AuthorizationController.Result result = new AuthorizationController.Result();
             result.StatusName = ((ErrorCodes)i).ToString();
@@ -69,11 +84,11 @@ namespace DMS.Controllers
 
         [Route("AddKey")]
         [HttpPost]
-        public IActionResult AddKey(string name, string userId = null)
+        public IActionResult AddKey(string values, string userId = null)
         {
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            int i = new DataManager(userId).AddKey(name, userId);
+            int i = new DataManager(userId).AddKey(JsonConvert.DeserializeObject<SearchKey>(values).Name, userId);
 
             AuthorizationController.Result result = new AuthorizationController.Result();
             result.StatusName = ((ErrorCodes)i).ToString();

@@ -9,5 +9,14 @@ namespace DMS.Models
     {
         public long AutoKey { get; set; }
         public string Name { get; set; }
+        public string Phone { get; set; }
+        public string Email { get; set; }
+        public string CategoryID { get; set; }
+    }
+
+    public class ContactCategory
+    {
+        public long AutoKey { get; set; }
+        public string Name { get; set; }
     }
 }

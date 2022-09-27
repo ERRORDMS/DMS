@@ -1,102 +1,135 @@
 ﻿@page
 @model DMS.Pages.ProfileModel
-@{
-    ViewData["Title"] = "Profile";
-}
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@{
+    Layout = null;
+    ViewData["Title"] = Localizer["Title"];
 
-    <style>
-    a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
 }
 
-/* Provide sufficient contrast against white background */
-a {
-  color: #0366d6;
-}
 
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
-}
+<!DOCTYPE html>
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
-}
-
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  font-size: 14px;
-}
-
-.border-top {
-  border-top: 1px solid #e5e5e5;
-}
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
-}
-
-button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
-}
-
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
-}
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
-}
-    </style>
-<h2 class="content-block">Manage your account</h2>
-
-<div>
-    <div class="row">
-        <div class="col-md-3">
-            <partial name="_ManageNav" />
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@Localizer["Title"]</title>
+    <link rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+          integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+          crossorigin="anonymous" />
+    <link href="~/css/auth.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/vendor.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Site.css" />
+    <script src="~/js/vendor.js" asp-append-version="true"></script>
+</head>
+<body>
+    <img src="~/images/waveblue.png" class="wave" />
+    <div class="container">
+        <div class="img">
+            <img src="~/images/download1.svg" />
         </div>
-        <div class="col-md-9">
-            <h4>@ViewData["Title"]</h4>
-            <div class="row">
-                <div class="col-md-6">
-                    <form id="profile-form" method="post">
-                        <div class="text-danger"></div>
-                        <div class="form-group">
-                            <label></label>
-                            <input class="form-control" disabled />
-                        </div>
-                        <div class="form-group">
-                            <label></label>
-                            <input class="form-control" />
-                            <span class="text-danger"></span>
-                        </div>
-                        <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
-                    </form>
+        <div class="login-content">
+            <form action="javascript:register()" method="post">
+                <img src="~/images/download2(1).svg" />
+                <h2 class="title">@Localizer["Welcome"]</h2>
+                <span class="err99">@Localizer["MissingFields"]</span>
+
+                <div class="input-div one">
+                    <div class="i">
+                        <i class="far fa-envelope"></i>
+                    </div>
+                    <div class="div">
+                        <h5>@Localizer["Email"]</h5>
+                        <input type="email" disabled class="input email_input" id="email_input" autocomplete="off" />
+                    </div>
                 </div>
-            </div>
+                <div class="input-div phone_number">
+                    <div class="i">
+                        <i class="fas fa-phone-volume"></i>
+                    </div>
+                    <div class="div">
+                        <h5>Phone Number (optional)</h5>
+                        <input type="text" class="input" id="phone_number_input" />
+                    </div>
+                </div>
+
+                <div class="input-div twofactorauth">
+                    <div class="i">
+                        <i class="fas fa-phone-volume"></i>
+                    </div>
+                    <div class="div">
+                        <h5>Two Factor Authentication</h5>
+                        <input type="checkbox" class="input" id="tfa_input" />
+                    </div>
+                </div>
+                <a href="Dashboard">@Localizer["Back"]</a>
+                <input type="submit" class="btn" id="btnSave" value="@Localizer["Save"]" />
+
+                @(Html.DevExtreme().Button()
+                    .Type(ButtonType.Normal)
+                    .ID("btnChangeLang")
+                    .OnClick(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "switchLanguageEn" : "switchLanguageAr")
+                    .Text(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "English" : "عربي"))
+            </form>
         </div>
     </div>
-</div>
+    <script src="~/js/main.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script>
+        function switchLanguageEn() {
+            switchLanguage("en-US");
+        }
+
+        function switchLanguageAr() {
+            switchLanguage("ar-SA");
+        }
+
+        function switchLanguage(culture) {
+            const xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    location.reload();
+                }
+            }
+            const fd = new FormData();
+            fd.append('culture', culture);
+            xhr.open("POST", "api/Culture", true);
+            xhr.send(fd);
+        }
+
+        function save() {
+            let phone_number = document.getElementById('phone_number_input').value;
+            let tfa = document.getElementById('tfa_input').value;
+           
+                const xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var t = this.responseText;
+                        var obj = JSON.parse(t);
+
+                        var statusCode = obj.StatusCode;
+
+
+                        if (statusCode == 0) {
+                            $(".err98").fadeIn(200);
+                        }
+
+                        if (statusCode == 103) {
+                            location.reload()
+                        }
+                    }
+                }
+
+                const fd = new FormData();
+                fd.append("phone", phone_number)
+                fd.append("tfa", tfa);
+                xhr.open('post', 'api/authorization/SaveProfile', true);
+                xhr.send(fd);
+        }
+    </script>
+
+
+</body>
+</html>

@@ -141,6 +141,9 @@
   <data name="TypeCol" xml:space="preserve">
     <value>نوع الملف</value>
   </data>
+  <data name="Update" xml:space="preserve">
+    <value>تحديث</value>
+  </data>
   <data name="View" xml:space="preserve">
     <value>مشاهدة</value>
   </data>

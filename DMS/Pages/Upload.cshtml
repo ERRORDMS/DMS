@@ -4,353 +4,151 @@
     ViewData["Title"] = "Upload";
     Layout = "~/Pages/_Layout.cshtml";
 }
-@*
 
-    <link rel="stylesheet" href="~/css/upload.css">
-    <div class="maindiv">
-        <header>Upload</header>
-
-        <div class="file-picker">
-            <svg class="file-picker__icon" version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
-            <g>
-            <polygon points="41.3,57.7 42.1,58.5 49.5,51.1 49.5,74.8 50.5,74.8 50.5,51.1 57.9,58.5 58.7,57.7 50,49    " />
-
-
-
-
-
-
-
-            <path d="M71.3,38.2c-0.1,0-0.2,0-0.3,0c-1.1-7.5-7.4-13-15.1-13c-6.5,0-12.3,4.2-14.4,10.3c-1.1-0.3-2.3-0.5-3.4-0.5
-                    c-6,0-11.1,4.4-12,10.3c-0.3,0-0.6-0.1-0.9-0.1c-4.7,0-8.6,3.8-8.6,8.6c0,4.7,3.8,8.6,8.6,8.6h10.8v-1.1H25.2
-                    c-4.1,0-7.5-3.4-7.5-7.5c0-4.1,3.3-7.5,7.5-7.5c0.4,0,0.8,0,1.3,0.1l0.6,0.1l0.1-0.6c0.6-5.6,5.3-9.9,10.9-9.9
-                    c1.2,0,2.4,0.2,3.6,0.6l0.5,0.2l0.2-0.5c1.8-5.9,7.3-10.1,13.5-10.1c7.2,0,13.3,5.4,14,12.6l0.1,0.5l0.5,0c0.2,0,0.5,0,0.7,0
-                    c6.1,0,11,4.9,11,11c0,6.1-4.9,11-11,11h-7v1.1h7c6.7,0,12.1-5.4,12.1-12.1C83.3,43.6,77.9,38.2,71.3,38.2z" />
-
-
-
-
-
-
-
-                </g>
-              </svg>
-
-            <svg class="file-picker__icon--cancel" version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
-            <path d="M51,50l14.9-15c0.3-0.3,0.3-0.7,0-1c-0.3-0.3-0.7-0.3-1,0L50,49L35.1,34.1c-0.3-0.3-0.7-0.3-1,0c-0.3,0.3-0.3,0.7,0,1L49,50
-                  L34.1,65c-0.3,0.3-0.3,0.7,0,1c0.1,0.1,0.3,0.2,0.5,0.2c0.2,0,0.4-0.1,0.5-0.2L50,51l14.9,14.9c0.1,0.1,0.3,0.2,0.5,0.2
-                  c0.2,0,0.4-0.1,0.5-0.2c0.3-0.3,0.3-0.7,0-1L51,50z" />
-
-
-
-
-
-
-
-              </svg>
-
-            <div class="file-picker__progress" id="file-picker__progress"></div>
-
-            <form class="file-picker__form dropzone"
-                  id="dropzone"
-                  method="POST"
-                  action="api/Upload" enctype="multipart/form-data">
-                <div class="dropzone__fallback hidden">
-                    <input name="file" type="file" />
-                    <input type="submit" name="submit" value="Upload file" />
-                </div>
-                <div class="hidden" id="dropzone__hidden"></div>
-            </form>
-
-            <div class="file-picker__overlay"></div>
-        </div>
-
-        <a id="file-link"></a>
-    </div>
-    <!-- These are probably out dated so you might want to use newest versions -->
-    <script src="https://cdn.rawgit.com/kimmobrunfeldt/progressbar.js/0.7.0/dist/progressbar.js"></script>
-    <script src="https://cdn.rawgit.com/enyo/dropzone/v3.12.0/downloads/dropzone.js"></script>
-    <!-- Use edge version of lodash for throttle.cancel() -->
-    <script src="https://cdn.rawgit.com/lodash/lodash/49b68a7903c58876e0d9a2abd6c43746fdf3dc04/lodash.js"></script>
-
-    <script>
-        window.onload = onLoad;
-
-        // Disabling autoDiscover, otherwise Dropzone will try to attach twice
-        Dropzone.autoDiscover = false;
-        var DROPZONE_OPTIONS = {
-            url: "api/upload",
-            paramName: 'photo',  // The name that will be used to transfer the file
-            maxFiles: 1,
-            maxFilesize: 3000,  // MB
-            dictDefaultMessage: '',
-            createImageThumbnails: false,
-            previewsContainer: '#dropzone__hidden',
-
+    <style>
+        .maindiv {
+            /* font-family: 'Roboto';
+            font-weight: 100;*/
+            width: 100%;
+            margin-left: 120px;
+            margin-right: 310px;
+            margin-top: 100px;
+            text-align: center;
         }
 
-        function onLoad() {
-            var rotatingBar = initProgressBar('#file-picker__progress');
-            initDropzone(rotatingBar);
+
+        header {
+            margin-top: 2rem;
+            font-size: 32px;
+        }
+            /*
+        #progressBar {
+            height: 20px;
+            width: 450px;
+            border: 2px solid darkblue;
+        }
+        .progress-bar {
+            height: 20px;
+            width: 450px;
+            border: 2px solid darkblue;
         }
 
-        function initProgressBar(container) {
-            var Shape = ProgressBar.Circle;
-
-            var rotatingBar = new RotatingProgressBar(Shape, container, {
-                color: '#333',
-                trailColor: '#eee',
-                strokeWidth: 1,
-                duration: 500
-            });
-            rotatingBar.bar.set(1);
-
-            return rotatingBar;
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background-color: lightblue;
+            display: flex;
+            align-items: center;
+            transition: width 0.25s;
         }
 
-        function initDropzone(rotatingBar) {
-            Dropzone.options.dropzone = DROPZONE_OPTIONS;
-            var dropzone = new Dropzone('#dropzone');
-            var picker = document.querySelector('.file-picker');
-            var overlay = document.querySelector('.file-picker__overlay');
-            overlay.onclick = function () {
-                dropzone.removeAllFiles(true);
+        .progress-bar-text {
+            margin-left: 10px;
+            font-weight: bold;
+        }
+            */
+            .note {
+                font-size: 10pt;
+                color: #484848;
+                margin-left: 9px;
             }
 
-            var animateThrottled = _.throttle(
-                _.bind(rotatingBar.bar.animate, rotatingBar.bar),
-                500
-            );
-
-            dropzone.on('sending', function (file) {
-                setLink('');
-                addClass(picker, 'uploading');
-
-                rotatingBar.bar.set(0.05);
-                rotatingBar.rotate();
-            });
-
-            dropzone.on('uploadprogress', function (file, percent) {
-                animateThrottled(percent / 100);
-            });
-
-            dropzone.on('success', function (file, response) {
-
-                window.location = 'ManageFile?AutoKey=' + response;
-                /*
-
-
-                var url = 'index/' + response.name;
-                uploadFinally(false, url);*/
-            });
-
-            dropzone.on('error', function (file, errorMessage) {
-                uploadFinally(true);
-            });
-
-            function uploadFinally(err, url) {
-                animateThrottled.cancel();
-
-                if (err) {
-                    rotatingBar.bar.set(1);
-                    activateFilePicker();
-                } else {
-                    rotatingBar.bar.animate(1, function () {
-                        dropzone.removeAllFiles();
-                        activateFilePicker();
-                        setLink(url);
-                    });
+                .note > span {
+                    font-weight: 700
                 }
+            /*
+            .main-block {
+                max-width: 900px;
+                min-width: 700px;
+                margin-left: 5rem;
+            }
+                    */
+            .buttons {
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
 
-            function activateFilePicker() {
-                removeClass(picker, 'uploading');
-                rotatingBar.stopRotating();
-            }
-        }
-
-        function setLink(url) {
-            var aElement = document.querySelector('#file-link');
-            setText(aElement, url);
-            aElement.title = url;
-            aElement.href = url;
-        }
-
-        // Small wrapper for ProgressBar
-
-        var RotatingProgressBar = function RotatingProgressBar(Shape, container, opts) {
-            this._container = document.querySelector(container);
-            this.bar = new Shape(container, opts);
-        };
-
-        RotatingProgressBar.prototype.rotate = function rotate() {
-            addClass(this._container, 'rotating');
-        };
-
-        RotatingProgressBar.prototype.stopRotating = function stopRotating() {
-            removeClass(this._container, 'rotating');
-        };
-
-
-        // Utils
-
-        function addClass(element, addName) {
-            var classNames = element.className.split(' ');
-            if (classNames.indexOf(addName) !== -1) {
-                return;
+            .files_div {
+                overflow: auto;
+                width: 70%;
+                margin-left: 3rem;
             }
 
-            element.className += ' ' + addName;
-        }
-
-        function removeClass(element, removeName) {
-            var newClasses = [];
-            var classNames = element.className.split(' ');
-            for (var i = 0; i < classNames.length; ++i) {
-                if (classNames[i] !== removeName) {
-                    newClasses.push(classNames[i]);
-                }
+            .select_button {
+                margin-left: 3rem;
             }
 
-            element.className = newClasses.join(' ');
-        }
+            .dx-fileuploader-files-container {
+                overflow: auto;
+            }
 
-        function setText(element, text) {
-            element.textContent = text;
-        }
-    </script>
-*@
-
-
-<style>
-    .maindiv {
-       /* font-family: 'Roboto';
-        font-weight: 100;*/
-        width: 100%;
-        text-align: center;
-    }
-
-    header {
-        margin-top: 2rem;
-        font-size: 32px;
-    }
-    /*
-    #progressBar {
-        height: 20px;
-        width: 450px;
-        border: 2px solid darkblue;
-    }
-    .progress-bar {
-        height: 20px;
-        width: 450px;
-        border: 2px solid darkblue;
-    }
-
-    .progress-bar-fill {
-        height: 100%;
-        width: 0%;
-        background-color: lightblue;
-        display: flex;
-        align-items: center;
-        transition: width 0.25s;
-    }
-
-    .progress-bar-text {
-        margin-left: 10px;
-        font-weight: bold;
-    }
-        */
-    .note {
-        font-size: 10pt;
-        color: #484848;
-        margin-left: 9px;
-    }
-
-        .note > span {
-            font-weight: 700
-        }
-    /*
-        .main-block {
-            max-width: 900px;
-            min-width: 700px;
-            margin-left: 5rem;
-        }
-                */
-    .buttons {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .files_div {
-        overflow: auto;
-        width: 70%;
-        margin-left: 3rem;
-    }
-
-    .select_button {
-        margin-left: 3rem;
-    }
-
-    .dx-fileuploader-files-container {
-        overflow: auto;
-    }
-
-    .upload_button {
-        margin-right: 3rem;
-    }
+            .upload_button {
+                margin-right: 3rem;
+            }
 
 
 
-    .tabpanel-item {
-        height: 200px;
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        padding-left: 25px;
-        padding-top: 55px;
-    }
+            .tabpanel-item {
+                height: 200px;
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                padding-left: 25px;
+                padding-top: 55px;
+            }
 
-    .mobile .tabpanel-item {
-        padding-top: 10px;
-    }
+            .mobile .tabpanel-item {
+                padding-top: 10px;
+            }
 
-    .tabpanel-item > div {
-        float: left;
-        padding: 0 85px 10px 10px
-    }
+            .tabpanel-item > div {
+                float: left;
+                padding: 0 85px 10px 10px
+            }
 
-    .tabpanel-item p {
-        font-size: 16px;
-        margin: 0;
-    }
+            .tabpanel-item p {
+                font-size: 16px;
+                margin: 0;
+            }
 
-    .item-box {
-        font-size: 16px;
-        margin: 15px 0 45px 10px;
-    }
+            .item-box {
+                font-size: 16px;
+                margin: 15px 0 45px 10px;
+            }
 
-    .options {
-        padding: 20px;
-        background-color: rgba(191, 191, 191, 0.15);
-        margin-top: 20px;
-    }
+            .options {
+                padding: 20px;
+                background-color: rgba(191, 191, 191, 0.15);
+                margin-top: 20px;
+            }
 
-    .caption {
-        font-size: 18px;
-        font-weight: 500;
-    }
+            .caption {
+                font-size: 18px;
+                font-weight: 500;
+            }
 
-    .option {
-        margin-top: 10px;
-    }
+            .option {
+                margin-top: 10px;
+            }
 
-    .productsDataSource {
-        width: 360px;
-    }
-</style>
+            .productsDataSource {
+                width: 360px;
+            }
+
+            .aligneach {
+                vertical-align: top;
+                max-width: 49%;
+                min-width: 300px;
+                display: inline-block;
+            }
+
+            .datagrid {
+                height: 50vh;
+            }
+    </style>
 
 <!-- Syncfusion Essential JS 2 Styles -->
 <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/material.css" />
@@ -369,146 +167,111 @@
         @{
             var asyncSettings = new Syncfusion.EJ2.Inputs.UploaderAsyncSettings { SaveUrl = "api/Upload/Save", RemoveUrl = "api/Upload/Remove", ChunkSize = Int32.MaxValue };
         }
-        <ejs-uploader success="onUploadSuccess" data-required-message="* Choose your image to upload" required data-msg-containerid="uploadError" id="uploadFiles" beforeUpload="onBeforeUpload" uploading="onFileUpload" maxFileSize="1000000000" asyncSettings="@asyncSettings" autoUpload="false"></ejs-uploader>
+        <ejs-uploader success="onUploadSuccess" data-required-message="* Choose your image to upload" required data-msg-containerid="uploadError" id="uploadFiles" beforeUpload="onBeforeUpload" uploading="onFileUpload" maxFileSize="@Int32.MaxValue" asyncSettings="@asyncSettings" autoUpload="false"></ejs-uploader>
         <br />
-        @*
-        <div class="buttons">
 
-            <div class="select_button">
-                @(Html.DevExtreme().FileUploader()
-                    .Name("Photo")
-                    .ID("File")
-                    .SelectButtonText("Select file")
-                    .LabelText("")
-                  //  .OnProgress("progressChanged")
-                    .Accept("*")
-                    .Multiple(true)
-                    .UploadMode(FileUploadMode.UseForm)
-                )
-            </div>
-            <div class="upload_button">
-                @(Html.DevExtreme().Button()
-                .ID("button")
-                .Text("Upload file")
-                .Type(ButtonType.Success)
-                .UseSubmitBehavior(true)
+        @(Html.DevExtreme().TextArea()
+                    .ID("txtNote")
+                    .ElementAttr("class", "content-block")
+                    .Placeholder("Note")
             )
+
+        <div class="aligneach">
+
+            <h2>Contacts: </h2>
+            @(Html.DevExtreme().DataGrid()
+            .ID("contactsList")
+            .Editing(editing =>
+            {
+                editing.Mode(GridEditMode.Row);
+                editing.AllowAdding(true);
+                editing.AllowDeleting(true);
+                editing.AllowUpdating(true);
+            })
+               .DataSource(d => d.Mvc()
+               .Controller("Contacts")
+               .UpdateAction("UpdateContact")
+               .InsertAction("AddContact")
+               .DeleteAction("DeleteContact")
+               .LoadAction("Get")
+               .Key("AutoKey")
+               )
+               .KeyExpr("AutoKey")
+               
+            .ElementAttr("class", "datagrid")
+           .Selection(s=> s.Mode(SelectionMode.Multiple))
+           .OnSelectionChanged("onContactsChanged")
+           .SearchPanel(s => s
+                    .Visible(true)
+                    .Placeholder("Search")
+                    .SearchVisibleColumnsOnly(true)
+            )
+            .ShowRowLines(true)
+            .OnToolbarPreparing("toolbarPreparingContacts")
+            .ShowBorders(true)
+            .ColumnAutoWidth(true)
+
+
+            .Columns(columns =>
+            {
+                columns.Add().DataField("Name")
+                
+                    .Caption("Name");
+
+                columns.Add().DataField("Phone")
+                    .Caption("Phone Number");
+
+                columns.Add().DataField("Email")
+                    .Caption("Email Address");
+
+
+            })
+        )
             </div>
+            <div class="aligneach">
 
+                <h2>Search Keys:</h2>
 
+            @(Html.DevExtreme().DataGrid()
+        .ID("searchKeysList")
+         .Editing(editing =>
+        {
+            editing.Mode(GridEditMode.Row);
+            editing.AllowAdding(true);
+            editing.AllowDeleting(true);
+            editing.AllowUpdating(true);
+        })
+.DataSource(d => d.Mvc()
+    .Controller("SearchKeys")
+               .UpdateAction("UpdateKey")
+           .InsertAction("AddKey")
+           .DeleteAction("DeleteKey")
+    .LoadAction("Get")
+    .Key("AutoKey")
+).KeyExpr("AutoKey")
+.Selection(S=>S.Mode(SelectionMode.Multiple))
+.OnSelectionChanged("onKeysChanged")
+           .SearchPanel(s => s
+                    .Visible(true)
+                    .Placeholder("Search")
+                    .SearchVisibleColumnsOnly(true)
+            )
+           .ElementAttr("class", "datagrid")
+            .ShowRowLines(true)
+            .OnToolbarPreparing("toolbarPreparingSearchKeys")
+            .ShowBorders(true)
+            .ColumnAutoWidth(true)
 
-        </div>
-        <div class="files_div">
-            <div class="dx-fileuploader-wrapper">
-                <div id="files_div" class="dx-fileuploader-content">
+            .Columns(columns =>
+            {
+                columns.Add().DataField("Name")
+                    .Caption("Name");
 
-                </div>
-            </div>
-        </div>
-
-        <div id="pleaseWait" style="display:none">
-            Please wait... Uploading.
-        </div>
-        <div id="progressContainer"></div>*@
-
-        <!--
-        <div class="progress-bar" id="progressBar">
-            <div class="progress-bar-fill">
-                <span class="progress-bar-text">0%</span>
-            </div>
-        </div>
-
-
-                       (Html.DevExtreme().TagBox()
-
-    .DataSource(d => d.Mvc()
-        .Controller("Categories")
-        .LoadAction("Get")
-        .Key("AutoKey")
-    )
-
-    .DisplayExpr("Name")
-    .ValueExpr("AutoKey")
-    .ID("categoriesTagBox")
-    .Name("categoriesTagBox")
-             .SearchExpr("Name")
-             .HideSelectedItems(true)
-             .OnSelectionChanged("onValueChanged")
-             .ShowClearButton(true)
-                       .SearchEnabled(true)
-                        )-->
-        <br />
-        <!--
-    <div>
-        @(Html.DevExtreme().TagBox()
-                        /*
-        .DataSource(d => d.Mvc()
-                   .Controller("Contacts")
-                   .LoadAction("Get")
-                   .Key("AutoKey")
-               )*/
-        .DisplayExpr("Name")
-
-    .ID("productsDataSource")
-    .Name("contactsTagBox")
-        .ValueExpr("AutoKey")
-        .HideSelectedItems(true)
-        .ShowClearButton(true)
-        .OnSelectionChanged("getContacts")
-        .SearchExpr("Name")
-                  .SearchEnabled(true)
-                        )
-    </div>
-        -->
-        <div class="dx-field">
-            <div class="dx-field-label">Contacts:</div>
-            <div class="dx-field-value">
-                @(Html.DevExtreme().TagBox()
-                            /*
-            .DataSource(d => d.Mvc()
-                       .Controller("Contacts")
-                       .LoadAction("Get")
-                       .Key("AutoKey")
-                   )*/
-            .DisplayExpr("Name")
-
-        .ID("productsDataSource")
-        .Name("contactsTagBox")
-            .ValueExpr("AutoKey")
-            .HideSelectedItems(true)
-            .ShowClearButton(true)
-            .OnSelectionChanged("getContacts")
-            .SearchExpr("Name")
-                      .SearchEnabled(true)
-                            )
-
-
-            </div>
-        </div>
-        <div class="dx-field">
-            <div class="dx-field-label">Search Keys:</div>
-            <div class="dx-field-value">
-                @(Html.DevExtreme().TagBox()
-                        /*
-        .DataSource(d => d.Mvc()
-                   .Controller("SearchKeys")
-                   .LoadAction("Get")
-                   .Key("AutoKey")
-               )*/
-        .DisplayExpr("Name")
-
-    .ID("searchKeysTagBox")
-    .Name("searchKeysTagBox")
-        .ValueExpr("AutoKey")
-        .HideSelectedItems(true)
-        .ShowClearButton(false)
-        .OnSelectionChanged("getKeys")
-        .SearchExpr("Name")
-                  .SearchEnabled(true)
-                        )
-            </div>
+            })
+        )
         </div>
 
+        <h2 class="content-block">Categories:</h2>
         @(Html.DevExtreme().TreeList()
             .ID("treeList")
 
@@ -518,7 +281,6 @@
         .Key("AutoKey")
     ).KeyExpr("AutoKey")
     .OnSelectionChanged("onValueChangedTree")
-    .ElementAttr("class","categoriesTreeList")
     .SelectedRowKeys(new[] { 1 })
     .SearchPanel(s=>s
                         .Visible(true)
@@ -540,7 +302,6 @@
 
                 })
             )
-
     </form>
 
 </div>
@@ -551,88 +312,100 @@
     var categories;
     var keys;
     var contacts;
-    function onValueChanged(e) {
-        // categories = e.component._selectedItems;
-        console.log(e);
+
+    function onContactsChanged(e) {
+        contacts = e.selectedRowsData;
     }
-    function getContacts(e) {
-        contacts = e.component._selectedItems;
-    }
-    function getKeys(e) {
-        keys = e.component._selectedItems;
+
+    function onKeysChanged(e) {
+        keys = e.selectedRowsData;
     }
 
     function onValueChangedTree(e) {
         categories = e.selectedRowsData;
 
-        //$("#gridContainer").dxDataGrid({
-        //   dataSource: "api/Upload/GetDocuments?CatID=" + selectedID,
-        // });
-
-
-    }
-
-    function progressChanged(e) {
-        console.log(e);
     }
 
     function treeReady(e) {
         $('#treeList').dxTreeList('instance').deselectAll();
     }
 
+    var isEnterprise;
+    var permissons;
+
+    function toolbarPreparingContacts(e) {
+
+        if (isEnterprise) {
+            if (!permissions.includes('Can Add Contacts')) {
+                e.toolbarOptions.items.shift();
+            }
+        }
+
+    }
+
+    function toolbarPreparingSearchKeys(e) {
+
+        if (isEnterprise) {
+            if (!permissions.includes('Can Add Search Keys')) {
+                e.toolbarOptions.items.shift();
+            }
+        }
+    }
+
     $(document).ready(function () {
 
         var xmlHttp = new XMLHttpRequest();
-
-        xmlHttp.open("GET", "api/Contacts", false);
+        xmlHttp.open("GET", "api/Enterprise/IsEnterprise", false);
         xmlHttp.send();
 
-        var res = JSON.parse(xmlHttp.responseText);
+        isEnterprise = JSON.parse(xmlHttp.responseText);
 
-        var viewerdataSource = new DevExpress.data.DataSource({
-            store: res.data,
-            pageSize: 5,
-            paginate: true
-        });
-        /*
-        $('#productsDataSource').dxTagBox({
-            dataSource: DevExpress.data.AspNet.createStore({
-                key: "AutoKey",
-                loadUrl: "api/Contacts",
-            })
-        });
-        */
-        $("#productsDataSource").dxTagBox({
-            dataSource: viewerdataSource,
-            displayExpr: "Name",
-            valueExpr: "AutoKey",
-            OnValueChanged: getContacts, //Selection
-            hideSelectedItems: true,
-            searchEnabled: true,
-            placeholder: "Select",
-            //  value: [862]
-        });
-        xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("GET", "api/SearchKeys", false);
-        xmlHttp.send();
-        var res = JSON.parse(xmlHttp.responseText);
 
-        var viewerdataSource = new DevExpress.data.DataSource({
-            store: res.data,
-            pageSize: 5,
-            paginate: true
+        if (isEnterprise) {
+            // Get user permissions
+
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", "api/Permissions/UserPermissions", false);
+            xmlHttp.send();
+
+            var result = JSON.parse(xmlHttp.responseText);
+
+            permissions = result.map(a => a.Name);
+
+        }
+
+        $("#contactsList").dxDataGrid({
+            editing: {
+                mode: "row",
+                allowUpdating: function (e) {
+                    return isEnterprise == false || permissions.includes('Can Edit Contacts');
+                },
+                allowDeleting: function (e) {
+                    return isEnterprise == false || permissions.includes('Can Edit Contacts');
+                },
+                allowAdding: function (e) {
+                    return isEnterprise == false || permissions.includes('Can Add Contacts');
+                },
+                useIcons: true
+            }
         });
 
-        $("#searchKeysTagBox").dxTagBox({
-            dataSource: viewerdataSource,
-            displayExpr: "Name",
-            valueExpr: "AutoKey",
-            hideSelectedItems: true,
-            searchEnabled: true,
-            placeholder: "Select",
-            //  value: [862]
+        $("#searchKeysList").dxDataGrid({
+            editing: {
+                mode: "row",
+                allowUpdating: function (e) {
+                    return isEnterprise == false || permissions.includes('Can Edit Search Keys');
+                },
+                allowDeleting: function (e) {
+                    return isEnterprise == false || permissions.includes('Can Edit Search Keys');
+                },
+                allowAdding: function (e) {
+                    return isEnterprise == false || permissions.includes('Can Add Search Keys');
+                },
+                useIcons: true
+            }
         });
-    })
+    });
 
     function onBeforeUpload(args) {
         var uploadObj = document.getElementById("uploadFiles").ej2_instances[0];
@@ -646,6 +419,8 @@
             return;
         }
 
+        contacts = $('#contactsList').dxDataGrid('instance').getSelectedRowsData();
+        keys = $('#searchKeysList').dxDataGrid('instance').getSelectedRowsData();
 
         var allSize = 0;
         for (var i = 0; i < files.length; i++) {
@@ -670,17 +445,22 @@
 
 
     }
-    function onFileUpload(args) {
-
-        args.customFormData = [{
+    function onFileUpload(args) {   
+        
+        args.customFormData = [
+        {
             'categories': JSON.stringify(categories)
         },
         {
             'contacts': JSON.stringify(contacts)
         },
-            {
+        {
                 'keys': JSON.stringify(keys)
-        }];
+            },
+            {
+                'note': $('#txtNote').dxTextArea('instance').option("value")
+            }
+        ];
 
     }
 

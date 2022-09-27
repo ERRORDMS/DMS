@@ -16,13 +16,14 @@
 
 }
 
+<div style="margin-left:120px;margin-right:310px;margin-top:100px">
 
-<h2 class="content-block" >Enterprise Settings</h2>
-<h2 class="content-block" id="enterpriseCode">Your Enterprise code: XXXXXX</h2>
+    <h2 class="content-block">Enterprise Settings</h2>
+    <h2 class="content-block" id="enterpriseCode">Your Enterprise code: XXXXXX</h2>
 
-<div>
-    <h2 class="content-block">Users</h2>
-    @(Html.DevExtreme().DataGrid()
+    <div>
+        <h2 class="content-block">Users</h2>
+        @(Html.DevExtreme().DataGrid()
         .ID("userList")
 
 .DataSource(d => d.Mvc()
@@ -58,11 +59,11 @@
 
             })
         )
-</div>
-<br />
-<div>
-    <h2 class="content-block">Roles</h2>
-    @(Html.DevExtreme().DataGrid()
+    </div>
+    <br />
+    <div>
+        <h2 class="content-block">Roles</h2>
+        @(Html.DevExtreme().DataGrid()
         .ID("rolesList")
          .Editing(editing =>
          {
@@ -106,58 +107,59 @@
 
             })
         )
-</div>
+    </div>
+    </div>
 
-<script>
+    <script>
         //<![CDATA[
-    function cellTemplate(element, cellInfo) {
-        $('<a/>')
-            .text("Manage")
-            .click(function () {
-                onEdit(element, cellInfo);
-            })
-            .appendTo(element);
-    }
+        function cellTemplate(element, cellInfo) {
+            $('<a/>')
+                .text("Manage")
+                .click(function () {
+                    onEdit(element, cellInfo);
+                })
+                .appendTo(element);
+        }
 
-    function onEdit(element, cellinfo) {
-        var autokey = cellinfo.data.ID;
+        function onEdit(element, cellinfo) {
+            var autokey = cellinfo.data.ID;
 
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("GET", "api/Upload/GetEncryptedString?key=" + autokey, false);
-        xmlHttp.send();
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", "api/Upload/GetEncryptedString?key=" + autokey, false);
+            xmlHttp.send();
 
-        var str = xmlHttp.responseText;
+            var str = xmlHttp.responseText;
 
-        window.location.href = 'ManageUser?f=' + str;
-    }
+            window.location.href = 'ManageUser?f=' + str;
+        }
 
-    function cellTemplate2(element, cellInfo) {
-        $('<a/>')
-            .text("Manage")
-            .click(function () {
-                onEdit2(element, cellInfo);
-            })
-            .appendTo(element);
-    }
+        function cellTemplate2(element, cellInfo) {
+            $('<a/>')
+                .text("Manage")
+                .click(function () {
+                    onEdit2(element, cellInfo);
+                })
+                .appendTo(element);
+        }
 
-    function onEdit2(element, cellinfo) {
-        var autokey = cellinfo.data.AutoKey;
-
-
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("GET", "api/Upload/GetEncryptedString?key=" + autokey, false);
-        xmlHttp.send();
-
-        var str = xmlHttp.responseText;
-        window.location.href = 'ManageRole?f=' + str;
-    }
-
-    $(document).ready(function () {
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("GET", "api/Permissions/GetCode", false);
-        xmlHttp.send();
-        $('#enterpriseCode').text("Your Enterprise code: " + xmlHttp.responseText);
+        function onEdit2(element, cellinfo) {
+            var autokey = cellinfo.data.AutoKey;
 
 
-    });
-</script>
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", "api/Upload/GetEncryptedString?key=" + autokey, false);
+            xmlHttp.send();
+
+            var str = xmlHttp.responseText;
+            window.location.href = 'ManageRole?f=' + str;
+        }
+
+        $(document).ready(function () {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", "api/Permissions/GetCode", false);
+            xmlHttp.send();
+            $('#enterpriseCode').text("Your Enterprise code: " + xmlHttp.responseText);
+
+
+        });
+    </script>

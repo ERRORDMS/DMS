@@ -40,41 +40,42 @@
 <style>
 
     .main-block {
+
         max-width: 900px;
         min-width: 700px;
-        margin-left: 5rem;
     }
 </style>
 
 
+<div style="margin-left:120px;margin-right:310px;margin-top:100px">
 
-<h2 class="content-block">@Localizer["ManageFile"]</h2>
+    <h2 class="content-block">@Localizer["ManageFile"]</h2>
 
 
-<br />
-@(Html.DevExtreme().Button()
+    <br />
+    @(Html.DevExtreme().Button()
         .Icon("save")
         .Text(Localizer["Save"].Value)
         .OnClick("saveFile")
         .ElementAttr("class", "content-block")
 
     )
-@(Html.DevExtreme().Button()
+    @(Html.DevExtreme().Button()
         .Icon("trash")
         .Text(Localizer["DeleteFile"].Value)
         .OnClick("deleteFile")
         .ElementAttr("class", "content-block")
 
     )
-<br />
+    <br />
 
-<div class="main-block">
-    <div class="dx-fieldset">
+    <div class="main-block">
+        <div class="dx-fieldset">
 
-        <div class="dx-field">
-            <div class="dx-field-label">Contacts:</div>
-            <div class="dx-field-value">
-                @(Html.DevExtreme().TagBox()
+            <div class="dx-field">
+                <div class="dx-field-label">Contacts:</div>
+                <div class="dx-field-value">
+                    @(Html.DevExtreme().TagBox()
     .DisplayExpr("Name")
     /*
         .DataSource(d => d.Mvc()
@@ -91,12 +92,12 @@
     .SearchExpr("Name")
               .SearchEnabled(true)
                     )
+                </div>
             </div>
-        </div>
-        <div class="dx-field">
-            <div class="dx-field-label">Search Keys:</div>
-            <div class="dx-field-value">
-                @(Html.DevExtreme().TagBox()
+            <div class="dx-field">
+                <div class="dx-field-label">Search Keys:</div>
+                <div class="dx-field-value">
+                    @(Html.DevExtreme().TagBox()
                         /*
         .DataSource(d => d.Mvc()
                    .Controller("SearchKeys")
@@ -113,10 +114,10 @@
         .SearchExpr("Name")
                   .SearchEnabled(true)
                         )
+                </div>
             </div>
-        </div>
-        <div class="dx-field">
-            @(Html.DevExtreme().TreeList()
+            <div class="dx-field">
+                @(Html.DevExtreme().TreeList()
             .ID("treeList")
 
     .DataSource(d => d.Mvc()
@@ -145,12 +146,13 @@
 
                 })
             )
+            </div>
         </div>
+
+
     </div>
-
-
-</div>
-<script>
+    </div>
+    <script>
     var categories;
     var keys;
         var contacts;
@@ -174,7 +176,7 @@
             placeholder: "Select",
             //  value: [862]
         });
-      
+
         xhr = new XMLHttpRequest();
         xhr.open("GET", "api/SearchKeys", false);
         xhr.send();
@@ -205,7 +207,7 @@
         keys = res.SearchKeys;
         contacts = res.Contacts;
 
-        
+
         $("#contactsTagBox").dxTagBox("instance").option("value", contacts);
         $("#searchKeysTagBox").dxTagBox("instance").option("value", keys);
         //$('#treeList').dxTreeList('instance').selectRows(, false);
@@ -317,4 +319,4 @@
 
 
 
-</script>
+    </script>

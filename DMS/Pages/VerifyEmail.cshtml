@@ -15,16 +15,20 @@
 </head>
 <body>
     <script>
+
+        window.onload = verify();
+
             function verify() {
                 const xhr = new XMLHttpRequest();
 
                 xhr.onreadystatechange = function () {
                     if (this.readyState == 4 && this.status == 200) {
                         console.log(this.responseText);
+                        window.location = 'Dashboard';
                     }
                 }
                 const fd = new FormData();
-                fd.append("id", @id);
+                fd.append("Key", '@id');
                 xhr.open("POST", "api/Authorization/Verify", true);
                 xhr.send(fd);
             }

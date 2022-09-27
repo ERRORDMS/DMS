@@ -156,6 +156,9 @@
   <data name="Username" xml:space="preserve">
     <value>اسم المستخدم</value>
   </data>
+  <data name="VerifyEmail" xml:space="preserve">
+    <value>الرجاء تفعيل البريد الالكتروني</value>
+  </data>
   <data name="Welcome" xml:space="preserve">
     <value>مرحباً</value>
   </data>

@@ -2,7 +2,8 @@
 @using GleamTech.DocumentUltimate
 @using GleamTech.DocumentUltimate.AspNet
 @using GleamTech.DocumentUltimate.AspNet.UI
-
+@using Aspose.Imaging
+@using Aspose.Imaging.ImageOptions; 
 @{
     /*
 
@@ -58,59 +59,195 @@
         DocumentSource = new DocumentSource(new DocumentInfo(fn), arr)
     };
     */
-
-    Microsoft.Extensions.Primitives.StringValues queryVal;
-
-
-    string EncryptedString = "";
-
-
-    if (Context.Request.Query.TryGetValue("f", out queryVal))
-    {
-        EncryptedString = queryVal.FirstOrDefault();
-    }
-
-
-    //EncryptedString = EncryptedString.Replace("convhash", "#").Replace("convslash", "/").Replace("convand", "&").Replace("convqmark", "?").Replace("convplus", "+");
-    string DecryptedString = DMS.Models.StringCipher.Decrypt(EncryptedString);
+    string DecryptedString = (string)ViewData["DecryptedString"];
 
     string userId = DecryptedString.Split("|")[0];
 
-    string InfoAutoKey = DecryptedString.Split("|")[1];
-    string LineAutoKey = DecryptedString.Split("|")[2];
+    long InfoAutoKey = Convert.ToInt64(DecryptedString.Split("|")[1]);
+    long LineAutoKey = Convert.ToInt64(DecryptedString.Split("|")[2]);
 
+    /*
     DMS.Database.SQLHelper helper = new DMS.Database.DataManager(userId).SQLHelper;
 
     var Ext = helper.SelectWithWhere(DMS.Database.Tables.DocumentLines,
         "Ext",
         "InfoAutoKey = '" + InfoAutoKey + "'");
 
-    var fn = InfoAutoKey + "_" + LineAutoKey + "." + Ext;
-
+    string fn = helper.ExecuteScalar<string>("SELECT top 1 FileName from " + DMS.Database.Tables.DocumentVersions + " WHERE InfoAutoKey = '" + InfoAutoKey + "' and LineAutoKey = '" + LineAutoKey + "' order by Version desc");
+    if (string.IsNullOrEmpty(fn))
+    {
+        fn = InfoAutoKey + "_" + LineAutoKey + "." + Ext;
+    }
     var arr = helper.ExecuteScalar<byte[]>("select TOP 1 file_stream from " + DMS.Database.Tables.Images + " where name = '" + fn + "'");
+    try
+    {
+        arr = SevenZip.Compression.LZMA.SevenZipHelper.Decompress(arr);
+    }
+    catch (Exception ex) { }
+    */
+
+    var dm = new DMS.Database.DataManager(userId);
+    var Ext = dm.GetExt(InfoAutoKey);
+    var fn = dm.GetActualFileName(InfoAutoKey, Ext);
+
+    var arr = dm.GetFile(InfoAutoKey, LineAutoKey, Ext);
+    var helper = dm.SQLHelper;
+    DocumentViewerPermissions deniedPermissions = DocumentViewerPermissions.None;
+
+    bool canDownload = true;
+    if(DecryptedString.Split("|").Length > 3 && new DMS.Database.DataManager(null).IsEnterpriseSubUser(userId))
+    {
+        string CatID = DecryptedString.Split("|")[3];
+
+        if (CatID == "undefined")
+        {
+            CatID = helper.ExecuteScalar<string>("select top 1 CatAutoKey from DocumentCatRel where DocumentAutoKey = '" + InfoAutoKey + "'");
+        }
+
+        canDownload = helper.ExecuteScalar<bool>("select TOP 1 CanDownload from " + DMS.Database.Tables.UserCategories + " where UserID = '" + userId + "' and CatID = '" + CatID + "'");
+
+        if (!canDownload)
+        {
+            deniedPermissions = DocumentViewerPermissions.Download | DocumentViewerPermissions.DownloadAsPdf | DocumentViewerPermissions.Print | DocumentViewerPermissions.SelectText;
+        }
+    }
+
+    string[] supportedExtensions = new string[]
+ {
+        "pdf", "xps","oxps","xpz","docx","docm","dotx","dotm","doc","dot","rtf","odt","ott",
+        "xlsx","xlsm","xltx","xltm","xlam","xlsb","xls","xlt","csv","tsv","dif","ods","ots",
+        "pptx","pptm","potx","potm","ppsx","ppsm","ppt","pps","odp","otp","vsdx","vsdm","vstx",
+        "vstm","vssx","vssm","vdx","vsx","vtx","vsd","vss","vst","vdw","mpp",
+        "mpt","mpx","msg","eml","emix","epub","html","htm","mht","mhtml","web","txt","xml",
+        "tif","tiff","djvu","dcm","ps","svg","emf","psd","jpg","jpeg","jpe","jfif","jp2","jpf","jpx",
+        "j2k","j2c","jpc","jxr","wdp","hdp", "png","gif","webp","bmp","wmf","dib"
+ };
+
+
+    DocumentInfo documentInfo = new DocumentInfo(fn);
+    if (!supportedExtensions.Contains(Ext))
+    {
+
+        if (Ext == "cdr")
+        {
+            using (var image = (VectorMultipageImage)Image.Load(new System.IO.MemoryStream(arr)))
+            {
+                // Create page rasterization options
+                var pageOptions = dm.CreatePageOptions<CdrRasterizationOptions>(image);
+
+                // Create PDF options
+                var options = new PdfOptions { MultiPageOptions = new MultiPageOptions { PageRasterizationOptions = pageOptions } };
+
+                // Export image to PDF format
+                System.IO.MemoryStream ms = new System.IO.MemoryStream();
+                image.Save(ms, options);
+
+                arr = ms.ToArray();
+
+            }
+        }
+        documentInfo = new DocumentInfo(fn, format: DocumentFormat.Pdf);
+
+    }
+
 
     var documentViewer = new DocumentViewer
     {
         //Width = GleamTech.AspNet.UI.CssLength.Percentage(100),
         //Height = GleamTech.AspNet.UI.CssLength.Percentage(100),
         // DisplayMode = GleamTech.AspNet.UI.DisplayMode.Viewport,
-
-        DocumentSource = new DocumentSource(new DocumentInfo(fn), arr)
+        ClientEvents = new DocumentViewerClientEvents() {  Failed="onFailed", Downloading = "onDownload"},
+        DeniedPermissions = deniedPermissions,
+        DocumentSource = new DocumentSource(documentInfo, arr)
     };
 
+
 }
+
     <html>
     <head>
         <title>Document Viewer</title>
-
         @this.RenderHead(documentViewer)
     </head>
     <body>
-        @this.RenderBody(documentViewer)
-        <script>
+        <div id="documentViewerDiv">
+            @this.RenderBody(documentViewer)
+        </div>
 
+        <div id="cantOpen" style="vertical-align:middle;text-align:center">
+            <h2>This file cannot be viewed.</h2>
+            @(Html.DevExtreme().Button()
+            .Text("Download")
+            .Type(ButtonType.Normal)
+            .Visible(canDownload)
+            .OnClick("download")
+            )
+            <h2 id="downloadingWait">Please wait, downloading...</h2>
+
+        </div>
+
+        <script>
+            $(document).ready(() => {
+                $('#cantOpen').hide();
+                $('#downloadingWait').hide();
+
+            });
+
+            function onDownload(e) {
+                
+                console.log("onDownload");
+                
+            }
+            function onFailed() {
+                console.log("Failed");
+                $('#documentViewerDiv').fadeOut(200);
+                $('#cantOpen').fadeIn(200);
+            }
+
+            function download() {
+                if ('@canDownload' == 'True') {
+                    $('#downloadingWait').fadeIn(200);
+
+                    var xmlHttp = new XMLHttpRequest();
+                    xmlHttp.onreadystatechange = function () {
+                        if (this.readyState == 4 && this.status == 200) {
+
+                var str = this.responseText;
+
+                    var arr = base64ToArrayBuffer(str);
+                            saveByteArray('@fn' , arr);
+                        }
+                        }
+
+                xmlHttp.open("GET", "api/Upload/Getfile?InfoAutoKey=@InfoAutoKey" + "&LineAutoKey=@LineAutoKey" + "&Ext=@Ext", true);
+                xmlHttp.send();
+
+                }
+            }
+
+            function base64ToArrayBuffer(base64) {
+                var binaryString = window.atob(base64);
+                var binaryLen = binaryString.length;
+                var bytes = new Uint8Array(binaryLen);
+                for (var i = 0; i < binaryLen; i++) {
+                    var ascii = binaryString.charCodeAt(i);
+                    bytes[i] = ascii;
+                }
+                return bytes;
+            }
+
+            function saveByteArray(reportName, byte) {
+                
+                var blob = new Blob([byte], { type: '@MimeKit.MimeTypes.GetMimeType(LineAutoKey + "." + Ext)' });
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                var fileName = reportName;
+                link.download = fileName;
+                link.click();
+            };
             function getUrl() {
                   var base_url = window.location.origin;
+
 
                 var xmlHttp = new XMLHttpRequest();
                 xmlHttp.open("GET", "api/Upload/GetEncryptedString?key=" + @InfoAutoKey + "|" + @LineAutoKey, false);

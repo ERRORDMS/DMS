@@ -5,11 +5,218 @@ using System.Threading.Tasks;
 
 namespace DMS.Database
 {
-    public class Queries
-    {
+	public class Queries
+	{
 
-		public static string UpdateTables = @"
 
+		public static string CreateTables = @"
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'CategoryUserRel'))
+BEGIN
+
+CREATE TABLE [dbo].[CategoryUserRel](
+	[RelAutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+	[CatAutoKey] [bigint] NULL,
+	[UserID] [nvarchar](max) NULL,
+ CONSTRAINT [PK_CategoryUserRel] PRIMARY KEY CLUSTERED 
+(
+	[RelAutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+END
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'UserDB'))
+
+BEGIN
+
+CREATE TABLE [dbo].[UserDB](
+	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+	[UserID] [nvarchar](max) NULL,
+	[DBName] [nvarchar](max) NULL,
+ CONSTRAINT [PK_UserDatabases] PRIMARY KEY CLUSTERED 
+(
+	[AutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+END
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'UserStorage'))
+
+BEGIN
+
+CREATE TABLE [dbo].[UserStorage](
+	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+	[UserID] [nvarchar](max) NULL,
+	[UsedStorage] [float] NULL,
+	[Storage] [float] NULL,
+ CONSTRAINT [PK_UserStorage] PRIMARY KEY CLUSTERED 
+(
+	[AutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+END
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'RolePermissions'))
+
+BEGIN
+
+CREATE TABLE [dbo].[RolePermissions](
+	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+	[PermissionID] [bigint] NULL,
+	[RoleID] [bigint] NULL,
+ CONSTRAINT [PK_RolePermissions] PRIMARY KEY CLUSTERED 
+(
+	[AutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+END
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'Roles'))
+
+BEGIN
+
+CREATE TABLE [dbo].[Roles](
+	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](max) NULL,
+ CONSTRAINT [PK_Roles] PRIMARY KEY CLUSTERED 
+(
+	[AutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+END
+
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'Permissions'))
+
+BEGIN
+
+CREATE TABLE [dbo].[Permissions](
+	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](max) NULL,
+ CONSTRAINT [PK_Permissions] PRIMARY KEY CLUSTERED 
+(
+	[AutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+
+insert into Permissions (Name) values ('Can Add Root Category')
+insert into Permissions (Name) values ('Can Add Contacts')
+insert into Permissions (Name) values ('Can Edit Contacts')
+insert into Permissions (Name) values ('Can Add Search Keys')
+insert into Permissions (Name) values ('Can Edit Search Keys')
+insert into Permissions (Name) values ('Administrator')
+
+END
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'ContactsCategory'))
+
+BEGIN
+
+CREATE TABLE [dbo].[ContactsCategory](
+	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+    [Name] NVARCHAR(MAX) NULL,
+ CONSTRAINT [PK_ContactsCategory] PRIMARY KEY CLUSTERED 
+(
+	[AutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+END
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'Emails'))
+
+BEGIN
+
+CREATE TABLE [dbo].[Emails](
+	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+    [From] NVARCHAR(MAX) NULL,
+	[To] NVARCHAR(MAX) NULL,
+	[Content] NVARCHAR(MAX) NULL,
+	[Subject] NVARCHAR(MAX) NULL,
+ CONSTRAINT [PK_Emails] PRIMARY KEY CLUSTERED 
+(
+	[AutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+END
+
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'UserCategories'))
+
+BEGIN
+
+CREATE TABLE [dbo].[UserCategories](
+	[CatID] [bigint] NULL,
+	[UserID] [nvarchar](max) NULL,
+	[Fathers] [nvarchar](max) NULL,
+	[CanView] [bit] NULL,
+	[CanEdit] [bit] NULL,
+	[CanAdd] [bit] NULL,
+	[CanDownload] [bit] NULL,
+	[CanDelete] [bit] NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+
+END
+
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'DocumentVersions'))
+
+BEGIN
+
+
+CREATE TABLE [dbo].[DocumentVersions](
+	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
+	[Version] [bigint] NULL,
+	[InfoAutoKey] [bigint] NULL,
+	[LineAutoKey] [bigint] NULL,
+    [FileName] NVARCHAR(MAX) NULL,
+ CONSTRAINT [PK_DocumentVersions] PRIMARY KEY CLUSTERED 
+(
+	[AutoKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+
+
+END
 
 IF (NOT EXISTS (SELECT * 
                  FROM INFORMATION_SCHEMA.TABLES 
@@ -104,123 +311,9 @@ CREATE TABLE [dbo].[UserPermissions](
 END
 
 
-IF (NOT EXISTS (SELECT * 
-                 FROM INFORMATION_SCHEMA.TABLES 
-                 WHERE TABLE_SCHEMA = 'dbo' 
-                 AND  TABLE_NAME = 'Permissions'))
+		";
 
-BEGIN
-
-CREATE TABLE [dbo].[Permissions](
-	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
-	[Name] [nvarchar](max) NULL,
- CONSTRAINT [PK_Permissions] PRIMARY KEY CLUSTERED 
-(
-	[AutoKey] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-
-
-insert into Permissions (Name) values ('Can Add Root Category')
-
-END
-
-IF (NOT EXISTS (SELECT * 
-                 FROM INFORMATION_SCHEMA.TABLES 
-                 WHERE TABLE_SCHEMA = 'dbo' 
-                 AND  TABLE_NAME = 'RolePermissions'))
-
-BEGIN
-
-CREATE TABLE [dbo].[RolePermissions](
-	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
-	[PermissionID] [bigint] NULL,
-	[RoleID] [bigint] NULL,
- CONSTRAINT [PK_RolePermissions] PRIMARY KEY CLUSTERED 
-(
-	[AutoKey] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-
-
-END
-
-IF (NOT EXISTS (SELECT * 
-                 FROM INFORMATION_SCHEMA.TABLES 
-                 WHERE TABLE_SCHEMA = 'dbo' 
-                 AND  TABLE_NAME = 'Roles'))
-
-BEGIN
-
-CREATE TABLE [dbo].[Roles](
-	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
-	[Name] [nvarchar](max) NULL,
- CONSTRAINT [PK_Roles] PRIMARY KEY CLUSTERED 
-(
-	[AutoKey] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-
-END
-
-
-IF (NOT EXISTS (SELECT * 
-                 FROM INFORMATION_SCHEMA.TABLES 
-                 WHERE TABLE_SCHEMA = 'dbo' 
-                 AND  TABLE_NAME = 'UserStorage'))
-
-BEGIN
-
-CREATE TABLE [dbo].[UserStorage](
-	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
-	[UserID] [nvarchar](max) NULL,
-	[UsedStorage] [float] NULL,
-	[Storage] [float] NULL,
- CONSTRAINT [PK_UserStorage] PRIMARY KEY CLUSTERED 
-(
-	[AutoKey] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-
-END
-
-IF (NOT EXISTS (SELECT * 
-                 FROM INFORMATION_SCHEMA.TABLES 
-                 WHERE TABLE_SCHEMA = 'dbo' 
-                 AND  TABLE_NAME = 'UserDB'))
-
-BEGIN
-
-CREATE TABLE [dbo].[UserDB](
-	[AutoKey] [bigint] IDENTITY(1,1) NOT NULL,
-	[UserID] [nvarchar](max) NULL,
-	[DBName] [nvarchar](max) NULL,
- CONSTRAINT [PK_UserDatabases] PRIMARY KEY CLUSTERED 
-(
-	[AutoKey] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-
-END
-
-IF (NOT EXISTS (SELECT * 
-                 FROM INFORMATION_SCHEMA.TABLES 
-                 WHERE TABLE_SCHEMA = 'dbo' 
-                 AND  TABLE_NAME = 'CategoryUserRel'))
-BEGIN
-
-CREATE TABLE [dbo].[CategoryUserRel](
-	[RelAutoKey] [bigint] IDENTITY(1,1) NOT NULL,
-	[CatAutoKey] [bigint] NULL,
-	[UserID] [nvarchar](max) NULL,
- CONSTRAINT [PK_CategoryUserRel] PRIMARY KEY CLUSTERED 
-(
-	[RelAutoKey] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-
-END
-
+		public static string UpdateTables = CreateTables + @"
 
 IF COL_LENGTH('dbo.Contacts', 'DMSUserID') IS NULL
 BEGIN
@@ -261,7 +354,6 @@ BEGIN
     ADD [Activated] bit NULL
 END
 
-
 IF COL_LENGTH('dbo.Users', 'Phone') IS NULL
 BEGIN
   ALTER TABLE [Users]
@@ -274,6 +366,36 @@ BEGIN
   ALTER TABLE [Users]
     ADD [2FA] bit NULL
 END
+
+IF COL_LENGTH('dbo.UserCategories', 'CanDownload') IS NULL
+BEGIN
+  ALTER TABLE [UserCategories]
+    ADD [CanDownload] bit NULL
+END
+
+IF COL_LENGTH('dbo.RoleCategories', 'CanDownload') IS NULL
+BEGIN
+  ALTER TABLE [RoleCategories]
+    ADD [CanDownload] bit NULL
+END
+
+
+IF COL_LENGTH('dbo.Contacts', 'CateriesID') IS NOT NULL
+BEGIN
+EXEC sp_rename 'Contacts.CateriesID', 'CategoriesID', 'COLUMN';
+
+END
+
+IF COL_LENGTH('dbo.DocumentLine', 'FileSize') IS NULL
+BEGIN
+  ALTER TABLE [DocumentLine]
+    ADD [FileSize] bigint NULL
+  Update DocumentLine Set FILESIZE  = 0 WHERE FileSize IS NULL
+
+END
+
+
+
 ";
 		/*
 		public static string CreateEnterpriseTable = @"
@@ -436,6 +558,7 @@ CREATE TABLE [dbo].[UserCategories](
 	[CanView] [bit] NULL,
 	[CanEdit] [bit] NULL,
 	[CanAdd] [bit] NULL,
+	[CanDownload] [bit] NULL,
 	[CanDelete] [bit] NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
@@ -472,8 +595,8 @@ CREATE TABLE [dbo].[Contacts](
 	[BusinessFax] [nvarchar](50) NULL,
 	[HomePhone] [nvarchar](50) NULL,
 	[GenderID] [nvarchar](50) NULL,
-	[vernmentID] [nvarchar](50) NULL,
-	[CateriesID] [nvarchar](50) NULL,
+	[GovernmentID] [nvarchar](50) NULL,
+	[CategoriesID] [nvarchar](50) NULL,
 	[BusinessCityID] [nvarchar](50) NULL,
 	[Notes] [nvarchar](max) NULL,
 	[CatID2] [nvarchar](50) NULL,

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading;
@@ -24,10 +25,8 @@ namespace DMS.Controllers
     public class UploadController : Controller
     {
         private TaskQueue queue;
-        HostingEnvironment _hostingEnvironment;
-        public UploadController(HostingEnvironment hostingEnvironment)
+        public UploadController()
         {
-            _hostingEnvironment = hostingEnvironment;
             queue = new TaskQueue();
         }
 
@@ -51,12 +50,21 @@ namespace DMS.Controllers
 
             return Convert.ToBase64String(new DataManager(userId).GetFile(InfoAutoKey, LineAutoKey, Ext));
         }
+        /*
 
+        [Route("FileNameExists")]
+        [HttpGet]
+        public string FileNameExists(string Name, string categories)
+        {
+
+        }
+        */
         [Route("DeleteFile")]
         [HttpPost]
         public IActionResult DeleteFile(long AutoKey)
         {
-            int i = new DataManager(User.FindFirstValue(ClaimTypes.NameIdentifier)).DeleteFile(AutoKey);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int i = new DataManager(userId).DeleteFile(AutoKey, userId);
             Result result = new Result();
             result.StatusName = ((ErrorCodes)i).ToString();
             result.StatusCode = i;
@@ -64,6 +72,42 @@ namespace DMS.Controllers
             return new JsonResult(result);
         }
 
+        [Route("Update")]
+        [HttpPost]
+        public void UpdateFile(IList<IFormFile> uploadFiles, long InfoAutoKey, long LineAutoKey)
+        {
+            if (uploadFiles != null && uploadFiles.Count > 0)
+            {
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                int i = new DataManager(userId).UpdateFile(uploadFiles[0], InfoAutoKey, LineAutoKey, userId);
+
+            }
+
+        }
+
+        [Route("GetDeletedFiles")]
+        [HttpGet]
+        public IActionResult GetDeletedFiles()
+        {
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var deletedFiles = new DataManager(userId).GetDeletedFiles();
+
+            var users = new DataManager(null).GetUsers(userId).ToList();
+            users.Add(new Models.User() { ID = userId, Email = "You" });
+
+            deletedFiles.ForEach((S) =>
+            {
+                if (!users.Any(U => U.ID == S.Email))
+                    S.Email = "Unknown";
+                else
+                    S.Email = users.First(U => U.ID == S.Email).Email;
+            });
+
+            return new JsonResult(deletedFiles);
+
+        }
         [Route("EditFile")]
         [HttpPost]
         public ActionResult EditFile(long AutoKey, string categories, string contacts, string keys)
@@ -86,68 +130,6 @@ namespace DMS.Controllers
         {
             return new DataManager(User.FindFirstValue(ClaimTypes.NameIdentifier)).GetFileInfo(InfoAutoKey);
         }
-        /*
-        [HttpPost]
-        public ActionResult FileSelection(string categories, string contacts, string keys, IFormFile photo, string userId = null)
-        {
-
-
-            if (photo != null)
-            {
-
-                var cats = JsonConvert.DeserializeObject<List<DMSCategory>>(categories);
-                var cons = JsonConvert.DeserializeObject<List<DMSContact>>(contacts);
-                var sKeys = JsonConvert.DeserializeObject<List<SearchKey>>(keys);
-                //var photos = JsonConvert.DeserializeObject<List<IFormFile>>(photosJson);
-
-                if (string.IsNullOrEmpty(userId))
-                    userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-                int result = new DataManager(User.FindFirstValue(ClaimTypes.NameIdentifier)).AddFile(cats, cons, sKeys, photo, userId, _hostingEnvironment.WebRootPath);
-
-                if (result == (int)ErrorCodes.SUCCESS)
-                {
-                    return Ok();
-                }
-                else
-                {
-                    return BadRequest();
-                }
-            }
-
-
-            return Ok();
-        }
-
-
-        
-        [HttpPost]
-        public ActionResult FileSelection(IFormFile photo, string userId = null)
-        {
-
-
-            if (photo != null)
-            {
-                if (string.IsNullOrEmpty(userId))
-                    userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-                string autoKey = "";
-
-                int result = new DataManager(User.FindFirstValue(ClaimTypes.NameIdentifier)).AddFile(photo, userId, out autoKey);
-
-                if (result == (int)ErrorCodes.SUCCESS)
-                {
-                    return new JsonResult(autoKey);
-                }
-                else
-                {
-                    return BadRequest();
-                }
-            }
-
-
-            return Ok();
-        }*/
 
         [Route("GetEncryptedString")]
         [HttpGet]
@@ -171,15 +153,39 @@ namespace DMS.Controllers
             return new DataManager(userId).GetCatDocuments(CatID);
         }
 
+        [Route("GetDocumentTypesSizes")]
+        [HttpGet]
+        public List<FileTypeSize> GetDocumentTypesSizes(string userId = null)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+
+            return new DataManager(userId).GetDocumentTypesSizes();
+        }
+
+        [Route("GetMonthlyUsage")]
+        [HttpGet]
+        public List<MonthlyUsageData> GetMonthlyUsage(string userId = null)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+
+            return new DataManager(userId).GetMonthlyUsages();
+        }
+
         [Route("Save")]
         [HttpPost]
-        public IActionResult Save(IList<IFormFile> uploadFiles, string categories, string contacts, string keys, string userId = null)
+        public IActionResult Save(IList<IFormFile> uploadFiles, string categories, string contacts, string keys, string note, string userId = null)
         {
             try
             {
-                if (uploadFiles != null && uploadFiles.Count != 0 && !string.IsNullOrEmpty(categories))
+                if (uploadFiles != null && uploadFiles.Count!= 0 && !string.IsNullOrEmpty(categories))
                 {
-                    var cats = JsonConvert.DeserializeObject<List<DMSCategory>>(categories);
+                    var cats = JsonConvert.DeserializeObject<List<long>>(categories);
                     var cons = JsonConvert.DeserializeObject<List<DMSContact>>(contacts);
                     var sKeys = JsonConvert.DeserializeObject<List<SearchKey>>(keys);
 
@@ -188,20 +194,32 @@ namespace DMS.Controllers
 
                     foreach (var file in uploadFiles)
                     {
+                        Task<int> t = new DataManager(userId).AddFileAsync(cats, cons, sKeys, file, userId, note);
+
+                        //t.Start();
+                        t.Wait();
                         
-                        var i = new DataManager(userId).AddFile(cats, cons, sKeys, file, userId);
+
 
                         if (file == uploadFiles.Last())
                         {
                             Result result = new Result();
-                            result.StatusName = ((ErrorCodes)i).ToString();
-                            result.StatusCode = i;
+                            result.StatusName = ((ErrorCodes)t.Result).ToString();
+                            result.StatusCode = t.Result;
+
+                            if(t.Result == (int)ErrorCodes.INTERNAL_ERROR)
+                            {
+                                Response.Clear();
+                                Response.StatusCode = 204;
+                                Response.HttpContext.Features.Get<IHttpResponseFeature>().ReasonPhrase = "File failed to upload";
+                                return BadRequest();
+                            }
 
                             return new JsonResult(result);
                         }
 
 
-                        
+
                     }
                 }
             }
@@ -241,6 +259,12 @@ namespace DMS.Controllers
             }*/
         }
 
+    }
+
+    public class MonthlyUsageData
+    {
+        public string Month { get; set; }
+        public long Files { get; set; }
     }
 
     public class FileInfo

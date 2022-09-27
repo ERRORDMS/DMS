@@ -1,5 +1,5 @@
 ﻿@page
-@model DMS.Pages.DashboardModel
+@model DMS.Pages.FilesModel
 @{
     ViewData["Title"] = Localizer["Title"];
     Layout = "~/Pages/_Layout.cshtml";
@@ -8,322 +8,1148 @@
 @using DMS.Models
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
-<style>
-    
-    .tree {
-        margin-left: 5rem;
-        padding: 1rem;
-    }
 
-    #treeList {
-        max-height: 450px;
-    }
+@section Styles
+{
 
-    .dx-sortable-dragging {
-        opacity: 0.9
-    }
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdn.datatables.net/rowreorder/1.2.7/css/rowReorder.bootstrap4.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
 
-    .options {
-        margin-top: 20px;
-        padding: 20px;
-        background-color: rgba(191, 191, 191, 0.15);
-        position: relative;
-    }
-
-    .caption {
-        font-size: 18px;
-        font-weight: 500;
-    }
-
-    .option {
-        margin-top: 10px;
-        margin-right: 40px;
-        display: inline-block;
-    }
-
-        .option:last-child {
-            margin-right: 0;
+    <style>
+        .modal-confirm {
+            color: #636363;
+            width: 400px;
         }
-    .dx-treelist-cell-expandable:hover {
-        cursor: pointer;
-    }
-    .view:hover {
-        cursor: pointer;
-    }
-    .edit:hover {
-        cursor: pointer;
-    }
-</style>
-<div class="tree">
 
-    @(Html.DevExtreme().TextBox()
+            .modal-confirm .modal-content {
+                padding: 20px;
+                border-radius: 5px;
+                border: none;
+                text-align: center;
+                font-size: 14px;
+            }
 
-        .Name("txtSearch")
-        .Width(600)
-        .ShowClearButton(true)
-        .ElementAttr("class", "content-block")
-         .Buttons(buttons =>
-             {
-                 buttons.Add()
-                 .Name("btnSearch")
+            .modal-confirm .modal-header {
+                border-bottom: none;
+                position: relative;
+            }
 
-                 .Location(TextEditorButtonLocation.Before)
-                 .Widget(w => w.Button()
-                     .UseSubmitBehavior(true)
-                     .ID("btnSearch")
-                     .OnClick("onClick")
-                     .Type(ButtonType.Default)
-                     .Icon(Url.Content("~/images/icons/search.png")));
-         })
-        .Placeholder(Localizer["SearchText"].Value)
+            .modal-confirm h4 {
+                text-align: center;
+                font-size: 26px;
+                margin: 30px 0 -10px;
+            }
 
-    )
+            .modal-confirm .close {
+                position: absolute;
+                top: -5px;
+                right: -2px;
+            }
 
-    <br />
-    <div id="treeListDemo">
+            .modal-confirm .modal-body {
+                color: #999;
+            }
 
-        @(Html.DevExtreme().TreeList()
-        .ID("treeList")
+            .modal-confirm .modal-footer {
+                border: none;
+                text-align: center;
+                border-radius: 5px;
+                font-size: 13px;
+                padding: 10px 15px 25px;
+            }
 
-.DataSource(d => d.Mvc()
-    .Controller("Categories")
-    .LoadAction("Get")
-    .Key("AutoKey")
-).KeyExpr("AutoKey")
-.OnSelectionChanged("onValueChangedTree")
-.ElementAttr("class","categoriesTreeList")
-.SelectedRowKeys(new[] { 1 })
-            .ParentIdExpr("FatherAutoKey")
-            .ExpandedRowKeys(new[] { 1 })
-            .ShowRowLines(true)
-                .OnContentReady("treeReady")
-                .SearchPanel(s => s
-                    .Visible(true)
-                    .Placeholder(Localizer["SearchOfcategory"].Value)
-                    .SearchVisibleColumnsOnly(true)
-            )
-    .Selection(s => s.Mode(SelectionMode.Single))
-            .ShowBorders(true)
-            .ColumnAutoWidth(true)/*
-            .RowDragging(rd => rd
-                .AllowDropInsideItem(true)
-                .AllowReordering(true)
-                .OnDragChange("onDragChange")
-                .OnReorder("onReorder")
-                .ShowDragIcons(true)
-            )*/
-            .Columns(columns =>
-            {
-                columns.Add().DataField("Name")
-                    .Caption(Localizer["CategoryName"].Value);
+                .modal-confirm .modal-footer a {
+                    color: #999;
+                }
 
-            })
-        )
-     
-        @(Html.DevExtreme().DataGrid()
-            .ID("gridContainer")
-                .OnContentReady("contentReady")
-     /*
- .DataSource(d => d.Mvc()
-.Controller("api/Upload")
-.LoadMethod("GET")
-.LoadParams(new { CatID = new JS("selectedID") })
-.LoadAction("GetDocuments")
-.Key("InfoAutoKey")
-).KeyExpr("InfoAutoKey")*/
-     .DataSourceOptions(o => o.ReshapeOnPush(true))
-    .RepaintChangesOnly(true)    
-            .ShowRowLines(true)
-            .ShowBorders(true)
-            .ColumnAutoWidth(true)
-            .ElementAttr("class","dataGrid")
-            /*.RowDragging(rd => rd
-                .AllowDropInsideItem(true)
-                .AllowReordering(true)
-                .OnDragChange("onDragChange")
-                .OnReorder("onReorder")
-                .ShowDragIcons(true)
-            )*/
-            .Columns(columns =>
-            {
-                columns.Add().DataField("ID")
-                .Alignment(HorizontalAlignment.Left)
-                    .DataType(GridColumnDataType.Number)
-                    .Caption("ID");
+            .modal-confirm .icon-box {
+                width: 80px;
+                height: 80px;
+                margin: 0 auto;
+                border-radius: 50%;
+                z-index: 9;
+                text-align: center;
+                border: 3px solid #f15e5e;
+            }
 
+                .modal-confirm .icon-box i {
+                    color: #f15e5e;
+                    font-size: 46px;
+                    display: inline-block;
+                    margin-top: 13px;
+                }
 
-                columns.Add().DataField("Name")
+            .modal-confirm .btn, .modal-confirm .btn:active {
+                color: #fff;
+                border-radius: 4px;
+                background: #60c7c1;
+                text-decoration: none;
+                transition: all 0.4s;
+                line-height: normal;
+                min-width: 120px;
+                border: none;
+                min-height: 40px;
+                border-radius: 3px;
+                margin: 0 5px;
+            }
 
-                    .Caption(Localizer["NameCol"].Value);
+            .modal-confirm .btn-secondary {
+                background: #c1c1c1;
+            }
 
-                columns.Add().DataField("Ext")
-                .Caption(Localizer["TypeCol"].Value);
+                .modal-confirm .btn-secondary:hover, .modal-confirm .btn-secondary:focus {
+                    background: #a8a8a8;
+                }
 
-                columns.Add().DataField("DateTimeAdded")
-                   .DataType(GridColumnDataType.DateTime)
-                   .Caption(Localizer["DateAddedCol"].Value);
+            .modal-confirm .btn-danger {
+                background: #f15e5e;
+            }
 
-                columns.Add()
-                      .Caption(Localizer["View"].Value)
-                      .Width(100)
-                      .Alignment(HorizontalAlignment.Center)
-                      .AllowFiltering(false)
-                      .AllowSorting(false)
-                      .CellTemplate(new JS("cellTemplate"));
+                .modal-confirm .btn-danger:hover, .modal-confirm .btn-danger:focus {
+                    background: #ee3535;
+                }
 
-                columns.Add()
-                      .Caption(Localizer["Edit"].Value)
-                      .Width(100)
-                      .Alignment(HorizontalAlignment.Center)
-                      .AllowFiltering(false)
-                      .AllowSorting(false)
-                      .CellTemplate(new JS("cellTemplate2"));
+        .e-upload .e-upload-actions .e-file-upload-btn, .e-bigger.e-small .e-upload .e-upload-actions .e-file-upload-btn {
+            display: none;
+        }
 
-            })
-        )
+        .categoriesContainer {
+            max-height: 60vh;
+            overflow: auto;
+        }
+
+        .uploadFilesDiv {
+            overflow: auto;
+            height: 50vh;
+        }
+        .tdDrag {
+            cursor: move;
+            cursor: -webkit-grab;
+            cursor: -moz-grab;
+        }
+        .tdDrag:active {
+            cursor: move;
+            cursor: -webkit-grabbing;
+            cursor: -moz-grabbing;
+        }
+    </style>
+}
 
 
-    </div>
+@section Scripts{
+    <script src="https://cdn.datatables.net/rowreorder/1.2.7/js/dataTables.rowReorder.min.js"></script>
 
     <script>
-        function cellTemplate(element, cellInfo) {
-            $('<a/>')
-                .text('@Localizer["ViewCol"]')
-                .click(function () {
-                    onEdit(element, cellInfo);
-                })
-                .appendTo(element)
-                .addClass("view")
-        }
-        function onEdit(element, cellinfo) {
-            var infoAutoKey = cellinfo.data.DocumentAutoKey;
-            var lineAutoKey = cellinfo.data.LineAutoKey;
 
-            var xmlHttp = new XMLHttpRequest();
-            xmlHttp.open("GET", "api/Upload/GetEncryptedString?key=" + infoAutoKey + "|" + lineAutoKey, false);
-            xmlHttp.send();
 
-            var str = xmlHttp.responseText;
-            /*
-            str = str.replace(/\//g, "convslash");
-            str = str.replace(/\&/g, "convand");
-            str = str.replace(/\#/g, "convhash");
-            str = str.replace(/\?/g, "convqmark");
-            str = str.replace(/\+/g, "convplus");*/
+        function onSelectedContactsChanged(e) {
+            var c = e.selectedRowsData.map(x => x.Name).join(', ');;
+            $("#txtSelectContacts").text(c);
 
-            window.location.href = 'Viewer?f=' + str;//?InfoAutoKey=' + infoAutoKey + '&LineAutoKey=' + lineAutoKey;
         }
 
-         function cellTemplate2(element, cellInfo) {
-            $('<a/>')
-                .text('@Localizer["EditCol"]')
-                .click(function () {
-                    onEdit2(element, cellInfo);
-                })
-                .appendTo(element)
-                .addClass("edit")
+        function onSelectedSearchKeysChanged(e) {
+            var s = e.selectedRowsData.map(x => x.Name).join(', ');;
+            $("#txtSelectKeys").text(s);
         }
 
-        function onEdit2(element, cellinfo) {
-            var infoAutoKey = cellinfo.data.DocumentAutoKey;
-//            var lineAutoKey = cellinfo.data.LineAutoKey;
+              function download(infokey, linekey, ext, filename) {
+                      //  $('#downloadingWait').fadeIn(200);
 
+                        var xmlHttp = new XMLHttpRequest();
+                        xmlHttp.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 200) {
 
-            var xmlHttp = new XMLHttpRequest();
-            xmlHttp.open("GET", "api/Upload/GetEncryptedString?key=" + infoAutoKey, false);
-            xmlHttp.send();
+                    var str = this.responseText;
 
-            var str = xmlHttp.responseText;
-            window.location.href = 'ManageFile?f=' + str;
-        }
-        var selectedID = 0;
-        var grid;
+                        var arr = base64ToArrayBuffer(str);
+                                saveByteArray(filename + '.' + ext , arr);
+                            }
+                            }
 
-        function contentReady(e) {
-            grid = e;
-        }
+                  xmlHttp.open("GET", "api/Upload/Getfile?InfoAutoKey=" + infokey + "&LineAutoKey=" + linekey + "&Ext=" + ext, true);
+                    xmlHttp.send();
 
-        function treeReady(e) {
-            if (txtSearch.value == '' || txtSearch.value == null) {
+                }
 
-                $('#treeList').dxTreeList('instance').deselectAll();
+                function base64ToArrayBuffer(base64) {
+                    var binaryString = window.atob(base64);
+                    var binaryLen = binaryString.length;
+                    var bytes = new Uint8Array(binaryLen);
+                    for (var i = 0; i < binaryLen; i++) {
+                        var ascii = binaryString.charCodeAt(i);
+                        bytes[i] = ascii;
+                    }
+                    return bytes;
+                }
+
+                function saveByteArray(reportName, byte) {
+
+                    var blob = new Blob([byte], { type: '@MimeKit.MimeTypes.GetMimeType(new JS("reportName").Value)' });
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    var fileName = reportName;
+                    link.download = fileName;
+                    link.click();
+                };
+
+            function onFileUpdate(args) {
+
+                console.log(infoAutoKey);
+                console.log(lineAutoKey);
+                args.customFormData = [{
+                    'InfoAutoKey': infoAutoKey
+                },
+                {
+                    'LineAutoKey': lineAutoKey
+                }];
+
             }
+
+
+            function onUpdateSuccess(args) {
+                if (args.operation === 'upload') {
+
+                    $("#updateModal").modal('hide');
+
+                }
+
         }
-        function onValueChangedTree(e) {
-            selectedID = e.selectedRowKeys[0];
 
-            $("#gridContainer").dxDataGrid({
-                dataSource: "api/Upload/GetDocuments?CatID=" + selectedID,
-            });
+        function startUpdate() {
 
-
+            var uploadObj = document.getElementById("updateFiles").ej2_instances[0];
+            uploadObj.upload(uploadObj.getFilesData());
         }
-
-        function getTreeList() {
-            return $("#treeList").dxTreeList("instance");
-        }
-        /*
-        $(document).ready(function () {
-            $("#btnSearch").click(function (e) {
-                alert('Hello');
-                e.preventDefault();
-
-                var t = $("input[name='__RequestVerificationToken']").val();
-                $.ajax({
-                    url: $(this).attr("formaction"),
-                    headers:
-                    {
-                        "RequestVerificationToken": t
-                    },
-                    type: "POST",
-                    data: { data: 'foo2' },
-                }).done(function (data) {
-                    console.log(data);
-                }).fail(function (a, v, e) {
-                    alert(e);
-                });
-            });
-        });*/
 
         function onClick() {
-            /*
-                  const xhr = new XMLHttpRequest();
+                if (txtSearch.value == '' || txtSearch.value == null) {
+                    initCats();
 
-        xhr.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
+                    return;
+                }
 
+                var xmlHttp = new XMLHttpRequest();
+
+                xmlHttp.open("GET", "api/Search/Search?sQuery=" + txtSearch.value, false);
+                xmlHttp.send();
+
+                var res = JSON.parse(xmlHttp.responseText);
+
+            loadCategories(res.Categories, true);
+
+                loadFiles(res.Files);
             }
+    </script>
+
+}
+@section Header {
+
+    <div class="header-search-form" id="searchForm">
+        <form>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <button class="btn" onclick="onClick();">
+                        <i class="ti-search"></i>
+                    </button>
+                </div>
+                <input type="text" class="form-control" id="txtSearch" placeholder="Search something..." />
+                <div class="input-group-append">
+                    <button class="btn header-search-close-btn">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+}
+
+<!-- Content body -->
+<div class="content-body">
+    <!-- Content -->
+    <div class="content">
+        <div class="page-header d-flex justify-content-between">
+            <h2>Files</h2>
+            <a href="#" class="files-toggler">
+                <i class="fas fa-bars"></i>
+            </a>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-3 files-sidebar">
+                <div class="card border-0">
+                    <h6 class="card-title">Categories</h6>
+                    <div class="categoriesContainer">
+                    <div id="files"></div>
+                        </div>
+                </div>
+            </div>
+            <div class="col-xl-9" id="filesDiv">
+                <div class="content-title mt-0">
+                    <h4>Documents</h4>
+                </div>
+                <div class="d-md-flex justify-content-between mb-4">
+                    <div id="file-actions" class="d-none">
+                        <ul class="list-inline">
+                            <!--
+            <li class="list-inline-item mb-0">
+                <a href="javascript:moveFiles()" class="btn btn-outline-light" data-toggle="tooltip" title="Move">
+                    <i class="ti-arrow-top-right"></i>
+                </a>
+            </li>-->
+                            <li class="list-inline-item mb-0">
+                                <a href="javascript:downloadFiles()" class="btn btn-outline-light" data-toggle="tooltip" title="Download">
+                                    <i class="ti-download"></i>
+                                </a>
+                            </li>
+                            <li class="list-inline-item mb-0">
+                                <a href="javascript:showDeleteDialog()" class="btn btn-outline-danger" title="Delete">
+                                    <i class="ti-trash"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table id="table-files" class="table table-borderless table-hover">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="files-select-all">
+                                        <label class="custom-control-label" for="files-select-all"></label>
+                                    </div>
+                                </th>
+                                <th>#</th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Created</th>
+                                <th>Note</th>
+                            @*    <th>Label</th>*@
+                                <th>Created by</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @*
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <a href="#" class="d-flex align-items-center">
+                                            <figure class="avatar avatar-sm mr-3">
+                                                <span class="avatar-title rounded-pill">
+                                                    <i class="far fa-file"></i>
+                                                </span>
+                                            </figure>
+                                            <span class="d-flex flex-column">
+                                                <span class="text-primary">Meeting-notes.doc</span>
+                                                <span class="small font-italic">139KB</span>
+                                            </span>
+                                        </a>
+                                    </td>
+                                    <td>3/9/19, 2:40PM</td>
+                                    <td>
+                                        <div class="badge bg-primary-bright text-primary">Public</div>
+                                    </td>
+                                    <td>osayedzahida@gmail.com</td>
+                                    <td class="text-right">
+                                        <div class="dropdown">
+                                            <a href="#" class="btn btn-floating" data-toggle="dropdown">
+                                                <i class="ti-more-alt"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a onclick="javascript:onFileViewDetails(10,10);" class="dropdown-item" data-sidebar-target="#view-detail">
+                                                    View
+                                                    Details
+                                                </a>
+                                                <a onclick="javascript:onFileShare(10,10);" class="dropdown-item">Share</a>
+                                                <a onclick="javascript:onFileDownload(10,10);" class="dropdown-item">Download</a>
+                                                <a onclick="javascript:onFileCopy(10,10);" class="dropdown-item">Copy to</a>
+                                                <a onclick="javascript:onFileMove(10,10);" class="dropdown-item">Move to</a>
+                                                <a onclick="javascript:onFileRename(10,10);" class="dropdown-item">Rename</a>
+                                                <a onclick="javascript:onFileDelete(10,10);" class="dropdown-item">Delete</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <a href="#" class="d-flex align-items-center">
+                                            <figure class="avatar avatar-sm mr-3">
+                                                <span class="avatar-title rounded-pill">
+                                                    <i class="ti-image"></i>
+                                                </span>
+                                            </figure>
+                                            <span class="d-flex flex-column">
+                                                <span class="text-primary">Sitemap.png</span>
+                                                <span class="small font-italic">810KB</span>
+                                            </span>
+                                        </a>
+                                    </td>
+                                    <td>3/9/19, 2:40PM</td>
+                                    <td>
+                                        <div class="badge bg-success-bright text-success">Social Media</div>
+                                    </td>
+                                    <td>osayedzahida@gmail.com</td>
+
+                                    <td class="text-right">
+                                        <div class="dropdown">
+                                            <a href="#" class="btn btn-floating" data-toggle="dropdown">
+                                                <i class="ti-more-alt"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a href="#" class="dropdown-item" data-sidebar-target="#view-detail">
+                                                    View
+                                                    Details
+                                                </a>
+                                                <a href="#" class="dropdown-item">Share</a>
+                                                <a href="#" class="dropdown-item">Download</a>
+                                                <a href="#" class="dropdown-item">Copy to</a>
+                                                <a href="#" class="dropdown-item">Move to</a>
+                                                <a href="#" class="dropdown-item">Rename</a>
+                                                <a href="#" class="dropdown-item">Delete</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>*@
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="selectContactsModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+
+                    @(Html.DevExtreme().DataGrid()
+.ID("contactsList")
+.Editing(editing =>
+{
+    editing.Mode(GridEditMode.Row);
+    editing.AllowAdding(true);
+    editing.AllowDeleting(true);
+    editing.AllowUpdating(true);
+})
+.DataSource(d => d.Mvc()
+.Controller("Contacts")
+.UpdateAction("UpdateContact")
+.InsertAction("AddContact")
+.DeleteAction("DeleteContact")
+.LoadAction("Get")
+.Key("AutoKey")
+)
+.KeyExpr("AutoKey")
+.Selection(s => s.Mode(SelectionMode.Multiple))
+.Height(700)
+.SearchPanel(s => s
+.Visible(true)
+.Placeholder("Search")
+.SearchVisibleColumnsOnly(true)
+)
+.ShowRowLines(true)
+.ShowBorders(true)
+.ColumnAutoWidth(true)
+.OnToolbarPreparing("toolbarPreparingContacts")
+.OnSelectionChanged("onSelectedContactsChanged")
+.Selection(S => S.Mode(SelectionMode.Multiple))
+.Columns(columns =>
+{
+    columns.Add().DataField("Name")
+
+        .Caption("Name");
+
+    columns.Add().DataField("Phone")
+        .Caption("Phone Number");
+
+    columns.Add().DataField("Email")
+        .Caption("Email Address");
+
+})
+        )
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="selectSearchKeysModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    @(Html.DevExtreme().DataGrid()
+.ID("searchKeysList")
+.Editing(editing =>
+{
+    editing.Mode(GridEditMode.Row);
+    editing.AllowAdding(true);
+    editing.AllowDeleting(true);
+    editing.AllowUpdating(true);
+})
+.DataSource(d => d.Mvc()
+.Controller("SearchKeys")
+.UpdateAction("UpdateKey")
+.InsertAction("AddKey")
+.DeleteAction("DeleteKey")
+.LoadAction("Get")
+.Key("AutoKey")
+).KeyExpr("AutoKey")
+.Height(700)
+.Selection(S => S.Mode(SelectionMode.Multiple))
+.SearchPanel(s => s
+.Visible(true)
+.Placeholder("Search")
+.SearchVisibleColumnsOnly(true)
+)
+.ShowRowLines(true)
+.ShowBorders(true)
+.ColumnAutoWidth(true)
+.OnToolbarPreparing("toolbarPreparingSearchKeys")
+.OnSelectionChanged("onSelectedSearchKeysChanged")
+.Columns(columns =>
+{
+    columns.Add().DataField("Name")
+        .Caption("Name");
+
+})
+        )
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="updateModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+
+                    @{var asyncSettings2 = new Syncfusion.EJ2.Inputs.UploaderAsyncSettings { SaveUrl = "api/Upload/Update", ChunkSize = Int32.MaxValue }; }
+
+                    <div>
+                        <ejs-uploader success="onUpdateSuccess" multiple="false" id="updateFiles" uploading="onFileUpdate" maxFileSize="@Int32.MaxValue" asyncSettings="@asyncSettings2" autoUpload="false"></ejs-uploader>
+                        <ejs-scripts></ejs-scripts>
+
+                        <button onclick="startUpdate()" class="btn btn-lg btn-block btn-primary">
+                            <i class="fa fa-cloud-upload mr-3"></i> Update
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- ./ Content -->
+    <!-- Footer -->
+    <footer class="content-footer d-print-none">
+        <div>© 2020 Malafatee </div>
+    </footer>
+    <!-- ./ Footer -->
+</div>
+<!-- ./ Content body -->
+
+@section SidebarSection{
+    <div class="sidebar" id="upload-detail" style="width:800px">
+        <div class="sidebar-header">
+            <h4>Upload Detail</h4>
+            <a onclick="cancelupload();" id="uploadDetailsCloseBtn" class="btn btn-light btn-floating sidebar-close-btn">
+                <i class="ti-angle-right"></i>
+            </a>
+
+        </div>
+        <div class="sidebar-content">
+            <div class="row mb-3">
+                <div class="col-md-5">Note:</div>
+                <input type="text" id="txtNote" class="form-control col-md-7" />
+
+            </div>
+            <br />
+            <div class="row mb-3">
+                <div class="col-md-5">Contacts:</div>
+                <a class="col-md-7" data-toggle="modal" id="txtSelectContacts" href="#selectContactsModal">Click to Select</a>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-5">Search Keys:</div>
+                <a class="col-md-7" data-toggle="modal" id="txtSelectKeys" href="#selectSearchKeysModal">Click to Select</a>
+            </div>
+            <div class="row mb-3 uploadFilesDiv">
+                @{
+                    var asyncSettings = new Syncfusion.EJ2.Inputs.UploaderAsyncSettings { SaveUrl = "api/Upload/Save", RemoveUrl = "api/Upload/Remove", ChunkSize = Int32.MaxValue };
+                }
+                <ejs-uploader success="onUploadSuccess" data-required-message="* Choose your image to upload" required data-msg-containerid="uploadError" id="uploadFiles" beforeUpload="onBeforeUpload" uploading="onFileUpload" maxFileSize="@Int32.MaxValue" asyncSettings="@asyncSettings" autoUpload="false"></ejs-uploader>
+                <ejs-scripts></ejs-scripts>
+
+            </div>
+
+
+            <br />
+        </div>
+        <div class="sidebar-footer">
+            <button onclick="startUpload()" class="btn btn-lg btn-block btn-primary">
+                <i class="fa fa-cloud-upload mr-3"></i> Upload
+            </button>
+        </div>
+    </div>
+
+}
+@*@page
+    @model DMS.Pages.DashboardModel
+    @{
+        ViewData["Title"] = Localizer["Title"];
+        Layout = "~/Pages/_Layout.cshtml";
+    }
+
+    @using Syncfusion.EJ2
+    @using DMS.Models
+    @using Microsoft.AspNetCore.Mvc.Localization
+    @inject IViewLocalizer Localizer
+    <style>
+
+        .tree {
+            margin-left: 5rem;
+            padding: 1rem;
         }
 
-        xhr.open("POST", 'api/Search', true);
+        #treeList {
+            max-height: 450px;
+        }
 
-            const fd = new FormData();
+        .dx-sortable-dragging {
+            opacity: 0.9
+        }
 
-            fd.append('sQuery', txtSearch.value);
-            xhr.send(fd);*/
+        .options {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: rgba(191, 191, 191, 0.15);
+            position: relative;
+        }
 
-            if (txtSearch.value == '' || txtSearch.value == null) {
+        .caption {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .option {
+            margin-top: 10px;
+            margin-right: 40px;
+            display: inline-block;
+        }
+
+            .option:last-child {
+                margin-right: 0;
+            }
+
+        .dx-treelist-cell-expandable:hover {
+            cursor: pointer;
+        }
+
+        .view:hover {
+            cursor: pointer;
+        }
+
+        .edit:hover {
+            cursor: pointer;
+        }
+    </style>
+
+    <!-- Syncfusion Essential JS 2 Styles -->
+    <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/material.css" />
+
+    <!-- Syncfusion Essential JS 2 Scripts -->
+    <script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js"></script>
+
+    <div class="tree">
+
+
+        @(Html.DevExtreme().Popup()
+            .ID("updateModal")
+            .Width(500)
+            .Height(400)
+            .ShowTitle(true)
+            .Title("Update")
+            .Visible(false)
+            .ContentTemplate(new TemplateName("popup-template"))
+            .DragEnabled(false)
+            .CloseOnOutsideClick(true)
+        )
+
+        @using (Html.DevExtreme().NamedTemplate("popup-template"))
+        {
+            var asyncSettings = new Syncfusion.EJ2.Inputs.UploaderAsyncSettings { SaveUrl = "api/Upload/Update", ChunkSize = Int32.MaxValue };
+
+            <ejs-uploader success="onUploadSuccess" multiple="false" id="uploadFiles" uploading="onFileUpload" maxFileSize="@Int32.MaxValue" asyncSettings="@asyncSettings" autoUpload="false"></ejs-uploader>
+            <ejs-scripts></ejs-scripts>
+
+        }
+
+        <div id="popup"></div>
+
+
+        @(Html.DevExtreme().TextBox()
+
+            .Name("txtSearch")
+            .Width(600)
+            .ShowClearButton(true)
+            .ElementAttr("class", "content-block")
+             .Buttons(buttons =>
+                 {
+                     buttons.Add()
+                     .Name("btnSearch")
+
+                     .Location(TextEditorButtonLocation.Before)
+                     .Widget(w => w.Button()
+                         .UseSubmitBehavior(true)
+                         .ID("btnSearch")
+                         .OnClick("onClick")
+                         .Type(ButtonType.Default)
+                         .Icon(Url.Content("~/images/icons/search.png")));
+             })
+            .Placeholder(Localizer["SearchText"].Value)
+
+        )
+
+        <br />
+        <div id="treeListDemo">
+
+            @(Html.DevExtreme().TreeList()
+            .ID("treeList")
+
+    .DataSource(d => d.Mvc()
+        .Controller("Categories")
+        .LoadAction("Get")
+        .Key("AutoKey")
+    ).KeyExpr("AutoKey")
+    .OnSelectionChanged("onValueChangedTree")
+        .FilterMode(TreeListFilterMode.FullBranch)
+    .ElementAttr("class","categoriesTreeList")
+    .SelectedRowKeys(new[] { 1 })
+                .ParentIdExpr("FatherAutoKey")
+                .ExpandedRowKeys(new[] { 1 })
+                .ShowRowLines(true)
+                    .OnContentReady("treeReady")
+                    .SearchPanel(s => s
+                        .Visible(true)
+                        .Placeholder(Localizer["SearchOfcategory"].Value)
+                        .SearchVisibleColumnsOnly(true)
+                )
+        .Selection(s => s.Mode(SelectionMode.Single))
+                .ShowBorders(true)
+                .ColumnAutoWidth(true)/*
+                .RowDragging(rd => rd
+                    .AllowDropInsideItem(true)
+                    .AllowReordering(true)
+                    .OnDragChange("onDragChange")
+                    .OnReorder("onReorder")
+                    .ShowDragIcons(true)
+                )*/
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("Name")
+                        .Caption(Localizer["CategoryName"].Value);
+
+                })
+            )
+            @(Html.DevExtreme().DataGrid()
+                .ID("gridContainer")
+                    .OnContentReady("contentReady")
+         /*
+     .DataSource(d => d.Mvc()
+    .Controller("api/Upload")
+    .LoadMethod("GET")
+    .LoadParams(new { CatID = new JS("selectedID") })
+    .LoadAction("GetDocuments")
+    .Key("InfoAutoKey")
+    ).KeyExpr("InfoAutoKey")*/
+         .DataSourceOptions(o => o.ReshapeOnPush(true))
+        .RepaintChangesOnly(true)
+                .ShowRowLines(true)
+                .ShowBorders(true)
+                .ColumnAutoWidth(true)
+                .ElementAttr("class","dataGrid")
+                /*.RowDragging(rd => rd
+                    .AllowDropInsideItem(true)
+                    .AllowReordering(true)
+                    .OnDragChange("onDragChange")
+                    .OnReorder("onReorder")
+                    .ShowDragIcons(true)
+                )*/
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("ID")
+                    .Alignment(HorizontalAlignment.Left)
+                        .DataType(GridColumnDataType.Number)
+                        .Caption("ID");
+
+
+                    columns.Add().DataField("Name")
+
+                        .Caption(Localizer["NameCol"].Value);
+
+                    columns.Add().DataField("Ext")
+                    .Caption(Localizer["TypeCol"].Value);
+
+                    var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
+
+                    string accountType = "";
+                    string userId = "";
+                    if (claimsIdentity != null)
+                    {
+                        var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.UserData);
+
+                        accountType = c.Value;
+                        userId = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+                    }
+                    if (new DMS.Database.DataManager(userId).IsAdmin(userId))
+                    {
+                        columns.Add().DataField("UserID")
+                            .Caption("User")
+                            .Lookup(S =>
+                            S.DataSource(d => d.Mvc()
+                                .Controller("Permissions")
+                                .LoadAction("GetUsers")
+                                .LoadParams(new { includeSelf = true })
+                                .Key("ID")
+                            )
+                            .DisplayExpr("Email")
+                            .ValueExpr("ID")
+                        );
+                    }
+
+                    columns.Add().DataField("DateTimeAdded")
+                       .DataType(GridColumnDataType.DateTime)
+                       .Caption(Localizer["DateAddedCol"].Value);
+
+                    columns.Add().DataField("Note")
+                       .Caption("Note");
+
+
+                })
+                .MasterDetail(md => {
+                md.Enabled(true);
+                md.Template(@<text>
+             @(Html.DevExtreme().TabPanel()
+            .Items(items => {
+                items.Add()
+                    .Title("Contacts")
+                    .Template(new TemplateName("gridContainer-details-contacts"))
+                    .Option("tabExtras", new { AutoKey = new JS("data.DocumentAutoKey") });
+
+                items.Add()
+                    .Title("Search Keys")
+                    .Template(new TemplateName("gridContainer-details-searchkeys"))
+                    .Option("tabExtras", new { AutoKey = new JS("data.DocumentAutoKey") });
+
+                items.Add()
+                    .Title("Categories")
+                    .Template(new TemplateName("gridContainer-details-categories"))
+                    .Option("tabExtras", new { AutoKey = new JS("data.DocumentAutoKey") });
+            })
+        )
+
+            </text>);
+        })
+            )
+
+
+            @using (Html.DevExtreme().NamedTemplate("gridContainer-details-contacts"))
+            {
+                @(Html.DevExtreme().DataGrid<Contact>()
+                    .ColumnAutoWidth(true)
+                    .ShowBorders(true)
+                    .Columns(columns => {
+                        columns.AddFor(m => m.Name);
+
+                        columns.AddFor(m => m.Email);
+
+                        columns.AddFor(m => m.Phone);
+                    })
+                    .DataSource(d => d.Mvc()
+                        .Controller("Contacts")
+                        .LoadAction("GetDocumentContacts")
+                        .LoadParams(new { AutoKey = new JS("tabExtras.AutoKey") })
+                    )
+                )
+            }
+
+            @using (Html.DevExtreme().NamedTemplate("gridContainer-details-searchkeys"))
+            {
+                @(Html.DevExtreme().DataGrid<SearchKey>()
+                    .ColumnAutoWidth(true)
+                    .ShowBorders(true)
+                    .Columns(columns => {
+                        columns.AddFor(m => m.Name);
+
+                    })
+                    .DataSource(d => d.Mvc()
+                        .Controller("SearchKeys")
+                        .LoadAction("GetDocumentSearchKeys")
+                        .LoadParams(new { AutoKey = new JS("tabExtras.AutoKey") })
+                    )
+                )
+            }
+            @using (Html.DevExtreme().NamedTemplate("gridContainer-details-categories"))
+            {
+                @(Html.DevExtreme().DataGrid<Category>()
+                    .ColumnAutoWidth(true)
+                    .ShowBorders(true)
+                    .Columns(columns => {
+                        columns.AddFor(m => m.Name);
+
+                    })
+                    .DataSource(d => d.Mvc()
+                        .Controller("Categories")
+                        .LoadAction("GetDocumentCategories")
+                        .LoadParams(new { AutoKey = new JS("tabExtras.AutoKey") })
+                    )
+                )
+            }
+        </div>
+
+        <script>
+            var infoAutoKey;
+            var lineAutoKey;
+
+            var selectedID = 0;
+            var grid;
+
+            function contentReady(e) {
+                grid = e;
+            }
+
+            function treeReady(e) {
+                if (txtSearch.value == '' || txtSearch.value == null) {
+
+                    $('#treeList').dxTreeList('instance').deselectAll();
+                }
+            }
+            function onValueChangedTree(e) {
+                if (e.selectedRowsData[0] != null) {
+
+
+                    if (e.selectedRowsData[0].CanView != null && !e.selectedRowsData[0].CanView) {
+                        $("#gridContainer").dxDataGrid({
+                            dataSource: null,
+                        });
+                        return;
+                    }
+                }
+
+                selectedID = e.selectedRowKeys[0];
+
+                if (e.selectedRowKeys.length > 0) {
+                $("#gridContainer").dxDataGrid({
+                    dataSource: "api/Upload/GetDocuments?CatID=" + selectedID,
+                });
+                   }
+            }
+
+            function getTreeList() {
+                return $("#treeList").dxTreeList("instance");
+            }
+
+
+            $(document).ready(function () {
+                $("#gridContainer").dxDataGrid({
+                    onContextMenuPreparing: function (e) {
+                        console.log(e);
+                        if (e.target == "content") {
+                            // e.items can be undefined
+                            if (!e.items) e.items = [];
+
+                            var infoAutoKey = e.row.data.DocumentAutoKey;
+                            var lineAutoKey = e.row.data.LineAutoKey;
+                            // Add a custom menu item
+                            e.items.push({
+                                text: "View",
+                                onItemClick: function () {
+
+                                    var xmlHttp = new XMLHttpRequest();
+                                    xmlHttp.open("GET", "api/Upload/GetEncryptedString?key=" + infoAutoKey + "|" + lineAutoKey + "|" + selectedID, false);
+                                    xmlHttp.send();
+
+                                    var str = xmlHttp.responseText;
+
+                                    //      window.location.href = 'Viewer?f=' + str;//?InfoAutoKey=' + infoAutoKey + '&LineAutoKey=' + lineAutoKey;
+
+                                    $("#popup").dxPopup({
+                                        width: 1280,
+                                        height: 720,
+                                        contentTemplate: function () {
+                                            return $("<iframe frameBorder='0' style='width:100%; height: 100%' src='Share?f=" + str + "'/>");
+                                        },
+                                        showTitle: false,
+                                        title: "View",
+                                        visible: true,
+                                        dragEnabled: true,
+                                        closeOnOutsideClick: true
+                                    });
+
+                                    $("#popup").dxPopup("instance").show();
+                                }
+                            },
+                                {
+                                    text: "Edit",
+                                    onItemClick: function () {
+                                        var xmlHttp = new XMLHttpRequest();
+                                        xmlHttp.open("GET", "api/Upload/GetEncryptedString?key=" + infoAutoKey, false);
+                                        xmlHttp.send();
+
+                                        var str = xmlHttp.responseText;
+                                        window.location.href = 'ManageFile?f=' + str;
+                                    }
+                                },
+                                {
+                                    text: "Update",
+                                    onItemClick: function () {
+                                        $("#updateModal").dxPopup("instance").show();
+                                    }
+                                },
+                                {
+                                    text: "Download",
+                                    onItemClick: function () {
+                                        download(infoAutoKey, lineAutoKey, e.row.data.Ext, e.row.data.Name);
+                                    }
+                                }/*,
+                                {
+                                    text: "Delete",
+                                    onItemClick: function () {
+                                        console.log("To be done");
+                                    }
+                                }*/
+                            );
+                        }
+                    }
+                });
+                var input = document.getElementById("txtSearch");
+
+                // Execute a function when the user releases a key on the keyboard
+                input.addEventListener("keyup", function (event) {
+                    // Number 13 is the "Enter" key on the keyboard
+                    if (event.keyCode === 13) {
+                        // Cancel the default action, if needed
+                        event.preventDefault();
+
+                        onClick();
+                    }
+                });
+            });
+
+              function download(infokey, linekey, ext, filename) {
+                      //  $('#downloadingWait').fadeIn(200);
+
+                        var xmlHttp = new XMLHttpRequest();
+                        xmlHttp.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 200) {
+
+                    var str = this.responseText;
+
+                        var arr = base64ToArrayBuffer(str);
+                                saveByteArray(filename + '.' + ext , arr);
+                            }
+                            }
+
+                  xmlHttp.open("GET", "api/Upload/Getfile?InfoAutoKey=" + infokey + "&LineAutoKey=" + linekey + "&Ext=" + ext, true);
+                    xmlHttp.send();
+
+                }
+
+                function base64ToArrayBuffer(base64) {
+                    var binaryString = window.atob(base64);
+                    var binaryLen = binaryString.length;
+                    var bytes = new Uint8Array(binaryLen);
+                    for (var i = 0; i < binaryLen; i++) {
+                        var ascii = binaryString.charCodeAt(i);
+                        bytes[i] = ascii;
+                    }
+                    return bytes;
+                }
+
+                function saveByteArray(reportName, byte) {
+
+                    var blob = new Blob([byte], { type: '@MimeKit.MimeTypes.GetMimeType(new JS("reportName").Value)' });
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    var fileName = reportName;
+                    link.download = fileName;
+                    link.click();
+                };
+
+            function onFileUpload(args) {
+
+                args.customFormData = [{
+                    'InfoAutoKey': infoAutoKey
+                },
+                {
+                    'LineAutoKey': lineAutoKey
+                }];
+
+            }
+
+
+            function onUploadSuccess(args) {
+                if (args.operation === 'upload') {
+                    $("#updateModal").dxPopup("instance").hide();
+
+                }
+
+            }
+
+            function onClick() {
+                /*
+                      const xhr = new XMLHttpRequest();
+
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+
+                }
+            }
+
+            xhr.open("POST", 'api/Search', true);
+
+                const fd = new FormData();
+
+                fd.append('sQuery', txtSearch.value);
+                xhr.send(fd);*/
+
+                if (txtSearch.value == '' || txtSearch.value == null) {
+                    $("#treeList").dxTreeList({
+                        dataSource: "api/Categories/",
+                    });
+
+                    $("#gridContainer").dxDataGrid({
+                        dataSource: null,
+                    });
+                    return;
+                }
+
+                var xmlHttp = new XMLHttpRequest();
+
+                xmlHttp.open("GET", "api/Search/Search?sQuery=" + txtSearch.value, false);
+                xmlHttp.send();
+
+                var res = JSON.parse(xmlHttp.responseText);
+
+                var files = new DevExpress.data.DataSource({
+                    store: res.Files,
+                    pageSize: 10,
+                    paginate: true
+                });
+
+                var cats = new DevExpress.data.DataSource({
+                    store: res.Categories,
+                    paginate: false
+                });
+
                 $("#treeList").dxTreeList({
-                    dataSource: "api/Categories/",
+                    dataSource: cats
                 });
 
                 $("#gridContainer").dxDataGrid({
-                    dataSource: null,
+                    dataSource: files
                 });
-                return;
+
+
             }
-
-            $("#treeList").dxTreeList({
-                dataSource: "api/Search/SearchCats?sQuery=" + txtSearch.value,
-            });
-
-            $("#gridContainer").dxDataGrid({
-                dataSource: "api/Search/SearchFiles?sQuery=" + txtSearch.value,
-            });
+        </script>
 
 
-        }
-    </script>
-
-
-</div>
+    </div>
+*@

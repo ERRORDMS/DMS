@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "1uk7ukf",
+  "CachePdfKey": "1uk7ukf/1uk7ukf-9324t4.pdf",
+  "CacheXpzKey": "1uk7ukf/1uk7ukf-1cwwjmh.xpz",
+  "CacheInfoKey": "1uk7ukf/1uk7ukf-1cwwjmh.json",
+  "CacheCopyKey": "1uk7ukf/xwpx19.psd",
+  "Document": null,
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": null,
+  "DocumentFileName": "10085.psd",
+  "InputOptions": {
+    "Format": "Psd",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "1uk7ukf",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}

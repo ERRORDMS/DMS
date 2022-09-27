@@ -5,6 +5,13 @@
 @model DMS.Pages.IndexModel
 @{
     Layout = null;
+
+    if(DMS.Controllers.SettingsController.GetSettingsPARSED().IsCompany)
+{
+<script>
+    window.location = 'Dashboard';
+    </script>
+}
 }
 
 <!DOCTYPE html>

@@ -132,6 +132,9 @@
   <data name="Contacts" xml:space="preserve">
     <value>جهات التعامل</value>
   </data>
+  <data name="Email" xml:space="preserve">
+    <value>البريد الالكتروني</value>
+  </data>
   <data name="Home" xml:space="preserve">
     <value>الصفحة الرئيسية</value>
   </data>

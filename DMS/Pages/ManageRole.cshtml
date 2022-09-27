@@ -36,7 +36,7 @@
 }
 
 
-<div>
+<div style="margin-left:120px;margin-right:310px;margin-top:100px">
     <h2 class="content-block">Permissions</h2>
     @(Html.DevExtreme().DataGrid()
         .ID("permissionsList")
@@ -67,7 +67,15 @@
             })
     )
 
+    <br />
 
+    @(Html.DevExtreme().Button()
+        .Icon("save")
+        .Text("Save")
+        .OnClick("save")
+        .ElementAttr("class", "content-block")
+
+    )
     <br />
 
     @(Html.DevExtreme().TreeList()
@@ -128,16 +136,16 @@
                        .AllowEditing(true)
                        .DataType(GridColumnDataType.Boolean);
 
+                    columns.Add().DataField("CanDownload")
+                     .Caption("Can Download")
+                     .AllowEditing(true)
+                     .DataType(GridColumnDataType.Boolean);
+
                 })
+
+                .OnToolbarPreparing("toolbar_preparing")
                 .OnRowUpdated("rowUpdated")
             )
-    @(Html.DevExtreme().Button()
-        .Icon("save")
-        .Text("Save")
-        .OnClick("save")
-        .ElementAttr("class", "content-block")
-
-    )
 </div>
 
 
@@ -150,7 +158,53 @@
     }
     var permissions;
 
-            
+             function toolbar_preparing(e) {
+        var treeList = e.component;
+
+        e.toolbarOptions.items.unshift({
+
+            location: "before",
+            widget: "dxButton",
+            options: {
+                text: "Select All",
+                width: 136,
+                onClick: function (e) {
+
+                    var selecting = e.component.option("text") === "Select All";
+
+                    e.component.option("text", selecting ? "Unselect All" : "Select All");
+
+                       const xhr = new XMLHttpRequest();
+
+                        xhr.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 200) {
+                                $("#treeList").dxTreeList('instance').refresh();
+                            }
+                        }
+
+                        xhr.open("POST", 'api/Enterprise/SetAll', true);
+
+                        const fd = new FormData();
+                        fd.append('roleID', '@ID');
+                        fd.append('value', selecting);
+
+                        xhr.send(fd);
+
+                }
+            }
+        }, {
+            location: "after",
+            widget: "dxButton",
+            options: {
+                icon: "refresh",
+                onClick: function () {
+                    treeList.refresh();
+                }
+            }
+        });
+    }
+
+
     $(document).ready(function () {
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open("GET", "api/Permissions/RolePermissions?roleID=@ID", false);

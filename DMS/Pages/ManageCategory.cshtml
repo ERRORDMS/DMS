@@ -20,9 +20,9 @@
 
     long AutoKey = 0;
 
-    if (!string.IsNullOrEmpty(EncryptedString)) 
+    if (!string.IsNullOrEmpty(EncryptedString))
     {
-        AutoKey = Convert.ToInt64(DMS.Models.StringCipher.Decrypt(EncryptedString).Split("|")[1]); 
+        AutoKey = Convert.ToInt64(DMS.Models.StringCipher.Decrypt(EncryptedString).Split("|")[1]);
     }
 
 
@@ -32,8 +32,8 @@
 @inject IViewLocalizer Localizer
 <!-- Syncfusion Essential JS 2 Styles -->
 <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/material.css" />
-
-<style>
+@*
+    <style>
     .Category_found, .server_error, .empty_field {
         display: none;
         margin-left: 2rem;
@@ -47,6 +47,7 @@
         z-index: 2000;
         box-shadow: 0px 2px 5px black;
     }
+
     #addCatDiv {
         text-align: center;
     }
@@ -99,229 +100,21 @@
         cursor: pointer;
         transition: .5s;
     }
-</style>
+</style>*@
 <!-- Syncfusion Essential JS 2 Scripts -->
 <script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js"></script>
 
 
+<div style="margin-left:120px;margin-right:310px;margin-top:100px">
 
-@if (AutoKey != 0)
-{
-    <div class="empty_field">
-        @Localizer["MissingArgs"]
-    </div>
-    <div class="server_error">
-        @Localizer["InternalError"]
-    </div>
-    <div class="already_exists">
-        @Localizer["Exists"]
-    </div>
-    @*  <div class="addCategory_form_bar">
-            <div class="addCategory_form">
-                @(Html.DevExtreme().TextBox()
-
-                    .Placeholder(Localizer["CategoryNameCol"].Value)
-                            .ElementAttr("class", "content-block")
-                            .Name("txtName")
-        )
-                @(Html.DevExtreme().Button()
-            .Icon("save")
-            .Text(Localizer["Save"].Value)
-            .OnClick("saveCat")
-            .ElementAttr("class", "content-block")
-
-        )
-                @(Html.DevExtreme().Button()
-            .Icon("trash")
-            .Text(Localizer["DeleteCat"].Value)
-            .OnClick("deleteCat")
-            .ElementAttr("class", "content-block")
-            .ID("delete_button")
-
-        )
-            </div>
-        </div>*@
-
-    <div class="content-block">
-        <h2>@Localizer["ManageCategory"]</h2>
-
-        @(Html.DevExtreme().TextBox()
-                .Placeholder(Localizer["CategoryNameCol"].Value)
-                        .Name("txtName")
-                        //.ID("txtName")
-    )
-        <br />
-
-        @(Html.DevExtreme().Button()
-        .Icon("save")
-
-        .Text(Localizer["Save"].Value)
-        .OnClick("saveCat")
-
-    )
-        @(Html.DevExtreme().Button()
-        .ID("delete_button")
-        .Icon("trash")
-
-        .Text(Localizer["DeleteCat"].Value)
-        .OnClick("deleteCat")
-        )
-    </div>
-
-    <script>
-        var isEnterprise;
-        $(document).ready(function () {
-            $('#txtName').val(getVal());
-            $('#txtName').focus();
-            $('#txtName').blur();
-
-            var xmlHttp = new XMLHttpRequest();
-            xmlHttp.open("GET", "api/Enterprise/IsEnterprise", false);
-            xmlHttp.send();
-
-            isEnterprise = JSON.parse(xmlHttp.responseText);
-
-            if (isEnterprise == true) {
-                const xhr = new XMLHttpRequest();
-
-                xhr.open("GET", "api/categories/CanDelete?AutoKey=" + @AutoKey, false);
-                xhr.send();
-                var s = JSON.parse(xhr.responseText);
-
-                if (s == true) {
-                    $("#delete_button").fadeIn(200);
-                } else if (s == false) {
-                    $("#delete_button").fadeOut(200);
-                } else {
-                    $("#delete_button").fadeIn(200);
-                }
-            }
-        });
-
-        function getVal()
-        {
-            var xmlHttp = new XMLHttpRequest();
-            xmlHttp.open("GET", "api/Categories/Name?AutoKey=" + @AutoKey, false );
-            xmlHttp.send();
-            return xmlHttp.responseText;
-        }
-
-        function saveCat() {
-            $(document).ready(function () {
-                $(".content-block").click(function () {
-                    window.onkeyup = function () {
-                        $('.empty_field').fadeOut(0);
-                        $(".already_exists").fadeOut(100);
-                    }
-                })
-            });
-            if (txtName.value == '') {
-                $(document).ready(function () {
-                    $('.empty_field').fadeIn(100)
-                })
-                return;
-            } else {
-                $('.empty_field').fadeOut(0)
-
-            }
-               const xhr = new XMLHttpRequest();
-
-                xhr.onreadystatechange = function () {
-                    if (this.readyState == 4 && this.status == 200) {
-                        var t = this.responseText;
-                        var obj = JSON.parse(t);
-
-                        var statusCode = obj.StatusCode;
-                        if (statusCode == 0) {
-                            window.location = "ManageCategory";
-                        }
-                        if (statusCode == 105) {
-                            $(".already_exists").fadeIn(100);
-                        } else {
-                            $(".already_exists").fadeOut(100);
-                        }
-                    }
-                }
-
-
-                xhr.open("POST", 'api/Categories/Save', true);
-
-                const fd = new FormData();
-
-                fd.append('AutoKey', @AutoKey);
-                fd.append('Name', txtName.value);
-                xhr.send(fd);
-
-        }
-
-
-        function deleteCat() {
-            const xhr = new XMLHttpRequest();
-            xhr.open("GET", "api/Categories/CanDelete", false);
-            xhr.send();
-            let s = JSON.parse(xhr.responseText);
-
-            if (s == true || !isEnterprise) {
-                  xhr.onreadystatechange = function () {
-                        if (this.readyState == 4 && this.status == 200) {
-                           window.location = "Dashboard";
-                         }
-                    }
-
-        xhr.open("POST", 'api/Categories/Delete', true);
-
-            const fd = new FormData();
-
-            fd.append('AutoKey', @AutoKey);
-            xhr.send(fd);
-
-            } else {
-                alert("you can't delete")
-            }
-
-        }
-
-    </script>
-
-
-}
-else
-{
-    <div class="empty_field">
-        @Localizer["MissingArgs"]
-    </div>
-    <div class="server_error">
-        @Localizer["InternalError"]
-    </div>
-    <div class="already_exists">
-        @Localizer["Exists"]
-    </div>
-    <div id="header">
-        <h2 class="content-block" style="font-size:22px;margin:0;margin-left:2rem;">@Localizer["ManageCategory"]</h2>
-        <div id="addCatDiv" class="content-block">
-            <div class="form_category">
-
-                @(Html.DevExtreme().TextBox()
-                    .Mode(TextBoxMode.Text)
-                    .Name("CategoryName")
-                    .Placeholder(Localizer["CategoryNameCol"].Value)
-                    .ElementAttr("class", "content-block category_input")
-                    .HoverStateEnabled(true)
-            )
-                <span class="space"></span>
-                @(Html.DevExtreme().Button()
-        .Icon("plus")
-        .Text(Localizer["AddCategory"].Value)
-        .OnClick("addCategory")
-
-    )
-            </div>
-        </div>
-    </div>
-    <br />
-    <br />
-    <br />
     @(Html.DevExtreme().TreeList()
+         .Editing(editing =>
+        {
+            editing.Mode(GridEditMode.Row);
+            editing.AllowAdding(true);
+            editing.AllowDeleting(true);
+            editing.AllowUpdating(true);
+        })
         .ID("treeList")
 /*
 .DataSource(d => d.Mvc()
@@ -353,25 +146,293 @@ else
                         .ShowDragIcons(true)
                     )
                     .ElementAttr("class", "content-block")
+                                    .OnToolbarPreparing("toolbar_preparing")
 
             .Columns(columns =>
             {
                 columns.Add().DataField("Name")
                     .Caption(Localizer["CategoryNameCol"].Value);
-                columns.Add()
-               .Caption(Localizer["Manage"].Value)
-               .Width(100)
-               .Alignment(HorizontalAlignment.Center)
-               .AllowFiltering(false)
-               .AllowSorting(false)
-               .CellTemplate(new JS("cellTemplate"));
 
 
             })
     )
-}
 
-<script>
+    </div>
+    @*
+        @if (AutoKey != 0)
+        {
+            <div class="empty_field">
+                @Localizer["MissingArgs"]
+            </div>
+            <div class="server_error">
+                @Localizer["InternalError"]
+            </div>
+            <div class="already_exists">
+                @Localizer["Exists"]
+            </div>
+            @*  <div class="addCategory_form_bar">
+                    <div class="addCategory_form">
+                        @(Html.DevExtreme().TextBox()
+
+                            .Placeholder(Localizer["CategoryNameCol"].Value)
+                                    .ElementAttr("class", "content-block")
+                                    .Name("txtName")
+                )
+                        @(Html.DevExtreme().Button()
+                    .Icon("save")
+                    .Text(Localizer["Save"].Value)
+                    .OnClick("saveCat")
+                    .ElementAttr("class", "content-block")
+
+                )
+                        @(Html.DevExtreme().Button()
+                    .Icon("trash")
+                    .Text(Localizer["DeleteCat"].Value)
+                    .OnClick("deleteCat")
+                    .ElementAttr("class", "content-block")
+                    .ID("delete_button")
+
+                )
+                    </div>
+                </div>
+
+            <div class="content-block">
+                <h2>@Localizer["ManageCategory"]</h2>
+
+                @(Html.DevExtreme().TextBox()
+                        .Placeholder(Localizer["CategoryNameCol"].Value)
+                                .Name("txtName")
+                                //.ID("txtName")
+            )
+                <br />
+
+                @(Html.DevExtreme().Button()
+                .Icon("save")
+
+                .Text(Localizer["Save"].Value)
+                .OnClick("saveCat")
+
+            )
+                @(Html.DevExtreme().Button()
+                .ID("delete_button")
+                .Icon("trash")
+
+                .Text(Localizer["DeleteCat"].Value)
+                .OnClick("deleteCat")
+                )
+            </div>
+
+            <script>
+                var isEnterprise;
+                $(document).ready(function () {
+                    $('#txtName').val(getVal());
+                    $('#txtName').focus();
+                    $('#txtName').blur();
+
+                    var xmlHttp = new XMLHttpRequest();
+                    xmlHttp.open("GET", "api/Enterprise/IsEnterprise", false);
+                    xmlHttp.send();
+
+                    isEnterprise = JSON.parse(xmlHttp.responseText);
+
+                    if (isEnterprise == true) {
+                        const xhr = new XMLHttpRequest();
+
+                        xhr.open("GET", "api/categories/CanDelete?AutoKey=" + @AutoKey, false);
+                        xhr.send();
+                        var s = JSON.parse(xhr.responseText);
+
+                        if (s == true) {
+                            $("#delete_button").fadeIn(200);
+                        } else if (s == false) {
+                            $("#delete_button").fadeOut(200);
+                        } else {
+                            $("#delete_button").fadeIn(200);
+                        }
+                    }
+                });
+
+                function getVal()
+                {
+                    var xmlHttp = new XMLHttpRequest();
+                    xmlHttp.open("GET", "api/Categories/Name?AutoKey=" + @AutoKey, false );
+                    xmlHttp.send();
+                    return xmlHttp.responseText;
+                }
+
+                function saveCat() {
+                    $(document).ready(function () {
+                        $(".content-block").click(function () {
+                            window.onkeyup = function () {
+                                $('.empty_field').fadeOut(0);
+                                $(".already_exists").fadeOut(100);
+                            }
+                        })
+                    });
+                    if (txtName.value == '') {
+                        $(document).ready(function () {
+                            $('.empty_field').fadeIn(100)
+                        })
+                        return;
+                    } else {
+                        $('.empty_field').fadeOut(0)
+
+                    }
+                       const xhr = new XMLHttpRequest();
+
+                        xhr.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 200) {
+                                var t = this.responseText;
+                                var obj = JSON.parse(t);
+
+                                var statusCode = obj.StatusCode;
+                                if (statusCode == 0) {
+                                    window.location = "ManageCategory";
+                                }
+                                if (statusCode == 105) {
+                                    $(".already_exists").fadeIn(100);
+                                } else {
+                                    $(".already_exists").fadeOut(100);
+                                }
+                            }
+                        }
+
+
+                        xhr.open("POST", 'api/Categories/Save', true);
+
+                        const fd = new FormData();
+
+                        fd.append('AutoKey', @AutoKey);
+                        fd.append('Name', txtName.value);
+                        xhr.send(fd);
+
+                }
+
+
+                function deleteCat() {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open("GET", "api/Categories/CanDelete", false);
+                    xhr.send();
+                    let s = JSON.parse(xhr.responseText);
+
+                    if (s == true || !isEnterprise) {
+                          xhr.onreadystatechange = function () {
+                                if (this.readyState == 4 && this.status == 200) {
+                                   window.location = "Dashboard";
+                                 }
+                            }
+
+                xhr.open("POST", 'api/Categories/Delete', true);
+
+                    const fd = new FormData();
+
+                    fd.append('AutoKey', @AutoKey);
+                    xhr.send(fd);
+
+                    } else {
+                        alert("you can't delete")
+                    }
+
+                }
+
+            </script>
+
+
+        }
+        else
+        {
+            <div class="empty_field">
+                @Localizer["MissingArgs"]
+            </div>
+            <div class="server_error">
+                @Localizer["InternalError"]
+            </div>
+            <div class="already_exists">
+                @Localizer["Exists"]
+            </div>
+            <div id="header">
+                <h2 class="content-block" style="font-size:22px;margin:0;margin-left:2rem;">@Localizer["ManageCategory"]</h2>
+                <div id="addCatDiv" class="content-block">
+                    <div class="form_category">
+
+                        @(Html.DevExtreme().TextBox()
+                            .Mode(TextBoxMode.Text)
+                            .Name("CategoryName")
+                            .Placeholder(Localizer["CategoryNameCol"].Value)
+                            .ElementAttr("class", "content-block category_input")
+                            .HoverStateEnabled(true)
+                    )
+                        <span class="space"></span>
+                        @(Html.DevExtreme().Button()
+                .Icon("plus")
+                .Text(Localizer["AddCategory"].Value)
+                .OnClick("addCategory")
+
+            )
+                    </div>
+                </div>
+            </div>
+            <br />
+            <br />
+            <br />
+            @(Html.DevExtreme().TreeList()
+                 .Editing(editing =>
+                {
+                    editing.Mode(GridEditMode.Row);
+                    editing.AllowAdding(true);
+                    editing.AllowDeleting(true);
+                    editing.AllowUpdating(true);
+                })
+                .ID("treeList")
+        /*
+        .DataSource(d => d.Mvc()
+            .Controller("Categories")
+            .LoadAction("Get")
+            .Key("AutoKey")
+        )*/
+        .KeyExpr("AutoKey")
+                    .ParentIdExpr("FatherAutoKey")
+                    .ExpandedRowKeys(new[] { 1 })
+                    .ShowRowLines(true)
+
+                    .OnSelectionChanged("onValueChangedTree")
+                    .ShowBorders(true)
+                    .SearchPanel(s=>s
+                            .Visible(true)
+                            .Placeholder("Search")
+                            .SearchVisibleColumnsOnly(true)
+                    )
+                    .Selection(s=>s
+                            .Mode(SelectionMode.Single)
+                    )
+                    .ColumnAutoWidth(true)
+                            .RowDragging(rd => rd
+                                .AllowDropInsideItem(true)
+                                .AllowReordering(true)
+                                .OnDragChange("onDragChange")
+                                .OnReorder("onReorder")
+                                .ShowDragIcons(true)
+                            )
+                            .ElementAttr("class", "content-block")
+
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("Name")
+                            .Caption(Localizer["CategoryNameCol"].Value);
+                        columns.Add()
+                       .Caption(Localizer["Manage"].Value)
+                       .Width(100)
+                       .Alignment(HorizontalAlignment.Center)
+                       .AllowFiltering(false)
+                       .AllowSorting(false)
+                       .CellTemplate(new JS("cellTemplate"));
+
+
+                    })
+            )
+        }*@
+
+    <script>
     var categories;
     var isEnterprise;
     //<![CDATA[
@@ -383,7 +444,6 @@ else
                 })
                 .appendTo(element);
     }
-
     function onEdit(element, cellinfo) {
         var autokey = cellinfo.data.AutoKey;
 
@@ -407,23 +467,86 @@ else
             var str = xmlHttp.responseText;
             window.location.href = 'ManageCategory?f=' + str;
         }
-    }   
+    }
 
     var permissions;
 
+    function toolbar_preparing(e) {
+        if (isEnterprise) {
+            if (!permissions.includes('Can Add Root Category')) {
+                e.toolbarOptions.items.shift();
+            }
+        }
+    }
     $(document).ready(function () {
+        var store = new DevExpress.data.CustomStore({
+            key: "AutoKey",
+            loadMode: "raw",
+            load: function (loadOptions) {
 
-        var xmlHttp = new XMLHttpRequest();
-            xmlHttp.open("GET", "api/Categories/", false );
-        xmlHttp.send();
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open("GET", "api/Categories/", false);
+                xmlHttp.send();
 
 
-        categories = JSON.parse(xmlHttp.responseText).data;
+                categories = JSON.parse(xmlHttp.responseText).data;
+                return categories;
+            },
+            insert: function (values) {
+                return $.ajax({
+                    url: "api/Categories/AddCategory",
+                    method: "POST",
+                    data: values
+                })
+            },
+            update: function (key, values) {
+                console.log(JSON.stringify(values));
+                return $.ajax({
+                    url: "api/Categories/UpdateCategory",
+                    method: "POST",
+                    data: { values: JSON.stringify(values), key: key}
+                })
+            },
+            remove: function (key) {
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open("GET", "api/Categories/AllowDeleteCategory?AutoKey=" + key, false);
+                xmlHttp.send();
 
+                var allow = JSON.parse(xmlHttp.responseText);
+
+                if (allow === true) {
+                    return $.ajax({
+                        url: "api/Categories/DeleteCategory",
+                        method: "POST",
+                        data: { autokey: key }
+                    })
+                } else {
+                    DevExpress.ui.notify({ message: "You can't delete this category! It has files and subcategories, delete them first. ", width: 320 }, "error", 2000);
+                    return false;
+                }
+            }
+        });
 
         $("#treeList").dxTreeList({
-            dataSource: categories,
+            dataSource: store,
+
+            editing: {
+                mode: "row",
+                allowUpdating: function (e) {
+                    return isEnterprise == false || e.row.data.CanEdit;
+                },
+                allowDeleting: function (e) {
+                    return isEnterprise == false || e.row.data.CanDelete;
+                },
+
+                allowAdding: function (e) {
+                    return isEnterprise == false || e.row.data.CanAdd;
+                },
+                useIcons: true
+            }
         });
+
+
 
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open("GET", "api/Enterprise/IsEnterprise", false);
@@ -431,7 +554,7 @@ else
 
         isEnterprise = JSON.parse(xmlHttp.responseText);
 
-        
+
         if (isEnterprise) {
             // Get user permissions
 
@@ -548,7 +671,7 @@ else
                 }
             }
         }
-        
+
 
         $(document).ready(function () {
             $('.category_input').click(function () {
@@ -618,5 +741,5 @@ else
         }
     }
 
-</script>
+    </script>
 

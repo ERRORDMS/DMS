@@ -193,6 +193,11 @@ a {
         cursor: pointer;
         color: #0087FF;
     }
+.err98 {
+    display: none;
+    color: rgb(250,82,82);
+    font-weight: 400;
+}
     .err99 {
         display: none;
         color: rgb(250,82,82);

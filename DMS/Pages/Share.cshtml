@@ -26,13 +26,26 @@
         //ClientEvents = new DocumentViewerClientEvents() { DocumentLoaded = "documentViewerDocumentLoaded" },
         DocumentSource = new DocumentSource(new DocumentInfo(fn), arr)
     };*/
+
+
+    string EncryptedString = Convert.ToString(Request.Query["f"]);
+
+
+    //EncryptedString = EncryptedString.Replace("convhash", "#").Replace("convslash", "/").Replace("convand", "&").Replace("convqmark", "?").Replace("convplus", "+");
+    ViewData["DecryptedString"] = DMS.Models.StringCipher.Decrypt(EncryptedString);
+
 }
 
+<!-- Main scripts -->
+<script src="~/vendors/bundle.js">
+</script>
+
+
 <style>
-    body{
-    overflow-y:hidden;
+    body {
+        overflow-y: hidden;
     }
 </style>
 
-<partial name="Viewer2" />
+<partial name="Viewer2"  />
 

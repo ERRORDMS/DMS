@@ -25,14 +25,20 @@ namespace DMS.Controllers
         [HttpGet]
         public LoadResult Get(string userId = null, string roleId = null)
         {
+
             if (!string.IsNullOrEmpty(userId))
-                return DataSourceLoader.Load(new DataManager(userId).GetUserCategories(userId), new DataSourceLoadOptionsBase());
+            {
+                using (var dm = new DataManager(userId))
+                    return DataSourceLoader.Load(dm.GetUserCategories(userId), new DataSourceLoadOptionsBase());
+            }
             else
             {
-                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                return DataSourceLoader.Load(new DataManager(userId).GetRoleCategories(roleId), new DataSourceLoadOptionsBase());
-            }   
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                using (var dm = new DataManager(userId))
+                    return DataSourceLoader.Load(dm.GetRoleCategories(roleId), new DataSourceLoadOptionsBase());
+            }
 
+            
         }
 
 
@@ -41,28 +47,48 @@ namespace DMS.Controllers
         [HttpPut]
         public IActionResult UpdateCat(string userID, long key, string values)
         {
-            var d = JsonConvert.DeserializeObject<UpdateInfo>(values);
-            d.CatID = key;
-            new DataManager(userID).UpdatePermission(userID, d);
-            return Ok();
+            using (var dm = new DataManager(userID))
+            {
+                var d = JsonConvert.DeserializeObject<UpdateInfo>(values);
+                d.CatID = key;
+                dm.UpdatePermission(userID, d);
+                return Ok();
+            }
         }
 
         [Route("IsEnterprise")]
         [HttpGet]
         public bool IsEnterprise(string userId= null)
         {
-            if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            using (var dm = new DataManager(null)) {
+                if (string.IsNullOrEmpty(userId))
+                    userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return new DataManager(null).IsEnterpriseSubUser(userId);
+                return dm.IsEnterpriseSubUser(userId);
+            }
 
         }
         [Route("SetAll")]
         [HttpPost]
-        public IActionResult SetAll(string userID, bool value)
+        public IActionResult SetAll(bool value, string userID = null, string roleID = null)
         {
-            new DataManager(userID).SetAllCatPermissions(userID, value);
-            return Ok();
+            if(string.IsNullOrEmpty(userID))
+                userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            using (var dm = new DataManager(userID))
+            {
+                if (string.IsNullOrEmpty(roleID))
+                {
+                    dm.SetAllCatPermissions(userID, value);
+                    return Ok();
+                }
+                else
+                {
+                    dm.SetAllRoleCatPermissions(roleID, value);
+                    return Ok();
+                }
+            }
+
         }
 
 
@@ -71,37 +97,48 @@ namespace DMS.Controllers
         public IActionResult UpdateRoleCat(string roleId, long key, string values)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var d = JsonConvert.DeserializeObject<UpdateInfo>(values);
-            d.CatID = key;
 
-            new DataManager(userId).UpdateRolePermission(roleId, d);
-            return Ok();
+            using (var dm = new DataManager(userId))
+            {
+                var d = JsonConvert.DeserializeObject<UpdateInfo>(values);
+                d.CatID = key;
+
+                dm.UpdateRolePermission(roleId, d);
+                return Ok();
+            }
         }
         
         [Route("UpdateCats")]
         [HttpPost]
         public IActionResult UpdateCats(string userID, string catsJson)
         {
-            List<UpdateInfo> cats = JsonConvert.DeserializeObject<List<UpdateInfo>>(catsJson);
-            foreach (var cat in cats)
-            {
-                new DataManager(userID).UpdatePermission(userID, cat);
+            using (var dm = new DataManager(userID)) {
+                List<UpdateInfo> cats = JsonConvert.DeserializeObject<List<UpdateInfo>>(catsJson);
+                foreach (var cat in cats)
+                {
+                    dm.UpdatePermission(userID, cat);
+                }
+                return Ok();
             }
-            return Ok();
         }
         [Route("UpdateRoleCats")]
         [HttpPost]
         public IActionResult UpdateRoleCats(string roleId, string  catsJson,string userId = null)
         {
-            if(string.IsNullOrEmpty(userId))
+
+            if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            List<UpdateInfo> cats = JsonConvert.DeserializeObject<List<UpdateInfo>>(catsJson);
-    
-            foreach (var cat in cats)
+
+            using (var dm = new DataManager(userId))
             {
-                new DataManager(userId).UpdateRolePermission(roleId, cat);
+                List<UpdateInfo> cats = JsonConvert.DeserializeObject<List<UpdateInfo>>(catsJson);
+
+                foreach (var cat in cats)
+                {
+                    new DataManager(userId).UpdateRolePermission(roleId, cat);
+                }
+                return Ok();
             }
-            return Ok();
         }
 
     }

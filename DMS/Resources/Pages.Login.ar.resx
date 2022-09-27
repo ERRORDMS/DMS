@@ -129,6 +129,9 @@
   <data name="Email" xml:space="preserve">
     <value>البريد الإلكتروني</value>
   </data>
+  <data name="EmailNotVerified" xml:space="preserve">
+    <value>الرجاء تفعيل البريد الالكتروني</value>
+  </data>
   <data name="FieldRequired" xml:space="preserve">
     <value>هذا الحقل مطلوب</value>
   </data>

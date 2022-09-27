@@ -27,14 +27,18 @@ using Microsoft.CSharp.RuntimeBinder;
 using System.Threading;
 using Microsoft.AspNetCore.Http.Internal;
 using System.Net;
+using Aspose.Imaging;
+using Aspose.Imaging.ImageOptions;
+using LZ4;
 
 namespace DMS.Database
 {
-    public class DataManager
+    public class DataManager : IDisposable
     {
         private  SQLHelper sqlHelper;
         private  ServiceReference1.AlSahlServiceClient client;
-        private  Settings settings;
+        public  Settings settings;
+        private bool isUserIDProvided = false;
         public DataManager(string userID)
         {
             try
@@ -49,6 +53,7 @@ namespace DMS.Database
 
                 if (!string.IsNullOrEmpty(userID))
                 {
+                    isUserIDProvided = true;
                     con = GetConnectionString(userID);
 
                     sqlHelper = new SQLHelper(con);
@@ -64,14 +69,42 @@ namespace DMS.Database
         public SQLHelper SQLHelper { get { return sqlHelper; } }
         public void SetAllCatPermissions(string userID, bool value)
         {
+            sqlHelper.Delete(Tables.UserCategories, "UserID = '" + userID + "'");
+            sqlHelper.ExecuteNonQuery(@"INSERT INTO " +  Tables.UserCategories +" (CatID, UserID) "
+                                      + " SELECT AutoKey, '" +  userID +  "' from DocumentCatTree");
             sqlHelper.Update("[" + Tables.UserCategories + "]",
-                new string[] { "CanView", "CanEdit", "CanDelete", "CanAdd"},
-                new string[] { value.ToString(), value.ToString(), value.ToString(), value.ToString() },
+                new string[] { "CanView", "CanEdit", "CanDelete", "CanAdd", "CanDownload"},
+                new string[] { value.ToString(), value.ToString(), value.ToString(), value.ToString(), value.ToString() },
                 "UserID = '" + userID + "'");
         }
 
+        public void SetAllRoleCatPermissions(string roleId, bool value)
+        {
+            sqlHelper.Delete(Tables.RoleCategories, "RoleID = '" + roleId + "'");
+            sqlHelper.ExecuteNonQuery(@"INSERT INTO " + Tables.RoleCategories + " (CatID, RoleID) "
+                                      + " SELECT AutoKey, '" + roleId + "' from DocumentCatTree");
+            sqlHelper.Update("[" + Tables.UserCategories + "]",
+                new string[] { "CanView", "CanEdit", "CanDelete", "CanAdd", "CanDownload" },
+                new string[] { value.ToString(), value.ToString(), value.ToString(), value.ToString(), value.ToString() },
+                "RoleID = '" + roleId + "'");
+        }
+
+
+        public void ChangePasword(string userID, string password)
+        {
+            var email = sqlHelper.SelectWithWhere(Tables.Users, "Name", "ID = '" + userID + "'");
+            client.SetPasswordAsync(email, password);
+        }
         public AlSahlServiceClient GetClient() { return client; }
-        
+
+        public bool IsAdmin(string userID = null)
+        {
+            if (new DataManager(null).GetAccountType(userID) == "Enterprise") return true;
+            else if (GetUserPermissions(userID).Any(S => S.Name == "Administrator")) return true;
+
+            return false;
+
+        }
         public int DeleteCategory(long autoKey)
         {
             try
@@ -139,6 +172,11 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
                 if (sqlHelper.ExecuteReader<object>(query).Count > 0)
                     return (int)ErrorCodes.ALREADY_EXISTS;
                 */
+
+
+                var id = sqlHelper.ExecuteScalar<long>("SELECT FatherAutoKey FROM DocumentCatTree WHERE AutoKey = '" + cat.AutoKey + "'");
+                cat.FatherAutoKey = id;
+
                 Dictionary<string, string> wheres = new Dictionary<string, string>();
                 wheres.Add("Name", cat.Name);
                 wheres.Add("FatherAutoKey", cat.FatherAutoKey.ToString());
@@ -167,6 +205,238 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
 
             }
 
+        }
+        class TempDocument
+        {
+            public string Ext { get; set; }
+            public long FileSize { get; set; }
+        }
+
+        public List<MonthlyUsageData> GetMonthlyUsages()
+        {
+            var reader = sqlHelper.ExecuteReader(@"SELECT DateName( month , DateAdd( month , MonthNumber , -1 ) ) as Month, TOTALCOUNT FROM (SELECT MONTH(DateTimeCreated) as MonthNumber, COUNT(InfoAutoKey) AS TOTALCOUNT 
+FROM DocumentsInfo 
+WHERE YEAR(DateTimeCreated) = YEAR(GetDate())
+
+GROUP BY YEAR(DateTimeCreated), MONTH(DateTimeCreated)
+) x
+");
+
+            List<MonthlyUsageData> data = new List<MonthlyUsageData>();
+            while (reader.Read())
+            {
+                MonthlyUsageData d = new MonthlyUsageData();
+                d.Month = Convert.ToString(reader["Month"]);
+                d.Files = Convert.ToInt64(reader["TOTALCOUNT"]);
+                data.Add(d);
+            }
+
+            return data;
+        }
+
+        public List<FileTypeSize> GetDocumentTypesSizes()
+        {
+            var imgExts = new string[]{
+
+                "ase",
+    "art",
+    "bmp",
+    "blp",
+    "cd5",
+    "cit",
+    "cpt",
+    "cr2",
+    "cut",
+    "dds",
+    "dib",
+    "djvu",
+    "egt",
+    "exif",
+    "gif",
+    "gpl",
+    "grf",
+    "icns",
+    "ico",
+    "iff",
+    "jng",
+    "jpeg",
+    "jpg",
+    "jfif",
+    "jp2",
+    "jps",
+    "lbm",
+    "max",
+    "miff",
+    "mng",
+    "msp",
+    "nitf",
+    "ota",
+    "pbm",
+    "pc1",
+    "pc2",
+    "pc3",
+    "pcf",
+    "pcx",
+    "pdn",
+    "pgm",
+    "PI1",
+    "PI2",
+    "PI3",
+    "pict",
+    "pct",
+    "pnm",
+    "pns",
+    "ppm",
+    "psb",
+    "psd",
+    "pdd",
+    "psp",
+    "px",
+    "pxm",
+    "pxr",
+    "qfx",
+    "raw",
+    "rle",
+    "sct",
+    "sgi",
+    "rgb",
+    "int",
+    "bw",
+    "tga",
+    "tiff",
+    "tif",
+    "vtf",
+    "xbm",
+    "xcf",
+    "xpm",
+    "3dv",
+    "amf",
+    "ai",
+    "awg",
+    "cgm",
+    "cdr",
+    "cmx",
+    "dxf",
+    "e2d",
+    "egt",
+    "eps",
+    "fs",
+    "gbr",
+    "odg",
+    "svg",
+    "stl",
+    "vrml",
+    "x3d",
+    "sxd",
+    "v2d",
+    "vnd",
+    "wmf",
+    "emf",
+    "art",
+    "xar",
+    "png",
+    "webp",
+    "jxr",
+    "hdp",
+    "wdp",
+    "cur",
+    "ecw",
+    "iff",
+    "lbm",
+    "liff",
+    "nrrd",
+    "pam",
+    "pcx",
+    "pgf",
+    "sgi",
+    "rgb",
+    "rgba",
+    "bw",
+    "int",
+    "inta",
+    "sid",
+    "ras",
+    "sun",
+    "tga"
+};
+            var docExts = new string[]
+            {
+                "doc",
+                "dot",
+                "wbk",
+                "docm",
+                "docx",
+                "dotm",
+                "dotx",
+                "pdf",
+                "rtf",
+                "txt",
+                "xml",
+                "csv",
+                "xls",
+                "xlsb",
+                "xlsm",
+                "xlsx",
+                "ppt"
+            };
+
+            var videoExts = new string[]
+            {
+                "webm",
+                "mpg",
+                "mp2",
+                "mpeg",
+                "mpe",
+                "mpv",
+                "ogg",
+                "mp4",
+                "m4p",
+                "m4v",
+                "avi",
+                "wmv",
+                "mov",
+                "qt",
+                "flv",
+                "swf",
+                "avchd"
+            };
+            var docs = sqlHelper.Select<TempDocument>(Tables.DocumentLines, "Ext", "FileSize");
+
+            var imgDocs = docs.Where(S => imgExts.Contains(S.Ext.ToLower()));
+            var docDocs = docs.Where(S => docExts.Contains(S.Ext.ToLower()));
+            var vidDocs = docs.Where(S => videoExts.Contains(S.Ext.ToLower()));
+            var otherDocs = docs.Where(S => !imgDocs.Contains(S) && !docDocs.Contains(S) && !vidDocs.Contains(S));
+
+            List<FileTypeSize> fileTypeSizes = new List<FileTypeSize>();
+            
+            FileTypeSize img = new FileTypeSize();
+            img.Files = imgDocs.Count();
+            img.Name = "Images";
+            img.Size = imgDocs.Sum(S => S.FileSize);
+
+            FileTypeSize doc = new FileTypeSize();
+            doc.Files = docDocs.Count();
+            doc.Name = "Documents";
+            doc.Size = docDocs.Sum(S => S.FileSize);
+
+            FileTypeSize vid = new FileTypeSize();
+            vid.Files = vidDocs.Count();
+            vid.Name = "Videos";
+            vid.Size = vidDocs.Sum(S => S.FileSize);
+
+            FileTypeSize other = new FileTypeSize();
+            other.Files = otherDocs.Count();
+            other.Name = "Other";
+            other.Size = otherDocs.Sum(S => S.FileSize);
+
+
+            fileTypeSizes.Add(img);
+            fileTypeSizes.Add(doc);
+            fileTypeSizes.Add(vid); 
+            fileTypeSizes.Add(other);
+
+
+            return fileTypeSizes;
         }
 
         public int SaveUser(string userID, List<Permission> permissions, List<Role> roles)
@@ -278,10 +548,13 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
                 "FatherAutoKey",
                 "AutoKey = '" + autokey + "'");
         }
-        public  int AddCategory(Category category, string userId)
+        public  int AddCategory(Category category, string userId, out string catID)
         {
+            catID = "";
+
             try
-            {/*
+            {
+                /*
                 string query = "select top 1 UserID ";
                 query += " from " + Tables.CategoryUserRel + " as CUR";
                 query += " where Userpiu[ID = '" + userId + "'";
@@ -303,11 +576,12 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
                     new string[] { category.Name, category.FatherAutoKey.ToString() });
                 if (!string.IsNullOrEmpty(autoKey))
                 {
+                    catID = autoKey;
                     if (IsEnterpriseSubUser(userId))
                     {
-                        if(sqlHelper.Insert("[" + userId + "]",
-                            new string[] { "CatID", "Fathers", "CanView", "CanEdit", "CanAdd", "CanDelete" },
-                            new string[] { autoKey, "", "true", "true", "true", "true" }))
+                        if(sqlHelper.Insert("[" + Tables.UserCategories + "]",
+                            new string[] { "CatID", "Fathers", "CanView", "CanEdit", "CanAdd", "CanDelete", "CanDownload", "UserID" },
+                            new string[] { autoKey, "", "true", "true", "true", "true", "true", userId }))
                         {
                             return (int)ErrorCodes.SUCCESS;
 
@@ -346,6 +620,7 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
         }
 
 
+
         public  int DeleteContact(long autoKey)
         {
             try
@@ -368,11 +643,108 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
             }
         }
 
-
-        public  int DeleteFile(long AutoKey)
+        public int DeleteContactCategory(long autoKey)
         {
             try
             {
+                if (sqlHelper.Delete(Tables.ContactCategories, "AutoKey = '" + autoKey + "'"))
+                {
+
+                    return (int)ErrorCodes.SUCCESS;
+                }
+                else
+                {
+                    return (int)ErrorCodes.INTERNAL_ERROR;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+                return (int)ErrorCodes.INTERNAL_ERROR;
+
+            }
+        }
+
+        public List<DeletedFile> GetDeletedFiles()
+        {
+            try
+            {
+                string query = "select AddedByUserID as Email,";
+                query += " (select top 1 Name + '.' + Ext from " + Tables.DocumentLines +" where InfoAutoKey = " + Tables.DocumentInfo + ".InfoAutoKey) as FileName,";
+                query += " DateTimeDeleted as DeletionDate,";
+                query += " InfoAutoKey as DocumentAutoKey,";
+                query += " (select top 1 AutoKey from " + Tables.DocumentLines + " where InfoAutoKey = " + Tables.DocumentInfo + ".InfoAutoKey) as LineAutoKey";
+
+                query += " from " + Tables.DocumentInfo + " where IsDeleted = 1";
+                return sqlHelper.ExecuteReader<DeletedFile>(query);
+                
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+                return null;
+
+            }
+        }
+
+        public int UpdateFile(IFormFile file, long InfoAutoKey, long LineAutoKey, string userId)
+        {
+            try
+            {
+                var lastVersion = sqlHelper.ExecuteScalar<long>("SELECT ISNULL(MAX(Version), 1) as Version from " + Tables.DocumentVersions + " WHERE InfoAutoKey = '" + InfoAutoKey + "' and LineAutoKey = '" + LineAutoKey + "'");
+                AddDateDirectories();
+
+                string year = DateTime.Now.Year.ToString();
+                string month = DateTime.Now.Month.ToString();
+                string day = DateTime.Now.Day.ToString();
+
+                string filename = InfoAutoKey + "_" + LineAutoKey + "v" + (lastVersion+ 1) + Path.GetExtension(file.FileName);
+
+                string fileTablePath = sqlHelper.ExecuteScalar<string>("select FileTableRootPath()");
+
+                string path = Path.Combine(settings.FtpUrl, fileTablePath.Split('\\').Last(), fileTablePath.Split('\\').Last(), $@"Images\{year}\{month}\{day}").Replace("\\", "//");
+
+                // Get the object used to communicate with the server.
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(Path.Combine(path, filename));
+                request.Method = WebRequestMethods.Ftp.UploadFile;
+
+                // This example assumes the FTP site uses anonymous logon.
+                request.Credentials = new NetworkCredential(settings.FtpUsername, settings.FtpPassword);
+
+                request.ContentLength = file.Length;
+
+                using (Stream requestStream = request.GetRequestStream())
+                {
+                    //requestStream.Write(file., 0, fileContents.Length);
+                    file.CopyTo(requestStream);
+                }
+
+                using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+                {
+                    Console.WriteLine($"Upload File Complete, status {response.StatusDescription}");
+                }
+
+                var fileSize = file.Length / 1048576.0;
+
+                new DataManager(null).AddUsedStorage(Math.Round(fileSize, 2), userId);
+
+                sqlHelper.Insert(Tables.DocumentVersions,
+                    new string[] { "Version", "InfoAutoKey", "LineAutoKey", "FileName" },
+                    new string[] { (lastVersion+1).ToString(), InfoAutoKey.ToString(), LineAutoKey.ToString(), filename});
+
+                return (int)ErrorCodes.INTERNAL_ERROR;
+            }
+            catch (Exception ex)
+            {
+
+                Logger.Log(ex.Message);
+                return (int)ErrorCodes.INTERNAL_ERROR;
+            }
+        }
+        public  int DeleteFile(long AutoKey, string userId)
+        {
+            try
+            {/*
                 var LineAutoKey = sqlHelper.SelectWithWhere(Tables.DocumentLines,
                 "AutoKey",
                 "InfoAutoKey = '" + AutoKey + "'");
@@ -391,8 +763,15 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
                 sqlHelper.Delete(Tables.DocumentContactRel, "DocumentAutoKey = '" + AutoKey + "'");
                 sqlHelper.Delete(Tables.DocumentSearchKeysRel, "DocumentAutoKey = '" + AutoKey + "'");
                 sqlHelper.Delete(Tables.Images, "name = '" + filename + "'");
+                
+                return (int)ErrorCodes.SUCCESS;*/
 
-                return (int)ErrorCodes.SUCCESS;
+                sqlHelper.Update(Tables.DocumentInfo,
+                    new string[] { "IsDeleted", "UserDeleteit", "DateTimeDeleted", },
+                    new string[] { "1", userId, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)},
+                    "InfoAutoKey = '" + AutoKey + "'");
+
+                return (int)ErrorCodes.SUCCESS; 
             }
             catch (Exception ex)
             {
@@ -424,21 +803,91 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
             }
         }
 
-        public  int SaveContact(Contact con, string userId)
+        public  int SaveContact(Contact con)
         {
             try
             {
                 Dictionary<string, string> wheres = new Dictionary<string, string>();
 
                 wheres.Add("Name", con.Name);
-                wheres.Add("DMSUserID", userId);
 
                 if (sqlHelper.Exists(Tables.Contacts, wheres))
                     return (int)ErrorCodes.ALREADY_EXISTS;
 
+
+                 List<string> columns = new List<string>();
+                List<string> values = new List<string>();
+                if (!string.IsNullOrEmpty(con.Name))
+                {
+                    columns.Add("Name");
+                    values.Add(con.Name);
+                }
+
+                if (!string.IsNullOrEmpty(con.Phone))
+                {
+                    columns.Add("MobilePhone");
+                    values.Add(con.Phone);
+                }
+
+                if (!string.IsNullOrEmpty(con.Email))
+                {
+                    columns.Add("Email1");
+                    values.Add(con.Email);
+                }
+
+
+                if (!string.IsNullOrEmpty(con.CategoryID))
+                {
+                    columns.Add("CategoriesID");
+                    values.Add(con.CategoryID);
+                }
+
+
                 if (sqlHelper.Update(Tables.Contacts,
-                    new string[] { "Name" },
-                    new string[] { con.Name },
+                    columns.ToArray(),
+                    values.ToArray(),
+                    "AutoKey = '" + con.AutoKey + "'"))
+                {
+
+                    return (int)ErrorCodes.SUCCESS;
+                }
+
+                else
+                {
+                    return (int)ErrorCodes.INTERNAL_ERROR;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+                return (int)ErrorCodes.INTERNAL_ERROR;
+
+            }
+        }
+        public int SaveContactCategory(ContactCategory con)
+        {
+            try
+            {
+                Dictionary<string, string> wheres = new Dictionary<string, string>();
+
+                wheres.Add("Name", con.Name);
+
+                if (sqlHelper.Exists(Tables.ContactCategories, wheres))
+                    return (int)ErrorCodes.ALREADY_EXISTS;
+
+
+                List<string> columns = new List<string>();
+                List<string> values = new List<string>();
+                if (!string.IsNullOrEmpty(con.Name))
+                {
+                    columns.Add("Name");
+                    values.Add(con.Name);
+                }
+
+                if (sqlHelper.Update(Tables.ContactCategories,
+                    columns.ToArray(),
+                    values.ToArray(),
                     "AutoKey = '" + con.AutoKey + "'"))
                 {
 
@@ -459,7 +908,7 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
             }
         }
 
-        public  int SaveKey(SearchKey con, string userId)
+        public int SaveKey(SearchKey con, string userId)
         {
             try
             {
@@ -507,7 +956,7 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
                 "Name",
                 "AutoKey = '" + autokey + "'");
         }
-        public  int AddContact(Contact contact, DateTime birthDate,  string userId)
+        public  int AddContact(Contact contact,  string userId)
         {
             try
             {
@@ -519,11 +968,43 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
                 if (sqlHelper.Exists(Tables.Contacts, wheres))
                     return (int)ErrorCodes.ALREADY_EXISTS;
 
-                var genId = GetAutoIcrementID(birthDate, "", "");
+                var genId = GetAutoIcrementID(DateTime.Now, "", "");
 
                 string autoKey = sqlHelper.InsertWithID(Tables.Contacts,
-                    new string[] { "ID", "Name", "DMSUserID" },
-                    new string[] { genId, contact.Name, userId });
+                    new string[] { "ID", "Name", "MobilePhone", "Email1", "CategoriesID", "DMSUserID" },
+                    new string[] { genId, contact.Name, contact.Phone, contact.Email, contact.CategoryID, userId });
+                if (!string.IsNullOrEmpty(autoKey))
+                {
+                    return (int)ErrorCodes.SUCCESS;
+                }
+                else
+                {
+                    return (int)ErrorCodes.INTERNAL_ERROR;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+                return (int)ErrorCodes.INTERNAL_ERROR;
+
+            }
+        }
+
+        public int AddContactCategory(ContactCategory cat)
+        {
+            try
+            {
+                Dictionary<string, string> wheres = new Dictionary<string, string>();
+
+                wheres.Add("Name", cat.Name);
+                //    wheres.Add("DMSUserID", userId);
+
+                if (sqlHelper.Exists(Tables.ContactCategories, wheres))
+                    return (int)ErrorCodes.ALREADY_EXISTS;
+
+                string autoKey = sqlHelper.InsertWithID(Tables.ContactCategories,
+                    new string[] { "Name"},
+                    new string[] { cat.Name });
                 if (!string.IsNullOrEmpty(autoKey))
                 {
                     return (int)ErrorCodes.SUCCESS;
@@ -579,7 +1060,7 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
 
         public void FixExt()
         {
-            var databases = sqlHelper.GetSqlConnection().Query<string>("SELECT DBName from " + Tables.UserDatabases); // sqlHelper.Select<string>(Tables.UserDatabases, "DBName");
+            var databases = sqlHelper.GetSqlConnection().Query<string>("SELECT distinct DBName from " + Tables.UserDatabases); // sqlHelper.Select<string>(Tables.UserDatabases, "DBName");
 
             foreach (var db in databases)
             {
@@ -588,6 +1069,9 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
                 query += " UPDATE " + Tables.DocumentLines + " SET [Ext] = REPLACE([Ext], '.', '')";
 
                 sqlHelper.ExecuteNonQuery(query);
+
+
+
 
             }
 
@@ -624,17 +1108,19 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
 
             }
         }
-        public  List<Document> GetCatDocuments(long CatID)
+        public List<Document> GetCatDocuments(long CatID)
         {
             try
             {
-                string query = "select ROW_NUMBER() OVER(ORDER BY AutoKey ASC) AS ID, DocumentAutoKey,";
-                query += " (select DateTimeAdded from " + Tables.DocumentInfo + " where InfoAutoKey = DCR.DocumentAutoKey) as DateTimeAdded,";
+                string query = "select ROW_NUMBER() OVER(ORDER BY  DateTimeAdded desc) AS ID, DocumentAutoKey, AddedByUserID as UserID,";
+                query += " DateTimeAdded,  Note,";
                 query += " (select Name from " + Tables.DocumentLines + " where InfoAutoKey = DCR.DocumentAutoKey) as Name,";
+                query += " (select FileSize from " + Tables.DocumentLines + " where InfoAutoKey = DCR.DocumentAutoKey) as Size,";
                 query += " (select AutoKey from " + Tables.DocumentLines + " where InfoAutoKey = DCR.DocumentAutoKey) as LineAutoKey,";
                 query += " (select Ext from " + Tables.DocumentLines + " where InfoAutoKey = DCR.DocumentAutoKey) as Ext";
                 query += " from " + Tables.DocumentCategoryRel + " as DCR";
-                query += " where CatAutoKey = " + CatID;
+                query += " inner join " + Tables.DocumentInfo + " on " + Tables.DocumentInfo + ".InfoAutoKey = DCR.DocumentAutoKey";
+                query += " where CatAutoKey = " + CatID + " and (IsDeleted = 0 OR IsDeleted is null) order by DateTimeAdded desc";
 
                 /*
                 var reader = sqlHelper.ExecuteReader(query);
@@ -651,53 +1137,74 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
                     documents.Add(document);
                 }
                 */
-                    return sqlHelper.ExecuteReader<Document>(query);
+                return sqlHelper.ExecuteReader<Document>(query);
             }
             catch (Exception ex)
             {
                 Logger.Log(ex.Message);
-                return null;
+                return null;    
 
             }
+
+        }
+        
+        public  Aspose.Imaging.ImageOptions.VectorRasterizationOptions[] CreatePageOptions<TOptions>(VectorMultipageImage image) where TOptions : VectorRasterizationOptions
+        {
+            // Create page rasterization options for each page in the image
+            return image.Pages.Select(x => x.Size).Select(CreatePageOptions<TOptions>).ToArray();
         }
 
-        public  byte[] GetFile(long InfoAutoKey, long LineAutoKey, string Ext)
+        public Aspose.Imaging.ImageOptions.VectorRasterizationOptions CreatePageOptions<TOptions>(Size pageSize) where TOptions : VectorRasterizationOptions
+        {
+            // Create the instance of rasterization options
+            var options = Activator.CreateInstance<TOptions>();
+
+            // Set the page size
+            options.PageSize = pageSize;
+            return options;
+        }
+
+
+        public byte[] GetFile(long InfoAutoKey, long LineAutoKey, string Ext)
         {
 
-            var fn = InfoAutoKey + "_" + LineAutoKey + "." +  Ext;
+            
+            //  long lastVersion = 0;
+            //lastVersion = sqlHelper.ExecuteScalar<long>("SELECT MAX(Version) as Version from " + Tables.DocumentVersions + " WHERE InfoAutoKey = '" + InfoAutoKey + "' and LineAutoKey = '" + LineAutoKey + "'");
+            string fn = sqlHelper.ExecuteScalar<string>("SELECT top 1 FileName from " + Tables.DocumentVersions + " WHERE InfoAutoKey = '" + InfoAutoKey + "' and LineAutoKey = '" + LineAutoKey + "' order by Version desc");
+            if(string.IsNullOrEmpty(fn))
+                 fn = InfoAutoKey + "_" + LineAutoKey + "." + Ext;
 
             var arr = sqlHelper.ExecuteScalar<byte[]>("select TOP 1 file_stream from " + DMS.Database.Tables.Images + " where name = '" + fn + "'");
+
+            try
+            {
+                
+                arr = LZ4Codec.Unwrap(arr);
+            }
+            catch (Exception) { }
 
             return arr;
 
         }
+
+        public string GetExt(long InfoAutoKey)
+        {
+            return sqlHelper.SelectWithWhere(Tables.DocumentLines, "Ext", "InfoAutoKey = '" + InfoAutoKey + "'");
+        }
         public  string GetFileName(long AutoKey)
         {
+            string fn = sqlHelper.ExecuteScalar<string>("SELECT top 1 FileName from " + Tables.DocumentVersions + " WHERE InfoAutoKey = '" + AutoKey + "' and LineAutoKey = '" + AutoKey + "' order by Version desc");
+            if (string.IsNullOrEmpty(fn))
+                fn = AutoKey + "_" + AutoKey + "." + GetExt(AutoKey);
+            return fn;
+        }
 
+        public string GetActualFileName(long AutoKey, string Ext)
+        {
+            string fn = sqlHelper.ExecuteScalar<string>("SELECT top 1 Name from " + Tables.DocumentLines + " WHERE InfoAutoKey = '" + AutoKey + "'");
 
-
-            /*
-            string query = "select InfoAutoKey,";
-            query += " (select DateTimeAdded from " + Tables.DocumentInfo + " where AutoKey = DCR.InfoAutoKey) as DateTimeAdded,";
-            query += " (select Name from " + Tables.DocumentLines + " where InfoAutoKey = DCR.InfoAutoKey) as Name,";
-            query += " (select Ext from " + Tables.DocumentLines + " where InfoAutoKey = DCR.InfoAutoKey) as Ext";
-            query += " from " + Tables.DocumentCategoryRel + " as DCR";
-            query += " where InfoAutoKey = " + AutoKey;*/
-
-            var LineAutoKey = sqlHelper.SelectWithWhere(Tables.DocumentLines,
-                "AutoKey",
-                "InfoAutoKey = '" + AutoKey + "'");
-            var InfoAutoKey = AutoKey;
-
-            var Ext = sqlHelper.SelectWithWhere(Tables.DocumentLines,
-                "Ext",
-                "InfoAutoKey = '" + AutoKey + "'");
-
-            return InfoAutoKey + "_" + LineAutoKey + Ext;
-            /*
-            Document document = sqlHelper.ExecuteReader<Document>(query)[0];
-
-            return document.Name + document.DateTimeAdded.ToString("MM-dd-yyyy-HH-mm-ss") + document.Ext;*/
+            return fn + "." + Ext;
         }
         public  Controllers.FileInfo GetFileInfo(long AutoKey)
         {
@@ -705,28 +1212,9 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
             {
                 Controllers.FileInfo info = new Controllers.FileInfo();
 
-                string query = "select Name, FatherAutoKey, DCT.AutoKey";
-                query += " from " + Tables.DocumentCategoryRel + " as DCR";
-                query += " INNER JOIN " + Tables.Categories + " DCT on DCT.AutoKey = DCR.CatAutoKey";
-                query += " where DocumentAutoKey = '" + AutoKey + "'";
-
-                info.Categories = sqlHelper.ExecuteReader<Category>(query);
-
-                query = "select Name, DCT.AutoKey";
-                query += " from " + Tables.DocumentSearchKeysRel + " as DCR";
-                query += " INNER JOIN " + Tables.SearchKeys + " DCT on DCT.AutoKey = DCR.SearchAutoKey";
-                query += " where DocumentAutoKey = '" + AutoKey + "'";
-
-
-                info.SearchKeys = sqlHelper.ExecuteReader<SearchKey>(query);
-
-                query = "select Name, DCT.AutoKey";
-                query += " from " + Tables.DocumentContactRel + " as DCR";
-                query += " INNER JOIN " + Tables.Contacts + " DCT on DCT.AutoKey = DCR.ContactAutoKey";
-                query += " where DocumentAutoKey = '" + AutoKey + "'";
-
-
-                info.Contacts = sqlHelper.ExecuteReader<Contact>(query);
+                info.Categories = GetDocumentCategories(AutoKey);
+                info.SearchKeys = GetDocumentSearchKeys(AutoKey);
+                info.Contacts = GetDocumentContacts(AutoKey);
                 return info;
 
             }
@@ -735,6 +1223,37 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
                 Logger.Log(ex.Message);
                 return null;
             }   
+        }
+
+        public List<Category> GetDocumentCategories(long AutoKey)
+        {
+            string query = "select Name, FatherAutoKey, DCT.AutoKey";
+            query += " from " + Tables.DocumentCategoryRel + " as DCR";
+            query += " INNER JOIN " + Tables.Categories + " DCT on DCT.AutoKey = DCR.CatAutoKey";
+            query += " where DocumentAutoKey = '" + AutoKey + "'";
+
+            return sqlHelper.ExecuteReader<Category>(query);
+        }
+        public List<SearchKey> GetDocumentSearchKeys(long AutoKey)
+        {
+            var query = "select Name, DCT.AutoKey";
+            query += " from " + Tables.DocumentSearchKeysRel + " as DCR";
+            query += " INNER JOIN " + Tables.SearchKeys + " DCT on DCT.AutoKey = DCR.SearchAutoKey";
+            query += " where DocumentAutoKey = '" + AutoKey + "'";
+
+
+             return sqlHelper.ExecuteReader<SearchKey>(query);
+
+        }
+        public List<Contact> GetDocumentContacts(long AutoKey)
+        {
+            var query = "select Name, MobilePhone as Phone, Email1 as Email, CategoriesID as CategoryID, DCT.AutoKey";
+            query += " from " + Tables.DocumentContactRel + " as DCR";
+            query += " INNER JOIN " + Tables.Contacts + " DCT on DCT.AutoKey = DCR.ContactAutoKey";
+            query += " where DocumentAutoKey = '" + AutoKey + "'";
+
+
+            return sqlHelper.ExecuteReader<Contact>(query);
         }
 
         public  int SaveFile(long AutoKey, List<long> categories, List<long> contacts, List<long> SearchKeys)
@@ -777,19 +1296,20 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
                 return (int)ErrorCodes.INTERNAL_ERROR;
             }
         }
-        public  int AddFile(List<DMSCategory> categories, List<DMSContact> contacts, List<SearchKey> SearchKeys, IFormFile file, string userID)
+        public async Task<int> AddFileAsync(List<long> categories, List<DMSContact> contacts, List<SearchKey> SearchKeys, IFormFile file, string userID, string note)
         {
+            string infoAutoKey = "";
             try
             {
-                            DateTime dt = DateTime.Now;
+                DateTime dt = DateTime.Now;
                 //   string date = dt.ToString("MM-dd-yyyy-HH-mm-ss");
                 // string fileName = Path.GetFileNameWithoutExtension(file.FileName) + "-" + date.Replace(" ", "") + Path.GetExtension(file.FileName);
                 // var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(fileName);
                 // fileName = System.Convert.ToBase64String(plainTextBytes) + Path.GetExtension(file.FileName);
 
-                string infoAutoKey = sqlHelper.InsertWithID(Tables.DocumentInfo,
-                    new string[] { "AddedByUserID", "DateTimeAdded", "DateTimeCreated", "IsDeleted" },
-                    new string[] { userID, dt.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), dt.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), "0" });
+                 infoAutoKey = sqlHelper.InsertWithID(Tables.DocumentInfo,
+                    new string[] { "AddedByUserID", "DateTimeAdded", "DateTimeCreated", "IsDeleted", "Note" },
+                    new string[] { userID, dt.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), dt.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture), "0", note });
 
                 string lineAutoKey = sqlHelper.InsertWithID(Tables.DocumentLines,
                     new string[] { "InfoAutoKey", "Ext", "Name" },
@@ -799,7 +1319,7 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
                 {
                     sqlHelper.Insert(Tables.DocumentCategoryRel,
                         new string[] { "DocumentAutoKey", "CatAutoKey" },
-                        new string[] { infoAutoKey, category.AutoKey.ToString() });
+                        new string[] { infoAutoKey, category.ToString() });
                 }
 
                 foreach (var contact in contacts)
@@ -818,20 +1338,26 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
                 if (!string.IsNullOrEmpty(infoAutoKey) && !string.IsNullOrEmpty(lineAutoKey))
                 {
 
-                    AddDateDirectories();
+                    //AddDateDirectories();
+                    string fileTablePath = sqlHelper.ExecuteScalar<string>("select FileTableRootPath()");
 
                     string year = DateTime.Now.Year.ToString();
                     string month = DateTime.Now.Month.ToString();
                     string day = DateTime.Now.Day.ToString();
 
+                    CreateFTPDirectory(year, fileTablePath);
+                    CreateFTPDirectory(year + @"\" + month, fileTablePath);
+                    CreateFTPDirectory(year + @"\" + month + @"\" + day, fileTablePath);
+
                     string filename = infoAutoKey + "_" + lineAutoKey + Path.GetExtension(file.FileName);
 
-                    string fileTablePath = sqlHelper.ExecuteScalar<string>("select FileTableRootPath()");
 
                     string path = Path.Combine(settings.FtpUrl, fileTablePath.Split('\\').Last(), fileTablePath.Split('\\').Last(), $@"Images\{year}\{month}\{day}").Replace("\\", "//");
 
+                    //byte[] fileBytes = SevenZip.Compression.LZMA.SevenZipHelper.Compress(file.GetBytes().Result);
+
                     // Get the object used to communicate with the server.
-                    FtpWebRequest request = (FtpWebRequest)WebRequest.Create(Path.Combine(path, filename));
+                    var request = WebRequest.Create(Path.Combine(path, filename));
                     request.Method = WebRequestMethods.Ftp.UploadFile;
 
                     // This example assumes the FTP site uses anonymous logon.
@@ -839,74 +1365,84 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
 
                     request.ContentLength = file.Length;
 
+                    byte[] fileBytes = LZ4Codec.Wrap(await file.GetBytes());
+
                     using (Stream requestStream = request.GetRequestStream())
                     {
-                        //requestStream.Write(file., 0, fileContents.Length);
-                        file.CopyTo(requestStream);
+                        await requestStream.WriteAsync(fileBytes, 0, fileBytes.Length);
+                        //compressedStream.CopyTo(requestStream);
                     }
 
-                    using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
-                    {
-                        Console.WriteLine($"Upload File Complete, status {response.StatusDescription}");
-                    }
-                    /*
-                    string path = Path.Combine(fileTablePath, fileTablePath.Split('\\').Last(),  $@"Images\{year}\{month}\{day}");
-
-                    filename = Path.Combine(path + $@"\{filename}");
-
-                    if (!System.IO.File.Exists(filename))
-                    {
-                        using (FileStream fs = System.IO.File.Create(filename))
-                        {
-                            file.CopyTo(fs);
-                            fs.Flush();
-                        }
-                    }
-                    else
-                    {
-                        using (FileStream fs = System.IO.File.Open(filename, FileMode.Append))
-                        {
-                            file.CopyTo(fs);
-                            fs.Flush();
-                        }
-                    }
-                    
-                    
-                    string parent = AddDateDirectories(); // GetParentPathLocator(TmpAdo, "Images");
-                    string query
-                        = " INSERT into Images (stream_id, file_stream, name, path_locator) ";
-                    query += "  values (NEWID(), @File, '" + filename + "', CAST('" + parent + "' AS hierarchyid))";
-
-                    var bytes = file.GetBytes().Result;
-
-                    SqlParameter param = new SqlParameter("@File", System.Data.SqlDbType.Binary, bytes.Length);
-                    param.Value = bytes;
-                    
-                    int i = sqlHelper.ExecuteNonQuery(query, param);
-
-                    if (i > 0)
-                    {
-                    */
                     var fileSize = file.Length / 1048576.0;
+                    sqlHelper.Update(Tables.DocumentLines, new string[] { "FileSize" }, new string[] { file.Length.ToString() }, "AutoKey = '" + lineAutoKey + "'");
+                    new DataManager(null).AddUsedStorage(Math.Round(fileSize, 2), userID);
 
-                        new DataManager(null).AddUsedStorage(Math.Round(fileSize, 2), userID);
-                   // }
+                    if (sqlHelper.Insert(Tables.DocumentVersions,
+                        new string[] { "Version", "InfoAutoKey", "LineAutoKey", "FileName" },
+                        new string[] { "1", infoAutoKey.ToString(), lineAutoKey.ToString(), filename }))
+                        return (int)ErrorCodes.SUCCESS;
+
                 }
-             
-                return (int)ErrorCodes.INTERNAL_ERROR;
+
             }
             catch (Exception ex)
             {
                 Logger.Log(ex.Message);
+
+                sqlHelper.Delete(Tables.DocumentInfo, "InfoAutoKey = '" + infoAutoKey + "'");
+                sqlHelper.Delete(Tables.DocumentLines, "InfoAutoKey = '" + infoAutoKey + "'");
+                sqlHelper.Delete(Tables.DocumentCategoryRel, "DocumentAutoKey = '" + infoAutoKey + "'");
+                sqlHelper.Delete(Tables.DocumentContactRel, "DocumentAutoKey = '" + infoAutoKey + "'");
+                sqlHelper.Delete(Tables.DocumentSearchKeysRel, "DocumentAutoKey = '" + infoAutoKey + "'");
+                
+
                 return (int)ErrorCodes.INTERNAL_ERROR;
 
             }
 
+            return (int)ErrorCodes.INTERNAL_ERROR;
 
 
         }
 
 
+        private bool CreateFTPDirectory(string directory, string fileTablePath)
+        {
+
+            try
+            {
+                //create the directory
+                var path = Path.Combine(settings.FtpUrl, fileTablePath.Split('\\').Last(), fileTablePath.Split('\\').Last(), "Images", directory).Replace("\\", "//");
+
+                FtpWebRequest requestDir = (FtpWebRequest)FtpWebRequest.Create(path);
+                requestDir.Method = WebRequestMethods.Ftp.MakeDirectory;
+                requestDir.Credentials = new NetworkCredential(settings.FtpUsername, settings.FtpPassword);
+                requestDir.UsePassive = true;
+                requestDir.UseBinary = true;
+                requestDir.KeepAlive = false;
+                FtpWebResponse response = (FtpWebResponse)requestDir.GetResponse();
+                Stream ftpStream = response.GetResponseStream();
+
+                ftpStream.Close();
+                response.Close();
+
+                return true;
+            }
+            catch (WebException ex)
+            {
+                FtpWebResponse response = (FtpWebResponse)ex.Response;
+                if (response.StatusCode == FtpStatusCode.ActionNotTakenFileUnavailable)
+                {
+                    response.Close();
+                    return true;
+                }
+                else
+                {
+                    response.Close();
+                    return false;
+                }
+            }
+        }
 
         public  bool AddUsedStorage(double amount, string userID)
         {
@@ -1057,10 +1593,11 @@ EXEC('SELECT SUM(Files) as Files, (SELECT COUNT(*) FROM [{0}].dbo.Users) as User
             string query = string.Format(@"
 select 
 
-AutoKey, FatherAutoKey = 0, Name,
+AutoKey, FatherAutoKey, Name,
     CAST(MAX(CAST(CanEdit as int)) as bit) as CanEdit,
 CAST(MAX(CAST(CanAdd as int)) as bit) as CanAdd,
 CAST(MAX(CAST(CanView as int)) as bit) as CanView,
+CAST(MAX(CAST(CanDownload as int)) as bit) as CanDownload,
 CAST(MAX(CAST(CanDelete as int)) as bit) as CanDelete
  
  from 
@@ -1070,51 +1607,68 @@ select
 ISNULL(CanEdit, 0) as CanEdit,
 ISNULL(CanAdd, 0) as CanAdd,
 ISNULL(CanView, 0) as CanView,
+ISNULL(CanDownload, 0) as CanDownload,
 ISNULL(CanDelete, 0) as CanDelete
  from {0}
  left join {1} ON {1}.CatID = {0}.AutoKey AND {1}.RoleID = RoleID
  left join {2} ON {2}.UserID = '{3}'
  where CanView = 1
- where UserID = '{4}'
+ AND UserID = '{4}'
  UNION ALL
 
  select 
-AutoKey, FatherAutoKey, Name,
+{0}.AutoKey, FatherAutoKey, Name,
 ISNULL(CanEdit, 0) as CanEdit,
 ISNULL(CanAdd, 0) as CanAdd,
 ISNULL(CanView, 0) as CanView,
+ISNULL(CanDownload, 0) as CanDownload,
 ISNULL(CanDelete, 0) as CanDelete
  from {0}
  left join [{3}] ON [{3}].CatID = {0}.AutoKey
  where CanView = 1
- where UserID = '{4}'
+ AND UserID = '{4}'
 
 ) as t
 
 group by AutoKey, FatherAutoKey, Name", Tables.Categories, Tables.RoleCategories, Tables.UserRoles, Tables.UserCategories, userID);
 
-            return sqlHelper.ExecuteReader<UserCategory>(query);
+            var userCategories = sqlHelper.ExecuteReader<UserCategory>(query);
+
+            var categories = GetUserCategories(userID);
+
+            var autoKeys = userCategories.Select(S => S.FatherAutoKey);
+
+            userCategories.AddRange(categories.Where(S => autoKeys.Contains(S.AutoKey)));
+            
+            return userCategories.GroupBy(x => x.AutoKey).Select(x => x.First());
 
         }
         public bool IsEnterpriseSubUser(string userID)
         {
-            string result = sqlHelper.SelectWithWhere(Tables.Users, "EnterpriseCode", "ID = '" + userID + "'");
+            if (isUserIDProvided)
+            {
+                return new DataManager(null).IsEnterpriseSubUser(userID);
 
-            return !string.IsNullOrEmpty(result);
+            }
+
+            string result = sqlHelper.SelectWithWhere(Tables.Users, "AccountType", "ID = '" + userID + "'");
+
+            return result == "EnterpriseSubUser" && !new DataManager(userID).IsAdmin(userID);
         }
 
         public IEnumerable<UserCategory> GetUserCategories(string userID)
         {
 
             string query = string.Format(@"select 
-AutoKey, FatherAutoKey, Name,
+{0}.AutoKey, FatherAutoKey, Name,
 ISNULL(CanEdit, 0) as CanEdit,
 ISNULL(CanAdd, 0) as CanAdd,
 ISNULL(CanView, 0) as CanView,
+ISNULL(CanDownload, 0) as CanDownload,
 ISNULL(CanDelete, 0) as CanDelete
  from {0}
  left join [{1}] ON [{1}].CatID = {0}.AutoKey
- WHERE UserID = '{2}'", Tables.Categories, Tables.UserCategories, userID);
+ AND UserID = '{2}'", Tables.Categories, Tables.UserCategories, userID);
 
 
             return sqlHelper.ExecuteReader<UserCategory>(query);
@@ -1126,8 +1680,8 @@ ISNULL(CanDelete, 0) as CanDelete
 ISNULL(CanDelete, 0) as CanDelete
  from {0}
  left join [{1}] ON [{1}].CatID = {0}.AutoKey
- WHERE {0}.AutoKey = {3}
- AND UserID = '{2}'", Tables.Categories, Tables.UserCategories, userID, AutoKey);
+ AND UserID = '{2}'
+ WHERE {0}.AutoKey = {3}", Tables.Categories, Tables.UserCategories, userID, AutoKey);
 
             return sqlHelper.ExecuteScalar<bool>(query);
         }
@@ -1138,21 +1692,56 @@ ISNULL(CanDelete, 0) as CanDelete
 ISNULL(CanAdd, 0) as CanAdd
  from {0}
  left join [{1}] ON [{1}].CatID = {0}.AutoKey
- WHERE {0}.AutoKey = {3}
- AND UserID = '{2}'", Tables.Categories, Tables.UserCategories, userID, AutoKey);
+ AND UserID = '{2}'
+ WHERE {0}.AutoKey = {3}", Tables.Categories, Tables.UserCategories, userID, AutoKey);
+
+            return sqlHelper.ExecuteScalar<bool>(query);
+        }
+
+        public bool CanDownload(long AutoKey, string userID)
+        {
+            string query = string.Format(@"select
+ISNULL(CanDownload, 0) as CanDownload
+ from {0}
+ left join [{1}] ON [{1}].CatID = {0}.AutoKey
+ AND UserID = '{2}'
+ WHERE {0}.AutoKey = {3}", Tables.Categories, Tables.UserCategories, userID, AutoKey);
 
             return sqlHelper.ExecuteScalar<bool>(query);
         }
 
 
+        public bool AllowDeletingCategory(long AutoKey)
+        {
+            string query = "SELECT COUNT(AutoKey) FROM " + Tables.Categories + " where FatherAutoKey = '" + AutoKey + "'";
+            int i = sqlHelper.ExecuteScalar<int>(query);
+            if(i > 1)
+            {
+                return false;
+            }
+
+            query = "SELECT COUNT(IsDeleted) from " + Tables.DocumentCategoryRel;
+            query += " INNER JOIN " + Tables.DocumentInfo + " ON " + Tables.DocumentInfo + ".InfoAutoKey = " + Tables.DocumentCategoryRel + " .DocumentAutoKey";
+            query += " where IsDeleted <> 1  AND CatAutoKey = '" + AutoKey + "'";
+
+            i = sqlHelper.ExecuteScalar<int>(query);
+            if (i > 1)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         public IEnumerable<UserCategory> GetRoleCategories(string roleID)
         {
 
             string query = string.Format(@"select 
-AutoKey, FatherAutoKey, Name,
+{0}.AutoKey, FatherAutoKey, Name,
 ISNULL(CanEdit, 0) as CanEdit,
 ISNULL(CanView, 0) as CanView,
 ISNULL(CanAdd, 0) as CanAdd,
+ISNULL(CanDownload, 0) as CanDownload,
 ISNULL(CanDelete, 0) as CanDelete
  from {0}
  left join {1} ON {1}.CatID = {0}.AutoKey AND RoleID = {2}", Tables.Categories, Tables.RoleCategories, roleID);
@@ -1168,7 +1757,10 @@ ISNULL(CanDelete, 0) as CanDelete
             public string CanView { get; set; }
             public string CanDelete { get; set; }
             public string CanAdd { get; set; }
+            public string CanDownload { get; set; }
+
         }
+
         public void UpdatePermission(string userId, UpdateInfo d)
         {
 
@@ -1200,6 +1792,12 @@ ISNULL(CanDelete, 0) as CanDelete
             {
                 query += "CanDelete = '" + d.CanDelete + "',";
             }
+            if (!string.IsNullOrEmpty(d.CanDownload))
+            {
+                query += "CanDownload = '" + d.CanDownload + "',";
+            }
+
+
 
             query = query.Remove(query.Length - 1);
 
@@ -1207,7 +1805,7 @@ ISNULL(CanDelete, 0) as CanDelete
             query += " END";
             query += " ELSE";
             query += " BEGIN";
-            query += " INSERT INTO [" + Tables.UserCategories + "] (CatID, CanView, CanEdit, CanAdd, CanDelete, UserID) values ('" + d.CatID + "','" + Convert.ToBoolean(d.CanView) + "','" + Convert.ToBoolean(d.CanEdit) + "','" + Convert.ToBoolean(d.CanAdd) + "','" + Convert.ToBoolean(d.CanDelete) + "', '" + userId + "')";
+            query += " INSERT INTO [" + Tables.UserCategories + "] (CatID, CanView, CanEdit, CanAdd, CanDelete, CanDownload, UserID) values ('" + d.CatID + "','" + Convert.ToBoolean(d.CanView) + "','" + Convert.ToBoolean(d.CanEdit) + "','" + Convert.ToBoolean(d.CanAdd) + "','" + Convert.ToBoolean(d.CanDelete) + "','" + Convert.ToBoolean(d.CanDownload) + "', '" + userId + "')";
             query += " END";
 
 
@@ -1240,6 +1838,10 @@ ISNULL(CanDelete, 0) as CanDelete
             {
                 query += "CanDelete = '" + d.CanDelete + "',";
             }
+            if (!string.IsNullOrEmpty(d.CanDownload))
+            {
+                query += "CanDownload = '" + d.CanDownload + "',";
+            }
 
             query = query.Remove(query.Length - 1);
 
@@ -1247,7 +1849,7 @@ ISNULL(CanDelete, 0) as CanDelete
             query += " END";
             query += " ELSE";
             query += " BEGIN";
-            query += " INSERT INTO " + Tables.RoleCategories + " (CatID, CanView, CanEdit, CanDelete, CanAdd, RoleID) values ('" + d.CatID + "','" + Convert.ToBoolean(d.CanView) + "','" + Convert.ToBoolean(d.CanEdit) + "','" + Convert.ToBoolean(d.CanDelete) + "', '" + Convert.ToBoolean(d.CanAdd) + "','" + roleId + "')";
+            query += " INSERT INTO " + Tables.RoleCategories + " (CatID, CanView, CanEdit, CanDelete, CanAdd, CanDownload, RoleID) values ('" + d.CatID + "','" + Convert.ToBoolean(d.CanView) + "','" + Convert.ToBoolean(d.CanEdit) + "','" + Convert.ToBoolean(d.CanDelete) + "', '" + Convert.ToBoolean(d.CanAdd) + "','" + Convert.ToBoolean(d.CanDownload) + "','" + roleId + "')";
             query += " END";
 
 
@@ -1260,7 +1862,12 @@ ISNULL(CanDelete, 0) as CanDelete
         }
         public string GetEnterpriseCode(string userID)
         {
-            var res = sqlHelper.SelectWithWhere(Tables.EnterpriseCodes, "Code", "UserID = '" + userID + "'");// Crypt(userID.Split('-')[1]);
+            string res;
+
+            if(IsEnterpriseSubUser(userID))
+                res = sqlHelper.SelectWithWhere(Tables.Users, "EnterpriseCode", "ID = '" + userID + "'");// Crypt(userID.Split('-')[1]);
+            else
+                res = sqlHelper.SelectWithWhere(Tables.EnterpriseCodes, "Code", "UserID = '" + userID + "'");// Crypt(userID.Split('-')[1]);
             return res;//new string(Crypt(userID).Take(6).ToArray());
         }
         public string GetAccountType(string userID)
@@ -1289,7 +1896,7 @@ ISNULL(CanDelete, 0) as CanDelete
             new string[] { "UserID", "IP" },
             new string[] { userID, IP });
         }
-        public IEnumerable<User> GetUsers(string userID)
+        public IEnumerable<User> GetUsers(string userID, bool includeSelf = false)
         {/*
 
             Dictionary<string, string> wheres = new Dictionary<string, string>();
@@ -1297,9 +1904,35 @@ ISNULL(CanDelete, 0) as CanDelete
 
             return sqlHelper.SelectWithWhere<User>(Tables.Users, new string[] { "ID", "Name as Email", "AccountType" }, wheres);
         */
-            var enterpriseCode = GetEnterpriseCode(userID);
-            return sqlHelper.ExecuteReader<User>("SELECT ID, Name as Email, AccountType, Phone from Users where EnterpriseCode <> '' AND EnterpriseCode = '" + enterpriseCode + "'");
+            List<User> users = new List<User>();
 
+            try { 
+                var enterpriseCode = GetEnterpriseCode(userID);
+                users = sqlHelper.ExecuteReader<User>("SELECT ID, Name as Email, AccountType, Phone from Users where EnterpriseCode <> '' AND EnterpriseCode = '" + enterpriseCode + "'");
+
+                if (includeSelf)
+                {
+                    var newUserID = sqlHelper.SelectWithWhere(Tables.EnterpriseCodes, "UserID", "Code = '" + enterpriseCode + "'");
+
+                    Dictionary<string, string> wheres = new Dictionary<string, string>();
+                    wheres.Add("ID", newUserID);
+
+                    users.Add(sqlHelper.SelectWithWhere<User>(Tables.Users,
+                        new string[] { "ID", "Name as Email", "AccountType", "Phone" }
+                        , wheres).First());
+                }
+            }
+            catch(Exception)
+            {
+
+                Dictionary<string, string> wheres = new Dictionary<string, string>();
+                wheres.Add("ID", userID);
+
+                users.Add(sqlHelper.SelectWithWhere<User>(Tables.Users,
+                    new string[] { "ID", "Name as Email", "AccountType", "Phone" }
+                    , wheres).First());
+            }
+            return users;
         }
         public IEnumerable<Permission> GetUserPermissions(string userId)
         {
@@ -1453,7 +2086,12 @@ where UserID = '{2}'", Tables.Roles, Tables.UserRoles, userId);
             //  wheres.Add("DMSUserID", userID);
 
             //return sqlHelper.SelectWithWhere<Contact>(Tables.Contacts, new string[] { "*" }, wheres);
-            return sqlHelper.Select<Contact>(Tables.Contacts, "*");
+            return sqlHelper.Select<Contact>(Tables.Contacts, "AutoKey", "Name", "MobilePhone as Phone", "Email1 as Email", "CategoriesID as CategoryID");
+        }
+
+        public IEnumerable<ContactCategory> GetContactCategories()
+        {
+            return sqlHelper.Select<ContactCategory>(Tables.ContactCategories, "AutoKey", "Name");
         }
         public  IEnumerable<SearchKey> GetSearchKeys(string userID)
         {
@@ -1466,23 +2104,20 @@ where UserID = '{2}'", Tables.Roles, Tables.UserRoles, userId);
         }
         public  int Login(string username, string password)
         {
-        //    try
-        //    {
-        /*
-                Dictionary<string, string> wheres = new Dictionary<string, string>();
+            //    try
+            //    {
 
-                wheres.Add("Username", username);
-                wheres.Add("Password", password);
+            if (client.loginAsync(username, password).Result)
+            {
+                var isActivated = Convert.ToBoolean(sqlHelper.SelectWithWhere(Tables.Users, "Activated", "Name = '" + username + "'"));
 
-                if (sqlHelper.Exists(Tables.Users, wheres))
-                    return 0;
+                if (!isActivated)
+                    return (int)ErrorCodes.EMAIL_NOT_VERIFIED;
                 else
-                    return (int)ErrorCodes.WRONG_CREDENTIALS;*/
-
-                if (client.loginAsync(username, password).Result)
                     return 0;
-                else
-                    return (int)ErrorCodes.WRONG_CREDENTIALS;
+            }
+            else
+                return (int)ErrorCodes.WRONG_CREDENTIALS;
 
           //  }
         //    catch (Exception ex)
@@ -1493,13 +2128,19 @@ where UserID = '{2}'", Tables.Roles, Tables.UserRoles, userId);
 //            }
         }
 
-        public  int GenerateTables()
+        public  int GenerateAllTables()
         {
             try
             {
-                String query = Queries.UpdateTables;
+                var databases = sqlHelper.GetSqlConnection().Query<string>("SELECT distinct DBName from " + Tables.UserDatabases); // sqlHelper.Select<string>(Tables.UserDatabases, "DBName");
 
-                sqlHelper.ExecuteNonQuery(query);
+                foreach (var db in databases)
+                {
+                    String query = Queries.UpdateTables;
+
+                    sqlHelper.ExecuteNonQuery(query);
+                }
+               
                 return (int)ErrorCodes.SUCCESS;
             }
             catch (Exception ex)
@@ -1509,7 +2150,25 @@ where UserID = '{2}'", Tables.Roles, Tables.UserRoles, userId);
 
             }
         }
-        
+
+        public int GenerateTables()
+        {
+            try
+            {
+                String query = Queries.UpdateTables;
+
+                sqlHelper.ExecuteNonQuery(query);
+
+                return (int)ErrorCodes.SUCCESS;
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+                return (int)ErrorCodes.INTERNAL_ERROR;
+
+            }
+        }
+
         public  UserStorage GetUserStorage(string UserID)
         {
             try
@@ -1549,9 +2208,15 @@ where UserID = '{2}'", Tables.Roles, Tables.UserRoles, userId);
                         string enterpriseCode = sqlHelper.SelectWithWhere(Tables.Users, "EnterpriseCode", "ID = '" + id + "'");
                         string enterpriseAccountID = sqlHelper.SelectWithWhere(Tables.EnterpriseCodes, "UserID", "Code = '" + enterpriseCode + "'");
 
-                        sqlHelper.Insert(Tables.UserDatabases,
+                        var wheres = new Dictionary<string, string>();
+                        wheres.Add("UserID", "*");
+
+                        if (!sqlHelper.Exists(Tables.UserDatabases, wheres))
+                        {
+                            sqlHelper.Insert(Tables.UserDatabases,
                               new string[] { "UserID", "DBName" },
                               new string[] { id, enterpriseAccountID });
+                        }
 
                         sqlHelper.Insert(Tables.UserStorage,
     new string[] { "UserID", "UsedStorage", "Storage" },
@@ -1568,7 +2233,7 @@ where UserID = '{2}'", Tables.Roles, Tables.UserRoles, userId);
                     {
                         sqlHelper.Insert(Tables.UserStorage,
 new string[] { "UserID", "UsedStorage", "Storage" },
-new string[] { id, "0", "3000" });
+new string[] { id, "0", "3072" });
 
                         var wheres = new Dictionary<string, string>();
                         wheres.Add("UserID", "*");
@@ -1580,7 +2245,7 @@ new string[] { id, "0", "3000" });
                                 new string[] { "UserID", "DBName" },
                                 new string[] { id, id });
 
-                            // Create DB
+                            //                            DatabaseManager.CreateDatabase(id, this);
                             sqlHelper.CreateDatabase(id, settings.DatabasesPath);
 
 
@@ -1599,7 +2264,6 @@ new string[] { id, "0", "3000" });
 
 
                             sqlHelper.ExecuteNonQuery(query);
-
                         }
 
 
@@ -1652,26 +2316,28 @@ new string[] { id, "0", "3000" });
 
                 var id = GetUserAutoIcrementID();
 
+
+                Logger.Log(id);
+
                 if (sqlHelper.Insert(Tables.Users,
-                    new string[] {  "Name", "ID", "AccountType", "EnterpriseCode", "Phone" },
-                    new string[] {  email,  id, "Free", string.IsNullOrEmpty(enterpriseCode) ? null : enterpriseCode, phone  }))
+                    new string[] {  "Name", "ID", "AccountType", "EnterpriseCode", "Phone", "Activated", "[2FA]" },
+                    new string[] {  email,  id, string.IsNullOrEmpty(enterpriseCode) ? "Free" : "EnterpriseSubUser", string.IsNullOrEmpty(enterpriseCode) ? null : enterpriseCode, phone, "0","0" }))
                 {
 
-                        client.SetPasswordAsync(email, password);
+                    client.SetPasswordAsync(email, password);
+                    
+                    return (int)ErrorCodes.SUCCESS;
 
-                        return Verify(id);
+                    /*
+                    string sql = Queries.NewDBQuery;//String.Join(Environment.NewLine, File.ReadAllLines("script.sql"));
 
-                        /*
-                        string sql = Queries.NewDBQuery;//String.Join(Environment.NewLine, File.ReadAllLines("script.sql"));
-                        
-                        sql = sql.Replace("DBNAME", id );
-                        sql = sql.Replace("DBPATH", settings.DatabasesPath);
+                    sql = sql.Replace("DBNAME", id );
+                    sql = sql.Replace("DBPATH", settings.DatabasesPath);
 
-                        Logger.Log(sql);
-                        if(sqlHelper.ExecuteNonQuery(sql) > 0)
-                            return (int)ErrorCodes.SUCCESS;
-                        else
-                            return (int)ErrorCodes.INTERNAL_ERROR;*/
+                    Logger.Log(sql);
+                    if(sqlHelper.ExecuteNonQuery(sql) > 0)
+                    else
+                        return (int)ErrorCodes.INTERNAL_ERROR;*/
 
                 }
             }
@@ -1725,6 +2391,17 @@ new string[] { id, "0", "3000" });
                 InitialCatalog = string.IsNullOrEmpty(userID) ? settings.Database : sqlHelper.SelectWithWhere(Tables.UserDatabases, "DBName", "UserID = '*' OR UserID = '" + userID + "'")
             };
         }
+
+        public void Dispose()
+        {
+            sqlHelper.Dispose();
+
+        }
+
+        public List<EmailItem> GetEmails()
+        {
+            return sqlHelper.Select<EmailItem>(Tables.Emails, "*");
+        }
     }
 
     public enum ErrorCodes
@@ -1735,7 +2412,8 @@ new string[] { id, "0", "3000" });
         INTERNAL_ERROR = 103,
         EMAIL_EXISTS = 104,
         ALREADY_EXISTS = 105,
-        CODE_DOES_NOT_EXIST = 106
+        CODE_DOES_NOT_EXIST = 106,
+        EMAIL_NOT_VERIFIED = 107
     }
 
     public static class FormFileExtensions
@@ -1749,4 +2427,5 @@ new string[] { id, "0", "3000" });
             }
         }
     }
+
 }

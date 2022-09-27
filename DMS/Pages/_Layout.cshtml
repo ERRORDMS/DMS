@@ -1,595 +1,998 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
-@inject IViewLocalizer Localizer
-@using System.Globalization
+﻿
+<!doctype html>
+<?xml version="1.0" encoding="UTF-8" ?>
+<html lang="en">
 
-<!DOCTYPE html>
-<html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
-    <link rel="stylesheet"
-          href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
-          integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
-          crossorigin="anonymous" />
-    <link rel="stylesheet" href="~/css/vendor.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/Site.css" />
-    <link href="~/css/Roboto.css" rel='stylesheet' type='text/css'>
-    <style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-        .unstyled {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
+    <title>@ViewData["Title"]</title>
 
-            .unstyled a {
-                text-decoration: none;
-            }
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="~/assets/media/image/favicon.png" />
 
-        .main-nav ul {
-            border-top: solid 1px #3c3735;
-        }
+    <!-- Main css -->
+    <link rel="stylesheet" href="~/vendors/bundle.css" type="text/css" />
 
-        .main-nav li {
-            width: 100%;
-            height: 100%;
-            border-bottom: solid 1px #3c3735;
-        }
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&amp;display=swap" rel="stylesheet" />
 
-        .main-nav a {
-            width: 200px;
-            height: 100%;
-            padding: 1.1em 0;
-            color: #ffffff;
-            font: 400 1.125em "Source Sans Pro", Helvetica, Arial, sans-serif;
-            display: flex;
-        }
+    <script src="https://kit.fontawesome.com/f8abaa5444.js" crossorigin="anonymous">
+    </script>
 
-            .main-nav a i {
-                text-align: center;
-                width: 60px;
-                height: 100%;
-                font-size: 22px;
-                color: #ffff;
-            }
+    <!-- quill -->
+    <link href="~/vendors/quill/quill.snow.css" rel="stylesheet" type="text/css" />
+    <!-- quill -->
+    <link href="~/vendors/jstree/themes/default/style.min.css" rel="stylesheet" type="text/css" />
 
-            .main-nav a:hover {
-                color: #0087ff;
-            }
+    <!-- Clockpicker -->
+    <link rel="stylesheet" href="~/vendors/clockpicker/bootstrap-clockpicker.min.css" type="text/css" />
 
-        .list-hover-slide a {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .list-hover-slide a {
-            display: block;
-            position: relative;
-            z-index: 1;
-            transition: 0.35s ease color;
-        }
-
-            .list-hover-slide a:before {
-                content: "";
-                display: block;
-                z-index: -1;
-                position: absolute;
-                left: -100%;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                border-right: solid 5px #0087ff;
-                background: #3c3735;
-                transition: 0.35s ease left;
-            }
-
-            .list-hover-slide a.is-current:before,
-            .list-hover-slide a:hover:before {
-                left: 0;
-            }
-
-        .icon {
-            margin-right: 6rem;
-        }
-
-        .progress {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #progressBar {
-            margin: 20px;
-            width: 100px;
-            height: 100px;
-        }
-        /*
-        .size {
-            margin-left: 0.2rem;
-            margin-right: 0.2rem;
-        }
-
-        .full_size {
-            margin-left: 0.2rem;
-            margin-right: 0.2rem;
-        }
-
-        #maxStorage {
-            margin-left: 0.2rem;
-        }*/
-
-        .line {
-            height: 1px;
-            width: 100%;
-            background-color: rgb(255, 255, 255);
-        }
-        /*
-        .upgrade_item {
-            background-color: #0087ff;
-            border-radius: 10px;
-            box-shadow: 2px 2px 5px black;
-            margin-left: 1rem;
-            width: 140px;
-        }
+    <!-- Datepicker -->
+    <link rel="stylesheet" href="~/vendors/datepicker/daterangepicker.css" type="text/css" />
 
 
-        #storage_top {
-            height: 180px;
-            width: 100%;
-        }*/
+    <!-- Datatable -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.23/datatables.min.css" />
 
-        .storage_text {
-            color: #fff;
-            font-weight: 100;
-            font-size: 18px;
-            text-align: center;
-        }
+    <!-- Select2 -->
+    <link rel="stylesheet" href="~/vendors/select2/css/select2.min.css" type="text/css" />
 
-        .progress {
-            margin: 0;
-            padding: 0;
-            height: 120px;
-        }
-    </style>
-    @if (CultureInfo.CurrentCulture.TextInfo.IsRightToLeft)
-    {
-        <style>
-            body {
-                direction: rtl;
-                text-align: right;
-            }
-            /*
-            .dx-treelist-text-content {
-                text-align: right;
-                float: right;
-            }*/
-        </style>
-    }
-    <script src="~/js/vendor.js" asp-append-version="true"></script>
+    <!-- App css -->
+    <link rel="stylesheet" href="~/assets/css/app.min.css" type="text/css" />
+    @* Uncomment to use the HtmlEditor control *@
+    @* <script src="https://unpkg.com/devextreme-quill/dist/dx-quill.min.js"></script> *@
+
+    @* Uncomment to use the Gantt control *@
+    @*<link href="~/css/devextreme/dx-gantt.css" rel="stylesheet" />*@
+
+    @* Uncomment to use the Diagram control *@
+    @*<link href="~/css/devextreme/dx-diagram.css" rel="stylesheet" />*@
+
+    <link href="~/css/devextreme/dx.common.css" rel="stylesheet" />
+    <link href="~/css/devextreme/theme.base.css" rel="stylesheet" />
+
+
+    <!-- Main scripts -->
+    <script src="~/vendors/bundle.js">
+    </script>
+
+
+
+
+    <!-- Datatable -->
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.23/datatables.min.js">
+    </script>    <!-- Jstree -->
+    <!-- JSTree -->
+    <script src="~/vendors/jstree/jstree.min.js">
+    </script>
+
+    
+
+    <!-- Files page examples -->
+    <script src="~/assets/js/examples/files.js?v=@DateTimeOffset.Now.ToUnixTimeSeconds()">
+    </script>
+
+    <script src="~/assets/js/examples/upload.js?v=@DateTimeOffset.Now.ToUnixTimeSeconds()">
+    </script>
+
+
+    @RenderSection("Styles", false)
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    @RenderSection("Scripts", false)
+
+    <!-- Syncfusion Essential JS 2 Styles -->
+    <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/material.css" />
+
+    <!-- Syncfusion Essential JS 2 Scripts -->
+    <script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js">
+    </script>
+    @* Uncomment to use the Gantt control *@
+    @*<script src="~/js/devextreme/dx-gantt.js"></script>*@
+
+    @* Uncomment to use the Diagram control *@
+    @*<script src="~/js/devextreme/dx-diagram.js"></script>*@
+
+    @* Uncomment to use Globalize for localization *@
+    @*<script src="~/js/devextreme/cldr.js"></script>*@
+    @*<script src="~/js/devextreme/cldr/event.js"></script>*@
+    @*<script src="~/js/devextreme/cldr/supplemental.js"></script>*@
+    @*<script src="~/js/devextreme/cldr/unresolved.js"></script>*@
+    @*<script src="~/js/devextreme/globalize.js"></script>*@
+    @*<script src="~/js/devextreme/globalize/message.js"></script>*@
+    @*<script src="~/js/devextreme/globalize/number.js"></script>*@
+    @*<script src="~/js/devextreme/globalize/currency.js"></script>*@
+    @*<script src="~/js/devextreme/globalize/date.js"></script>*@
+
+    @* Uncomment to enable client-side export *@
+    @*<script src="~/js/devextreme/jszip.js"></script>*@
+
+    <script src="~/js/devextreme/dx.all.js">
+    </script>
+
+    @* Uncomment to provide geo-data for the VectorMap control *@
+    @*<script src="~/js/devextreme/vectormap-data/world.js"></script>*@
+
+    <script src="~/js/devextreme/aspnet/dx.aspnet.mvc.js">
+    </script>
+    <script src="~/js/devextreme/aspnet/dx.aspnet.data.js">
+    </script>
+
+
+
 </head>
 
-<body>
-    <div id="app-side-nav-outer-toolbar">
-        <div class="layout-header" style="height:60px;overflow: hidden;">
 
-            @functions{
-                bool IsCurrentPage(string pageName)
-                {
-                    var pageUrl = Url.Page(pageName);
-                    var currentPageUrl = Url.Page(ViewContext.RouteData.Values["page"].ToString());
-                    return pageUrl == currentPageUrl;
-                }
+@functions{
+    bool IsCurrentPage(string pageName)
+    {
+        var pageUrl = Url.Page(pageName);
+        var currentPageUrl = Url.Page(ViewContext.RouteData.Values["page"].ToString());
+        return pageUrl == currentPageUrl;
+    }
+}
+<body>
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="preloader-icon"></div>
+    </div>
+    <input style="position: absolute; top:-100px" id="copyInput" />
+
+    <!-- ./ Preloader -->
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper">
+        <!-- Header -->
+        <div class="header d-print-none">
+            <div class="header-container">
+                <div class="header-body">
+                    <div class="header-body-left">
+                        <ul class="navbar-nav">
+                            <li class="nav-item navigation-toggler">
+                                <a href="#" class="nav-link">
+                                    <i class="ti-menu"></i>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                @RenderSection("Header", false)
+
+                            </li>
+                        </ul>
+                    </div>
+
+
+
+
+                </div>
+
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item header-toggler">
+                        <a href="#" class="nav-link">
+                            <i class="ti-arrow-down"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item sidebar-toggler">
+                        <a href="#" class="nav-link">
+                            <i class="ti-cloud"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- ./ Header -->
+        <!-- Content wrapper -->
+        <div class="content-wrapper">
+            <!-- begin::navigation -->
+            <div class="navigation">
+                <div class="logo">
+                    <a href="Dashboard">
+                        <img src="~/assets/media/image/logo.png" alt="logo" />
+                    </a>
+                </div>
+                <ul id="nav">
+                    @*
+                        <li>
+                            <a href="Dashboard">
+                                <i class="nav-link-icon fas fa-chart-pie"></i>
+                                <span class="nav-link-label">Dashboard</span>
+                                <span class="badge badge-danger badge-small">2</span>
+                            </a>
+                        </li>*@
+                    <li>
+                        <a href="Dashboard">
+                            <i class="nav-link-icon far fa-folder"></i>
+                            <span class="nav-link-label">Files</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="ManageCategory">
+                            <i class="nav-link-icon ti-tag"></i>
+                            <span class="nav-link-label">Categories</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="ManageContact">
+                            <i class="nav-link-icon ti-user"></i>
+                            <span class="nav-link-label">Contacts</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="ManageSearchKey">
+                            <i class="nav-link-icon fas fa-key"></i>
+                            <span class="nav-link-label">Search Keys</span>
+                        </a>
+                    </li>
+                    @*
+                        <li>
+                            <a href="settings.html">
+                                <i class="nav-link-icon fas fa-cog"></i>
+                                <span class="nav-link-label">Settings</span>
+                            </a>
+                        </li>*@
+                    @{
+                        var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
+
+                        string accountType = "";
+                        string userId = "";
+                        if (claimsIdentity != null)
+                        {
+                            var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.UserData);
+
+                            accountType = c.Value;
+                            userId = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+                        }
+                        if (new DMS.Database.DataManager(userId).IsAdmin(userId))
+                        {
+                            <li>
+                                <a href="Settings">
+                                    <i class="nav-link-icon fas fa-user-cog"></i>
+                                    <span class="nav-link-label">Enterprise</span>
+                                </a>
+                            </li>
+                        }
+                    }
+
+                    <li>
+                        <a href="SignOut">
+                            <i class="nav-link-icon  fas fa-sign-out-alt"></i>
+                            <span class="nav-link-label">Sign out</span>
+                        </a>
+                    </li>
+                    @*
+                        <li>
+                            <a href="Profile">
+                                <i class="nav-link-icon ti-settings"></i>
+                                <span class="nav-link-label">Settings</span>
+                            </a>
+                        </li>*@
+                </ul>
+            </div>
+            <!-- end::navigation -->
+            <!-- Content body -->
+
+            @RenderBody()
+
+            <div id="popup"></div>
+
+
+            <!-- ./ Content body -->
+            <!-- Sidebar group -->
+            <div class="sidebar-group d-print-none">
+                <!-- Sidebar - Storage -->
+                <div class="sidebar primary-sidebar show" id="storage">
+                    <div class="sidebar-header">
+                        <h4>Storage Overview</h4>
+                    </div>
+                    <div class="sidebar-content">
+                        <div id="justgage_five" class="mb-3"></div>
+                        <div>
+                            <div class="list-group list-group-flush mb-3">
+                                <a href="#" class="list-group-item px-0 d-flex align-items-center">
+                                    <div class="mr-3">
+                                        <figure class="avatar">
+                                            <span class="avatar-title bg-primary-bright text-primary rounded">
+                                                <i class="ti-image"></i>
+                                            </span>
+                                        </figure>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <p class="mb-0">Images</p>
+                                        <span class="small text-muted" id="imagesAmount">259 Files</span>
+                                    </div>
+                                    <div>
+                                        <h5 class="text-primary" id="imagesFileSize">15.7 GB</h5>
+                                    </div>
+                                </a>
+                                <a href="#" class="list-group-item px-0 d-flex align-items-center">
+                                    <div class="mr-3">
+                                        <figure class="avatar">
+                                            <span class="avatar-title bg-primary-bright text-primary rounded">
+                                                <i class="ti-control-play"></i>
+                                            </span>
+                                        </figure>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <p class="mb-0">Videos</p>
+                                        <span class="small text-muted" id="videosAmount">8 Files</span>
+                                    </div>
+                                    <div>
+                                        <h5 class="text-primary" id="videosFileSize">20 GB</h5>
+                                    </div>
+                                </a>
+                                <a href="#" class="list-group-item px-0 d-flex align-items-center">
+                                    <div class="mr-3">
+                                        <figure class="avatar">
+                                            <span class="avatar-title bg-primary-bright text-primary rounded">
+                                                <i class="ti-files"></i>
+                                            </span>
+                                        </figure>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <p class="mb-0">Documents</p>
+                                        <span class="small text-muted" id="documentsAmount">46 Files</span>
+                                    </div>
+                                    <div>
+                                        <h5 class="text-primary" id="documentsFileSize">10.5 GB</h5>
+                                    </div>
+                                </a>
+                                <a href="#" class="list-group-item px-0 d-flex align-items-center">
+                                    <div class="mr-3">
+                                        <figure class="avatar">
+                                            <span class="avatar-title bg-primary-bright text-primary rounded">
+                                                <i class="far fa-file"></i>
+                                            </span>
+                                        </figure>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <p class="mb-0">Other Files</p>
+                                        <span class="small text-muted" id="otherAmount">50 Files</span>
+                                    </div>
+                                    <div>
+                                        <h5 class="text-primary" id="otherFileSize">2.8 GB</h5>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card border shadow-none" style="display:none">
+                            <div class="card-body text-center">
+                                <img class="img-fluid mb-3" src="http://filedash.laborasyon.com/assets/media/svg/upgrade.svg" alt="upgrade" />
+                                <h5>Get an Upgrade</h5>
+                                <p class="text-muted">
+                                    Get additional 500 GB space for your documents and files. Unlock now
+                                    for more space.
+                                </p>
+                                <button class="btn btn-primary">Upgrade</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (IsCurrentPage("Dashboard"))
+                    {
+                        <div class="sidebar-footer">
+                            <button data-sidebar-target="#upload-detail" class="btn btn-lg btn-block btn-outline-primary" onclick="initupload()">
+                                <i class="fa fa-cloud-upload mr-3"></i> Upload
+                            </button>
+                        </div>
+                    }
+                </div>
+                <!-- ./ Sidebar - Storage -->
+                <!-- Sidebar - File info -->
+                <div class="sidebar" id="view-detail">
+                    <div class="sidebar-header">
+                        <h4>View Detail</h4>
+                        <a href="#" class="btn btn-light btn-floating sidebar-close-btn">
+                            <i class="ti-angle-right"></i>
+                        </a>
+                    </div>
+                    <div class="sidebar-content">
+                        <figure class="avatar mb-4">
+                            <span class="avatar-title bg-info-bright text-info rounded-pill">
+                                <i class="far fa-file"></i>
+                            </span>
+                        </figure>
+                        <div class="row mb-3">
+                            <div class="col-md-5">File name:</div>
+                            <div class="col-md-7"><a href="#" class="link-1" id="txtFN">Meeting-notes.doc</a></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-5">File type:</div>
+                            <div class="col-md-7" id="txtFileType">Word File</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-5">File size:</div>
+                            <div class="col-md-7" id="txtFileSize">22 KB</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-5">Created:</div>
+                            <div class="col-md-7" id="txtDate">Monday, July 02, 2020 9:34am</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-5">Note:</div>
+                            <div class="col-md-7" id="txtDetailsNote">File note</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-5">Contacts:</div>
+                            <div class="col-md-7" id="txtContacts">Osayed, Naeem</div>
+
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-5">Search Keys:</div>
+                            <div class="col-md-7" id="txtSearchKeys">Test, Test1, Test3</div>
+
+                        </div>
+                    </div>
+                    <div class="sidebar-footer">
+                        <button class="btn btn-lg btn-block btn-primary">
+                            <i class="ti-share mr-3"></i> Share
+                        </button>
+                    </div>
+                </div>
+                <!-- ./ Sidebar - file info -->
+
+                @RenderSection("SidebarSection", false)
+            </div>
+            <!-- ./ Sidebar group -->
+        </div>
+        <!-- ./ Content wrapper -->
+    </div>
+    <!-- ./ Layout wrapper -->
+    <script>
+
+        function formatBytes(a, b = 2) { if (0 === a) return "0 Bytes"; const c = 0 > b ? 0 : b, d = Math.floor(Math.log(a) / Math.log(1024)); return parseFloat((a / Math.pow(1024, d)).toFixed(c)) + " " + ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d] }
+
+        function formatDate(date) {
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        var strTime = hours + ':' + minutes + ' ' + ampm;
+        return date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear() + " " + strTime;
+        }
+
+        function calc(num) {
+        var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]
+        return with2Decimals;
+        }
+        function switchLanguageEn() {
+        switchLanguage("en-US");
+        }
+
+
+        function switchLanguageAr() {
+
+        switchLanguage("ar-SA");
+        }
+
+        function switchLanguage(culture) {
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+        window.location = "Dashboard";
+        }
+        }
+        const fd = new FormData();
+        fd.append('culture', culture);
+        xhr.open("POST", "api/Culture", true);
+        xhr.send(fd);
+        }
+
+        $(document).ready(function () {
+        const xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+
+        var res = JSON.parse(xhr.responseText);
+
+        $("#imagesAmount").text(res[0].Files + " Files");
+        $("#imagesFileSize").text(formatBytes(res[0].Size));
+
+        $("#documentsAmount").text(res[1].Files + " Files");
+        $("#documentsFileSize").text(formatBytes(res[1].Size));
+
+        $("#videosAmount").text(res[2].Files + " Files");
+        $("#videosFileSize").text(formatBytes(res[2].Size));
+
+        $("#otherAmount").text(res[3].Files + " Files");
+        $("#otherFileSize").text(formatBytes(res[3].Size));
+        }
+        }
+        const fd = new FormData();
+        xhr.open("GET", "api/Upload/GetDocumentTypesSizes", true);
+        xhr.send(fd);
+
+        var current = location.pathname;
+        $('#nav li a').each(function () {
+        var $this = $(this);
+
+        // if the current path is like this link, make it active
+        if (current.includes($this.attr('href'))) {
+        $this.addClass('active');
+        }
+        })
+        });
+
+
+    </script>
+
+
+    <script src="~/assets/ajax/libs/raphael/2.1.4/raphael-min.js">
+    </script>
+    <script src="~/assets/ajax/libs/justgage/1.2.9/justgage.min.js">
+    </script>
+
+
+
+    <!-- App scripts -->
+    <script src="~/assets/js/app.min.js">
+    </script>
+
+</body>
+
+</html>
+
+@*
+        @using Microsoft.AspNetCore.Mvc.Localization
+    @inject IViewLocalizer Localizer
+    @using System.Globalization
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+        <link rel="stylesheet"
+              href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+              integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+              crossorigin="anonymous" />
+        <link rel="stylesheet" href="~/css/vendor.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/Site.css" />
+        <link href="~/css/Roboto.css" rel='stylesheet' type='text/css'>
+        <style>
+
+            .unstyled {
+                list-style: none;
+                padding: 0;
+                margin: 0;
             }
 
-            @(Html.DevExtreme().Toolbar()
-                .Items(items =>
-                {
-                    items.Add()
-                        .Widget(w => w
-                            .Button()
-                            .Icon("menu")
-                            .OnClick("DMS.onMenuButtonClick")
-                        )
-                        .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.After : ToolbarItemLocation.Before)
-                        .CssClass("menu-button");
-                    /*
-                    items.Add()
-                            .Html(@"<i class='fas fa-folder' style='color: #0087ff'></i>")
+                .unstyled a {
+                    text-decoration: none;
+                }
+
+            .main-nav ul {
+                border-top: solid 1px #3c3735;
+            }
+
+            .main-nav li {
+                width: 100%;
+                height: 100%;
+                border-bottom: solid 1px #3c3735;
+            }
+
+            .main-nav a {
+                width: 200px;
+                height: 100%;
+                padding: 1.1em 0;
+                color: #ffffff;
+                font: 400 1.125em "Source Sans Pro", Helvetica, Arial, sans-serif;
+                display: flex;
+            }
+
+                .main-nav a i {
+                    text-align: center;
+                    width: 60px;
+                    height: 100%;
+                    font-size: 22px;
+                    color: #ffff;
+                }
+
+                .main-nav a:hover {
+                    color: #0087ff;
+                }
+
+            .list-hover-slide a {
+                position: relative;
+                overflow: hidden;
+            }
+
+            .list-hover-slide a {
+                display: block;
+                position: relative;
+                z-index: 1;
+                transition: 0.35s ease color;
+            }
+
+                .list-hover-slide a:before {
+                    content: "";
+                    display: block;
+                    z-index: -1;
+                    position: absolute;
+                    left: -100%;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    border-right: solid 5px #0087ff;
+                    background: #3c3735;
+                    transition: 0.35s ease left;
+                }
+
+                .list-hover-slide a.is-current:before,
+                .list-hover-slide a:hover:before {
+                    left: 0;
+                }
+
+            .icon {
+                margin-right: 6rem;
+            }
+
+            .progress {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            #progressBar {
+                margin: 20px;
+                width: 100px;
+                height: 100px;
+            }
+            /*
+            .size {
+                margin-left: 0.2rem;
+                margin-right: 0.2rem;
+            }
+
+            .full_size {
+                margin-left: 0.2rem;
+                margin-right: 0.2rem;
+            }
+
+            #maxStorage {
+                margin-left: 0.2rem;
+            }*/
+
+            .line {
+                height: 1px;
+                width: 100%;
+                background-color: rgb(255, 255, 255);
+            }
+            /*
+            .upgrade_item {
+                background-color: #0087ff;
+                border-radius: 10px;
+                box-shadow: 2px 2px 5px black;
+                margin-left: 1rem;
+                width: 140px;
+            }
+
+
+            #storage_top {
+                height: 180px;
+                width: 100%;
+            }*/
+
+            .storage_text {
+                color: #fff;
+                font-weight: 100;
+                font-size: 18px;
+                text-align: center;
+            }
+
+            .progress {
+                margin: 0;
+                padding: 0;
+                height: 120px;
+            }
+        </style>
+        @if (CultureInfo.CurrentCulture.TextInfo.IsRightToLeft)
+        {
+            <style>
+                body {
+                    direction: rtl;
+                    text-align: right;
+                }
+                /*
+                .dx-treelist-text-content {
+                    text-align: right;
+                    float: right;
+                }*/
+            </style>
+        }
+
+        <script src="~/js/vendor.js" asp-append-version="true"></script>
+    </head>
+
+    <body>
+        <div id="app-side-nav-outer-toolbar">
+            <div class="layout-header" style="height:60px;overflow: hidden;">
+
+                @functions{
+                    bool IsCurrentPage(string pageName)
+                    {
+                        var pageUrl = Url.Page(pageName);
+                        var currentPageUrl = Url.Page(ViewContext.RouteData.Values["page"].ToString());
+                        return pageUrl == currentPageUrl;
+                    }
+                }
+
+                @(Html.DevExtreme().Toolbar()
+                    .Items(items =>
+                    {
+                        items.Add()
+                            .Widget(w => w
+                                .Button()
+                                .Icon("menu")
+                                .OnClick("DMS.onMenuButtonClick")
+                            )
                             .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.After : ToolbarItemLocation.Before)
                             .CssClass("menu-button");
-                    */
-
-                    items.Add()
-                        .Html("<div>" + Localizer["Title"].Value + "</div>")
-                        .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.After : ToolbarItemLocation.Before)
-                        .CssClass("header-title");
-
-                    if (IsCurrentPage("Viewer")) {
+                        /*
                         items.Add()
-                         .Widget(w => w
-                             .Button()
-                             .Text(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "نشر" : "Share")
-                             .OnClick("share")
-                         )
-                         .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.Before : ToolbarItemLocation.After)
-                         .CssClass("menu-button");
-                         
-                     }
+                                .Html(@"<i class='fas fa-folder' style='color: #0087ff'></i>")
+                                .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.After : ToolbarItemLocation.Before)
+                                .CssClass("menu-button");
+                        */
 
-                    items.Add()
-                       .Widget(w => w
-                           .Button()
-                           .Text(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "English" : "عربي")
-                           .OnClick(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "switchLanguageEn" : "switchLanguageAr")
-                       )
-                       .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.Before : ToolbarItemLocation.After)
-                       .CssClass("menu-button");
-                })
-            )
+                        items.Add()
+                            .Html("<div>" + Localizer["Title"].Value + "</div>")
+                            .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.After : ToolbarItemLocation.Before)
+                            .CssClass("header-title");
 
-        </div>
-        <div class="layout-body">
-            @(Html.DevExtreme().Drawer()
-                .ID("layout-drawer")
-                .Position(DrawerPosition.Left)
-                .Opened(new JS("DMS.restoreDrawerOpened()"))
-                .Content(@<text>
-                            <div id="layout-drawer-scrollview" class="with-footer">
-                                <div class="content">
-                                    @RenderBody()
-                                </div>
-                                <div class="content-block">
-                                    <div class="content-footer">
-                                        <div id="footer">
-                                            Copyright (C) 2020 Zimam Solutions
-                                            <br />
-                                            All trademarks or registered trademarks are property of their respective owners.
+                        if (IsCurrentPage("Viewer")) {
+                            items.Add()
+                             .Widget(w => w
+                                 .Button()
+                                 .Text(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "نشر" : "Share")
+                                 .OnClick("share")
+                             )
+                             .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.Before : ToolbarItemLocation.After)
+                             .CssClass("menu-button");
+
+                         }
+
+                        items.Add()
+                           .Widget(w => w
+                               .Button()
+                               .Text(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "English" : "عربي")
+                               .OnClick(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "switchLanguageEn" : "switchLanguageAr")
+                           )
+                           .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.Before : ToolbarItemLocation.After)
+                           .CssClass("menu-button");
+                    })
+                )
+
+            </div>
+            <div class="layout-body">
+                @(Html.DevExtreme().Drawer()
+                    .ID("layout-drawer")
+                    .Position(DrawerPosition.Left)
+                    .Opened(new JS("DMS.restoreDrawerOpened()"))
+                    .Content(@<text>
+                                <div id="layout-drawer-scrollview" class="with-footer">
+                                    <div class="content">
+                                        @RenderBody()
+                                    </div>
+                                    <div class="content-block">
+                                        <div class="content-footer">
+                                            <div id="footer">
+                                                Copyright (C) 2020 Zimam Solutions
+                                                <br />
+                                                All trademarks or registered trademarks are property of their respective owners.
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                </text>)
-         .Template(new TemplateName("navigation-menu"))
-            )
+                    </text>)
+             .Template(new TemplateName("navigation-menu"))
+                )
+            </div>
         </div>
-    </div>
 
-    @using (Html.DevExtreme().NamedTemplate("navigation-menu"))
-    {
-<div class="menu-container dx-swatch-additional" style="background-color:#363640">
-    <div class="nav-wrap">
-        <nav class="main-nav" role="navigation">
-            <ul class="unstyled list-hover-slide">
-                <li class="nav-item">
-                    <a href="Dashboard"><i class="fas fa-home"></i>@Localizer["Home"]</a>
-                </li>
-                <li class="nav-item categories">
-                    <a href="ManageCategory"><i class="fas fa-tag"></i>@Localizer["Categories"]</a>
-                </li>
-                <li class="nav-item">
-                    <a href="ManageContact"><i class="fas fa-users"></i>@Localizer["Contacts"]</a>
-                </li>
-                <li class="nav-item">
-                    <a href="ManageSearchKey"><i class="fas fa-key"></i>@Localizer["SearchKeys"]</a>
-                </li>
-                <li class="nav-item">
-                    <a href="Upload"><i class="fas fa-upload"></i>@Localizer["Upload"]</a>
-                </li>
-
-                @{
-                    var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
-
-                    string accountType = "";
-                    if (claimsIdentity != null)
-                    {
-                        var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.UserData);
-
-                        accountType = c.Value;
-                    }
-                    if (accountType == "Enterprise")
-                    {
-                        <li class="nav-item"><a href="Settings"><i class="fas fa-user-cog"></i>@Localizer["Settings"]</a></li>
-                    }
-                    if (accountType == "Free")
-                    {
-                        <li class="nav-item upgrade_item"><a href="#"><i class="fas fa-long-arrow-alt-up"></i>@Localizer["Upgrade"]</a></li>
-                    }
-                }
-                <li class="nav-item"><a href="SignOut"><i class="fas fa-sign-out-alt"></i>@Localizer["Logout"]</a></li>
-                <li class="nav-item">
-                    <div id="storage_top">
-                        <partial name="StorageProgress" />
-                    </div>
-                </li>
-
-            </ul>
-        </nav>
-    </div>
-    @*
+        @using (Html.DevExtreme().NamedTemplate("navigation-menu"))
+        {
+    <div class="menu-container dx-swatch-additional" style="background-color:#363640">
         <div class="nav-wrap">
             <nav class="main-nav" role="navigation">
                 <ul class="unstyled list-hover-slide">
                     <li class="nav-item">
-                        <i class="fas fa-home"></i>
-                        <a href="Dashboard">@Localizer["Home"]</a>
+                        <a href="Dashboard"><i class="fas fa-home"></i>@Localizer["Home"]</a>
                     </li>
                     <li class="nav-item categories">
-                        <i class="fas fa-tag"></i>
-                        <a href="ManageCategory">@Localizer["Categories"]</a>
+                        <a href="ManageCategory"><i class="fas fa-tag"></i>@Localizer["Categories"]</a>
                     </li>
                     <li class="nav-item">
-                        <i class="fas fa-users"></i>
-                        <a href="ManageContact">@Localizer["Contacts"]</a>
+                        <a href="ManageContact"><i class="fas fa-users"></i>@Localizer["Contacts"]</a>
                     </li>
                     <li class="nav-item">
-                        <i class="fas fa-key"></i>
-                        <a href="ManageSearchKey">@Localizer["SearchKeys"]</a>
+                        <a href="ManageSearchKey"><i class="fas fa-key"></i>@Localizer["SearchKeys"]</a>
                     </li>
+                    <!--
                     <li class="nav-item">
-                        <i class="fas fa-upload"></i>
-                        <a href="Upload">@Localizer["Upload"]</a>
+                        <a href="Email"><i class="fas fa-email"></i>@Localizer["Email"]</a>
+                    </li>-->
+                    <li class="nav-item">
+                        <a href="Upload"><i class="fas fa-upload"></i>@Localizer["Upload"]</a>
                     </li>
 
                     @{
                         var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
 
                         string accountType = "";
+                        string userId = "";
                         if (claimsIdentity != null)
                         {
                             var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.UserData);
 
                             accountType = c.Value;
+                            userId = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
                         }
-                        if (accountType == "Enterprise")
+                        if (new DMS.Database.DataManager(userId).IsAdmin(userId))
                         {
-                            <li class="nav-item"><i class="fas fa-user-cog"></i><a href="Settings">@Localizer["Settings"]</a></li>
+                            <li class="nav-item"><a href="Settings"><i class="fas fa-user-cog"></i>@Localizer["Settings"]</a></li>
+                            <li class="nav-item"><a href="DeletedFiles"><i class="fas fa-trash"></i>Deleted Files</a></li>
                         }
-                    }
-                    <li class="nav-item"><i class="fas fa-sign-out-alt"></i><a href="SignOut">@Localizer["Logout"]</a></li>
-                    <li class="nav-item">
-                        <div id="storage_top">
-                            <partial name="StorageProgress"/>
-                        </div>
-                    </li>
-                    @{
                         if (accountType == "Free")
                         {
-                           <li class="nav-item upgrade_item"></li>
+                            <li class="nav-item upgrade_item"><a href="#"><i class="fas fa-long-arrow-alt-up"></i>@Localizer["Upgrade"]</a></li>
                         }
                     }
+                    <li class="nav-item"><a href="SignOut"><i class="fas fa-sign-out-alt"></i>@Localizer["Logout"]</a></li>
+                    <li class="nav-item">
+                        <div id="storage_top">
+                            <partial name="StorageProgress" />
+                        </div>
+                    </li>
+
                 </ul>
             </nav>
         </div>
-    *@
-    @*
-         @functions{
-             bool IsCurrentPage(string pageName)
-             {
-                 var pageUrl = Url.Page(pageName);
-                 var currentPageUrl = Url.Page(ViewContext.RouteData.Values["page"].ToString());
-                 return pageUrl == currentPageUrl;
-             }
-         }
-
-         @(Html.DevExtreme().TreeView()
-             .Items(items =>
-             {
-                 items.Add()
-                 .Text(Localizer["Home"].Value)
-                 .Icon("home")
-                 .Option("path", Url.Page("Index"))
-                 .Selected(IsCurrentPage("Index"));
-
-
-                 items.Add()
-            .Text(Localizer["Categories"].Value)
-            .Icon("tags")
-        //    .ParentId(2)
-            .Option("path", Url.Page("ManageCategory"))
-            .Selected(IsCurrentPage("ManageCategory"));
-
-
-                 items.Add()
-            .Text(Localizer["Contacts"].Value)
-            .Icon("user")
-            .Option("path", Url.Page("ManageContact"))
-            .Selected(IsCurrentPage("ManageContact"));
-
-                 items.Add()
-             .Text(Localizer["SearchKeys"].Value)
-            .Icon("key")
-            .Option("path", Url.Page("ManageSearchKey"))
-            .Selected(IsCurrentPage("ManageSearchKey"));
-
-
-                 items.Add()
-        .Text(Localizer["Upload"].Value)
-        .Icon("upload")
-        .Option("path", Url.Page("Upload"))
-                 .Selected(IsCurrentPage("upload"));
-
-
-
-                 items.Add()
-                     .Text(Localizer["Settings"].Value)
-                     .Icon("preferences")
-                     .Option("path", Url.Page("Settings"))
-         .Visible(false)
-                     .Selected(IsCurrentPage("Settings"));
-
-                 if (!User.Identity.IsAuthenticated)
-                 {
-                     items.Add()
-                     .Text(Localizer["Register"].Value)
-                     .Icon("plus")
-                     .Option("path", Url.Page("Register"))
-                     .Selected(IsCurrentPage("register"));
-
-                     items.Add()
-                       .Text(Localizer["Login"].Value)
-                       .Icon("user")
-                       .Option("path", Url.Page("Login"))
-                       .Selected(IsCurrentPage("Login"));
-
-                 }
-                 else
-                 {
-                     items.Add()
-                       .Text(Localizer["Logout"].Value)
-                       .Icon("export")
-                       .Option("path", Url.Page("SignOut"))
-                       .Selected(IsCurrentPage("SignOut"));
-                 }
-             }
-                )
-             .DataStructure(TreeViewDataStructure.Plain)
-             .SelectionMode(NavSelectionMode.Single)
-             .SelectedExpr("selected")
-             .FocusStateEnabled(false)
-             .Width(250)
-             .OnItemClick("DMS.onTreeViewItemClick")
-         )
-    *@
-
-</div>
-    }
-    <script>
-
-        function calc(num) {
-            var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]
-            return with2Decimals;
+    </div>
         }
-        function switchLanguageEn() {
-            switchLanguage("en-US");
-        }
+        <script>
+
+            function calc(num) {
+                var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]
+                return with2Decimals;
+            }
+            function switchLanguageEn() {
+                switchLanguage("en-US");
+            }
 
 
-        function switchLanguageAr() {
+            function switchLanguageAr() {
 
-            switchLanguage("ar-SA");
-        }
+                switchLanguage("ar-SA");
+            }
 
-        function switchLanguage(culture) {
-            const xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    window.location = "Dashboard";
+            function switchLanguage(culture) {
+                const xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        window.location = "Dashboard";
+                    }
                 }
+                const fd = new FormData();
+                fd.append('culture', culture);
+                xhr.open("POST", "api/Culture", true);
+                xhr.send(fd);
             }
-            const fd = new FormData();
-            fd.append('culture', culture);
-            xhr.open("POST", "api/Culture", true);
-            xhr.send(fd);
-        }
-        var DMS = (function () {
+            var DMS = (function () {
 
-            var DRAWER_OPENED_KEY = "DMS-drawer-opened";
+                var DRAWER_OPENED_KEY = "DMS-drawer-opened";
 
 
-            var breakpoints = {
-                xSmallMedia: window.matchMedia("(max-width: 599.99px)"),
-                smallMedia: window.matchMedia("(min-width: 600px) and (max-width: 959.99px)"),
-                mediumMedia: window.matchMedia("(min-width: 960px) and (max-width: 1279.99px)"),
-                largeMedia: window.matchMedia("(min-width: 1280px)")
-            };
+                var breakpoints = {
+                    xSmallMedia: window.matchMedia("(max-width: 599.99px)"),
+                    smallMedia: window.matchMedia("(min-width: 600px) and (max-width: 959.99px)"),
+                    mediumMedia: window.matchMedia("(min-width: 960px) and (max-width: 1279.99px)"),
+                    largeMedia: window.matchMedia("(min-width: 1280px)")
+                };
 
-            function getDrawer() {
-                return $("#layout-drawer").dxDrawer("instance");
-            }
-            //   console.log(getDrawer());
+                function getDrawer() {
+                    return $("#layout-drawer").dxDrawer("instance");
+                }
+                //   console.log(getDrawer());
 
-            function restoreDrawerOpened() {
-                var isLarge = breakpoints.largeMedia.matches;
-                if (!isLarge)
-                    return false;
+                function restoreDrawerOpened() {
+                    var isLarge = breakpoints.largeMedia.matches;
+                    if (!isLarge)
+                        return false;
 
-                var state = sessionStorage.getItem(DRAWER_OPENED_KEY);
-                if (state === null)
-                    return isLarge;
+                    var state = sessionStorage.getItem(DRAWER_OPENED_KEY);
+                    if (state === null)
+                        return isLarge;
 
-                return state === "true";
-            }
+                    return state === "true";
+                }
 
 
-            function saveDrawerOpened() {
-                sessionStorage.setItem(DRAWER_OPENED_KEY, getDrawer().option("opened"));
-            }
+                function saveDrawerOpened() {
+                    sessionStorage.setItem(DRAWER_OPENED_KEY, getDrawer().option("opened"));
+                }
 
-            function updateDrawer() {
-                var isXSmall = breakpoints.xSmallMedia.matches,
-                    isLarge = breakpoints.largeMedia.matches;
-                getDrawer().option({
-                    openedStateMode: isLarge ? "shrink" : "overlap",
-                    revealMode: isXSmall ? "slide" : "expand",
-                    minSize: isXSmall ? 60 : 60,
-                    shading: !isLarge,
-                });
-            }
-
-            function init() {
-                $("#layout-drawer-scrollview").dxScrollView({ direction: "vertical" });
-
-                $.each(breakpoints, function (_, size) {
-                    size.addListener(function (e) {
-                        if (e.matches)
-                            updateDrawer();
+                function updateDrawer() {
+                    var isXSmall = breakpoints.xSmallMedia.matches,
+                        isLarge = breakpoints.largeMedia.matches;
+                    getDrawer().option({
+                        openedStateMode: isLarge ? "shrink" : "overlap",
+                        revealMode: isXSmall ? "slide" : "expand",
+                        minSize: isXSmall ? 60 : 60,
+                        shading: !isLarge,
                     });
-                });
-
-                updateDrawer();
-            }
-
-            function navigate(url, delay) {
-                setTimeout(function () { location.href = url }, delay);
-            }
-
-            function onMenuButtonClick() {
-
-                getDrawer().toggle();
-
-                saveDrawerOpened();
-
-            }
-
-            function onTreeViewItemClick(e) {
-                var drawer = getDrawer();
-                var savedOpened = restoreDrawerOpened();
-                var actualOpened = drawer.option("opened");
-
-                if (!actualOpened) {
-                    drawer.show();
-                } else {
-                    var willHide = !savedOpened || !breakpoints.largeMedia.matches;
-                    var willNavigate = !e.itemData.selected;
-
-                    if (willHide)
-                        drawer.hide();
-
-                    if (willNavigate)
-                        navigate(e.itemData.path, willHide ? 400 : 0);
                 }
-            }
 
-            return {
-                init: init,
-                restoreDrawerOpened: restoreDrawerOpened,
-                onMenuButtonClick: onMenuButtonClick,
-                onTreeViewItemClick: onTreeViewItemClick
-            };
-        })();
-        document.addEventListener("DOMContentLoaded", function documentReady() {
-            this.removeEventListener("DOMContentLoaded", documentReady);
-            DMS.init();
-        });
-    </script>
+                function init() {
+                    $("#layout-drawer-scrollview").dxScrollView({ direction: "vertical" });
 
-    @RenderSection("Scripts", required: false)
+                    $.each(breakpoints, function (_, size) {
+                        size.addListener(function (e) {
+                            if (e.matches)
+                                updateDrawer();
+                        });
+                    });
 
-</body>
+                    updateDrawer();
+                }
 
-</html>
+                function navigate(url, delay) {
+                    setTimeout(function () { location.href = url }, delay);
+                }
+
+                function onMenuButtonClick() {
+
+                    getDrawer().toggle();
+
+                    saveDrawerOpened();
+
+                }
+
+                function onTreeViewItemClick(e) {
+                    var drawer = getDrawer();
+                    var savedOpened = restoreDrawerOpened();
+                    var actualOpened = drawer.option("opened");
+
+                    if (!actualOpened) {
+                        drawer.show();
+                    } else {
+                        var willHide = !savedOpened || !breakpoints.largeMedia.matches;
+                        var willNavigate = !e.itemData.selected;
+
+                        if (willHide)
+                            drawer.hide();
+
+                        if (willNavigate)
+                            navigate(e.itemData.path, willHide ? 400 : 0);
+                    }
+                }
+
+                return {
+                    init: init,
+                    restoreDrawerOpened: restoreDrawerOpened,
+                    onMenuButtonClick: onMenuButtonClick,
+                    onTreeViewItemClick: onTreeViewItemClick
+                };
+            })();
+            document.addEventListener("DOMContentLoaded", function documentReady() {
+                this.removeEventListener("DOMContentLoaded", documentReady);
+                DMS.init();
+            });
+        </script>
+
+        @RenderSection("Scripts", required: false)
+
+    </body>
+
+    </html>
+*@

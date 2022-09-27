@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "ffxysn",
+  "CachePdfKey": "ffxysn/ffxysn-1k3kk2s.pdf",
+  "CacheXpzKey": "ffxysn/ffxysn-iv1f6m.xpz",
+  "CacheInfoKey": "ffxysn/ffxysn-iv1f6m.json",
+  "CacheCopyKey": "ffxysn/1y7qfm0.cdr",
+  "Document": null,
+  "DocumentHandlerType": null,
+  "DocumentHandlerParameters": null,
+  "DocumentLocation": null,
+  "DocumentFileName": "10076_10076.cdr",
+  "InputOptions": {
+    "Format": "Pdf",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "ffxysn",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  }
+}

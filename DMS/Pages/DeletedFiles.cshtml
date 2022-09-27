@@ -1,0 +1,88 @@
+﻿@page
+@model DMS.Pages.DeletedFilesModel
+@{
+    ViewData["Title"] = "DeleteFiles";
+    Layout = "~/Pages/_Layout.cshtml";
+}
+
+<style>
+    
+    .view: hover {
+        cursor: pointer;
+    }
+
+</style>
+<h2 class="content-block">Deleted Files</h2>
+
+@(Html.DevExtreme().DataGrid()
+        .ID("filesList")
+
+.DataSource(d => d.Mvc()
+    .Controller("Upload")
+    .LoadAction("GetDeletedFiles")
+
+    .Key("Email")
+).KeyExpr("Email")
+            .ShowRowLines(true)
+            .ShowBorders(true)
+            .ColumnAutoWidth(true)
+                    /*.RowDragging(rd => rd
+                        .AllowDropInsideItem(true)
+                        .AllowReordering(true)
+                        .OnDragChange("onDragChange")
+                        .OnReorder("onReorder")
+                        .ShowDragIcons(true)
+                    )*/
+                    .ElementAttr("class", "content-block")
+
+            .Columns(columns =>
+            {
+                columns.Add()
+                    .DataField("Email")
+                    .Caption("Email");
+
+                columns.Add()
+                    .DataField("FileName")
+                    .Caption("File Name");
+
+                columns.Add()
+                    .DataField("DeletionDate")
+                    .DataType(GridColumnDataType.DateTime)
+                    .Caption("Deletion Date");
+
+                columns.Add()
+                      .Caption("View")
+                      .Width(100)
+                      .Alignment(HorizontalAlignment.Center)
+                      .AllowFiltering(false)
+                      .AllowSorting(false)
+                      .CellTemplate(new JS("cellTemplate"));
+
+
+            })
+        )
+
+<script>
+
+    function cellTemplate(element, cellInfo) {
+        $('<a/>')
+            .text('View')
+            .click(function () {
+                onEdit(element, cellInfo);
+            })
+            .appendTo(element)
+            .addClass("view")
+    }
+    function onEdit(element, cellinfo) {
+        var infoAutoKey = cellinfo.data.DocumentAutoKey;
+        var lineAutoKey = cellinfo.data.LineAutoKey;
+    
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", "api/Upload/GetEncryptedString?key=" + infoAutoKey + "|" + lineAutoKey + "|undefined", false);
+        xmlHttp.send();
+    
+        var str = xmlHttp.responseText;
+        window.location.href = 'Viewer?f=' + str;
+    }
+
+</script>

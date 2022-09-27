@@ -6,15 +6,25 @@ using Dapper;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Data;
+using LinqToDB.Configuration;
+using LinqToDB.Data;
+using LinqToDB.DataProvider.SqlServer;
 
 namespace DMS.Database
 {
     public class SQLHelper : IDisposable
     {
         private SqlConnection sqlConnection;
+        private DataConnection dc;
         public SQLHelper(SqlConnectionStringBuilder conString)
         {
             sqlConnection = new SqlConnection(conString.ConnectionString);
+            /*
+            var builder = new LinqToDbConnectionOptionsBuilder();
+
+            builder.UseSqlServer(conString.ConnectionString));
+
+            dc = new DataConnection(builder.Build());*/
         }
 
         public SqlConnection GetSqlConnection() { return sqlConnection; }
@@ -26,29 +36,35 @@ namespace DMS.Database
         /// <returns></returns>
         public List<T> ExecuteReader<T>(string query)
         {
-            
-            if (sqlConnection.State == System.Data.ConnectionState.Closed)
-                sqlConnection.Open();
+            try
+            {
+                if (sqlConnection.State == System.Data.ConnectionState.Closed)
+                    sqlConnection.Open();
 
-            //var list = sqlConnection.Query<T>(query).ToList();
-            var sqlCommand = sqlConnection.CreateCommand();
-            sqlCommand.CommandType = System.Data.CommandType.Text;
-            sqlCommand.CommandText = query;
+                //var list = sqlConnection.Query<T>(query).ToList();
+                var sqlCommand = sqlConnection.CreateCommand();
+                sqlCommand.CommandType = System.Data.CommandType.Text;
+                sqlCommand.CommandText = query;
 
-            var reader = sqlCommand.ExecuteReader();
+                var reader = sqlCommand.ExecuteReader();
 
-            var list = DataReaderMapToList<T>(reader);
+                var list = DataReaderMapToList<T>(reader);
 
+                return list;
 
-                
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
 
-
-            return list;
         }
 
         public void CreateDatabase(string name, string path)
         {
-            string query = string.Format(@"
+            try
+            {
+                string query = string.Format(@"
 CREATE DATABASE [{0}]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -58,7 +74,12 @@ CREATE DATABASE [{0}]
  LOG ON 
 ( NAME = N'MoneySql_log', FILENAME = N'{1}\{0}_log.ldf' , SIZE = 1024000KB , MAXSIZE = 1024000KB , FILEGROWTH = 10%)
 ", name, path);
-            ExecuteNonQuery(query);
+                ExecuteNonQuery(query);
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
         }
         /// <summary>
         /// Execute reader query
@@ -67,76 +88,104 @@ CREATE DATABASE [{0}]
         /// <returns></returns>
         public SqlDataReader ExecuteReader(string query)
         {
-            if (sqlConnection.State == System.Data.ConnectionState.Closed)
-                sqlConnection.Open();
+                if (sqlConnection.State == System.Data.ConnectionState.Closed)
+                    sqlConnection.Open();
 
-            var sqlCommand = sqlConnection.CreateCommand();
-            sqlCommand.CommandType = System.Data.CommandType.Text;
+                var sqlCommand = sqlConnection.CreateCommand();
+                sqlCommand.CommandType = System.Data.CommandType.Text;
 
-            sqlCommand.CommandText = query;
+                sqlCommand.CommandText = query;
 
 
-            return sqlCommand.ExecuteReader();
+                return sqlCommand.ExecuteReader();
+          
         }
 
         public bool TableExists(string tablename)
         {
+            try
+            {
+                if (sqlConnection.State == System.Data.ConnectionState.Closed)
+                    sqlConnection.Open();
 
-            if (sqlConnection.State == System.Data.ConnectionState.Closed)
-                sqlConnection.Open();
+                var sqlCommand = sqlConnection.CreateCommand();
+                sqlCommand.CommandType = System.Data.CommandType.Text;
 
-            var sqlCommand = sqlConnection.CreateCommand();
-            sqlCommand.CommandType = System.Data.CommandType.Text;
+                sqlCommand.CommandText = "SELECT OBJECT_ID('" + tablename + "', 'U')";
 
-            sqlCommand.CommandText = "SELECT OBJECT_ID('" + tablename + "', 'U')";
-
-            return sqlCommand.ExecuteScalar() != null;
+                return sqlCommand.ExecuteScalar() != null;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
         }
 
         public int ExecuteNonQuery(string query, params SqlParameter[] parameters )
         {
-            if (sqlConnection.State == System.Data.ConnectionState.Closed)
-                sqlConnection.Open();
+            try
+            {
+                if (sqlConnection.State == System.Data.ConnectionState.Closed)
+                    sqlConnection.Open();
 
-            var sqlCommand = sqlConnection.CreateCommand();
-            sqlCommand.CommandType = System.Data.CommandType.Text;
+                var sqlCommand = sqlConnection.CreateCommand();
+                sqlCommand.CommandType = System.Data.CommandType.Text;
 
-            sqlCommand.CommandText = query;
-            if (parameters.Length != 0)
-                sqlCommand.Parameters.AddRange(parameters);
+                sqlCommand.CommandText = query;
+                if (parameters.Length != 0)
+                    sqlCommand.Parameters.AddRange(parameters);
 
 
-            return sqlCommand.ExecuteNonQuery();
+                return sqlCommand.ExecuteNonQuery();
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
         }
 
         public Task<int> ExecuteNonQueryAsync(string query, params SqlParameter[] parameters)
         {
-            if (sqlConnection.State == System.Data.ConnectionState.Closed)
-                sqlConnection.OpenAsync();
+            try
+            {
+                if (sqlConnection.State == System.Data.ConnectionState.Closed)
+                    sqlConnection.OpenAsync();
 
-            var sqlCommand = sqlConnection.CreateCommand();
-            sqlCommand.CommandType = System.Data.CommandType.Text;
+                var sqlCommand = sqlConnection.CreateCommand();
+                sqlCommand.CommandType = System.Data.CommandType.Text;
 
-            sqlCommand.CommandText = query;
-            if (parameters.Length != 0)
-                sqlCommand.Parameters.AddRange(parameters);
+                sqlCommand.CommandText = query;
+                if (parameters.Length != 0)
+                    sqlCommand.Parameters.AddRange(parameters);
 
 
-            return sqlCommand.ExecuteNonQueryAsync();
+                return sqlCommand.ExecuteNonQueryAsync();
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
         }
 
         public T ExecuteScalar<T>(string query)
         {
-            if (sqlConnection.State == System.Data.ConnectionState.Closed)
-                sqlConnection.Open();
+            try
+            {
+                if (sqlConnection.State == System.Data.ConnectionState.Closed)
+                    sqlConnection.Open();
 
-            var sqlCommand = sqlConnection.CreateCommand();
-            sqlCommand.CommandType = System.Data.CommandType.Text;
+                var sqlCommand = sqlConnection.CreateCommand();
+                sqlCommand.CommandType = System.Data.CommandType.Text;
 
-            sqlCommand.CommandText = query;
+                sqlCommand.CommandText = query;
 
 
-            return (T)Convert.ChangeType(sqlCommand.ExecuteScalar(), typeof(T));
+                return (T)Convert.ChangeType(sqlCommand.ExecuteScalar(), typeof(T));
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
         }
         /// <summary>
         /// Insert into a table.
@@ -147,7 +196,9 @@ CREATE DATABASE [{0}]
         /// <returns>Success or failure</returns>
         public bool Insert(string table, string[] columns, string[] values)
         {
+            
             int rv = 0;
+            String query = "";
             try
             {
                 if (sqlConnection.State == System.Data.ConnectionState.Closed)
@@ -156,7 +207,7 @@ CREATE DATABASE [{0}]
                 var sqlCommand = sqlConnection.CreateCommand();
                 sqlCommand.CommandType = System.Data.CommandType.Text;
 
-                String query = "INSERT INTO " + table + " (";
+                query = "INSERT INTO " + table + " (";
 
                 query += String.Join(',', columns);
 
@@ -189,6 +240,11 @@ CREATE DATABASE [{0}]
             catch(Exception ex)
             {
                 var msg = ex.Message;
+                Logger.Log(msg + query );
+            }
+            finally
+            {
+                sqlConnection.Close();
             }
             return rv >= 1;
         }
@@ -249,6 +305,10 @@ CREATE DATABASE [{0}]
                 Logger.Log(ex.Message + " - " + query);
                 return "";
             }
+            finally
+            {
+                sqlConnection.Close();
+            }
         }
         /// <summary>
         /// Delete from a table
@@ -282,6 +342,11 @@ CREATE DATABASE [{0}]
             catch (Exception ex)
             {
                 var msg = ex.Message;
+                Logger.Log(msg);
+            }
+            finally
+            {
+                sqlConnection.Close();
             }
             return rv >= 1;
         }
@@ -333,6 +398,11 @@ CREATE DATABASE [{0}]
             catch (Exception ex)
             {
                 var msg = ex.Message;
+                Logger.Log(msg);
+            }
+            finally
+            {
+                sqlConnection.Close();
             }
             return rv >= 1;
         }
@@ -347,27 +417,34 @@ CREATE DATABASE [{0}]
         /// <returns></returns>
         public List<T> Select<T>(string table, params string[] columns)
         {
-            List<T> list = new List<T>();
-
-            if (sqlConnection.State == System.Data.ConnectionState.Closed)
-                sqlConnection.Open();
-
-            var sqlCommand = sqlConnection.CreateCommand();
-            sqlCommand.CommandType = System.Data.CommandType.Text;
-
-            string query = "SELECT " + String.Join(',', columns) + " FROM " + table;
-
-            sqlCommand.CommandText = query;
-
-            using (var reader = sqlCommand.ExecuteReader())
+            try
             {
-                list = DataReaderMapToList<T>(reader);
-            }
+                List<T> list = new List<T>();
 
-            
-            sqlCommand.Dispose();
-            
-            return list;
+                if (sqlConnection.State == System.Data.ConnectionState.Closed)
+                    sqlConnection.Open();
+
+                var sqlCommand = sqlConnection.CreateCommand();
+                sqlCommand.CommandType = System.Data.CommandType.Text;
+
+                string query = "SELECT " + String.Join(',', columns) + " FROM " + table;
+
+                sqlCommand.CommandText = query;
+
+                using (var reader = sqlCommand.ExecuteReader())
+                {
+                    list = DataReaderMapToList<T>(reader);
+                }
+
+
+                sqlCommand.Dispose();
+
+                return list;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
         }
 
         /// <summary>
@@ -379,26 +456,33 @@ CREATE DATABASE [{0}]
         /// <returns></returns>
         public string Select(string table, string column)
         {
-            string rv;
+            try
+            {
+                string rv;
 
-            if (sqlConnection.State == System.Data.ConnectionState.Closed)
-                sqlConnection.Open();
+                if (sqlConnection.State == System.Data.ConnectionState.Closed)
+                    sqlConnection.Open();
 
-            var sqlCommand = sqlConnection.CreateCommand();
-            sqlCommand.CommandType = System.Data.CommandType.Text;
+                var sqlCommand = sqlConnection.CreateCommand();
+                sqlCommand.CommandType = System.Data.CommandType.Text;
 
-            string query = "SELECT " + column + " FROM " + table;
+                string query = "SELECT " + column + " FROM " + table;
 
-            sqlCommand.CommandText = query;
+                sqlCommand.CommandText = query;
 
-            rv = Convert.ToString(sqlCommand.ExecuteScalar());
+                rv = Convert.ToString(sqlCommand.ExecuteScalar());
 
 
-                
 
-            sqlCommand.Dispose();
 
-            return rv;
+                sqlCommand.Dispose();
+
+                return rv;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
         }
 
         /// <summary>
@@ -409,26 +493,33 @@ CREATE DATABASE [{0}]
         /// <returns></returns>
         public string SelectWithWhere(string table, string column, string where)
         {
-            string rv;
+            try
+            {
+                string rv;
 
-            if (sqlConnection.State == System.Data.ConnectionState.Closed)
-                sqlConnection.Open();
+                if (sqlConnection.State == System.Data.ConnectionState.Closed)
+                    sqlConnection.Open();
 
-            var sqlCommand = sqlConnection.CreateCommand();
-            sqlCommand.CommandType = System.Data.CommandType.Text;
+                var sqlCommand = sqlConnection.CreateCommand();
+                sqlCommand.CommandType = System.Data.CommandType.Text;
 
-            string query = "SELECT " + column + " FROM " + table + " WHERE " + where;
+                string query = "SELECT " + column + " FROM " + table + " WHERE " + where;
 
-            sqlCommand.CommandText = query;
+                sqlCommand.CommandText = query;
 
-            rv = Convert.ToString(sqlCommand.ExecuteScalar());
+                rv = Convert.ToString(sqlCommand.ExecuteScalar());
 
 
-                
 
-            sqlCommand.Dispose();
 
-            return rv;
+                sqlCommand.Dispose();
+
+                return rv;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
         }
         /// <summary>
         /// Select specified columns from a table with conditions
@@ -440,44 +531,52 @@ CREATE DATABASE [{0}]
         /// <returns></returns>
         public List<T> SelectWithWhere<T>(string table, string[] columns, Dictionary<string, string> whereValues)
         {
-            List<T> list = new List<T>();
-
-            if (sqlConnection.State == System.Data.ConnectionState.Closed)
-                sqlConnection.Open();
-
-            var sqlCommand = sqlConnection.CreateCommand();
-            sqlCommand.CommandType = System.Data.CommandType.Text;
-
-            string query = "SELECT " + String.Join(',', columns) + " FROM " + table;
-
-            query += " WHERE ";
-
-            int i = 0;
-            foreach(string where in whereValues.Keys)
+            try
             {
-                i++;
-                query += where + " = '" + whereValues[where] + "'";
+                List<T> list = new List<T>();
 
-                if(i != whereValues.Keys.Count)
+                if (sqlConnection.State == System.Data.ConnectionState.Closed)
+                    sqlConnection.Open();
+
+                var sqlCommand = sqlConnection.CreateCommand();
+                sqlCommand.CommandType = System.Data.CommandType.Text;
+
+                string query = "SELECT " + String.Join(',', columns) + " FROM " + table;
+
+                query += " WHERE ";
+
+                int i = 0;
+                foreach (string where in whereValues.Keys)
                 {
-                    query += " and ";
+                    i++;
+                    query += where + " = '" + whereValues[where] + "'";
+
+                    if (i != whereValues.Keys.Count)
+                    {
+                        query += " and ";
+                    }
                 }
+
+                sqlCommand.CommandText = query;
+
+                using (var reader = sqlCommand.ExecuteReader())
+                {
+                    list = DataReaderMapToList<T>(reader);
+                }
+
+
+
+
+
+                sqlCommand.Dispose();
+
+                return list;
             }
-
-            sqlCommand.CommandText = query;
-
-            using (var reader = sqlCommand.ExecuteReader())
+            finally
             {
-                list = DataReaderMapToList<T>(reader);
+                sqlConnection.Close();
             }
 
-
-
-                
-
-            sqlCommand.Dispose();
-
-            return list;
         }
 
         /// <summary>
@@ -488,36 +587,77 @@ CREATE DATABASE [{0}]
         /// <returns></returns>
         public bool Exists(string table, Dictionary<string, string> whereValues)
         {
-            if (sqlConnection.State == System.Data.ConnectionState.Closed)
-                sqlConnection.Open();
-
-            var sqlCommand = sqlConnection.CreateCommand();
-            sqlCommand.CommandType = System.Data.CommandType.Text;
-            string query = "SELECT 1 FROM " + table + " WHERE ";
-
-            int i = 0;
-            foreach (string where in whereValues.Keys)
+            try
             {
-                i++;
-                query += where + " = '" + whereValues[where] + "'";
+                if (sqlConnection.State == System.Data.ConnectionState.Closed)
+                    sqlConnection.Open();
 
-                if (i != whereValues.Keys.Count)
+                var sqlCommand = sqlConnection.CreateCommand();
+                sqlCommand.CommandType = System.Data.CommandType.Text;
+                string query = "SELECT 1 FROM " + table + " WHERE ";
+
+                int i = 0;
+                foreach (string where in whereValues.Keys)
                 {
-                    query += " and ";
+                    i++;
+                    query += where + " = '" + whereValues[where] + "'";
+
+                    if (i != whereValues.Keys.Count)
+                    {
+                        query += " and ";
+                    }
                 }
+
+                sqlCommand.CommandText = query;
+
+                var reader = sqlCommand.ExecuteReader();
+
+                bool hasRows = reader.HasRows;
+
+
+
+                sqlCommand.Dispose();
+
+                return hasRows;
+            }
+            finally
+            {
+                sqlConnection.Close();
             }
 
-            sqlCommand.CommandText = query;
+        }
 
-            var reader = sqlCommand.ExecuteReader();
+        /// <summary>
+        /// Check if a row exists in a table.
+        /// </summary>
+        /// <param name="table"></param>
+        /// <returns></returns>
+        public bool Exists(string table, string where)
+        {
+            try
+            {
+                if (sqlConnection.State == System.Data.ConnectionState.Closed)
+                    sqlConnection.Open();
 
-            bool hasRows = reader.HasRows;
+                var sqlCommand = sqlConnection.CreateCommand();
+                sqlCommand.CommandType = System.Data.CommandType.Text;
+                string query = "SELECT 1 FROM " + table + " WHERE " + where;
+                sqlCommand.CommandText = query;
 
-                
+                var reader = sqlCommand.ExecuteReader();
 
-            sqlCommand.Dispose();
+                bool hasRows = reader.HasRows;
 
-            return hasRows;
+
+
+                sqlCommand.Dispose();
+
+                return hasRows;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
         }
         /// <summary>
         /// Check if a row exists in a table but using OR instead of AND.
@@ -527,36 +667,44 @@ CREATE DATABASE [{0}]
         /// <returns></returns>
         public bool ExistsOR(string table, Dictionary<string, string> whereValues)
         {
-            if (sqlConnection.State == System.Data.ConnectionState.Closed)
-                sqlConnection.Open();
-
-            var sqlCommand = sqlConnection.CreateCommand();
-            sqlCommand.CommandType = System.Data.CommandType.Text;
-            string query = "SELECT 1 FROM " + table + " WHERE ";
-
-            int i = 0;
-            foreach (string where in whereValues.Keys)
+            try
             {
-                i++;
-                query += where + " = '" + whereValues[where] + "'";
+                if (sqlConnection.State == System.Data.ConnectionState.Closed)
+                    sqlConnection.Open();
 
-                if (i != whereValues.Keys.Count)
+                var sqlCommand = sqlConnection.CreateCommand();
+                sqlCommand.CommandType = System.Data.CommandType.Text;
+                string query = "SELECT 1 FROM " + table + " WHERE ";
+
+                int i = 0;
+                foreach (string where in whereValues.Keys)
                 {
-                    query += " OR ";
+                    i++;
+                    query += where + " = '" + whereValues[where] + "'";
+
+                    if (i != whereValues.Keys.Count)
+                    {
+                        query += " OR ";
+                    }
                 }
+
+                sqlCommand.CommandText = query;
+
+                var reader = sqlCommand.ExecuteReader();
+
+                bool hasRows = reader.HasRows;
+
+
+
+                sqlCommand.Dispose();
+
+                return hasRows;
             }
+            finally
+            {
+                sqlConnection.Close();
 
-            sqlCommand.CommandText = query;
-
-            var reader = sqlCommand.ExecuteReader();
-
-            bool hasRows = reader.HasRows;
-
-                
-
-            sqlCommand.Dispose();
-
-            return hasRows;
+            }
         }
 
         public List<T> DataReaderMapToList<T>(IDataReader dr)
@@ -585,7 +733,9 @@ CREATE DATABASE [{0}]
 
         public void Dispose()
         {
-                sqlConnection.Dispose();
+            if(sqlConnection.State != ConnectionState.Closed)
+                sqlConnection.Close();
+            sqlConnection.Dispose();
         }
 
     }

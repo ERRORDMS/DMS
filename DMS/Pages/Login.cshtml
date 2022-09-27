@@ -45,7 +45,7 @@
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="div">
-                        <h5>@Localizer["Email"]<span class="empty_field">@Localizer["FieldRequired"]</span><span class="err101">@Localizer["WrongCredentials"]</span></h5>
+                        <h5>@Localizer["Email"]<span class="empty_field">@Localizer["FieldRequired"]</span><span class="err101">@Localizer["WrongCredentials"]</span><span class="err102">@Localizer["EmailNotVerified"]</span></h5>
                         <input type="email" class="input email_input" id="email_input" autocomplete="off" />
                     </div>
                 </div>
@@ -57,12 +57,15 @@
                         <h5>@Localizer["Password"]<span class="empty_password">@Localizer["FieldRequired"]</span></h5>
                         <input type="password" class="input " id="password_input" />
                     </div>
-                </div>
+                </div>  
 
                 <a href="#">@Localizer["ForgotPassword"]</a>
                 <a href="Register">@Localizer["CreateAccount"]</a>
 
+                @if (!DMS.Controllers.SettingsController.GetSettingsPARSED().IsCompany)
+                {
                 <div class="g-recaptcha" data-sitekey="6Lfed8sZAAAAAKQxtFcowEvGZlGgUg8WiePUCkZO"></div>
+                }
                 <br />
                 <button type="submit" class="btn" id="login_button">@Localizer["Login"]</button>
 
@@ -103,6 +106,9 @@
         });
 
         function validateRecaptcha() {
+            if ('@DMS.Controllers.SettingsController.GetSettingsPARSED().IsCompany' === 'True') {
+                return ;true
+            }
             var response = grecaptcha.getResponse();
             if (response.length === 0) {
                 alert("You need to fill the captcha");
@@ -144,7 +150,7 @@
                         else {
                         alert('Code entered is incorrect');
                         }
-                    } 
+                    }
                 }
                 xhr.open("GET", "api/Authorization/CheckCode?Username=" + Username + "&Code=" + code, true);
                 xhr.send();
@@ -182,7 +188,7 @@
                     $(".empty_password").fadeOut(200);
                 }
             })
-            
+
             if (email && password) {
                 Username = email;
                 const xhr = new XMLHttpRequest();
@@ -219,13 +225,25 @@
                             $(document).ready(function () {
                                 $(".err101").fadeIn(200)
                             })
-                        } else {
+                        }
+
+                        else if (statusCode == 107) {
+                            $(".err102").fadeIn(200);
+                                
+                            const xhr = new XMLHttpRequest();
+                            const fd = new FormData();
+                            fd.append('Email', Username);
+                            xhr.open("POST", "api/Authorization/SendVerificationEmail", true);
+                            xhr.send(fd);
+                        }
+
+                        else {
                             $(".err101").fadeOut(200)
                         }
                         if (statusCode == 103) {
                             // Internal error
                             location.reload();
-                        } 
+                        }
                     }
                 }
 

@@ -39,6 +39,11 @@ namespace DMS.Controllers
             return System.IO.File.ReadAllText("settings.json");
             
         }
+        
+        public static Settings GetSettingsPARSED()
+        {
+            return JsonConvert.DeserializeObject<Settings>(GetSettings());
+        }
 
         [HttpGet]
         public string Get()
@@ -53,7 +58,9 @@ namespace DMS.Controllers
                          ServiceEndpoint = "http://localhost:9100/AlSahlService",
                          DataSource = @".\",
                          Database = "DB",
-                          DatabasesPath = @"D:\AlSahl\Data"
+                         DatabasesPath = @"D:\AlSahl\Data",
+                         IsCompany = false,
+                         CompanyCode = "HKMLNF"
                      }
 
                      ));
@@ -72,7 +79,7 @@ namespace DMS.Controllers
         [Route("GenerateTables")]
         public ActionResult GenerateTables()
         {
-            new DataManager(null).GenerateTables();
+            new DataManager(null).GenerateAllTables();
 
             return Ok();
         }
@@ -100,6 +107,7 @@ namespace DMS.Controllers
             settings.FtpUsername = FtpUsername;
             settings.FtpPassword = FtpPassword;
 
+
             System.IO.File.WriteAllText("settings.json", JsonConvert.SerializeObject(settings));
 
             return Ok();
@@ -116,5 +124,7 @@ namespace DMS.Controllers
         public string FtpUrl { get; set; }
         public string FtpUsername { get; set; }
         public string FtpPassword { get; set; }
+        public bool IsCompany { get; set; }
+        public string CompanyCode { get; set; }
     }
 }

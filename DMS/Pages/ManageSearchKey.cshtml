@@ -28,226 +28,32 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
-<style>
-    .empty_field {
-        display: none;
-        margin-left: 2rem;
-        color: rgb(250,82,82);
-    }
-
-    .already_exists {
-        display: none;
-        margin-left: 2rem;
-        color: rgb(250,82,82);
-    }
-
-    .add_search_key_form {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    #header {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 100px;
-        background: rgb(255,255,255);
-        z-index: 2000;
-        box-shadow: 0px 2px 5px black;
-        padding-bottom: 2rem
-    }
-    .search_key_input {
-        width: 360px;
-    }
-
-    .error {
-        display: flex;
-        justify-content: center;
-    }
-    .space {
-        margin-left: 2rem;
-    }
-    .inputs {
-        display: flex;
-    }
-    .dataGrid {
-        margin-top: 1.5rem;
-    }
-
-    #searchKeysList{
-        max-height:50vh;
-    }
-    .contact_found, .server_error {
-        color: rgb(255,82,82);
-        display: none;
-    }
-</style>
-
-
-@if (AutoKey != 0)
-{
-
-    <script>
-
-        $(document).ready(function () {
-
-
-            $('#txtName').val(getVal());
-            $('#txtName').focus();
-            $('#txtName').blur();
-
-            });
-
-        function getVal()
-{
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("GET", "api/SearchKeys/Name?AutoKey=" + @AutoKey, false );
-    xmlHttp.send();
-    return xmlHttp.responseText;
-        }
-
-        function saveCon() {
-            $(document).ready(function () {
-                $(".content-block").click(function () {
-                    window.onkeyup = function () {
-                        $('.empty_field').fadeOut(0);
-                        $(".already_exists").fadeOut(100);
-                    }
-                })
-            })
-            if (txtName.value == '') {
-                $('.empty_field').fadeIn(100)
-                return;
-            }
-            if (txtName.value !== '') {
-                $('.empty_field').fadeOut(0)
-            }
-            const xhr = new XMLHttpRequest();
-
-            xhr.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    var t = this.responseText;
-                    var obj = JSON.parse(t);
-
-                    var statusCode = obj.StatusCode;
-                    if (statusCode == 0) {
-                      window.location = "ManageSearchKey";
-                    }
-                    if (statusCode == 105) {
-                        $(".already_exists").fadeIn(100);
-                    } else {
-                        $(".already_exists").fadeOut(100);
-                    }
-              }
-            }
-
-        xhr.open("POST", 'api/SearchKeys/Save', true);
-
-            const fd = new FormData();
-
-            fd.append('AutoKey', @AutoKey);
-            fd.append('Name', txtName.value);
-            xhr.send(fd);
-        }
-
-
-        function deleteCon() {
-            const xhr = new XMLHttpRequest();
-
-        xhr.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-            window.location = "Index";
-            }
-        }
-
-        xhr.open("POST", 'api/SearchKeys/Delete', true);
-
-            const fd = new FormData();
-
-            fd.append('AutoKey', @AutoKey);
-            xhr.send(fd);
-
-        }
-    </script>
-
-    <div class="empty_field">
-        @Localizer["MissingArgs"]
-    </div>
-    <div class="already_exists">
-        @Localizer["AlreadyExists"]
-    </div>
-    @(Html.DevExtreme().TextBox()
-
-                .Placeholder(Localizer["SearchKeyCol"].Value)
-                        .ElementAttr("class", "content-block")
-                        .Name("txtName")
-    )
-
-    <br />
-    @(Html.DevExtreme().Button()
-        .Icon("save")
-        .Text(Localizer["Save"].Value)
-        .OnClick("saveCon")
-        .ElementAttr("class", "content-block")
-
-    )
-    @(Html.DevExtreme().Button()
-        .Icon("trash")
-        .Text(Localizer["DeleteKey"].Value)
-        .OnClick("deleteCon")
-        .ElementAttr("class", "content-block")
-
-    )
-}
-else
-{
-<div id="header">
-    <h2 class="content-block" style="font-size:22px;margin:0;margin-right:2rem;">@Localizer["ManageKey"]</h2>
-    <div class="add_search_key_form">
-        <div class="error">
-            <div class="contact_found">
-                @Localizer["AlreadyExists"]
-            </div>
-               <div class="server_error">
-                @Localizer["InternalError"]
-            </div>
-            <div class="empty_field">
-                @Localizer["MissingArgs"]
-            </div>
-        </div>
-        <form action="javascript:addKey()">
-            <div class="inputs">
-
-                @(Html.DevExtreme().TextBox()
-                .Mode(TextBoxMode.Text)
-                .Name("SearchKeyName")
-                .Placeholder(Localizer["SearchKey"].Value)
-                .ElementAttr("class", "search_key_input")
-                .HoverStateEnabled(true)
-            )
-                <span class="space"></span>
-                @(Html.DevExtreme().Button()
-        .Icon("plus")
-        .Text(Localizer["AddSearchKey"].Value)
-        .OnClick("addKey")
-
-    )
-            </div>
-        </form>
-    </div>
-</div>
-
-<div class="dataGrid">
-    @(Html.DevExtreme().DataGrid()
+<div style="margin-left:120px;margin-right:310px;margin-top:100px">
+@(Html.DevExtreme().DataGrid()
         .ID("searchKeysList")
-
+         .Editing(editing =>
+        {
+            editing.Mode(GridEditMode.Row);
+            editing.AllowAdding(true);
+            editing.AllowDeleting(true);
+            editing.AllowUpdating(true);
+        })
 .DataSource(d => d.Mvc()
     .Controller("SearchKeys")
+               .UpdateAction("UpdateKey")
+           .InsertAction("AddKey")
+           .DeleteAction("DeleteKey")
     .LoadAction("Get")
     .Key("AutoKey")
 ).KeyExpr("AutoKey")
+
+           .SearchPanel(s => s
+                    .Visible(true)
+                    .Placeholder("Search")
+                    .SearchVisibleColumnsOnly(true)
+            )
             .ShowRowLines(true)
+            .OnToolbarPreparing("toolbarPreparing")
             .ShowBorders(true)
             .ColumnAutoWidth(true)
                     /*.RowDragging(rd => rd
@@ -263,89 +69,380 @@ else
             {
                 columns.Add().DataField("Name")
                     .Caption(Localizer["SearchKeyCol"].Value);
-                columns.Add()
-               .Caption(Localizer["Manage"].Value)
-               .Width(100)
-               .Alignment(HorizontalAlignment.Center)
-               .AllowFiltering(false)
-               .AllowSorting(false)
-               .CellTemplate(new JS("cellTemplate"));
-
 
             })
         )
-</div>
-    
-}
-
-<script>
-
-    //<![CDATA[
-    function cellTemplate(element, cellInfo) {
-        $('<a/>')
-            .text('@Localizer["Manage"]')
-            .click(function () {
-                onEdit(element, cellInfo);
-            })
-            .appendTo(element);
-    }
-
-    function onEdit(element, cellinfo) {
-        var autokey = cellinfo.data.AutoKey;
-
-        window.location.href = 'ManageSearchKey?AutoKey=' + autokey;
-    }
-    function addKey() {
-        if (!SearchKeyName.value) {
-            $(document).ready(function () {
-                $('.empty_field').fadeIn(100);
-            });
-            return;
-        } else {
-            $('.empty_field').fadeOut(0);
-            const xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    var t = this.response;
-                    var obj = JSON.parse(t);
-
-                    var statusCode = obj.StatusCode;
-                    if (statusCode == 0) {
-                        $(document).ready(function () {
-                            $(".contact_found").fadeOut(0, function () {
-                                $(".server_error").fadeOut(0, function () {
-                                    $('.empty_field').fadeOut(0)
-                                })
-                            })
-                        });
-
-                        $('#searchKeysList').dxDataGrid('instance').refresh();
-
-                        $('#SearchKeyName').val("");
-                        $('#SearchKeyName').focus();
-                        $('#SearchKeyName').blur();
-                    }
-                    if (statusCode == 103) {
-                        $(document).ready(function () {
-                            $(".server_error").fadeIn(100);
-                        })
-                    } else {
-                        $('.server_error').fadeOut(0)
-                    }
-                    if (statusCode == 105) {
-                        $(".contact_found").fadeIn(100);
-                    } else {
-                        $('.contact_found').fadeOut(0);
-                    }
-
-                }
-            }
-            var contact = SearchKeyName.value;
-            const fd = new FormData();
-            fd.append("Name", contact);
-            xhr.open("POST", "api/SearchKeys/AddKey", true);
-            xhr.send(fd);
+    </div>
+@*
+    <style>
+        .empty_field {
+            display: none;
+            margin-left: 2rem;
+            color: rgb(250,82,82);
         }
 
+        .already_exists {
+            display: none;
+            margin-left: 2rem;
+            color: rgb(250,82,82);
+        }
+
+        .add_search_key_form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100px;
+            background: rgb(255,255,255);
+            z-index: 2000;
+            box-shadow: 0px 2px 5px black;
+            padding-bottom: 2rem
+        }
+        .search_key_input {
+            width: 360px;
+        }
+
+        .error {
+            display: flex;
+            justify-content: center;
+        }
+        .space {
+            margin-left: 2rem;
+        }
+        .inputs {
+            display: flex;
+        }
+        .dataGrid {
+            margin-top: 1.5rem;
+        }
+
+        #searchKeysList{
+            max-height:50vh;
+        }
+        .contact_found, .server_error {
+            color: rgb(255,82,82);
+            display: none;
+        }
+    </style>
+
+
+    @if (AutoKey != 0)
+    {
+
+        <script>
+
+            $(document).ready(function () {
+
+
+                $('#txtName').val(getVal());
+                $('#txtName').focus();
+                $('#txtName').blur();
+
+                });
+
+            function getVal()
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", "api/SearchKeys/Name?AutoKey=" + @AutoKey, false );
+        xmlHttp.send();
+        return xmlHttp.responseText;
+            }
+
+            function saveCon() {
+                $(document).ready(function () {
+                    $(".content-block").click(function () {
+                        window.onkeyup = function () {
+                            $('.empty_field').fadeOut(0);
+                            $(".already_exists").fadeOut(100);
+                        }
+                    })
+                })
+                if (txtName.value == '') {
+                    $('.empty_field').fadeIn(100)
+                    return;
+                }
+                if (txtName.value !== '') {
+                    $('.empty_field').fadeOut(0)
+                }
+                const xhr = new XMLHttpRequest();
+
+                xhr.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var t = this.responseText;
+                        var obj = JSON.parse(t);
+
+                        var statusCode = obj.StatusCode;
+                        if (statusCode == 0) {
+                          window.location = "ManageSearchKey";
+                        }
+                        if (statusCode == 105) {
+                            $(".already_exists").fadeIn(100);
+                        } else {
+                            $(".already_exists").fadeOut(100);
+                        }
+                  }
+                }
+
+            xhr.open("POST", 'api/SearchKeys/Save', true);
+
+                const fd = new FormData();
+
+                fd.append('AutoKey', @AutoKey);
+                fd.append('Name', txtName.value);
+                xhr.send(fd);
+            }
+
+
+            function deleteCon() {
+                const xhr = new XMLHttpRequest();
+
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                window.location = "Index";
+                }
+            }
+
+            xhr.open("POST", 'api/SearchKeys/Delete', true);
+
+                const fd = new FormData();
+
+                fd.append('AutoKey', @AutoKey);
+                xhr.send(fd);
+
+            }
+        </script>
+
+        <div class="empty_field">
+            @Localizer["MissingArgs"]
+        </div>
+        <div class="already_exists">
+            @Localizer["AlreadyExists"]
+        </div>
+        @(Html.DevExtreme().TextBox()
+
+                    .Placeholder(Localizer["SearchKeyCol"].Value)
+                            .ElementAttr("class", "content-block")
+                            .Name("txtName")
+        )
+
+        <br />
+        @(Html.DevExtreme().Button()
+            .Icon("save")
+            .Text(Localizer["Save"].Value)
+            .OnClick("saveCon")
+            .ElementAttr("class", "content-block")
+
+        )
+        @(Html.DevExtreme().Button()
+            .Icon("trash")
+            .Text(Localizer["DeleteKey"].Value)
+            .OnClick("deleteCon")
+            .ElementAttr("class", "content-block")
+
+        )
+    }
+    else
+    {
+    <div id="header">
+        <h2 class="content-block" style="font-size:22px;margin:0;margin-right:2rem;">@Localizer["ManageKey"]</h2>
+        <div class="add_search_key_form">
+            <div class="error">
+                <div class="contact_found">
+                    @Localizer["AlreadyExists"]
+                </div>
+                   <div class="server_error">
+                    @Localizer["InternalError"]
+                </div>
+                <div class="empty_field">
+                    @Localizer["MissingArgs"]
+                </div>
+            </div>
+            <form action="javascript:addKey()">
+                <div class="inputs">
+
+                    @(Html.DevExtreme().TextBox()
+                    .Mode(TextBoxMode.Text)
+                    .Name("SearchKeyName")
+                    .Placeholder(Localizer["SearchKey"].Value)
+                    .ElementAttr("class", "search_key_input")
+                    .HoverStateEnabled(true)
+                )
+                    <span class="space"></span>
+                    @(Html.DevExtreme().Button()
+            .Icon("plus")
+            .Text(Localizer["AddSearchKey"].Value)
+            .OnClick("addKey")
+
+        )
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="dataGrid">
+        @(Html.DevExtreme().DataGrid()
+            .ID("searchKeysList")
+
+    .DataSource(d => d.Mvc()
+        .Controller("SearchKeys")
+        .LoadAction("Get")
+        .Key("AutoKey")
+    ).KeyExpr("AutoKey")
+                .ShowRowLines(true)
+                .ShowBorders(true)
+                .ColumnAutoWidth(true)
+                        /*.RowDragging(rd => rd
+                            .AllowDropInsideItem(true)
+                            .AllowReordering(true)
+                            .OnDragChange("onDragChange")
+                            .OnReorder("onReorder")
+                            .ShowDragIcons(true)
+                        )*/
+                        .ElementAttr("class", "content-block")
+
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("Name")
+                        .Caption(Localizer["SearchKeyCol"].Value);
+                    columns.Add()
+                   .Caption(Localizer["Manage"].Value)
+                   .Width(100)
+                   .Alignment(HorizontalAlignment.Center)
+                   .AllowFiltering(false)
+                   .AllowSorting(false)
+                   .CellTemplate(new JS("cellTemplate"));
+
+
+                })
+            )
+    </div>
+
+    }
+
+    <script>
+
+        //<![CDATA[
+        function cellTemplate(element, cellInfo) {
+            $('<a/>')
+                .text('@Localizer["Manage"]')
+                .click(function () {
+                    onEdit(element, cellInfo);
+                })
+                .appendTo(element);
+        }
+
+        function onEdit(element, cellinfo) {
+            var autokey = cellinfo.data.AutoKey;
+
+            window.location.href = 'ManageSearchKey?AutoKey=' + autokey;
+        }
+        function addKey() {
+            if (!SearchKeyName.value) {
+                $(document).ready(function () {
+                    $('.empty_field').fadeIn(100);
+                });
+                return;
+            } else {
+                $('.empty_field').fadeOut(0);
+                const xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var t = this.response;
+                        var obj = JSON.parse(t);
+
+                        var statusCode = obj.StatusCode;
+                        if (statusCode == 0) {
+                            $(document).ready(function () {
+                                $(".contact_found").fadeOut(0, function () {
+                                    $(".server_error").fadeOut(0, function () {
+                                        $('.empty_field').fadeOut(0)
+                                    })
+                                })
+                            });
+
+                            $('#searchKeysList').dxDataGrid('instance').refresh();
+
+                            $('#SearchKeyName').val("");
+                            $('#SearchKeyName').focus();
+                            $('#SearchKeyName').blur();
+                        }
+                        if (statusCode == 103) {
+                            $(document).ready(function () {
+                                $(".server_error").fadeIn(100);
+                            })
+                        } else {
+                            $('.server_error').fadeOut(0)
+                        }
+                        if (statusCode == 105) {
+                            $(".contact_found").fadeIn(100);
+                        } else {
+                            $('.contact_found').fadeOut(0);
+                        }
+
+                    }
+                }
+                var contact = SearchKeyName.value;
+                const fd = new FormData();
+                fd.append("Name", contact);
+                xhr.open("POST", "api/SearchKeys/AddKey", true);
+                xhr.send(fd);
+            }
+
+        }
+    </script>*@
+
+<script>
+    var isEnterprise;
+    var permissions;
+    $(document).ready(function () {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", "api/Enterprise/IsEnterprise", false);
+        xmlHttp.send();
+
+        isEnterprise = JSON.parse(xmlHttp.responseText);
+
+
+        if (isEnterprise) {
+            // Get user permissions
+
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", "api/Permissions/UserPermissions", false);
+            xmlHttp.send();
+
+            var result = JSON.parse(xmlHttp.responseText);
+
+            permissions = result.map(a => a.Name);
+
+        }
+
+        $("#searchKeysList").dxDataGrid({
+            editing: {
+                mode: "row",
+                allowUpdating: function (e) {
+                    return isEnterprise == false || permissions.includes('Can Edit Search Keys');
+                },
+                allowDeleting: function (e) {
+                    return isEnterprise == false || permissions.includes('Can Edit Search Keys');
+                },
+                allowAdding: function (e) {
+                    return isEnterprise == false || permissions.includes('Can Add Search Keys');
+                },
+                useIcons: true
+            }
+        });
+    });
+
+    function toolbarPreparing(e) {
+
+        if (isEnterprise) {
+            if (!permissions.includes('Can Add Search Keys')) {
+                e.toolbarOptions.items.shift();
+            }
+        }
     }
 </script>

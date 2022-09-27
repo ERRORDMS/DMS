@@ -6,6 +6,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <Optimize>false</Optimize>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,23 +23,35 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Aspose.Total.lic" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNetCoreRateLimit" Version="2.1.0" />
+    <PackageReference Include="Aspose.Imaging" Version="20.11.0" />
     <PackageReference Include="Dapper" Version="2.0.35" />
     <PackageReference Include="DevExpress.AspNetCore.Common" Version="20.1.3" />
     <PackageReference Include="DevExpress.AspNetCore.Core" Version="20.1.3" />
     <PackageReference Include="DevExtreme.AspNet.Core" Version="20.1.3" />
     <PackageReference Include="EntityFramework" Version="6.4.0" />
-    <PackageReference Include="GleamTech.DocumentUltimate" Version="5.2.2" />
+    <PackageReference Include="linq2db.SqlServer" Version="3.2.3" />
+    <PackageReference Include="lz4net" Version="1.0.15.93" />
     <PackageReference Include="MailKit" Version="2.8.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="DevExtreme.AspNet.Data" Version="2.6.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.1.1" />
     <PackageReference Include="BuildBundlerMinifier" Version="2.9.406" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.10" />
-    <PackageReference Include="MimeKit" Version="2.9.1" />
+    <PackageReference Include="MimeKit" Version="2.9.2" />
+    <PackageReference Include="MimeTypes" Version="2.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Otp.NET" Version="1.2.2" />
     <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="18.2.0.54" />
+    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    <PackageReference Include="System.Security.Permissions" Version="4.7.0" />
     <PackageReference Include="System.ServiceModel.Duplex" Version="4.4.*" />
     <PackageReference Include="System.ServiceModel.Http" Version="4.4.*" />
     <PackageReference Include="System.ServiceModel.NetTcp" Version="4.4.*" />
@@ -48,6 +61,10 @@
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Aspose.Total.lic" />
   </ItemGroup>
 
   <ItemGroup>
@@ -76,10 +93,10 @@
 
   <ItemGroup>
     <Reference Include="GleamTech.Common">
-      <HintPath>C:\Users\YOGA L380\Downloads\[FTUApps.com] - GleamTech DocumentUltimate v5.2.2.0 + Crack\Bin\net40\GleamTech.Common.dll</HintPath>
+      <HintPath>..\..\..\Software\Download GleamTech DocumentUltimate v5.3.2.0 (23 Jun 2020) + CRACK\Bin\netstandard2.0\GleamTech.Common.dll</HintPath>
     </Reference>
     <Reference Include="GleamTech.DocumentUltimate">
-      <HintPath>C:\Users\YOGA L380\Downloads\[FTUApps.com] - GleamTech DocumentUltimate v5.2.2.0 + Crack\Bin\net40\GleamTech.DocumentUltimate.dll</HintPath>
+      <HintPath>..\..\..\Software\Download GleamTech DocumentUltimate v5.3.2.0 (23 Jun 2020) + CRACK\Bin\netstandard2.0\GleamTech.DocumentUltimate.dll</HintPath>
     </Reference>
   </ItemGroup>
 
@@ -94,6 +111,10 @@
     <Content Update="settings.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\App_Data\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties TemplateFeatures="NETCORE CS RESPONSIVE" /></VisualStudio></ProjectExtensions>

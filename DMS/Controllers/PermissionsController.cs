@@ -22,15 +22,28 @@ namespace DMS.Controllers
             return View();
         } 
 
+        public bool IsAdmin(string userID = null)
+        {
+            if (string.IsNullOrEmpty(userID))
+                userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            using (var dm = new DataManager(userID))
+            {
+                return dm.IsAdmin(userID);
+            }
+        }
+
         [Route("Users")]
         [HttpGet]
-        public IActionResult GetUsers(string userId = null)
+        public IActionResult GetUsers(string userId = null, bool includeSelf = false)
         {
+            using (var dm = new DataManager(null))
+            {
+                if (string.IsNullOrEmpty(userId))
+                    userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            return new JsonResult(new DataManager(null).GetUsers(userId));
+                return new JsonResult(dm.GetUsers(userId, includeSelf));
+            }   
         }
 
 
@@ -42,7 +55,10 @@ namespace DMS.Controllers
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return new JsonResult(new DataManager(userId).GetPermissions());
+            using (var dm = new DataManager(userId))
+            {
+                return new JsonResult(dm.GetPermissions());
+            }
         }
 
 
@@ -54,48 +70,62 @@ namespace DMS.Controllers
             if (string.IsNullOrEmpty(userID))
                 userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return new JsonResult(new DataManager(userID).GetUserPermissions(userID));
+            using (var dm = new DataManager(userID))
+            {
+                return new JsonResult(dm.GetUserPermissions(userID));
+            }
         }
 
         [Route("RolePermissions")]
         [HttpGet]
         public IActionResult GetRolePermissions(string roleID, string userId = null)
         {
-            if(string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return new JsonResult(new DataManager(userId).GetRolePermissions(roleID));
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            using (var dm = new DataManager(userId))
+            {
+
+                return new JsonResult(dm.GetRolePermissions(roleID));
+            }
         }
         [Route("Save")]
         [HttpPost]
         public IActionResult save(string userID, string permissionsJson, string rolesJson)
         {
-            var permissions = JsonConvert.DeserializeObject<List<Permission>>(permissionsJson);
-            var roles = JsonConvert.DeserializeObject<List<Role>>(rolesJson);
-            int i = new DataManager(userID).SaveUser(userID, permissions, roles);
+            using (var dm = new DataManager(userID))
+            {
+                var permissions = JsonConvert.DeserializeObject<List<Permission>>(permissionsJson);
+                var roles = JsonConvert.DeserializeObject<List<Role>>(rolesJson);
+                int i = dm.SaveUser(userID, permissions, roles);
 
-            AuthorizationController.Result result = new AuthorizationController.Result();
-            result.StatusName = ((ErrorCodes)i).ToString();
-            result.StatusCode = i;
+                AuthorizationController.Result result = new AuthorizationController.Result();
+                result.StatusName = ((ErrorCodes)i).ToString();
+                result.StatusCode = i;
 
-            return new JsonResult(result);
+                return new JsonResult(result);
+            }
         }
 
         [Route("SaveRole")]
         [HttpPost]
         public IActionResult saveRole(string roleID, string permissionsJson, string userId = null)
         {
+            
             if(string.IsNullOrEmpty(userId))
             userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var permissions = JsonConvert.DeserializeObject<List<Permission>>(permissionsJson);
-            int i = new DataManager(userId).SaveRole(roleID, permissions);
+            using (var dm = new DataManager(userId))
+            {
+                var permissions = JsonConvert.DeserializeObject<List<Permission>>(permissionsJson);
+                int i = dm.SaveRole(roleID, permissions);
 
-            AuthorizationController.Result result = new AuthorizationController.Result();
-            result.StatusName = ((ErrorCodes)i).ToString();
-            result.StatusCode = i;
+                AuthorizationController.Result result = new AuthorizationController.Result();
+                result.StatusName = ((ErrorCodes)i).ToString();
+                result.StatusCode = i;
 
-            return new JsonResult(result);
+                return new JsonResult(result);
+            }
         }
 
 
@@ -105,7 +135,10 @@ namespace DMS.Controllers
         {
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return new DataManager(null).GetEnterpriseCode(userId);
+
+            using (var dm = new DataManager(null)) {
+                return dm.GetEnterpriseCode(userId);
+            }
         }
 
         [Route("Roles")]
@@ -116,7 +149,10 @@ namespace DMS.Controllers
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return new JsonResult(new DataManager(userId).GetRoles());
+            using (var dm = new DataManager(userId))
+            {
+                return new JsonResult(dm.GetRoles());
+            }
         }
 
 
@@ -128,7 +164,10 @@ namespace DMS.Controllers
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return new JsonResult(new DataManager(userId).GetUserRoles(userId));
+            using (var dm = new DataManager(userId))
+            {
+                return new JsonResult(dm.GetUserRoles(userId));
+            }
         }
 
         [Route("AddRole")]
@@ -137,15 +176,18 @@ namespace DMS.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var d = JsonConvert.DeserializeObject<RoleResult>(values);
+            using (var dm = new DataManager(userId))
+            {
+                var d = JsonConvert.DeserializeObject<RoleResult>(values);
 
-            int i = new DataManager(userId).AddRole(d.Name);
+                int i = dm.AddRole(d.Name);
 
-            AuthorizationController.Result result = new AuthorizationController.Result();
-            result.StatusName = ((ErrorCodes)i).ToString();
-            result.StatusCode = i;
+                AuthorizationController.Result result = new AuthorizationController.Result();
+                result.StatusName = ((ErrorCodes)i).ToString();
+                result.StatusCode = i;
 
-            return new JsonResult(result);
+                return new JsonResult(result);
+            }
         }
 
         [Route("UpdateRole")]
@@ -156,16 +198,18 @@ namespace DMS.Controllers
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            using (var dm = new DataManager(userId))
+            {
+                var d = JsonConvert.DeserializeObject<RoleResult>(values);
 
-            var d = JsonConvert.DeserializeObject<RoleResult>(values);
+                int i = dm.UpdateRole(key, d.Name);
 
-            int i = new DataManager(userId).UpdateRole(key, d.Name);
+                AuthorizationController.Result result = new AuthorizationController.Result();
+                result.StatusName = ((ErrorCodes)i).ToString();
+                result.StatusCode = i;
 
-            AuthorizationController.Result result = new AuthorizationController.Result();
-            result.StatusName = ((ErrorCodes)i).ToString();
-            result.StatusCode = i;
-
-            return new JsonResult(result);
+                return new JsonResult(result);
+            }
         }
 
         [Route("DeleteRole")]
@@ -176,8 +220,9 @@ namespace DMS.Controllers
             if (string.IsNullOrEmpty(userId))
                 userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-
-            new DataManager(userId).DeleteRole(key);
+            using (var dm = new DataManager(userId)) { 
+                dm.DeleteRole(key);
+            }
 
         }
 

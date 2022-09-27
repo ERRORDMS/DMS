@@ -40,6 +40,8 @@
                 <img src="~/images/download2(1).svg" />
                 <h2 class="title">@Localizer["Welcome"]</h2>
                 <span class="err99">@Localizer["MissingFields"]</span>
+                <span class="err98">@Localizer["VerifyEmail"]</span>
+
                 <div class="input-div one">
                     <div class="i">
                         <i class="far fa-envelope"></i>
@@ -54,7 +56,7 @@
                         <i class="fas fa-lock"></i>
                     </div>
                     <div class="div">
-                        <h5>@Localizer["Password"]</h5>
+                        <h5>@Localizer["Password"]<span class="err100">@Localizer["PasswordsDontMatch"]</span></h5>
                         <input type="password" class="input" id="password_input" />
                     </div>
                 </div>
@@ -72,7 +74,7 @@
                         <i class="fas fa-phone-volume"></i>
                     </div>
                     <div class="div">
-                        <h5>Phone Number (optional)<span class="err100">@Localizer["PasswordsDontMatch"]</span></h5>
+                        <h5>Phone Number (optional)</h5>
                         <input type="text" class="input" id="phone_number_input" />
                     </div>
                 </div>
@@ -86,7 +88,12 @@
                     </div>
                 </div>
                 <a href="login">@Localizer["Login"]</a>
+                @{
+                    if (!DMS.Controllers.SettingsController.GetSettingsPARSED().IsCompany)
+                    {
                 <a class="enter_prise_account" id="showInput">@Localizer["Enterprise"]</a>
+                        }
+                }
                 <input type="submit" class="btn" id="Register_button" value="@Localizer["Register"]" />
                 @(Html.DevExtreme().Button()
                     .Type(ButtonType.Normal)
@@ -151,7 +158,7 @@
             } else {
                 $(".err99, .err100").fadeOut(100);
                 $('#Register_button').prop('disabled', true);
-                $('#Register_button').addClass('disabled');  
+                $('#Register_button').addClass('disabled');
                 const xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function () {
                     if (this.readyState == 4 && this.status == 200) {
@@ -162,7 +169,14 @@
 
 
                         if (statusCode == 0) {
-                            window.location = 'Dashboard';
+
+                            if ('@DMS.Controllers.SettingsController.GetSettingsPARSED().IsCompany' === 'True') {
+                                window.location = 'Dashboard';
+
+                            } else {
+                                $(".err98").fadeIn(200);
+                            }
+
                         }
                         if (statusCode == 102) {
                             // Username already exists

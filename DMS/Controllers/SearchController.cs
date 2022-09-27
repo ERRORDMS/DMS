@@ -19,269 +19,183 @@ namespace DMS.Controllers
         {
             return View();
         }
-
-
-        [Route("SearchCats")]
-        [HttpGet]
-        public ActionResult SearchCats(string sQuery, string userId = null)
-        {
-            if (string.IsNullOrEmpty(sQuery))
-                return BadRequest();
-
-            List<Category> categories = new List<Category>();
-            if(string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            SQLHelper helper = new DataManager(userId).SQLHelper;
-            string[] words = sQuery.Split(' ');
-
-            string query = "SELECT";
-
-            query += " D.InfoAutoKey,";
-            query += " DL.Name,";
-            query += " DL.Ext,";
-            query += " C.Name as ConName,";
-            query += " Cat.FatherAutoKey,";
-            query += " Cat.Name as CatName,";
-            query += " Cat.AutoKey as CatAutoKey";
-            query += " FROM";
-            query += " " + Tables.DocumentInfo + " D";
-            query += " INNER JOIN " + Tables.DocumentLines + " DL on DL.InfoAutoKey = D.InfoAutoKey";
-            query += " LEFT JOIN " + Tables.DocumentContactRel + " DCR on DCR.DocumentAutoKey = D.InfoAutoKey";
-            query += " LEFT JOIN " + Tables.DocumentCategoryRel + " DCL on DCL.DocumentAutoKey = D.InfoAutoKey";
-            query += " LEFT JOIN " + Tables.Categories + " Cat on Cat.AutoKey = DCL.CatAutoKey";
-            query += " LEFT JOIN " + Tables.Contacts + " C on C.AutoKey = DCR.ContactAutoKey";
-            query += " LEFT JOIN " + Tables.DocumentSearchKeysRel + " DSKR on DSKR.DocumentAutoKey = D.InfoAutoKey";
-            query += " LEFT JOIN " + Tables.SearchKeys + " S on S.AutoKey = DSKR.SearchAutoKey";
-            query += " WHERE";
-
-            query += " D.AddedByUserID = '" + userId + "'";
-
-
-            for (int i = 0; i < words.Length; i++)
-            {
-                string word = words[i];
-                if (i == 0)
-                {
-                    query += " AND";
-                    query += " (";
-                    query += " DL.Name like '%" + word + "%'";
-                    query += " OR C.Name like '%" + word + "%'";
-                    query += " OR S.Name like '%" + word + "%'";
-                    query += " OR Cat.Name like '%" + word + "%'";
-                    query += " )";
-                }
-                else
-                {
-
-                    query += " OR ";
-                    query += " (";
-                    query += " DL.Name like '%" + word + "%'";
-                    query += " OR C.Name like '%" + word + "%'";
-                    query += " OR S.Name like '%" + word + "%'";
-                    query += " OR Cat.Name like '%" + word + "%'";
-                    query += " )";
-                }
-            }
-
-            var reader = helper.ExecuteReader(query);
-            while (reader.Read())
-            {
-                object catAutoKey = reader["CatAutoKey"];
-
-                if (catAutoKey == DBNull.Value)
-                    continue;
-
-                long autokey = Convert.ToInt64(catAutoKey);
-
-                if (!categories.Any(S => S.AutoKey == autokey))
-                {
-                    Category category = new Category();
-                    category.Name = Convert.ToString(reader["CatName"]);
-                    category.FatherAutoKey = 0;//Convert.ToInt64(reader["FatherAutoKey"]);
-                    category.AutoKey = autokey;
-
-                    categories.Add(category);
-                }
-            }
-
-
-            helper.Dispose();
-
-
-            return new JsonResult(categories);
-        }
-        /*
         [Route("Search")]
         [HttpGet]
-        public ActionResult Search(string sQuery)
+        public ActionResult Search(string sQuery, string userId = null)
         {
-            if (string.IsNullOrEmpty(sQuery))
-                return BadRequest();
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            List<SearchResult> result = new List<SearchResult>();
-            List<Category> categories = new List<Category>();
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            SQLHelper helper = new SQLHelper(DataManager.GetConnectionString());
-            foreach (var word in sQuery.Split(" "))
+            var dm = new DataManager(userId);
+            var cats = dm.GetEnterpriseCategories(userId);
+            SQLHelper helper = dm.SQLHelper;
+            string query = "";
+            try
             {
+                if (string.IsNullOrEmpty(sQuery))
+                    return BadRequest();
 
-                string query = "SELECT";
+              
+                string[] words = sQuery.Split(' ');
+                bool isEnterpriseSubUser = new DataManager(null).IsEnterpriseSubUser(userId);
 
-                query += " D.AutoKey,";
+                query = "SELECT";
+                query += " ROW_NUMBER() OVER(ORDER BY DL.AutoKey ASC) AS ID,";
+                query += " D.DateTimeAdded,";
+                query += " D.InfoAutoKey,";
                 query += " DL.Name,";
+                query += " DL.AutoKey as LineAutoKey, ";
                 query += " DL.Ext,";
+                query += " DL.FileSize as Size,";
+                query += " D.Note as Note,";
+                query += " AddedByUserID as UserID,";
+
                 query += " C.Name as ConName,";
-                query += " Cat.FatherAutoKey,";
-                query += " Cat.Name as CatName,";
-                query += " Cat.AutoKey as CatAutoKey";
+                query += " Cat.AutoKey as CatAutoKey,";
+                query += " Cat.Name as CatName";
                 query += " FROM";
-                query += " DocumentInfo D";
-                query += " INNER JOIN DocumentLines DL on DL.InfoAutoKey = D.AutoKey";
-                query += " INNER JOIN DocumentContactRel DCR on DCR.InfoAutoKey = D.AutoKey";
-                query += " INNER JOIN DocumentCategoryRel DCL on DCL.InfoAutoKey = D.AutoKey";
-                query += " INNER JOIN Categories Cat on Cat.AutoKey = DCL.CategoryAutoKey";
-                query += " INNER JOIN Contacts C on C.AutoKey = DCR.ContactAutoKey";
-                query += " WHERE";
-                query += " D.AddedBy = '" + userId + "'";
-                query += " AND DL.Name like '%" + word + "%'";
-                query += " OR C.Name like '%" + word + "%'";
-                query += " OR Cat.Name like '%" + word + "%'";
+                query += " " + Tables.DocumentInfo + " D";
+                query += " INNER JOIN " + Tables.DocumentLines + " DL on DL.InfoAutoKey = D.InfoAutoKey";
+                query += " LEFT JOIN " + Tables.DocumentContactRel + " DCR on DCR.DocumentAutoKey = D.InfoAutoKey";
+                query += " LEFT JOIN " + Tables.DocumentCategoryRel + " DCL on DCL.DocumentAutoKey = D.InfoAutoKey";
+                query += " LEFT JOIN " + Tables.Categories + " Cat on Cat.AutoKey = DCL.CatAutoKey";
+                query += " LEFT JOIN " + Tables.DocumentSearchKeysRel + " DSKR on DSKR.DocumentAutoKey = D.InfoAutoKey";
+                query += " LEFT JOIN " + Tables.Contacts + " C on C.AutoKey = DCR.ContactAutoKey";
+                query += " LEFT JOIN " + Tables.SearchKeys + " S on S.AutoKey = DSKR.SearchAutoKey";
+                query += " WHERE IsDeleted <> 1 ";
+
+                for (int i = 0; i < words.Length; i++)
+                {
+                    string word = words[i];
+
+                    if (i == 0)
+                    {
+                        query += " AND ";
+                    }
+                    else
+                    {
+                        query += " OR ";
+                    }
+
+                    query += " (";
+                    query += " DL.Name like '%" + word + "%'";
+                    query += " OR C.Name like '%" + word + "%'";
+                    query += " OR S.Name like '%" + word + "%'";
+                    query += " OR Cat.Name like '%" + word + "%'";
+                    query += " OR Note like '%" + word + "%'";
+
+                    query += " )";
+
+                }
+                query += "order by DateTimeAdded desc";
+
+
 
                 SearchResult sResult = new SearchResult();
+                sResult.Files = new List<SearchResultFile>();
+                sResult.Categories = new List<SearchResultCategory>();
                 var reader = helper.ExecuteReader(query);
+                
                 while (reader.Read())
                 {
-                    Category category = new Category();
-                    category.Name = Convert.ToString(reader["CatName"]);
-                    category.FatherAutoKey = Convert.ToInt64(reader["FatherAutoKey"]);
-                    category.AutoKey = Convert.ToInt64(reader["CatAutoKey"]);
+                    object catAutoKey = reader["CatAutoKey"];
 
-                    categories.Add(category);
+                    if (catAutoKey == DBNull.Value)
+                        continue;
 
 
-                    sResult.AutoKey = Convert.ToInt64(reader["AutoKey"]);
-                    sResult.CatAutoKey = Convert.ToInt64(reader["CatAutoKey"]);
-                    sResult.Ext = Convert.ToString(reader["Ext"]);
-                    sResult.Name = Convert.ToString(reader["Name"]);
-                    sResult.ConName = Convert.ToString(reader["ConName"]);
+                    if (isEnterpriseSubUser)
+                    {
 
-                    result.Add(sResult);
+                        if (!cats.Any(S => S.AutoKey == Convert.ToInt64(catAutoKey)))
+                            continue;
+                    }
+
+                    SearchResultFile fileResult = new SearchResultFile();
+                    fileResult.ID = ConvertToLong(reader["ID"]);
+                    fileResult.UserID = Convert.ToString(reader["UserID"]);
+
+                    fileResult.DateTimeAdded = Convert.ToDateTime(reader["DateTimeAdded"]);
+                    fileResult.DocumentAutoKey = ConvertToLong(reader["InfoAutoKey"]);
+                    fileResult.LineAutoKey = ConvertToLong(reader["LineAutoKey"]);
+                    fileResult.Size = Convert.ToInt64(reader["Size"]);
+
+                    fileResult.CatAutoKey = ConvertToLong(catAutoKey);
+                    fileResult.Ext = Convert.ToString(reader["Ext"]);
+                    fileResult.Name = Convert.ToString(reader["Name"]);
+                    fileResult.Note = Convert.ToString(reader["Note"]);
+
+                    fileResult.ConName = Convert.ToString(reader["ConName"]);
+
+                    sResult.Files.Add(fileResult);
+
+                    if (!sResult.Categories.Any(S => S.AutoKey == fileResult.CatAutoKey))
+                    {
+                        sResult.Categories.Add(new SearchResultCategory() { AutoKey = fileResult.CatAutoKey, Name = Convert.ToString(reader["CatName"]) });
+                    }
+
                 }
 
 
+
+                return new JsonResult(sResult);
+
             }
-            helper.Dispose();
-
-
-            return new JsonResult(result);
-        }
-        */
-        [Route("SearchFiles")]
-        [HttpGet]
-        public ActionResult SearchFiles(string sQuery, string userId = null)
-        {
-            if (string.IsNullOrEmpty(sQuery))
+            catch(Exception ex)
+            {
+                Logger.Log(ex.Message);
+                Logger.Log("Query: " + query);
                 return BadRequest();
-
-            List<SearchResult> result = new List<SearchResult>();
-            if(string.IsNullOrEmpty(userId))
-             userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            SQLHelper helper = new DataManager(userId).SQLHelper;
-            string[] words = sQuery.Split(' ');
-
-            string query = "SELECT";
-            query += " ROW_NUMBER() OVER(ORDER BY DL.AutoKey ASC) AS ID,";
-            query += " D.DateTimeAdded,";
-            query += " D.InfoAutoKey,";
-            query += " DL.Name,";
-            query += " DL.AutoKey as LineAutoKey, ";
-            query += " DL.Ext,";
-            query += " C.Name as ConName,";
-            query += " Cat.FatherAutoKey,";
-            query += " Cat.Name as CatName,";
-            query += " Cat.AutoKey as CatAutoKey";
-            query += " FROM";
-            query += " " + Tables.DocumentInfo + " D";
-            query += " INNER JOIN " + Tables.DocumentLines + " DL on DL.InfoAutoKey = D.InfoAutoKey";
-            query += " LEFT JOIN " + Tables.DocumentContactRel + " DCR on DCR.DocumentAutoKey = D.InfoAutoKey";
-            query += " LEFT JOIN " + Tables.DocumentCategoryRel + " DCL on DCL.DocumentAutoKey = D.InfoAutoKey";
-            query += " LEFT JOIN " + Tables.Categories + " Cat on Cat.AutoKey = DCL.CatAutoKey";
-            query += " LEFT JOIN " + Tables.DocumentSearchKeysRel + " DSKR on DSKR.DocumentAutoKey = D.InfoAutoKey";
-            query += " LEFT JOIN " + Tables.Contacts + " C on C.AutoKey = DCR.ContactAutoKey";
-            query += " LEFT JOIN " + Tables.SearchKeys + " S on S.AutoKey = DSKR.SearchAutoKey";
-            query += " WHERE";
-            query += " D.AddedByUserID = '" + userId + "'";
-
-
-            for (int i = 0; i < words.Length; i++)
-            {
-                string word = words[i];
-
-                if (i == 0)
-                {
-                    query += " AND ";
-                }
-                else
-                {
-                    query += " OR ";
-                }
-
-                query += " (";
-                query += " DL.Name like '%" + word + "%'";
-                query += " OR C.Name like '%" + word + "%'";
-                query += " OR S.Name like '%" + word + "%'";
-                query += " OR Cat.Name like '%" + word + "%'";
-                query += " )";
-         
             }
-
-            SearchResult sResult;
-            var reader = helper.ExecuteReader(query);
-            while (reader.Read())
+            finally
             {
-                object catAutoKey = reader["CatAutoKey"];
+                dm.Dispose();
+                helper.Dispose();
 
-                if (catAutoKey == DBNull.Value)
-                    continue;
-
-                sResult = new SearchResult();
-                sResult.ID = Convert.ToInt64(reader["ID"]);
-                sResult.DateTimeAdded = Convert.ToDateTime(reader["DateTimeAdded"]);
-                sResult.DocumentAutoKey = Convert.ToInt64(reader["InfoAutoKey"]);
-                sResult.LineAutoKey = Convert.ToInt64(reader["LineAutoKey"]);
-                sResult.CatAutoKey = Convert.ToInt64(catAutoKey );
-                sResult.Ext = Convert.ToString(reader["Ext"]);
-                sResult.Name = Convert.ToString(reader["Name"]);
-                sResult.ConName = Convert.ToString(reader["ConName"]);
-
-                result.Add(sResult);
             }
-
-            helper.Dispose();
-
-
-            return new JsonResult(result);
-
-
         }
 
+
+        public long ConvertToLong(object from)
+        {
+            if (!Int64.TryParse(Convert.ToString(from), out long result))
+            {
+                result = 0;
+            }
+
+            return result;
+        }
 
     }
 
 
     public class SearchResult
     {
+
+        public List<SearchResultFile> Files { get; set; }
+        public List<SearchResultCategory> Categories { get; set; }
+    }
+
+    public class SearchResultFile
+    {
         public long ID { get; set; }
         public DateTime DateTimeAdded { get; set; }
         public long DocumentAutoKey { get; set; }
         public long LineAutoKey { get; set; }
         public string Name { get; set; }
+        public string Note { get; set; }
+
         public string Ext { get; set; }
         public string ConName { get; set; }
         public long CatAutoKey { get; set; }
+        public long Size { get; set; }
+        public string UserID { get; set; }
+    }
+    public class SearchResultCategory
+    {
+
+        public string Name { get; set; }
+        public long AutoKey { get; set; }
     }
 
 }
