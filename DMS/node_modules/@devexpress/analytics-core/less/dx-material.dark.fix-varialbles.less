@@ -1,0 +1,23 @@
+.dx-designer-viewport {
+    .dxd-back-primary {
+        background-color: @color1;
+    }
+    .dxd-back-contrast .dxd-icon-fill {
+        fill: @color7;
+    }
+    .dxd-state-active, .dxd-back-contrast .dxd-back-highlighted:hover, .dx-menu-item.dx-state-focused {
+        .dxd-icon-fill {
+            fill: @color7;
+        }
+    }
+    .dxd-state-active, .dxd-back-contrast {
+        .dxd-text-primary {
+            color: @color7;
+        }
+    }
+    .dxd-back-contrast .dxd-back-highlighted {
+        &.dxd-state-active, &.dxd-state-active:hover {
+            background-color: @color5;
+        }
+    }    
+}

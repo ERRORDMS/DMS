@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard>
+  <Title Text="Dashboard" />
+  <DataSources>
+    <SqlDataSource Name="Customers" ComponentName="sqlDataSource1">
+      <Connection Name="nwind" FromAppConfig="true" />
+      <Query Type="SelectQuery" Name="Customers">
+        <Tables>
+          <Table Name="Customers" />
+        </Tables>
+        <Columns>
+          <Column Table="Customers" Name="CustomerID" />
+          <Column Table="Customers" Name="CompanyName" />
+          <Column Table="Customers" Name="ContactName" />
+          <Column Table="Customers" Name="ContactTitle" />
+          <Column Table="Customers" Name="Address" />
+          <Column Table="Customers" Name="City" />
+          <Column Table="Customers" Name="Region" />
+          <Column Table="Customers" Name="PostalCode" />
+          <Column Table="Customers" Name="Country" />
+          <Column Table="Customers" Name="Phone" />
+          <Column Table="Customers" Name="Fax" />
+        </Columns>
+      </Query>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+</Dashboard>

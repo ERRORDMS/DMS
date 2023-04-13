@@ -310,6 +310,25 @@ CREATE TABLE [dbo].[UserPermissions](
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 END
 
+IF (NOT EXISTS (SELECT * 
+                 FROM INFORMATION_SCHEMA.TABLES 
+                 WHERE TABLE_SCHEMA = 'dbo' 
+                 AND  TABLE_NAME = 'Notifications'))
+
+BEGIN
+
+CREATE TABLE [dbo].[Notifications](
+	[ID] [bigint] NULL,
+	[Title] [nvarchar](max) NULL,
+	[Description] [nvarchar](max) NULL,
+	[MarkedAsRead] [bit] NULL,
+	[CreatedBy] [nvarchar](max) NULL,
+	[CreatedAt] [date] NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+END
+
+
+
 
 		";
 

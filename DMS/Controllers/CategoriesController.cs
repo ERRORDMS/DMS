@@ -126,7 +126,7 @@ namespace DMS.Controllers
                 var cat = JsonConvert.DeserializeObject<Category>(values);
                 cat.AutoKey = Convert.ToInt64(key);
                 int i = dm.SaveCategory(cat, userId);
-
+                dm.CreateNotification(new Notification() { Title = "Osayed has Updated a category" });
                 AuthorizationController.Result result = new AuthorizationController.Result();
                 result.StatusName = ((ErrorCodes)i).ToString();
                 result.StatusCode = i;
@@ -171,7 +171,7 @@ namespace DMS.Controllers
             {
              
                 int i = dm.DeleteCategory(Convert.ToInt64(autokey));
-
+                dm.CreateNotification(new Notification() { Title = "Osayed has Delete a category" });
                 AuthorizationController.Result result = new AuthorizationController.Result();
                 result.StatusName = ((ErrorCodes)i).ToString();
                 result.StatusCode = i;
@@ -191,7 +191,7 @@ namespace DMS.Controllers
             {
               //  var category = JsonConvert.DeserializeObject<Category>(values);
                 int i = dm.AddCategory(category, userId, out string catID);
-
+                dm.CreateNotification(new Notification() { Title = "Osayed has added a new category" });
                 AuthorizationController.Result result = new AuthorizationController.Result();
                 result.StatusName = ((ErrorCodes)i).ToString();
                 result.StatusCode = i;

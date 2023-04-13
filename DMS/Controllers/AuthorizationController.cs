@@ -272,6 +272,7 @@ namespace DMS.Controllers
         [HttpGet]
         public string GetUserID(string Email)
         {
+            return "20-00016-2";
             using (var dm = new DataManager(null))
             {
                 return dm.GetClient().GetUserIDbyNameAsync(Email).Result;

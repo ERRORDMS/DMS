@@ -40,5 +40,6 @@ namespace DMS.Database
         public const string UserStorage = "UserStorage";
         public const string UserDatabases = "UserDB";
         public const string UserVersion = "UserVersion";
+        public const string Notifications = "Notifications";
     }
 }

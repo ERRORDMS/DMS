@@ -98,7 +98,7 @@ namespace DMS.Controllers
                 var permissions = JsonConvert.DeserializeObject<List<Permission>>(permissionsJson);
                 var roles = JsonConvert.DeserializeObject<List<Role>>(rolesJson);
                 int i = dm.SaveUser(userID, permissions, roles);
-
+                dm.CreateNotification(new Notification() { Title = "Save Updated Permissions"});
                 AuthorizationController.Result result = new AuthorizationController.Result();
                 result.StatusName = ((ErrorCodes)i).ToString();
                 result.StatusCode = i;
@@ -119,7 +119,7 @@ namespace DMS.Controllers
             {
                 var permissions = JsonConvert.DeserializeObject<List<Permission>>(permissionsJson);
                 int i = dm.SaveRole(roleID, permissions);
-
+                dm.CreateNotification(new Notification() { Title = "Saved Role"});
                 AuthorizationController.Result result = new AuthorizationController.Result();
                 result.StatusName = ((ErrorCodes)i).ToString();
                 result.StatusCode = i;
@@ -181,7 +181,7 @@ namespace DMS.Controllers
                 var d = JsonConvert.DeserializeObject<RoleResult>(values);
 
                 int i = dm.AddRole(d.Name);
-
+                dm.CreateNotification(new Notification() { Title = "Added Role"});
                 AuthorizationController.Result result = new AuthorizationController.Result();
                 result.StatusName = ((ErrorCodes)i).ToString();
                 result.StatusCode = i;
@@ -203,7 +203,7 @@ namespace DMS.Controllers
                 var d = JsonConvert.DeserializeObject<RoleResult>(values);
 
                 int i = dm.UpdateRole(key, d.Name);
-
+                dm.CreateNotification(new Notification() { Title = "Updated Role" });
                 AuthorizationController.Result result = new AuthorizationController.Result();
                 result.StatusName = ((ErrorCodes)i).ToString();
                 result.StatusCode = i;
@@ -222,6 +222,8 @@ namespace DMS.Controllers
 
             using (var dm = new DataManager(userId)) { 
                 dm.DeleteRole(key);
+                dm.CreateNotification(new Notification() { Title = "Deleted Role" });
+
             }
 
         }

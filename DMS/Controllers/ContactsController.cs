@@ -58,79 +58,6 @@ namespace DMS.Controllers
                 return DataSourceLoader.Load(dm.GetDocumentContacts(AutoKey), new DataSourceLoadOptionsBase());
             }
         }
-        /*
-        [Route("Save")]
-        [HttpPost]
-        public IActionResult saveCon(Contact cat, string userId = null)
-        {
-            if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            using (var dm = new DataManager(userId))
-            {
-
-                int i = dm.SaveContact(cat, userId);
-
-                Result result = new Result();
-                result.StatusName = ((ErrorCodes)i).ToString();
-                result.StatusCode = i;
-
-                return new JsonResult(result);
-            }
-        }
-
-        [Route("Name")]
-        public string GetName(long autokey, string userId = null)
-        {
-            if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            using (var dm = new DataManager(userId))
-            {
-
-                return dm.GetConName(autokey);
-            }
-        }
-        
-        [Route("Delete")]
-        [HttpPost]
-        public IActionResult delCon(long autokey, string userId = null)
-        {
-            if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            using (var dm = new DataManager(userId))
-            {
-
-                int i = dm.DeleteContact(autokey);
-
-                Result result = new Result();
-                result.StatusName = ((ErrorCodes)i).ToString();
-                result.StatusCode = i;
-
-                return new JsonResult(result);
-            }
-        }
-        [Route("addContact")]
-        [HttpPost]
-        public IActionResult addContact(Contact contact,DateTime birthday, string userId = null)
-        {
-            if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            using (var dm = new DataManager(userId))
-            {
-                int i = dm.AddContact(contact, birthday, userId);
-
-                Result result = new Result();
-                result.StatusName = ((ErrorCodes)i).ToString();
-                result.StatusCode = i;
-
-                return new JsonResult(result);
-            }
-        }
-        */
-
 
         [Route("Exists")]
         [HttpGet]
@@ -169,7 +96,7 @@ namespace DMS.Controllers
                 var d = JsonConvert.DeserializeObject<ContactCategory>(values);
 
                 int i = dm.AddContactCategory(d);
-
+                dm.CreateNotification(new Notification() { Title = "Add Contact Gategory"});
                 AuthorizationController.Result result = new AuthorizationController.Result();
                 result.StatusName = ((ErrorCodes)i).ToString();
                 result.StatusCode = i;
@@ -192,7 +119,7 @@ namespace DMS.Controllers
 
                 d.AutoKey = Convert.ToInt64(key);
                 int i = dm.SaveContactCategory(d);
-
+                dm.CreateNotification(new Notification() { Title = "Update Contact" });
                 AuthorizationController.Result result = new AuthorizationController.Result();
                 result.StatusName = ((ErrorCodes)i).ToString();
                 result.StatusCode = i;
@@ -211,6 +138,7 @@ namespace DMS.Controllers
             using (var dm = new DataManager(userId))
             {
                 dm.DeleteContactCategory(Convert.ToInt64(key));
+                dm.CreateNotification(new Notification() { Title = "Delete Contact"});
             }
 
         }
@@ -228,6 +156,7 @@ namespace DMS.Controllers
                 var d = JsonConvert.DeserializeObject<Contact>(values);
 
                 int i = dm.AddContact(d, userId);
+                dm.CreateNotification(new Notification() { Title = "Add Contact"});
 
                 AuthorizationController.Result result = new AuthorizationController.Result();
                 result.StatusName = ((ErrorCodes)i).ToString();
@@ -242,16 +171,16 @@ namespace DMS.Controllers
         public IActionResult UpdateContact(int key, string values, string userId = null)
         {
             // Update
-            if (string.IsNullOrEmpty(userId))
-                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userId))
+                    userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            using (var dm = new DataManager(userId))
-            {
+                using (var dm = new DataManager(userId))
+                {
                 var d = JsonConvert.DeserializeObject<Contact>(values);
 
                 d.AutoKey = Convert.ToInt64(key);
                 int i = dm.SaveContact(d);
-
+                dm.CreateNotification(new Notification() { Title = "Update Contaact"});
                 AuthorizationController.Result result = new AuthorizationController.Result();
                 result.StatusName = ((ErrorCodes)i).ToString();
                 result.StatusCode = i;
@@ -271,6 +200,7 @@ namespace DMS.Controllers
             using (var dm = new DataManager(userId))
             {
                 dm.DeleteContact(Convert.ToInt64(key));
+                dm.CreateNotification(new Notification() { Title = "Delete Contact"});
             }
 
         }

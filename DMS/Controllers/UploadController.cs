@@ -65,7 +65,14 @@ namespace DMS.Controllers
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             int i = new DataManager(userId).DeleteFile(AutoKey, userId);
-            Result result = new Result();
+            if (string.IsNullOrEmpty(userId))
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            using (var dm = new DataManager(userId))
+            {
+                dm.CreateNotification(new Notification() { Title = "Deleted file" });
+            }
+                Result result = new Result();
             result.StatusName = ((ErrorCodes)i).ToString();
             result.StatusCode = i;
 
@@ -82,6 +89,10 @@ namespace DMS.Controllers
 
                 int i = new DataManager(userId).UpdateFile(uploadFiles[0], InfoAutoKey, LineAutoKey, userId);
 
+                using (var dm = new DataManager(userId))
+                {
+                    dm.CreateNotification(new Notification() { Title = "Updated file" });
+                }
             }
 
         }
@@ -120,7 +131,12 @@ namespace DMS.Controllers
             Result result = new Result();
             result.StatusName = ((ErrorCodes)i).ToString();
             result.StatusCode = i;
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            using (var dm = new DataManager(userId))
+            {
+                dm.CreateNotification(new Notification() { Title = "Edited file" });
+            }
             return new JsonResult(result);
         }
 
@@ -213,6 +229,11 @@ namespace DMS.Controllers
                                 Response.StatusCode = 204;
                                 Response.HttpContext.Features.Get<IHttpResponseFeature>().ReasonPhrase = "File failed to upload";
                                 return BadRequest();
+                            }
+
+                            using (var dm = new DataManager(userId))
+                            {
+                                dm.CreateNotification(new Notification() { Title = "Uploaded file" });
                             }
 
                             return new JsonResult(result);

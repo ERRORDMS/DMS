@@ -1,0 +1,33 @@
+﻿@page
+@model DMS.Pages.StatsModel
+@using DevExpress.AspNetCore
+@using DevExpress.DashboardWeb
+@using DevExpress.DashboardAspNetCore
+@{
+    Layout = null;
+}
+
+<link href="~/css/site.min.css" rel="stylesheet" />
+<script src="~/js/site.min.js"></script>
+<style>
+    .dx-editquery-editor {
+        height:90px;
+    }
+    .dx-texteditor-container { 
+        height: 90px;
+    }
+    .dx-texteditor-input-container {
+        height: 90px;
+    }
+    .dx-texteditor-input {
+        height: 90px;
+    }
+</style>
+<div style="position: absolute; left:0;top:0;right:0;bottom:0;">
+    @(Html.DevExpress().Dashboard("clientDashboardControl1")
+        .ControllerName("Stats")
+        .WorkingMode(WorkingMode.Designer)
+        .Width("100%")
+        .Height("100%")
+        )
+</div>

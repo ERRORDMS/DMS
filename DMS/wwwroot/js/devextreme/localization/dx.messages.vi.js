@@ -1,26 +1,24 @@
 /*!
 * DevExtreme (dx.messages.vi.js)
-* Version: 20.1.3
-* Build date: Fri Apr 24 2020
+* Version: 22.1.3
+* Build date: Mon Jun 13 2022
 *
-* Copyright (c) 2012 - 2020 Developer Express Inc. ALL RIGHTS RESERVED
+* Copyright (c) 2012 - 2022 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
 */
 "use strict";
 
 ! function(root, factory) {
     if ("function" === typeof define && define.amd) {
-        define(function(require) {
+        define((function(require) {
             factory(require("devextreme/localization"))
-        })
+        }))
+    } else if ("object" === typeof module && module.exports) {
+        factory(require("devextreme/localization"))
     } else {
-        if ("object" === typeof module && module.exports) {
-            factory(require("devextreme/localization"))
-        } else {
-            factory(DevExpress.localization)
-        }
+        factory(DevExpress.localization)
     }
-}(this, function(localization) {
+}(0, (function(localization) {
     localization.loadMessages({
         vi: {
             Yes: "C\xf3",
@@ -80,6 +78,7 @@
             "dxFileUploader-upload": "Upload",
             "dxFileUploader-uploaded": "\u0110\xe3 upload",
             "dxFileUploader-readyToUpload": "S\u1eb5n s\xe0ng \u0111\u1ec3 upload",
+            "dxFileUploader-uploadAbortedMessage": "TODO",
             "dxFileUploader-uploadFailedMessage": "Upload th\u1ea5t b\u1ea1i",
             "dxFileUploader-invalidFileExtension": "Ki\u1ec3u t\u1eadp tin kh\xf4ng cho ph\xe9p",
             "dxFileUploader-invalidMaxFileSize": "T\u1eadp tin qu\xe1 l\u1edbn",
@@ -173,6 +172,7 @@
             "dxTreeList-editingAddRowToNode": "Th\xeam",
             "dxPager-infoText": "Trang {0} c\u1ee7a {1} ({2} m\u1ee5c)",
             "dxPager-pagesCountText": "c\u1ee7a",
+            "dxPager-pageSizesAllText": "T\u1ea5t c\u1ea3",
             "dxPivotGrid-grandTotal": "T\u1ed5ng t\u1ea5t c\u1ea3",
             "dxPivotGrid-total": "{0} T\u1ed5ng",
             "dxPivotGrid-fieldChooserTitle": "Tr\xecnh l\u1ef1a ch\u1ecdn Tr\u01b0\u1eddng",
@@ -282,8 +282,80 @@
             "dxHtmlEditor-dialogImageAltField": "V\u0103n b\u1ea3n thay th\u1ebf",
             "dxHtmlEditor-dialogImageWidthField": "R\u1ed9ng (px)",
             "dxHtmlEditor-dialogImageHeightField": "Cao (px)",
+            "dxHtmlEditor-dialogInsertTableRowsField": "!TODO",
+            "dxHtmlEditor-dialogInsertTableColumnsField": "!TODO",
+            "dxHtmlEditor-dialogInsertTableCaption": "!TODO",
+            "dxHtmlEditor-dialogUpdateImageCaption": "!TODO",
+            "dxHtmlEditor-dialogImageUpdateButton": "!TODO",
+            "dxHtmlEditor-dialogImageAddButton": "!TODO",
+            "dxHtmlEditor-dialogImageSpecifyUrl": "!TODO",
+            "dxHtmlEditor-dialogImageSelectFile": "!TODO",
+            "dxHtmlEditor-dialogImageKeepAspectRatio": "!TODO",
+            "dxHtmlEditor-dialogImageEncodeToBase64": "!TODO",
             "dxHtmlEditor-heading": "Ti\xeau \u0111\u1ec1",
             "dxHtmlEditor-normalText": "Ch\u1eef b\xecnh th\u01b0\u1eddng",
+            "dxHtmlEditor-background": "TODO",
+            "dxHtmlEditor-bold": "TODO",
+            "dxHtmlEditor-color": "TODO",
+            "dxHtmlEditor-font": "TODO",
+            "dxHtmlEditor-italic": "TODO",
+            "dxHtmlEditor-link": "TODO",
+            "dxHtmlEditor-image": "TODO",
+            "dxHtmlEditor-size": "TODO",
+            "dxHtmlEditor-strike": "TODO",
+            "dxHtmlEditor-subscript": "TODO",
+            "dxHtmlEditor-superscript": "TODO",
+            "dxHtmlEditor-underline": "TODO",
+            "dxHtmlEditor-blockquote": "TODO",
+            "dxHtmlEditor-header": "TODO",
+            "dxHtmlEditor-increaseIndent": "TODO",
+            "dxHtmlEditor-decreaseIndent": "TODO",
+            "dxHtmlEditor-orderedList": "TODO",
+            "dxHtmlEditor-bulletList": "TODO",
+            "dxHtmlEditor-alignLeft": "TODO",
+            "dxHtmlEditor-alignCenter": "TODO",
+            "dxHtmlEditor-alignRight": "TODO",
+            "dxHtmlEditor-alignJustify": "TODO",
+            "dxHtmlEditor-codeBlock": "TODO",
+            "dxHtmlEditor-variable": "TODO",
+            "dxHtmlEditor-undo": "TODO",
+            "dxHtmlEditor-redo": "TODO",
+            "dxHtmlEditor-clear": "TODO",
+            "dxHtmlEditor-insertTable": "TODO",
+            "dxHtmlEditor-insertHeaderRow": "TODO",
+            "dxHtmlEditor-insertRowAbove": "TODO",
+            "dxHtmlEditor-insertRowBelow": "TODO",
+            "dxHtmlEditor-insertColumnLeft": "TODO",
+            "dxHtmlEditor-insertColumnRight": "TODO",
+            "dxHtmlEditor-deleteColumn": "TODO",
+            "dxHtmlEditor-deleteRow": "TODO",
+            "dxHtmlEditor-deleteTable": "TODO",
+            "dxHtmlEditor-cellProperties": "TODO",
+            "dxHtmlEditor-tableProperties": "TODO",
+            "dxHtmlEditor-insert": "TODO",
+            "dxHtmlEditor-delete": "TODO",
+            "dxHtmlEditor-border": "TODO",
+            "dxHtmlEditor-style": "TODO",
+            "dxHtmlEditor-width": "TODO",
+            "dxHtmlEditor-height": "TODO",
+            "dxHtmlEditor-borderColor": "TODO",
+            "dxHtmlEditor-tableBackground": "TODO",
+            "dxHtmlEditor-dimensions": "TODO",
+            "dxHtmlEditor-alignment": "TODO",
+            "dxHtmlEditor-horizontal": "TODO",
+            "dxHtmlEditor-vertical": "TODO",
+            "dxHtmlEditor-paddingVertical": "TODO",
+            "dxHtmlEditor-paddingHorizontal": "TODO",
+            "dxHtmlEditor-pixels": "TODO",
+            "dxHtmlEditor-list": "TODO",
+            "dxHtmlEditor-ordered": "TODO",
+            "dxHtmlEditor-bullet": "TODO",
+            "dxHtmlEditor-align": "TODO",
+            "dxHtmlEditor-center": "TODO",
+            "dxHtmlEditor-left": "TODO",
+            "dxHtmlEditor-right": "TODO",
+            "dxHtmlEditor-indent": "TODO",
+            "dxHtmlEditor-justify": "TODO",
             "dxFileManager-newDirectoryName": "Th\u01b0 m\u1ee5c kh\xf4ng t\xean",
             "dxFileManager-rootDirectoryName": "C\xe1c t\u1eadp tin",
             "dxFileManager-errorNoAccess": "T\u1eeb ch\u1ed1i truy c\u1eadp. Thao t\xe1c kh\xf4ng th\u1ec3 ho\xe0n t\u1ea5t.",
@@ -295,6 +367,7 @@
             "dxFileManager-errorMaxFileSizeExceeded": "K\xedch th\u01b0\u1edbc c\u1ee7a t\u1eadp tin v\u01b0\u1ee3t qu\xe1 k\xedch th\u01b0\u1edbc t\u1ed1i \u0111a cho ph\xe9p",
             "dxFileManager-errorInvalidSymbols": "TODO",
             "dxFileManager-errorDefault": "L\u1ed7i kh\xf4ng x\xe1c \u0111\u1ecbnh.",
+            "dxFileManager-errorDirectoryOpenFailed": "TODO",
             "dxDiagram-categoryGeneral": "Chung",
             "dxDiagram-categoryFlowchart": "L\u01b0u \u0111\u1ed3",
             "dxDiagram-categoryOrgChart": "S\u01a1 \u0111\u1ed3 t\u1ed5 ch\u1ee9c",
@@ -451,6 +524,10 @@
             "dxGantt-dialogCancelOperationMessage": "TODO",
             "dxGantt-dialogDeleteDependencyMessage": "TODO",
             "dxGantt-dialogMoveTaskAndKeepDependencyMessage": "TODO",
+            "dxGantt-dialogConstraintCriticalViolationSeveralTasksMessage": "TODO",
+            "dxGantt-dialogConstraintViolationSeveralTasksMessage": "TODO",
+            "dxGantt-dialogDeleteDependenciesMessage": "TODO",
+            "dxGantt-dialogMoveTaskAndKeepDependenciesMessage": "TODO",
             "dxGantt-undo": "TODO",
             "dxGantt-redo": "TODO",
             "dxGantt-expandAll": "TODO",
@@ -459,7 +536,15 @@
             "dxGantt-deleteSelectedTask": "TODO",
             "dxGantt-zoomIn": "TODO",
             "dxGantt-zoomOut": "TODO",
-            "dxGantt-fullScreen": "TODO"
+            "dxGantt-fullScreen": "TODO",
+            "dxGantt-quarter": "TODO",
+            "dxGantt-sortingAscendingText": "S\u1eafp x\u1ebfp T\u0103ng d\u1ea7n",
+            "dxGantt-sortingDescendingText": "S\u1eafp x\u1ebfp Gi\u1ea3m d\u1ea7n",
+            "dxGantt-sortingClearText": "Lo\u1ea1i b\u1ecf vi\u1ec7c s\u1eafp x\u1ebfp",
+            "dxGantt-showResources": "TODO",
+            "dxGantt-showDependencies": "TODO",
+            "dxGantt-dialogStartDateValidation": "TODO",
+            "dxGantt-dialogEndDateValidation": "TODO"
         }
     })
-});
+}));

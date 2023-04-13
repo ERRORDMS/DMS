@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard>
+  <Title Text="New Dashboard" />
+  <DataSources>
+    <SqlDataSource Name="sad" ComponentName="sqlDataSource1">
+      <Connection Name="nwind" FromAppConfig="true" />
+      <Query Type="SelectQuery" Name="sad">
+        <Tables>
+          <Table Name="Employees" />
+        </Tables>
+        <Columns>
+          <Column Table="Employees" Name="EmployeeID" />
+          <Column Table="Employees" Name="LastName" />
+          <Column Table="Employees" Name="FirstName" />
+          <Column Table="Employees" Name="Title" />
+          <Column Table="Employees" Name="TitleOfCourtesy" />
+          <Column Table="Employees" Name="BirthDate" />
+          <Column Table="Employees" Name="HireDate" />
+          <Column Table="Employees" Name="Address" />
+          <Column Table="Employees" Name="City" />
+          <Column Table="Employees" Name="Region" />
+          <Column Table="Employees" Name="PostalCode" />
+          <Column Table="Employees" Name="Country" />
+          <Column Table="Employees" Name="HomePhone" />
+          <Column Table="Employees" Name="Extension" />
+          <Column Table="Employees" Name="Photo" />
+          <Column Table="Employees" Name="Notes" />
+          <Column Table="Employees" Name="ReportsTo" />
+          <Column Table="Employees" Name="Name" />
+        </Columns>
+      </Query>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+</Dashboard>

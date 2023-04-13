@@ -33,6 +33,12 @@ using GleamTech.AspNet;
 using System.IO;
 using GleamTech.DocumentUltimate;
 using System.Text;
+using Microsoft.Extensions.FileProviders;
+using DevExpress.DashboardAspNetCore;
+using DevExpress.AspNetCore;
+using DevExpress.DashboardWeb;
+using Microsoft.Extensions.FileProviders;
+using DevExpress.XtraCharts;
 
 namespace DMS
 {
@@ -130,6 +136,16 @@ namespace DMS
             //----------------------
             services.AddGleamTech();
             //----------------------
+            IFileProvider fileProvider = _environment.ContentRootFileProvider;
+            IConfiguration configuration = Configuration;
+
+            services.AddDevExpressControls();
+            services.AddScoped<DashboardConfigurator>((IServiceProvider serviceProvider) => {
+                DashboardConfigurator configurator = new DashboardConfigurator();
+                configurator.SetDashboardStorage(new DashboardFileStorage(fileProvider.GetFileInfo("Data/Dashboards").PhysicalPath));
+                configurator.SetConnectionStringsProvider(new DashboardConnectionStringsProvider(configuration));
+                return configurator;
+            });
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
   .AddCookie(options =>

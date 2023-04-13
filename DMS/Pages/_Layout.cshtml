@@ -1,4 +1,13 @@
-﻿
+﻿@using DMS.Models;
+@using DMS.Controllers;
+@{
+    var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
+
+    string userId = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+
+
+    List<Notification> notifications = new DMS.Database.DataManager(userId).GetNotifications().ToList();
+}
 <!doctype html>
 <?xml version="1.0" encoding="UTF-8" ?>
 <html lang="en">
@@ -32,6 +41,7 @@
     <!-- Datepicker -->
     <link rel="stylesheet" href="~/vendors/datepicker/daterangepicker.css" type="text/css" />
 
+    <link rel="stylesheet" href="~/css/NotificationsPopup.css"/>
 
     <!-- Datatable -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.23/datatables.min.css" />
@@ -194,14 +204,12 @@
                     </a>
                 </div>
                 <ul id="nav">
-                    @*
                         <li>
-                            <a href="Dashboard">
+                            <a href="Stats">
                                 <i class="nav-link-icon fas fa-chart-pie"></i>
                                 <span class="nav-link-label">Dashboard</span>
-                                <span class="badge badge-danger badge-small">2</span>
                             </a>
-                        </li>*@
+                        </li>
                     <li>
                         <a href="Dashboard">
                             <i class="nav-link-icon far fa-folder"></i>
@@ -234,10 +242,10 @@
                             </a>
                         </li>*@
                     @{
-                        var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
+                        claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
 
                         string accountType = "";
-                        string userId = "";
+                        userId = "";
                         if (claimsIdentity != null)
                         {
                             var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.UserData);
@@ -247,12 +255,12 @@
                         }
                         if (new DMS.Database.DataManager(userId).IsAdmin(userId))
                         {
-                            <li>
-                                <a href="Settings">
-                                    <i class="nav-link-icon fas fa-user-cog"></i>
-                                    <span class="nav-link-label">Enterprise</span>
-                                </a>
-                            </li>
+                                                            <li>
+                                                                <a href="Settings">
+                                                                    <i class="nav-link-icon fas fa-user-cog"></i>
+                                                                    <span class="nav-link-label">Enterprise</span>
+                                                                </a>
+                                                            </li>
                         }
                     }
 
@@ -279,6 +287,7 @@
             <div id="popup"></div>
 
 
+
             <!-- ./ Content body -->
             <!-- Sidebar group -->
             <div class="sidebar-group d-print-none">
@@ -286,6 +295,22 @@
                 <div class="sidebar primary-sidebar show" id="storage">
                     <div class="sidebar-header">
                         <h4>Storage Overview</h4>
+                        <div class="icon" id="bell"> 
+                            <i class="nav-link-icon fas fa-bell"></i>
+                            <span class="badge badge-danger badge-small">@notifications.Count</span>
+                        </div>
+    <div class="notifications" id="box">
+        <h2>Notifications - <span>@notifications.Count</span></h2>
+                                @foreach(Notification notification in notifications){
+
+        <div class="notifications-item">
+            <div class="text">
+                <h4>@notification.Title</h4>
+                <p>@notification.Description</p>
+            </div>
+        </div>
+                                }
+    </div>
                     </div>
                     <div class="sidebar-content">
                         <div id="justgage_five" class="mb-3"></div>
@@ -441,7 +466,49 @@
     </div>
     <!-- ./ Layout wrapper -->
     <script>
+        $(document).ready(function(){
+            
+            
+            
+        
+        var down = false;
+        
+        $('#bell').click(function(e){
+          
+            var color = $(this).text();
+            if(down){
+                
+                $('#box').css('height','0px');
+                $('#box').css('opacity','0');
+                down = false;
+            }else{
+                
+                $('#box').css('height','auto');
+                $('#box').css('opacity','1');
+                down = true;
+                
+            }
+            
+        });
+            
+            });
+        function MarkAsRead() {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = () => {
+                if(this.readyState == 4 && this.status == 200) {
+                   
+                }
+            }
+            const fd = new FormData();
+            fd.append("markasread", true);
+            xhr.open("POST", "api/Notifications/MarkAsRead", true);
+            xhr.send(fd);
+        }
 
+        function openPopup() {
+            $("#notifications-popup").dxPopup("instance").show();
+            MarkAsRead();
+        }
         function formatBytes(a, b = 2) { if (0 === a) return "0 Bytes"; const c = 0 > b ? 0 : b, d = Math.floor(Math.log(a) / Math.log(1024)); return parseFloat((a / Math.pow(1024, d)).toFixed(c)) + " " + ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d] }
 
         function formatDate(date) {

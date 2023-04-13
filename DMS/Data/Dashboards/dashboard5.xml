@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard>
+  <Title Text="PMA" />
+  <DataSources>
+    <SqlDataSource Name="Categories" ComponentName="sqlDataSource1">
+      <Connection Name="nwind" FromAppConfig="true" />
+      <Query Type="SelectQuery" Name="Categories">
+        <Tables>
+          <Table Name="Categories" />
+        </Tables>
+        <Columns>
+          <Column Table="Categories" Name="CategoryID" />
+          <Column Table="Categories" Name="CategoryName" />
+          <Column Table="Categories" Name="Description" />
+          <Column Table="Categories" Name="Picture" />
+          <Column Table="Categories" Name="Icon_17" />
+          <Column Table="Categories" Name="Icon_25" />
+        </Columns>
+      </Query>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+</Dashboard>

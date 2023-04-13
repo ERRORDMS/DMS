@@ -1588,6 +1588,18 @@ GROUP BY YEAR(DateTimeCreated), MONTH(DateTimeCreated)
             return sqlHelper.ExecuteReader<Category>(query);*/
             }
 
+        public IEnumerable<Notification> GetNotifications()
+        {
+            return sqlHelper.Select<Notification>(Tables.Notifications, new string[] { "*" });
+        }
+        public void MarkNotificationsAsRead()
+        {
+            sqlHelper.Update(Tables.Notifications,
+                new string[] { "MarkedAsRead" },
+                new string[] { "1" },
+                "1 = 1");
+        }
+
         public IEnumerable<UserCategory> GetEnterpriseCategories(string userID)
         {
             string query = string.Format(@"
@@ -2102,11 +2114,24 @@ where UserID = '{2}'", Tables.Roles, Tables.UserRoles, userId);
             return sqlHelper.Select<SearchKey>(Tables.SearchKeys, "*");
 
         }
+        public Notification CreateNotification(Notification notification)
+        {
+            try
+            {
+                sqlHelper.Insert(Tables.Notifications,
+                    new string[] { "Title", "Description", "MarkedAsRead", "CreatedBy", "CreatedAt" },
+                    new string[] { notification.Title, notification.Description, notification.MarkedAsRead == true ? "1" : "0", notification.CreatedBy, notification.CreatedAt.ToString() });
+            } catch(Exception ex)
+            {
+                Logger.Log(ex.Message);
+            }
+            return new Notification();
+        }
         public  int Login(string username, string password)
         {
             //    try
             //    {
-
+            return 0;
             if (client.loginAsync(username, password).Result)
             {
                 var isActivated = Convert.ToBoolean(sqlHelper.SelectWithWhere(Tables.Users, "Activated", "Name = '" + username + "'"));

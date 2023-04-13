@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard>
+  <Title Text="PMA" />
+  <DataSources>
+    <SqlDataSource Name="Categories" ComponentName="sqlDataSource1">
+      <Connection Name="nwind" FromAppConfig="true" />
+      <Query Type="SelectQuery" Name="Categories">
+        <Tables>
+          <Table Name="Categories" />
+          <Table Name="Products" />
+          <Relation Type="Inner" Parent="Products" Nested="Categories">
+            <KeyColumn Parent="CategoryID" Nested="CategoryID" />
+          </Relation>
+        </Tables>
+        <Columns>
+          <Column Table="Products" Name="ProductID" />
+          <Column Table="Products" Name="ProductName" />
+          <Column Table="Products" Name="SupplierID" />
+          <Column Table="Products" Name="CategoryID" />
+          <Column Table="Products" Name="QuantityPerUnit" />
+          <Column Table="Products" Name="UnitPrice" />
+          <Column Table="Products" Name="UnitsInStock" />
+          <Column Table="Products" Name="UnitsOnOrder" />
+          <Column Table="Products" Name="ReorderLevel" />
+          <Column Table="Products" Name="Discontinued" />
+          <Column Table="Products" Name="EAN13" />
+          <Column Table="Categories" Name="CategoryID" Alias="Categories_CategoryID" />
+          <Column Table="Categories" Name="CategoryName" />
+          <Column Table="Categories" Name="Description" />
+          <Column Table="Categories" Name="Picture" />
+          <Column Table="Categories" Name="Icon_17" />
+          <Column Table="Categories" Name="Icon_25" />
+        </Columns>
+      </Query>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+</Dashboard>

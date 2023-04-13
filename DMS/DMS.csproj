@@ -1,46 +1,41 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
+<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <Optimize>false</Optimize>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="Areas\**" />
     <Content Remove="Areas\**" />
     <EmbeddedResource Remove="Areas\**" />
     <None Remove="Areas\**" />
   </ItemGroup>
-
   <ItemGroup>
     <Content Remove="compilerconfig.json" />
     <Content Remove="wwwroot\js\site.js" />
     <Content Remove="wwwroot\js\site.min.js" />
   </ItemGroup>
-
   <ItemGroup>
     <None Remove="Aspose.Total.lic" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="AspNetCoreRateLimit" Version="2.1.0" />
     <PackageReference Include="Aspose.Imaging" Version="20.11.0" />
     <PackageReference Include="Dapper" Version="2.0.35" />
-    <PackageReference Include="DevExpress.AspNetCore.Common" Version="20.1.3" />
-    <PackageReference Include="DevExpress.AspNetCore.Core" Version="20.1.3" />
-    <PackageReference Include="DevExtreme.AspNet.Core" Version="20.1.3" />
+    <PackageReference Include="DevExpress.AspNetCore.Common" Version="22.1.3" />
+    <PackageReference Include="DevExpress.AspNetCore.Core" Version="22.1.3" />
+    <PackageReference Include="DevExpress.AspNetCore.Dashboard" Version="22.1.3" />
+    <PackageReference Include="DevExtreme.AspNet.Core" Version="22.1.3" />
     <PackageReference Include="EntityFramework" Version="6.4.0" />
     <PackageReference Include="linq2db.SqlServer" Version="3.2.3" />
     <PackageReference Include="lz4net" Version="1.0.15.93" />
     <PackageReference Include="MailKit" Version="2.8.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="DevExtreme.AspNet.Data" Version="2.6.1" />
+    <PackageReference Include="DevExtreme.AspNet.Data" Version="2.8.6" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.1.1" />
-    <PackageReference Include="BuildBundlerMinifier" Version="2.9.406" />
+    <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.10" />
     <PackageReference Include="MimeKit" Version="2.9.2" />
     <PackageReference Include="MimeTypes" Version="2.0.2">
@@ -53,20 +48,17 @@
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
     <PackageReference Include="System.Security.Permissions" Version="4.7.0" />
     <PackageReference Include="System.ServiceModel.Duplex" Version="4.4.*" />
-    <PackageReference Include="System.ServiceModel.Http" Version="4.4.*" />
+    <PackageReference Include="System.ServiceModel.Http" Version="4.5.3" />
     <PackageReference Include="System.ServiceModel.NetTcp" Version="4.4.*" />
     <PackageReference Include="System.ServiceModel.Security" Version="4.4.*" />
     <PackageReference Include="Twilio" Version="5.46.2" />
   </ItemGroup>
-
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4" />
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Include="Aspose.Total.lic" />
   </ItemGroup>
-
   <ItemGroup>
     <None Include="compilerconfig.json" />
     <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-theme.css.map" />
@@ -90,7 +82,6 @@
     <None Include="wwwroot\lib\jquery\dist\jquery.min.js" />
     <None Include="wwwroot\lib\jquery\dist\jquery.min.map" />
   </ItemGroup>
-
   <ItemGroup>
     <Reference Include="GleamTech.Common">
       <HintPath>..\..\..\Software\Download GleamTech DocumentUltimate v5.3.2.0 (23 Jun 2020) + CRACK\Bin\netstandard2.0\GleamTech.Common.dll</HintPath>
@@ -99,11 +90,9 @@
       <HintPath>..\..\..\Software\Download GleamTech DocumentUltimate v5.3.2.0 (23 Jun 2020) + CRACK\Bin\netstandard2.0\GleamTech.DocumentUltimate.dll</HintPath>
     </Reference>
   </ItemGroup>
-
   <ItemGroup>
     <WCFMetadata Include="Connected Services" />
   </ItemGroup>
-
   <ItemGroup>
     <Content Update="Pages\Register.cshtml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
@@ -112,11 +101,12 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="wwwroot\App_Data\" />
   </ItemGroup>
-
-  <ProjectExtensions><VisualStudio><UserProperties TemplateFeatures="NETCORE CS RESPONSIVE" /></VisualStudio></ProjectExtensions>
-
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties TemplateFeatures="NETCORE CS RESPONSIVE" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

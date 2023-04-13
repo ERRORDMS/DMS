@@ -156,3 +156,38 @@ Changed database context to '21-00005-2'.
 3/2/2021 2:27:53 PM - Null object cannot be converted to a value type.
 3/2/2021 2:28:31 PM - Incorrect syntax near 'mlkm'.
 Unclosed quotation mark after the character string ''.
+9/27/2022 8:25:54 PM - Invalid column name 'FileSize'.
+9/27/2022 8:25:54 PM - Invalid column name 'FileSize'.
+9/27/2022 8:25:54 PM - Invalid column name 'FileSize'.
+9/27/2022 8:25:55 PM - Invalid column name 'FileSize'.
+9/27/2022 8:25:59 PM - Invalid column name 'FileSize'.
+9/27/2022 8:26:02 PM - Invalid column name 'FileSize'.
+9/27/2022 8:26:03 PM - Invalid column name 'FileSize'.
+9/27/2022 8:26:04 PM - Invalid column name 'FileSize'.
+9/27/2022 8:26:05 PM - Invalid column name 'FileSize'.
+9/27/2022 8:26:06 PM - Invalid column name 'FileSize'.
+9/27/2022 8:26:06 PM - Invalid column name 'FileSize'.
+9/27/2022 8:26:07 PM - Invalid column name 'FileSize'.
+9/27/2022 8:26:08 PM - Invalid column name 'FileSize'.
+9/27/2022 8:26:09 PM - Invalid column name 'FileSize'.
+9/27/2022 8:26:10 PM - Invalid column name 'FileSize'.
+9/27/2022 8:31:06 PM - The remote server returned an error: (530) Not logged in.
+9/27/2022 8:38:57 PM - The remote server returned an error: (550) File unavailable (e.g., file not found, no access).
+9/27/2022 9:04:21 PM - Invalid column name 'FileSize'.
+9/27/2022 9:04:21 PM - Invalid column name 'FileSize'.
+9/27/2022 9:04:21 PM - Invalid column name 'FileSize'.
+9/27/2022 9:04:23 PM - Invalid column name 'FileSize'.
+9/27/2022 9:04:23 PM - Invalid column name 'FileSize'.
+9/27/2022 9:04:24 PM - Invalid column name 'FileSize'.
+9/27/2022 9:04:25 PM - Invalid column name 'FileSize'.
+9/27/2022 9:04:27 PM - Invalid column name 'FileSize'.
+9/27/2022 9:04:29 PM - Invalid column name 'FileSize'.
+9/27/2022 9:04:30 PM - Invalid column name 'FileSize'.
+9/28/2022 1:27:55 AM - Timeout expired.  The timeout period elapsed prior to completion of the operation or the server is not responding.
+9/28/2022 1:27:55 AM - Query: SELECT ROW_NUMBER() OVER(ORDER BY DL.AutoKey ASC) AS ID, D.DateTimeAdded, D.InfoAutoKey, DL.Name, DL.AutoKey as LineAutoKey,  DL.Ext, DL.FileSize as Size, D.Note as Note, AddedByUserID as UserID, C.Name as ConName, Cat.AutoKey as CatAutoKey, Cat.Name as CatName FROM DocumentsInfo D INNER JOIN DocumentLine DL on DL.InfoAutoKey = D.InfoAutoKey LEFT JOIN DocumentContactsRel DCR on DCR.DocumentAutoKey = D.InfoAutoKey LEFT JOIN DocumentCatRel DCL on DCL.DocumentAutoKey = D.InfoAutoKey LEFT JOIN DocumentCatTree Cat on Cat.AutoKey = DCL.CatAutoKey LEFT JOIN DocumentSearchKeysRel DSKR on DSKR.DocumentAutoKey = D.InfoAutoKey LEFT JOIN Contacts C on C.AutoKey = DCR.ContactAutoKey LEFT JOIN SearchKeys S on S.AutoKey = DSKR.SearchAutoKey WHERE IsDeleted <> 1  AND  ( DL.Name like '%doge%' OR C.Name like '%doge%' OR S.Name like '%doge%' OR Cat.Name like '%doge%' OR Note like '%doge%' )order by DateTimeAdded desc
+9/28/2022 1:29:43 AM - Timeout expired.  The timeout period elapsed prior to completion of the operation or the server is not responding.
+9/28/2022 1:29:43 AM - Query: SELECT ROW_NUMBER() OVER(ORDER BY DL.AutoKey ASC) AS ID, D.DateTimeAdded, D.InfoAutoKey, DL.Name, DL.AutoKey as LineAutoKey,  DL.Ext, DL.FileSize as Size, D.Note as Note, AddedByUserID as UserID, C.Name as ConName, Cat.AutoKey as CatAutoKey, Cat.Name as CatName FROM DocumentsInfo D INNER JOIN DocumentLine DL on DL.InfoAutoKey = D.InfoAutoKey LEFT JOIN DocumentContactsRel DCR on DCR.DocumentAutoKey = D.InfoAutoKey LEFT JOIN DocumentCatRel DCL on DCL.DocumentAutoKey = D.InfoAutoKey LEFT JOIN DocumentCatTree Cat on Cat.AutoKey = DCL.CatAutoKey LEFT JOIN DocumentSearchKeysRel DSKR on DSKR.DocumentAutoKey = D.InfoAutoKey LEFT JOIN Contacts C on C.AutoKey = DCR.ContactAutoKey LEFT JOIN SearchKeys S on S.AutoKey = DSKR.SearchAutoKey WHERE IsDeleted <> 1  AND  ( DL.Name like '%doge%' OR C.Name like '%doge%' OR S.Name like '%doge%' OR Cat.Name like '%doge%' OR Note like '%doge%' )order by DateTimeAdded desc
+9/28/2022 4:59:54 AM - Index was out of range. Must be non-negative and less than the size of the collection.
+Parameter name: index
+9/28/2022 10:16:33 AM - Index was out of range. Must be non-negative and less than the size of the collection.
+Parameter name: index
