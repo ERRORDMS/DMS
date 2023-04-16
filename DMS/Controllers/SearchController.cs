@@ -78,11 +78,11 @@ namespace DMS.Controllers
                     }
 
                     query += " (";
-                    query += " DL.Name like '%" + word + "%'";
-                    query += " OR C.Name like '%" + word + "%'";
-                    query += " OR S.Name like '%" + word + "%'";
-                    query += " OR Cat.Name like '%" + word + "%'";
-                    query += " OR Note like '%" + word + "%'";
+                    query += " DL.Name like N'%" + word + "%'";
+                    query += " OR C.Name like N'%" + word + "%'";
+                    query += " OR S.Name like N'%" + word + "%'";
+                    query += " OR Cat.Name like N'%" + word + "%'";
+                    query += " OR Note like N'%" + word + "%'";
 
                     query += " )";
 

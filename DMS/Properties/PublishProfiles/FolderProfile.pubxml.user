@@ -1,9 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--
-https://go.microsoft.com/fwlink/?LinkID=208121. 
+https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project>
   <PropertyGroup>
-    <_PublishTargetUrl>D:\Projects\Malafatee\DMS\bin\Release\netcoreapp2.1\publish\</_PublishTargetUrl>
+    <_PublishTargetUrl>E:\Projects\DMS\DMS\bin\Release\net7.0\publish\</_PublishTargetUrl>
+    <History>True|2023-04-16T22:01:03.5169767Z;True|2023-04-17T00:49:00.5568941+03:00;True|2023-04-16T21:54:44.3416725+03:00;True|2023-04-16T21:50:32.9585910+03:00;</History>
+    <LastFailureDetails />
   </PropertyGroup>
 </Project>

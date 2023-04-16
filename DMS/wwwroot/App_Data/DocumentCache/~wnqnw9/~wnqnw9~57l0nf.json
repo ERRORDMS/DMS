@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "wnqnw9",
+  "CachePdfKey": "wnqnw9/wnqnw9-8gmhy4.pdf",
+  "CacheXpzKey": "wnqnw9/wnqnw9-57l0nf.xpz",
+  "CacheInfoKey": "wnqnw9/wnqnw9-57l0nf.json",
+  "CacheCopyKey": "wnqnw9/1qlbntq.pdf",
+  "Document": null,
+  "DocumentFileName": "خطة البحث لمشاريع معرض فلسطين للعلوم والتكنولوجيا 2019-2020.pdf",
+  "DownloadFileName": null,
+  "InputOptions": {
+    "Format": "Pdf",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "wnqnw9",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": null
+}

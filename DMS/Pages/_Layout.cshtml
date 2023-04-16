@@ -2,11 +2,16 @@
 @using DMS.Controllers;
 @{
     var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
+    string userId;
+    /*
+    List<Notification> notifications = new List<Notification>();
+    if (claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier) != null)
+    {
+        userId = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
 
-    string userId = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
 
-
-    List<Notification> notifications = new DMS.Database.DataManager(userId).GetNotifications().ToList();
+        notifications = new DMS.Database.DataManager(userId).GetNotifications().ToList();
+    }*/
 }
 <!doctype html>
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -60,9 +65,10 @@
     @* Uncomment to use the Diagram control *@
     @*<link href="~/css/devextreme/dx-diagram.css" rel="stylesheet" />*@
 
-    <link href="~/css/devextreme/dx.common.css" rel="stylesheet" />
-    <link href="~/css/devextreme/theme.base.css" rel="stylesheet" />
+    
 
+
+      <link href="~/css/devextreme/dx.material.blue.light.compact.css" rel="stylesheet" />
 
     <!-- Main scripts -->
     <script src="~/vendors/bundle.js">
@@ -204,12 +210,12 @@
                     </a>
                 </div>
                 <ul id="nav">
-                        <li>
+                        @*<li>
                             <a href="Stats">
                                 <i class="nav-link-icon fas fa-chart-pie"></i>
                                 <span class="nav-link-label">Dashboard</span>
                             </a>
-                        </li>
+                        </li>*@
                     <li>
                         <a href="Dashboard">
                             <i class="nav-link-icon far fa-folder"></i>
@@ -250,17 +256,23 @@
                         {
                             var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.UserData);
 
-                            accountType = c.Value;
-                            userId = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+                            if (c != null)
+                            {
+                                accountType = c.Value;
+                                userId = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+                            }
                         }
-                        if (new DMS.Database.DataManager(userId).IsAdmin(userId))
+                        if (userId != "")
                         {
-                                                            <li>
-                                                                <a href="Settings">
-                                                                    <i class="nav-link-icon fas fa-user-cog"></i>
-                                                                    <span class="nav-link-label">Enterprise</span>
-                                                                </a>
-                                                            </li>
+                            if (new DMS.Database.DataManager(userId).IsAdmin(userId))
+                            {
+                                <li>
+                                    <a href="Settings">
+                                        <i class="nav-link-icon fas fa-user-cog"></i>
+                                        <span class="nav-link-label">Enterprise</span>
+                                    </a>
+                                </li>
+                            }
                         }
                     }
 
@@ -295,22 +307,23 @@
                 <div class="sidebar primary-sidebar show" id="storage">
                     <div class="sidebar-header">
                         <h4>Storage Overview</h4>
+                        @*
                         <div class="icon" id="bell"> 
                             <i class="nav-link-icon fas fa-bell"></i>
-                            <span class="badge badge-danger badge-small">@notifications.Count</span>
+                            <span class="badge badge-danger badge-small" id="notifBadge">@notifications.Where(S=>!S.MarkedAsRead).Count()</span>
                         </div>
-    <div class="notifications" id="box">
-        <h2>Notifications - <span>@notifications.Count</span></h2>
-                                @foreach(Notification notification in notifications){
-
-        <div class="notifications-item">
-            <div class="text">
-                <h4>@notification.Title</h4>
-                <p>@notification.Description</p>
-            </div>
-        </div>
-                                }
-    </div>
+                        <div class="notifications" id="box">
+                            <h2>Notifications - <span>@notifications.Count</span></h2>
+                            @foreach(Notification notification in notifications)
+                            {
+                                <div class="notifications-item">
+                                    <div class="text">
+                                       <h4>@notification.Title</h4>
+                                       <p>@notification.Description</p>
+                                    </div>
+                                </div>
+                             }
+                         </div>*@
                     </div>
                     <div class="sidebar-content">
                         <div id="justgage_five" class="mb-3"></div>
@@ -461,11 +474,12 @@
                 @RenderSection("SidebarSection", false)
             </div>
             <!-- ./ Sidebar group -->
-        </div>
+        </div> 
         <!-- ./ Content wrapper -->
     </div>
     <!-- ./ Layout wrapper -->
     <script>
+           /*
         $(document).ready(function(){
             
             
@@ -474,9 +488,7 @@
         var down = false;
         
         $('#bell').click(function(e){
-          
-            var color = $(this).text();
-            if(down){
+                      if(down){
                 
                 $('#box').css('height','0px');
                 $('#box').css('opacity','0');
@@ -486,12 +498,17 @@
                 $('#box').css('height','auto');
                 $('#box').css('opacity','1');
                 down = true;
+               MarkAsRead();
+
                 
             }
+
             
         });
             
             });
+            
+            */
         function MarkAsRead() {
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = () => {
@@ -499,6 +516,7 @@
                    
                 }
             }
+
             const fd = new FormData();
             fd.append("markasread", true);
             xhr.open("POST", "api/Notifications/MarkAsRead", true);
@@ -603,463 +621,3 @@
 </body>
 
 </html>
-
-@*
-        @using Microsoft.AspNetCore.Mvc.Localization
-    @inject IViewLocalizer Localizer
-    @using System.Globalization
-
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
-        <link rel="stylesheet"
-              href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
-              integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
-              crossorigin="anonymous" />
-        <link rel="stylesheet" href="~/css/vendor.css" asp-append-version="true" />
-        <link rel="stylesheet" href="~/css/Site.css" />
-        <link href="~/css/Roboto.css" rel='stylesheet' type='text/css'>
-        <style>
-
-            .unstyled {
-                list-style: none;
-                padding: 0;
-                margin: 0;
-            }
-
-                .unstyled a {
-                    text-decoration: none;
-                }
-
-            .main-nav ul {
-                border-top: solid 1px #3c3735;
-            }
-
-            .main-nav li {
-                width: 100%;
-                height: 100%;
-                border-bottom: solid 1px #3c3735;
-            }
-
-            .main-nav a {
-                width: 200px;
-                height: 100%;
-                padding: 1.1em 0;
-                color: #ffffff;
-                font: 400 1.125em "Source Sans Pro", Helvetica, Arial, sans-serif;
-                display: flex;
-            }
-
-                .main-nav a i {
-                    text-align: center;
-                    width: 60px;
-                    height: 100%;
-                    font-size: 22px;
-                    color: #ffff;
-                }
-
-                .main-nav a:hover {
-                    color: #0087ff;
-                }
-
-            .list-hover-slide a {
-                position: relative;
-                overflow: hidden;
-            }
-
-            .list-hover-slide a {
-                display: block;
-                position: relative;
-                z-index: 1;
-                transition: 0.35s ease color;
-            }
-
-                .list-hover-slide a:before {
-                    content: "";
-                    display: block;
-                    z-index: -1;
-                    position: absolute;
-                    left: -100%;
-                    top: 0;
-                    width: 100%;
-                    height: 100%;
-                    border-right: solid 5px #0087ff;
-                    background: #3c3735;
-                    transition: 0.35s ease left;
-                }
-
-                .list-hover-slide a.is-current:before,
-                .list-hover-slide a:hover:before {
-                    left: 0;
-                }
-
-            .icon {
-                margin-right: 6rem;
-            }
-
-            .progress {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-
-            #progressBar {
-                margin: 20px;
-                width: 100px;
-                height: 100px;
-            }
-            /*
-            .size {
-                margin-left: 0.2rem;
-                margin-right: 0.2rem;
-            }
-
-            .full_size {
-                margin-left: 0.2rem;
-                margin-right: 0.2rem;
-            }
-
-            #maxStorage {
-                margin-left: 0.2rem;
-            }*/
-
-            .line {
-                height: 1px;
-                width: 100%;
-                background-color: rgb(255, 255, 255);
-            }
-            /*
-            .upgrade_item {
-                background-color: #0087ff;
-                border-radius: 10px;
-                box-shadow: 2px 2px 5px black;
-                margin-left: 1rem;
-                width: 140px;
-            }
-
-
-            #storage_top {
-                height: 180px;
-                width: 100%;
-            }*/
-
-            .storage_text {
-                color: #fff;
-                font-weight: 100;
-                font-size: 18px;
-                text-align: center;
-            }
-
-            .progress {
-                margin: 0;
-                padding: 0;
-                height: 120px;
-            }
-        </style>
-        @if (CultureInfo.CurrentCulture.TextInfo.IsRightToLeft)
-        {
-            <style>
-                body {
-                    direction: rtl;
-                    text-align: right;
-                }
-                /*
-                .dx-treelist-text-content {
-                    text-align: right;
-                    float: right;
-                }*/
-            </style>
-        }
-
-        <script src="~/js/vendor.js" asp-append-version="true"></script>
-    </head>
-
-    <body>
-        <div id="app-side-nav-outer-toolbar">
-            <div class="layout-header" style="height:60px;overflow: hidden;">
-
-                @functions{
-                    bool IsCurrentPage(string pageName)
-                    {
-                        var pageUrl = Url.Page(pageName);
-                        var currentPageUrl = Url.Page(ViewContext.RouteData.Values["page"].ToString());
-                        return pageUrl == currentPageUrl;
-                    }
-                }
-
-                @(Html.DevExtreme().Toolbar()
-                    .Items(items =>
-                    {
-                        items.Add()
-                            .Widget(w => w
-                                .Button()
-                                .Icon("menu")
-                                .OnClick("DMS.onMenuButtonClick")
-                            )
-                            .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.After : ToolbarItemLocation.Before)
-                            .CssClass("menu-button");
-                        /*
-                        items.Add()
-                                .Html(@"<i class='fas fa-folder' style='color: #0087ff'></i>")
-                                .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.After : ToolbarItemLocation.Before)
-                                .CssClass("menu-button");
-                        */
-
-                        items.Add()
-                            .Html("<div>" + Localizer["Title"].Value + "</div>")
-                            .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.After : ToolbarItemLocation.Before)
-                            .CssClass("header-title");
-
-                        if (IsCurrentPage("Viewer")) {
-                            items.Add()
-                             .Widget(w => w
-                                 .Button()
-                                 .Text(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "نشر" : "Share")
-                                 .OnClick("share")
-                             )
-                             .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.Before : ToolbarItemLocation.After)
-                             .CssClass("menu-button");
-
-                         }
-
-                        items.Add()
-                           .Widget(w => w
-                               .Button()
-                               .Text(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "English" : "عربي")
-                               .OnClick(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? "switchLanguageEn" : "switchLanguageAr")
-                           )
-                           .Location(System.Globalization.CultureInfo.CurrentCulture.Name != "en-US" ? ToolbarItemLocation.Before : ToolbarItemLocation.After)
-                           .CssClass("menu-button");
-                    })
-                )
-
-            </div>
-            <div class="layout-body">
-                @(Html.DevExtreme().Drawer()
-                    .ID("layout-drawer")
-                    .Position(DrawerPosition.Left)
-                    .Opened(new JS("DMS.restoreDrawerOpened()"))
-                    .Content(@<text>
-                                <div id="layout-drawer-scrollview" class="with-footer">
-                                    <div class="content">
-                                        @RenderBody()
-                                    </div>
-                                    <div class="content-block">
-                                        <div class="content-footer">
-                                            <div id="footer">
-                                                Copyright (C) 2020 Zimam Solutions
-                                                <br />
-                                                All trademarks or registered trademarks are property of their respective owners.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                    </text>)
-             .Template(new TemplateName("navigation-menu"))
-                )
-            </div>
-        </div>
-
-        @using (Html.DevExtreme().NamedTemplate("navigation-menu"))
-        {
-    <div class="menu-container dx-swatch-additional" style="background-color:#363640">
-        <div class="nav-wrap">
-            <nav class="main-nav" role="navigation">
-                <ul class="unstyled list-hover-slide">
-                    <li class="nav-item">
-                        <a href="Dashboard"><i class="fas fa-home"></i>@Localizer["Home"]</a>
-                    </li>
-                    <li class="nav-item categories">
-                        <a href="ManageCategory"><i class="fas fa-tag"></i>@Localizer["Categories"]</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="ManageContact"><i class="fas fa-users"></i>@Localizer["Contacts"]</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="ManageSearchKey"><i class="fas fa-key"></i>@Localizer["SearchKeys"]</a>
-                    </li>
-                    <!--
-                    <li class="nav-item">
-                        <a href="Email"><i class="fas fa-email"></i>@Localizer["Email"]</a>
-                    </li>-->
-                    <li class="nav-item">
-                        <a href="Upload"><i class="fas fa-upload"></i>@Localizer["Upload"]</a>
-                    </li>
-
-                    @{
-                        var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
-
-                        string accountType = "";
-                        string userId = "";
-                        if (claimsIdentity != null)
-                        {
-                            var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.UserData);
-
-                            accountType = c.Value;
-                            userId = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
-                        }
-                        if (new DMS.Database.DataManager(userId).IsAdmin(userId))
-                        {
-                            <li class="nav-item"><a href="Settings"><i class="fas fa-user-cog"></i>@Localizer["Settings"]</a></li>
-                            <li class="nav-item"><a href="DeletedFiles"><i class="fas fa-trash"></i>Deleted Files</a></li>
-                        }
-                        if (accountType == "Free")
-                        {
-                            <li class="nav-item upgrade_item"><a href="#"><i class="fas fa-long-arrow-alt-up"></i>@Localizer["Upgrade"]</a></li>
-                        }
-                    }
-                    <li class="nav-item"><a href="SignOut"><i class="fas fa-sign-out-alt"></i>@Localizer["Logout"]</a></li>
-                    <li class="nav-item">
-                        <div id="storage_top">
-                            <partial name="StorageProgress" />
-                        </div>
-                    </li>
-
-                </ul>
-            </nav>
-        </div>
-    </div>
-        }
-        <script>
-
-            function calc(num) {
-                var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]
-                return with2Decimals;
-            }
-            function switchLanguageEn() {
-                switchLanguage("en-US");
-            }
-
-
-            function switchLanguageAr() {
-
-                switchLanguage("ar-SA");
-            }
-
-            function switchLanguage(culture) {
-                const xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function () {
-                    if (this.readyState == 4 && this.status == 200) {
-                        window.location = "Dashboard";
-                    }
-                }
-                const fd = new FormData();
-                fd.append('culture', culture);
-                xhr.open("POST", "api/Culture", true);
-                xhr.send(fd);
-            }
-            var DMS = (function () {
-
-                var DRAWER_OPENED_KEY = "DMS-drawer-opened";
-
-
-                var breakpoints = {
-                    xSmallMedia: window.matchMedia("(max-width: 599.99px)"),
-                    smallMedia: window.matchMedia("(min-width: 600px) and (max-width: 959.99px)"),
-                    mediumMedia: window.matchMedia("(min-width: 960px) and (max-width: 1279.99px)"),
-                    largeMedia: window.matchMedia("(min-width: 1280px)")
-                };
-
-                function getDrawer() {
-                    return $("#layout-drawer").dxDrawer("instance");
-                }
-                //   console.log(getDrawer());
-
-                function restoreDrawerOpened() {
-                    var isLarge = breakpoints.largeMedia.matches;
-                    if (!isLarge)
-                        return false;
-
-                    var state = sessionStorage.getItem(DRAWER_OPENED_KEY);
-                    if (state === null)
-                        return isLarge;
-
-                    return state === "true";
-                }
-
-
-                function saveDrawerOpened() {
-                    sessionStorage.setItem(DRAWER_OPENED_KEY, getDrawer().option("opened"));
-                }
-
-                function updateDrawer() {
-                    var isXSmall = breakpoints.xSmallMedia.matches,
-                        isLarge = breakpoints.largeMedia.matches;
-                    getDrawer().option({
-                        openedStateMode: isLarge ? "shrink" : "overlap",
-                        revealMode: isXSmall ? "slide" : "expand",
-                        minSize: isXSmall ? 60 : 60,
-                        shading: !isLarge,
-                    });
-                }
-
-                function init() {
-                    $("#layout-drawer-scrollview").dxScrollView({ direction: "vertical" });
-
-                    $.each(breakpoints, function (_, size) {
-                        size.addListener(function (e) {
-                            if (e.matches)
-                                updateDrawer();
-                        });
-                    });
-
-                    updateDrawer();
-                }
-
-                function navigate(url, delay) {
-                    setTimeout(function () { location.href = url }, delay);
-                }
-
-                function onMenuButtonClick() {
-
-                    getDrawer().toggle();
-
-                    saveDrawerOpened();
-
-                }
-
-                function onTreeViewItemClick(e) {
-                    var drawer = getDrawer();
-                    var savedOpened = restoreDrawerOpened();
-                    var actualOpened = drawer.option("opened");
-
-                    if (!actualOpened) {
-                        drawer.show();
-                    } else {
-                        var willHide = !savedOpened || !breakpoints.largeMedia.matches;
-                        var willNavigate = !e.itemData.selected;
-
-                        if (willHide)
-                            drawer.hide();
-
-                        if (willNavigate)
-                            navigate(e.itemData.path, willHide ? 400 : 0);
-                    }
-                }
-
-                return {
-                    init: init,
-                    restoreDrawerOpened: restoreDrawerOpened,
-                    onMenuButtonClick: onMenuButtonClick,
-                    onTreeViewItemClick: onTreeViewItemClick
-                };
-            })();
-            document.addEventListener("DOMContentLoaded", function documentReady() {
-                this.removeEventListener("DOMContentLoaded", documentReady);
-                DMS.init();
-            });
-        </script>
-
-        @RenderSection("Scripts", required: false)
-
-    </body>
-
-    </html>
-*@

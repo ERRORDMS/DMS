@@ -15,7 +15,7 @@ namespace DMS.Database
     public class SQLHelper : IDisposable
     {
         private SqlConnection sqlConnection;
-        private DataConnection dc;
+        
         public SQLHelper(SqlConnectionStringBuilder conString)
         {
             sqlConnection = new SqlConnection(conString.ConnectionString);
@@ -549,7 +549,7 @@ CREATE DATABASE [{0}]
                 foreach (string where in whereValues.Keys)
                 {
                     i++;
-                    query += where + " = '" + whereValues[where] + "'";
+                    query += where + " = N'" + whereValues[where] + "'";
 
                     if (i != whereValues.Keys.Count)
                     {

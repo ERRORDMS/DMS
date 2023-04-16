@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "17x0bo6",
+  "CachePdfKey": "17x0bo6/17x0bo6-1htwtze.pdf",
+  "CacheXpzKey": "17x0bo6/17x0bo6-1j3gzmh.xpz",
+  "CacheInfoKey": "17x0bo6/17x0bo6-1j3gzmh.json",
+  "CacheCopyKey": "17x0bo6/1crypuw.txt_40091",
+  "Document": "Type=Stream;File=tata.txt_40091",
+  "DocumentFileName": "tata.txt_40091",
+  "DownloadFileName": null,
+  "InputOptions": {
+    "Format": 0,
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": [],
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "17x0bo6",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": null
+}

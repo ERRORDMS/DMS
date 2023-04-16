@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "1kkzt3t",
+  "CachePdfKey": "1kkzt3t/1kkzt3t-1f2y5al.pdf",
+  "CacheXpzKey": "1kkzt3t/1kkzt3t-86m04k.xpz",
+  "CacheInfoKey": "1kkzt3t/1kkzt3t-86m04k.json",
+  "CacheCopyKey": "1kkzt3t/p1df6h.png",
+  "Document": null,
+  "DocumentFileName": "malafatee0.png",
+  "DownloadFileName": null,
+  "InputOptions": {
+    "Format": "Png",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "1kkzt3t",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": null
+}

@@ -1,0 +1,135 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>false</Optimize>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Areas\**" />
+    <Content Remove="Areas\**" />
+    <EmbeddedResource Remove="Areas\**" />
+    <None Remove="Areas\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="compilerconfig.json" />
+    <Content Remove="wwwroot\js\site.js" />
+    <Content Remove="wwwroot\js\site.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Aspose.Total.lic" />
+    <None Remove="C:\Users\Osayed\.nuget\packages\linq2db.sqlserver\3.2.3\contentFiles\any\any\LinqToDB.Templates\CopyMe.SqlServer.tt.txt" />
+    <None Remove="C:\Users\Osayed\.nuget\packages\linq2db.sqlserver\3.2.3\contentFiles\any\any\LinqToDB.Templates\DataAnnotations.ttinclude" />
+    <None Remove="C:\Users\Osayed\.nuget\packages\linq2db.sqlserver\3.2.3\contentFiles\any\any\LinqToDB.Templates\DataModel.ttinclude" />
+    <None Remove="C:\Users\Osayed\.nuget\packages\linq2db.sqlserver\3.2.3\contentFiles\any\any\LinqToDB.Templates\EditableObject.ttinclude" />
+    <None Remove="C:\Users\Osayed\.nuget\packages\linq2db.sqlserver\3.2.3\contentFiles\any\any\LinqToDB.Templates\Equatable.ttinclude" />
+    <None Remove="C:\Users\Osayed\.nuget\packages\linq2db.sqlserver\3.2.3\contentFiles\any\any\LinqToDB.Templates\Humanizer.ttinclude" />
+    <None Remove="C:\Users\Osayed\.nuget\packages\linq2db.sqlserver\3.2.3\contentFiles\any\any\LinqToDB.Templates\LinqToDB.SqlServer.SqlTypes.Tools.ttinclude" />
+    <None Remove="C:\Users\Osayed\.nuget\packages\linq2db.sqlserver\3.2.3\contentFiles\any\any\LinqToDB.Templates\LinqToDB.SqlServer.Tools.ttinclude" />
+    <None Remove="C:\Users\Osayed\.nuget\packages\linq2db.sqlserver\3.2.3\contentFiles\any\any\LinqToDB.Templates\LinqToDB.SqlServer.ttinclude" />
+    <None Remove="C:\Users\Osayed\.nuget\packages\linq2db.sqlserver\3.2.3\contentFiles\any\any\LinqToDB.Templates\LinqToDB.Tools.ttinclude" />
+    <None Remove="C:\Users\Osayed\.nuget\packages\linq2db.sqlserver\3.2.3\contentFiles\any\any\LinqToDB.Templates\LinqToDB.ttinclude" />
+    <None Remove="C:\Users\Osayed\.nuget\packages\linq2db.sqlserver\3.2.3\contentFiles\any\any\LinqToDB.Templates\MultipleFiles.ttinclude" />
+    <None Remove="C:\Users\Osayed\.nuget\packages\linq2db.sqlserver\3.2.3\contentFiles\any\any\LinqToDB.Templates\NotifyDataErrorInfo.ttinclude" />
+    <None Remove="C:\Users\Osayed\.nuget\packages\linq2db.sqlserver\3.2.3\contentFiles\any\any\LinqToDB.Templates\NotifyPropertyChanged.ttinclude" />
+    <None Remove="C:\Users\Osayed\.nuget\packages\linq2db.sqlserver\3.2.3\contentFiles\any\any\LinqToDB.Templates\ObsoleteAttributes.ttinclude" />
+    <None Remove="C:\Users\Osayed\.nuget\packages\linq2db.sqlserver\3.2.3\contentFiles\any\any\LinqToDB.Templates\PluralizationService.ttinclude" />
+    <None Remove="C:\Users\Osayed\.nuget\packages\linq2db.sqlserver\3.2.3\contentFiles\any\any\LinqToDB.Templates\T4Model.ttinclude" />
+    <None Remove="C:\Users\Osayed\.nuget\packages\linq2db.sqlserver\3.2.3\contentFiles\any\any\LinqToDB.Templates\Validation.ttinclude" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AspNetCoreRateLimit" Version="5.0.0" />
+    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="DevExpress.AspNetCore.Common" Version="22.1.3" />
+    <PackageReference Include="DevExpress.AspNetCore.Core" Version="22.1.3" />
+    <PackageReference Include="DevExpress.AspNetCore.Dashboard" Version="22.1.3" />
+    <PackageReference Include="DevExtreme.AspNet.Core" Version="22.2.5" />
+    <PackageReference Include="EntityFramework" Version="6.4.4" />
+    <PackageReference Include="linq2db.SqlServer" Version="5.1.1" />
+    <PackageReference Include="lz4net" Version="1.0.15.93" />
+    <PackageReference Include="MailKit" Version="4.0.0" />
+    <PackageReference Include="DevExtreme.AspNet.Data" Version="2.9.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
+    <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.6" />
+    <PackageReference Include="MimeKit" Version="4.0.0" />
+    <PackageReference Include="MimeTypes" Version="2.4.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Otp.NET" Version="1.3.0" />
+    <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="21.1.39" />
+    <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
+    <PackageReference Include="System.Security.Permissions" Version="7.0.0" />
+    <PackageReference Include="System.ServiceModel.Duplex" Version="4.10.2" />
+    <PackageReference Include="System.ServiceModel.Http" Version="4.10.2" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.10.2" />
+    <PackageReference Include="System.ServiceModel.Security" Version="4.10.2" />
+    <PackageReference Include="Twilio" Version="6.4.0" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.410601">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.5" />
+  </ItemGroup>
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Aspose.Total.lic" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="compilerconfig.json" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-theme.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-theme.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\fonts\glyphicons-halflings-regular.svg" />
+    <None Include="wwwroot\lib\bootstrap\dist\fonts\glyphicons-halflings-regular.woff2" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\npm.js" />
+    <None Include="wwwroot\lib\bootstrap\LICENSE" />
+    <None Include="wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.js" />
+    <None Include="wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js" />
+    <None Include="wwwroot\lib\jquery-validation\dist\additional-methods.js" />
+    <None Include="wwwroot\lib\jquery-validation\dist\additional-methods.min.js" />
+    <None Include="wwwroot\lib\jquery-validation\dist\jquery.validate.js" />
+    <None Include="wwwroot\lib\jquery-validation\dist\Jquery.validate.min.js" />
+    <None Include="wwwroot\lib\jquery-validation\LICENSE.md" />
+    <None Include="wwwroot\lib\jquery\dist\jquery.js" />
+    <None Include="wwwroot\lib\jquery\dist\jquery.min.js" />
+    <None Include="wwwroot\lib\jquery\dist\jquery.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Aspose.Imaging">
+      <HintPath>DocViewerDLL\Aspose.Imaging.dll</HintPath>
+    </Reference>
+    <Reference Include="GleamTech.Common">
+      <HintPath>..\..\..\Software\Download GleamTech DocumentUltimate v5.3.2.0 (23 Jun 2020) + CRACK\Bin\netstandard2.0\GleamTech.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="GleamTech.DocumentUltimate">
+      <HintPath>..\..\..\Software\Download GleamTech DocumentUltimate v5.3.2.0 (23 Jun 2020) + CRACK\Bin\netstandard2.0\GleamTech.DocumentUltimate.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="Pages\Register.cshtml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Update="settings.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\App_Data\" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties TemplateFeatures="NETCORE CS RESPONSIVE" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

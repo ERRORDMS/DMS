@@ -25,7 +25,6 @@ using Newtonsoft.Json.Linq;
 using System.Dynamic;
 using Microsoft.CSharp.RuntimeBinder;
 using System.Threading;
-using Microsoft.AspNetCore.Http.Internal;
 using System.Net;
 using Aspose.Imaging;
 using Aspose.Imaging.ImageOptions;
@@ -2129,9 +2128,8 @@ where UserID = '{2}'", Tables.Roles, Tables.UserRoles, userId);
         }
         public  int Login(string username, string password)
         {
-            //    try
-            //    {
-            return 0;
+                try
+                {
             if (client.loginAsync(username, password).Result)
             {
                 var isActivated = Convert.ToBoolean(sqlHelper.SelectWithWhere(Tables.Users, "Activated", "Name = '" + username + "'"));
@@ -2144,13 +2142,12 @@ where UserID = '{2}'", Tables.Roles, Tables.UserRoles, userId);
             else
                 return (int)ErrorCodes.WRONG_CREDENTIALS;
 
-          //  }
-        //    catch (Exception ex)
-      //      {
-    //            Logger.Log(ex.Message);
-  //              return (int)ErrorCodes.INTERNAL_ERROR;
-
-//            }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.Message);
+                return (int)ErrorCodes.INTERNAL_ERROR;
+            }
         }
 
         public  int GenerateAllTables()

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace DMS.Pages
 {
+
     public class ManageCategoryModel : PageModel
     {
         public void OnGet()

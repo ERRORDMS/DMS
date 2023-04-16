@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "1ktu4y8",
+  "CachePdfKey": "1ktu4y8/1ktu4y8-8gmhy4.pdf",
+  "CacheXpzKey": "1ktu4y8/1ktu4y8-ozjfqi.xpz",
+  "CacheInfoKey": "1ktu4y8/1ktu4y8-ozjfqi.json",
+  "CacheCopyKey": "1ktu4y8/1qwtv2v.pdf",
+  "Document": null,
+  "DocumentFileName": "2014.02.09 - Five Levels of Leadership_0.pdf",
+  "DownloadFileName": null,
+  "InputOptions": {
+    "Format": "Pdf",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "1ktu4y8",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": null
+}

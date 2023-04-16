@@ -45,6 +45,13 @@ namespace DMS.Controllers
         [HttpPost]
         public IActionResult MarkAsRead(bool markasread)
         {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            using (var dm = new DataManager(userId))
+            {
+                 dm.MarkNotificationsAsRead();
+                Ok();
+            }
             return Ok();
         }
 

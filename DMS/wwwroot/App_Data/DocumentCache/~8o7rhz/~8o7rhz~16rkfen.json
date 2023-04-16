@@ -1,0 +1,31 @@
+{
+  "CacheSourceKey": "8o7rhz",
+  "CachePdfKey": "8o7rhz/8o7rhz-1t7s6b9.pdf",
+  "CacheXpzKey": "8o7rhz/8o7rhz-16rkfen.xpz",
+  "CacheInfoKey": "8o7rhz/8o7rhz-16rkfen.json",
+  "CacheCopyKey": "8o7rhz/cmx1c8.docx",
+  "Document": null,
+  "DocumentFileName": ".docx",
+  "DownloadFileName": null,
+  "InputOptions": {
+    "$type": "GleamTech.DocumentUltimate.WordProcessingInputOptions, GleamTech.DocumentUltimate",
+    "FieldFileName": ".docx",
+    "UpdateFields": true,
+    "Encoding": null,
+    "Format": "Docx",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "8o7rhz",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": null
+}

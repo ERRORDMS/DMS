@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "7rduyf",
+  "CachePdfKey": "7rduyf/7rduyf-1f2y5al.pdf",
+  "CacheXpzKey": "7rduyf/7rduyf-inxbse.xpz",
+  "CacheInfoKey": "7rduyf/7rduyf-inxbse.json",
+  "CacheCopyKey": "7rduyf/lv4bhw.png",
+  "Document": null,
+  "DocumentFileName": "icons8-cloud-sync-100.png",
+  "DownloadFileName": null,
+  "InputOptions": {
+    "Format": "Png",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "7rduyf",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": null
+}

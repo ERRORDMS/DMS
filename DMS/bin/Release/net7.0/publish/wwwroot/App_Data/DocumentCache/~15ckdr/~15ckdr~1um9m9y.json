@@ -1,0 +1,31 @@
+{
+  "CacheSourceKey": "15ckdr",
+  "CachePdfKey": "15ckdr/15ckdr-1qymg1j.pdf",
+  "CacheXpzKey": "15ckdr/15ckdr-1um9m9y.xpz",
+  "CacheInfoKey": "15ckdr/15ckdr-1um9m9y.json",
+  "CacheCopyKey": "15ckdr/1sqth94.txt",
+  "Document": "Type=Stream;File=tata.txt",
+  "DocumentFileName": "tata.txt",
+  "DownloadFileName": null,
+  "InputOptions": {
+    "$type": "GleamTech.DocumentUltimate.WordProcessingInputOptions, GleamTech.DocumentUltimate",
+    "FieldFileName": "tata.txt",
+    "UpdateFields": true,
+    "Encoding": null,
+    "Format": "Txt",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": [],
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "15ckdr",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": []
+}

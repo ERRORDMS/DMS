@@ -1,0 +1,12 @@
+Tables:
+CategoryUserRel
+Roles
+RolePermissions
+Permissions
+UserPermissions
+
+New columns:
+Contacts - DMSUserID
+DocumentLine - Name
+SearchKeys - DMSUserID
+Users - AccountType, EnterpriseCode

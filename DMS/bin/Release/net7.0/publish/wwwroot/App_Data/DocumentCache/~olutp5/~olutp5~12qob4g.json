@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "olutp5",
+  "CachePdfKey": "olutp5/olutp5-lypcy3.pdf",
+  "CacheXpzKey": "olutp5/olutp5-12qob4g.xpz",
+  "CacheInfoKey": "olutp5/olutp5-12qob4g.json",
+  "CacheCopyKey": "olutp5/qu92i0.jpg",
+  "Document": null,
+  "DocumentFileName": "check.jpg",
+  "DownloadFileName": null,
+  "InputOptions": {
+    "Format": "Jpg",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "olutp5",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": null
+}

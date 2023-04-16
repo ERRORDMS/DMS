@@ -1,0 +1,31 @@
+{
+  "CacheSourceKey": "cioh6o",
+  "CachePdfKey": "cioh6o/cioh6o-ca1vwg.pdf",
+  "CacheXpzKey": "cioh6o/cioh6o-1v85nqj.xpz",
+  "CacheInfoKey": "cioh6o/cioh6o-1v85nqj.json",
+  "CacheCopyKey": "cioh6o/a34j94.txt",
+  "Document": null,
+  "DocumentFileName": "Bills.txt",
+  "DownloadFileName": null,
+  "InputOptions": {
+    "$type": "GleamTech.DocumentUltimate.WordProcessingInputOptions, GleamTech.DocumentUltimate",
+    "FieldFileName": "Bills.txt",
+    "UpdateFields": true,
+    "Encoding": null,
+    "Format": "Txt",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "cioh6o",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": null
+}

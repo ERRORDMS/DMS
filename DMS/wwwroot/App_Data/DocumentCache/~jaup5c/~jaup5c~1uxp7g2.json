@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "jaup5c",
+  "CachePdfKey": "jaup5c/jaup5c-1f2y5al.pdf",
+  "CacheXpzKey": "jaup5c/jaup5c-1uxp7g2.xpz",
+  "CacheInfoKey": "jaup5c/jaup5c-1uxp7g2.json",
+  "CacheCopyKey": "jaup5c/1r3h98i.png",
+  "Document": null,
+  "DocumentFileName": "dogecoin.png",
+  "DownloadFileName": null,
+  "InputOptions": {
+    "Format": "Png",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "jaup5c",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": null
+}

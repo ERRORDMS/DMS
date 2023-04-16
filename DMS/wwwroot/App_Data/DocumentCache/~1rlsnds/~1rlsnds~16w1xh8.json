@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "1rlsnds",
+  "CachePdfKey": "1rlsnds/1rlsnds-8gmhy4.pdf",
+  "CacheXpzKey": "1rlsnds/1rlsnds-16w1xh8.xpz",
+  "CacheInfoKey": "1rlsnds/1rlsnds-16w1xh8.json",
+  "CacheCopyKey": "1rlsnds/y6mcgp.pdf",
+  "Document": null,
+  "DocumentFileName": ".cdr",
+  "DownloadFileName": null,
+  "InputOptions": {
+    "Format": "Pdf",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "1rlsnds",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": null
+}

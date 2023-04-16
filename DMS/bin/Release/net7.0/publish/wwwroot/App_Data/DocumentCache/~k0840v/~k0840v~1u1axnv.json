@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "k0840v",
+  "CachePdfKey": "k0840v/k0840v-8gmhy4.pdf",
+  "CacheXpzKey": "k0840v/k0840v-1u1axnv.xpz",
+  "CacheInfoKey": "k0840v/k0840v-1u1axnv.json",
+  "CacheCopyKey": "k0840v/yx6z2q.zip",
+  "Document": null,
+  "DocumentFileName": "DocumentStudio.NET-master.zip",
+  "DownloadFileName": null,
+  "InputOptions": {
+    "Format": "Pdf",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "k0840v",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": null
+}

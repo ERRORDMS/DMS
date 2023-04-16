@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "f13r7x",
+  "CachePdfKey": "f13r7x/f13r7x-8gmhy4.pdf",
+  "CacheXpzKey": "f13r7x/f13r7x-mcyehq.xpz",
+  "CacheInfoKey": "f13r7x/f13r7x-mcyehq.json",
+  "CacheCopyKey": "f13r7x/18kq5zf.pdf",
+  "Document": null,
+  "DocumentFileName": "license.pdf",
+  "DownloadFileName": null,
+  "InputOptions": {
+    "Format": "Pdf",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "f13r7x",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": null
+}

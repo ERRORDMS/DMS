@@ -5,60 +5,7 @@
 @using Aspose.Imaging
 @using Aspose.Imaging.ImageOptions; 
 @{
-    /*
 
-        string InfoAutoKey = "";
-        string LineAutoKey = "";
-        Microsoft.Extensions.Primitives.StringValues queryVal;
-
-        if (Context.Request.Query.TryGetValue("InfoAutoKey", out queryVal))
-        {
-            InfoAutoKey = queryVal.FirstOrDefault();
-        }
-
-        if (Context.Request.Query.TryGetValue("LineAutoKey", out queryVal))
-        {
-            LineAutoKey = queryVal.FirstOrDefault();
-        }
-
-     string userId = "";
-
-    var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
-
-    if (claimsIdentity != null)
-    {
-        var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-
-        userId = c.Value;
-    }
-
-
-
-
-
-    // string userId = User.FindFirst("userdata").Value;
-
-
-    DMS.Database.SQLHelper helper = new DMS.Database.DataManager(userId).SQLHelper;
-
-    var Ext = helper.SelectWithWhere(DMS.Database.Tables.DocumentLines,
-        "Ext",
-        "InfoAutoKey = '" + InfoAutoKey + "'");
-
-    var fn = InfoAutoKey + "_" + LineAutoKey + "." +  Ext;
-
-    var arr = helper.ExecuteScalar<byte[]>("select TOP 1 file_stream from " + DMS.Database.Tables.Images + " where name = '" + fn + "'");
-
-    var documentViewer = new DocumentViewer
-    {
-        //Width = GleamTech.AspNet.UI.CssLength.Percentage(100),
-        //Height = GleamTech.AspNet.UI.CssLength.Percentage(100),
-        // DisplayMode = GleamTech.AspNet.UI.DisplayMode.Viewport,
-
-        ClientEvents = new DocumentViewerClientEvents() { DocumentLoaded = "documentViewerDocumentLoaded" },
-        DocumentSource = new DocumentSource(new DocumentInfo(fn), arr)
-    };
-    */
     string DecryptedString = (string)ViewData["DecryptedString"];
 
     string userId = DecryptedString.Split("|")[0];
@@ -66,26 +13,7 @@
     long InfoAutoKey = Convert.ToInt64(DecryptedString.Split("|")[1]);
     long LineAutoKey = Convert.ToInt64(DecryptedString.Split("|")[2]);
 
-    /*
-    DMS.Database.SQLHelper helper = new DMS.Database.DataManager(userId).SQLHelper;
-
-    var Ext = helper.SelectWithWhere(DMS.Database.Tables.DocumentLines,
-        "Ext",
-        "InfoAutoKey = '" + InfoAutoKey + "'");
-
-    string fn = helper.ExecuteScalar<string>("SELECT top 1 FileName from " + DMS.Database.Tables.DocumentVersions + " WHERE InfoAutoKey = '" + InfoAutoKey + "' and LineAutoKey = '" + LineAutoKey + "' order by Version desc");
-    if (string.IsNullOrEmpty(fn))
-    {
-        fn = InfoAutoKey + "_" + LineAutoKey + "." + Ext;
-    }
-    var arr = helper.ExecuteScalar<byte[]>("select TOP 1 file_stream from " + DMS.Database.Tables.Images + " where name = '" + fn + "'");
-    try
-    {
-        arr = SevenZip.Compression.LZMA.SevenZipHelper.Decompress(arr);
-    }
-    catch (Exception ex) { }
-    */
-
+        
     var dm = new DMS.Database.DataManager(userId);
     var Ext = dm.GetExt(InfoAutoKey);
     var fn = dm.GetActualFileName(InfoAutoKey, Ext);
@@ -124,7 +52,7 @@
  };
 
 
-    DocumentInfo documentInfo = new DocumentInfo(fn);
+//    DocumentInfo documentInfo = new DocumentInfo(fn);
     if (!supportedExtensions.Contains(Ext))
     {
 
@@ -146,11 +74,13 @@
 
             }
         }
-        documentInfo = new DocumentInfo(fn, format: DocumentFormat.Pdf);
+      //  documentInfo = new DocumentInfo(fn, format: DocumentFormat.Pdf);
 
     }
 
+    GleamTech.FileProviders.StreamFileProvider provider = new GleamTech.FileProviders.StreamFileProvider(LineAutoKey  + "_" + fn, new System.IO.MemoryStream(arr));
 
+    
     var documentViewer = new DocumentViewer
     {
         //Width = GleamTech.AspNet.UI.CssLength.Percentage(100),
@@ -158,7 +88,10 @@
         // DisplayMode = GleamTech.AspNet.UI.DisplayMode.Viewport,
         ClientEvents = new DocumentViewerClientEvents() {  Failed="onFailed", Downloading = "onDownload"},
         DeniedPermissions = deniedPermissions,
-        DocumentSource = new DocumentSource(documentInfo, arr)
+        Document = provider
+        
+         
+     //   DocumentSource = new DocumentSource(documentInfo, arr)
     };
 
 
@@ -168,6 +101,9 @@
     <head>
         <title>Document Viewer</title>
         @this.RenderHead(documentViewer)
+
+
+
     </head>
     <body>
         <div id="documentViewerDiv">

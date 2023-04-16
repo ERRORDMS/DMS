@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "bl9wqi",
+  "CachePdfKey": "bl9wqi/bl9wqi-1htwtze.pdf",
+  "CacheXpzKey": "bl9wqi/bl9wqi-1m4w66c.xpz",
+  "CacheInfoKey": "bl9wqi/bl9wqi-1m4w66c.json",
+  "CacheCopyKey": "bl9wqi/92r96m.ini",
+  "Document": "Type=Stream;File=desktop.ini",
+  "DocumentFileName": "desktop.ini",
+  "DownloadFileName": null,
+  "InputOptions": {
+    "Format": 0,
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": [],
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "bl9wqi",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": null
+}

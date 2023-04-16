@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "1642n8d",
+  "CachePdfKey": "1642n8d/1642n8d-8gmhy4.pdf",
+  "CacheXpzKey": "1642n8d/1642n8d-1ciruno.xpz",
+  "CacheInfoKey": "1642n8d/1642n8d-1ciruno.json",
+  "CacheCopyKey": "1642n8d/s1tu50.cdr",
+  "Document": null,
+  "DocumentFileName": "vector-gift-cards-free.cdr",
+  "DownloadFileName": null,
+  "InputOptions": {
+    "Format": "Pdf",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "1642n8d",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": null
+}

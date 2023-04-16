@@ -89,7 +89,6 @@ namespace DMS.Controllers
                         if (!SettingsController.GetSettingsPARSED().IsCompany && !dm.IsIPTrusted(GetUserID(Username), HttpContext.Connection.RemoteIpAddress.ToString()))
                         {
 
-
                             SendCodeEmail(Username);
                             result.Extra = LoginStatus.IPNotTrusted.ToString();
                         }
@@ -272,7 +271,6 @@ namespace DMS.Controllers
         [HttpGet]
         public string GetUserID(string Email)
         {
-            return "20-00016-2";
             using (var dm = new DataManager(null))
             {
                 return dm.GetClient().GetUserIDbyNameAsync(Email).Result;
@@ -292,7 +290,7 @@ namespace DMS.Controllers
         [HttpGet]
         public bool Get2FAEnabled(string Email)
         {
-            return new DataManager(null).Get2FAEnabled(GetUserID(Email));
+            return false;//new DataManager(null).Get2FAEnabled(GetUserID(Email));
         }
 
 

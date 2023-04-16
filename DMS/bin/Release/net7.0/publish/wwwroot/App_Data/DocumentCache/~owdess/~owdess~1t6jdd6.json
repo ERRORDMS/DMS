@@ -1,0 +1,27 @@
+{
+  "CacheSourceKey": "owdess",
+  "CachePdfKey": "owdess/owdess-8gmhy4.pdf",
+  "CacheXpzKey": "owdess/owdess-1t6jdd6.xpz",
+  "CacheInfoKey": "owdess/owdess-1t6jdd6.json",
+  "CacheCopyKey": "owdess/1n7w41t.cdr",
+  "Document": null,
+  "DocumentFileName": "10067_10067.cdr",
+  "DownloadFileName": null,
+  "InputOptions": {
+    "Format": "Pdf",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "owdess",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": null
+}

@@ -1,0 +1,31 @@
+{
+  "CacheSourceKey": "rfm9g1",
+  "CachePdfKey": "rfm9g1/rfm9g1-1ss2skx.pdf",
+  "CacheXpzKey": "rfm9g1/rfm9g1-1822os1.xpz",
+  "CacheInfoKey": "rfm9g1/rfm9g1-1822os1.json",
+  "CacheCopyKey": "rfm9g1/1bjnlu7.txt",
+  "Document": null,
+  "DocumentFileName": "ip.txt",
+  "DownloadFileName": null,
+  "InputOptions": {
+    "$type": "GleamTech.DocumentUltimate.WordProcessingInputOptions, GleamTech.DocumentUltimate",
+    "FieldFileName": "ip.txt",
+    "UpdateFields": true,
+    "Encoding": null,
+    "Format": "Txt",
+    "Password": null
+  },
+  "PdfOutputOptions": {
+    "Watermarks": [],
+    "FastWebViewEnabled": false,
+    "Password": null,
+    "Attachments": null,
+    "Format": "Pdf"
+  },
+  "XpzOutputOptions": {
+    "Password": "rfm9g1",
+    "HighQualityEnabled": false,
+    "Format": "Xpz"
+  },
+  "Attachments": null
+}
